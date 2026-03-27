@@ -120,3 +120,6 @@ app.*.symbols
 
 # Ignore build_runners...
 *.g.dart
+
+# JUST NO! >:(
+.idea
