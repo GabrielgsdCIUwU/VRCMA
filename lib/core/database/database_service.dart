@@ -30,6 +30,7 @@ class DatabaseService {
         name TEXT NOT NULL,
         allowed_roles TEXT, -- Stored as comma-separated values
         target_languages TEXT,
+        is_language_filter_enabled INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 0
       )
     ''');

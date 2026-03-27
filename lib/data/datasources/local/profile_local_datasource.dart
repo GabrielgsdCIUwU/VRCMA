@@ -20,6 +20,7 @@ class ProfileLocalDataSourceImpl implements IProfileLocalDataSource {
         'name': profile.name,
         'allowed_roles': profile.allowedRoles.join(','),
         'target_languages': profile.targetLanguages.join(','),
+        'is_language_filter_enabled': profile.isLanguageFilterEnabled ? 1 : 0,
         'is_active': profile.isActive ? 1 : 0
       },
       conflictAlgorithm: ConflictAlgorithm.replace
