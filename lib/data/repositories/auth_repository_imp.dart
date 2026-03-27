@@ -37,6 +37,9 @@ class AuthRepositoryImp implements IAuthRepository {
       }
       return Right(VrcUserModel.fromLibrary(currentUser));
     } catch (e) {
+      if (e.toString().contains("connection timeout")) {
+        return Left(ApiFailure('Connection timeout. Check your internet connection'));
+      }
       return Left(ApiFailure('Unexpected connection error: $e'));
     }
   }
