@@ -121,5 +121,8 @@ app.*.symbols
 # Ignore build_runners...
 *.g.dart
 
+# Cookies not accepted here.
+.cookies
+
 # JUST NO! >:(
 .idea
