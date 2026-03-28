@@ -1,0 +1,30 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vrcma/data/repositories/social_repository_imp.dart';
+import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
+
+part 'friends_provider.g.dart';
+
+@riverpod
+class FriendsList extends _$FriendsList {
+  @override
+  FutureOr<List<VrcUser>> build() async {
+    return _fetchFriends();
+  }
+  
+  Future<List<VrcUser>> _fetchFriends() async {
+    final api = ref.watch(vrcApiProvider);
+    final repo = SocialRepositoryImp(api);
+
+    final result = await repo.getFriends();
+    return result.fold(
+          (failure) => throw failure.message,
+          (friends) => friends,
+    );
+  }
+  
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _fetchFriends());
+  }
+}
