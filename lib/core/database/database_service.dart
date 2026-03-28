@@ -28,10 +28,11 @@ class DatabaseService {
       CREATE TABLE profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        allowed_roles TEXT, -- Stored as comma-separated values
         target_languages TEXT,
         is_language_filter_enabled INTEGER DEFAULT 0,
-        is_active INTEGER DEFAULT 0
+        is_active INTEGER DEFAULT 0,
+        default_role_id INTEGER,
+        FOREIGN KEY (default_role_id) REFERENCES roles (id)
       )
     ''');
     
@@ -42,6 +43,28 @@ class DatabaseService {
         sender_name TEXT NOT NULL,
         action TEXT NOT NULL, -- 'ACCEPTED' or 'REJECTED'
         reason TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE friend_roles (
+        vrc_user_id TEXT NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (vrc_user_id, role_id),
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE profile_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
+        fallback_group INTEGER,
+        FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');
   }
