@@ -8,10 +8,10 @@ abstract class IAutomationRepository {
   Future<void> acceptRequestInvitation(RequestInvite requestInvite, int? slot);
   
   /// Accepts a specific invite
-  Future<void> acceptInvitation(InviteReceived invite, int? slot);
+  Future<void> acceptInvitation(InviteReceived invite);
   
   /// Rejects a notification (invite or request invite)
-  Future<void> rejectNotificationWithMessage(InvitationType notification, int? slot);
+  Future<void> rejectNotificationWithMessage(InvitationType notification, int slot);
 
   /// Dismisses a notification (invite or request invite) without response
   Future<void> dismissNotification(InvitationType notification);
