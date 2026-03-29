@@ -8,15 +8,55 @@ class VrcUserModel extends VrcUser {
     required super.displayName,
     super.bio,
     required super.tags,
+    super.location,
+    super.status,
+    super.avatarUrl
   });
 
-  /// Factory to map the library's [CurrentUser] to our domain model.
-  factory VrcUserModel.fromLibrary(CurrentUser user) {
+  /// Factory to map the library's [LimitedUserFriend] to our domain model.
+  factory VrcUserModel.fromLibrary(LimitedUserFriend user) {
+    
+    final potentialUrls = [
+      user.profilePicOverrideThumbnail,
+      user.currentAvatarThumbnailImageUrl,
+      user.currentAvatarImageUrl,
+      user.imageUrl
+    ];
+    
+    String avatarUrl = potentialUrls.firstWhere(
+        (url) => url != null && url.isNotEmpty,
+      orElse: () => ''
+    )!;
+    
     return VrcUserModel(
       id: user.id,
       displayName: user.displayName,
       bio: user.bio,
-      tags: user.tags
+      tags: user.tags,
+      location: user.location,
+      status: user.status.value,
+      avatarUrl: avatarUrl
+    );
+  }
+  factory VrcUserModel.fromCurrentUser(CurrentUser user) {
+    final potentialUrls = [
+      user.profilePicOverrideThumbnail,
+      user.currentAvatarThumbnailImageUrl,
+      user.currentAvatarImageUrl,
+    ];
+
+    String avatarUrl = potentialUrls.firstWhere(
+            (url) => url.isNotEmpty,
+        orElse: () => ''
+    );
+    return VrcUserModel(
+      id: user.id,
+      displayName: user.displayName,
+      bio: user.bio,
+      tags: user.tags,
+      location: '',
+      status: user.status.value,
+      avatarUrl: avatarUrl,
     );
   }
 }

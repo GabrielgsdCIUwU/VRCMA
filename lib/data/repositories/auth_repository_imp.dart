@@ -35,7 +35,7 @@ class AuthRepositoryImp implements IAuthRepository {
       if(currentUser == null) {
         return Left(ApiFailure('Unexpected error: currentUser is null'));
       }
-      return Right(VrcUserModel.fromLibrary(currentUser));
+      return Right(VrcUserModel.fromCurrentUser(currentUser));
     } catch (e) {
       if (e.toString().contains("connection timeout")) {
         return Left(ApiFailure('Connection timeout. Check your internet connection'));
@@ -57,7 +57,7 @@ class AuthRepositoryImp implements IAuthRepository {
       if (currentUser == null) {
         return Left(ApiFailure('Error getting user after 2FA verification'));
       }
-      return Right(VrcUserModel.fromLibrary(currentUser));
+      return Right(VrcUserModel.fromCurrentUser(currentUser));
     } catch (e) {
       return Left(ApiFailure('Unexpected 2FA process error: $e'));
     }
