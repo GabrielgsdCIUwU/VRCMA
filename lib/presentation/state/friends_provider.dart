@@ -13,7 +13,7 @@ class FriendsList extends _$FriendsList {
   }
   
   Future<List<VrcUser>> _fetchFriends() async {
-    final api = ref.watch(vrcApiProvider);
+    final api = await ref.watch(vrcApiProvider.future);
     final repo = SocialRepositoryImp(api);
 
     final result = await repo.getFriends();
