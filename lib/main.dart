@@ -5,6 +5,7 @@ import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     const ProviderScope(child: MyApp()),
   );
