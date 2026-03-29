@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 
 class FriendsPanel extends ConsumerWidget {
@@ -56,13 +57,8 @@ class _FriendTitle extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       leading: Stack(
         children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.grey[900],
-            backgroundImage: NetworkImage(user.avatarUrl),
-            child: Text(user.displayName[0]),
-          ),
-          
+         _AvatarWidget(user: user),
+
           Positioned(
             right: 0,
             bottom: 0,
@@ -83,16 +79,91 @@ class _FriendTitle extends StatelessWidget {
         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
       ),
       subtitle: Text(
-        user.location == 'private'
-            ? "Private Instance"
-            : (user.location),
+        user.location == 'private' ? "Private Instance" : (user.location),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 12),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.6),
+          fontSize: 12,
+        ),
       ),
       onTap: () {
         //? What info show when tap?
       },
+    );
+  }
+}
+
+class _AvatarWidget extends ConsumerWidget {
+  final VrcUser user;
+
+  const _AvatarWidget({required this.user});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final headersAsync = ref.watch(vrcResolvedImageProvider(user.avatarUrl));
+
+    return headersAsync.when(
+      data: (finalUrl) {
+        if (finalUrl.isEmpty) {
+          return _buildErrorIcon(context, "URL EMPTY!");
+        }
+
+        return ClipOval(
+          child: Image.network(
+            finalUrl,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const CircularProgressIndicator(strokeWidth: 2);
+            },
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint(
+                "Error loading avatar from: ${user.displayName}: $error",
+              );
+              debugPrint("URL: ${user.avatarUrl}");
+              return _buildErrorIcon(context, error.toString());
+            },
+          ),
+        );
+      },
+      loading: () => CircularProgressIndicator(strokeWidth: 2),
+      error: (e, _) => _buildErrorIcon(context, "AUTH ERROR"),
+    );
+  }
+
+  Widget _buildErrorIcon(BuildContext context, String error) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Error on avatar: ${user.displayName}"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("User ID: ${user.id}"),
+                const SizedBox(height: 8),
+                const Text("URL detected:", style: TextStyle(fontWeight: FontWeight.bold)),
+                SelectableText(user.avatarUrl.isEmpty ? "(Empty)" : user.avatarUrl),
+                const SizedBox(height: 8),
+                const Text("Technical error:", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(error),
+              ],
+            ),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Close"))],
+          ),
+        );
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+        child: const Icon(Icons.broken_image, size: 20, color: Colors.white),
+      ),
     );
   }
 }
