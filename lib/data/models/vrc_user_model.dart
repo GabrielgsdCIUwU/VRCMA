@@ -16,9 +16,17 @@ class VrcUserModel extends VrcUser {
   /// Factory to map the library's [LimitedUserFriend] to our domain model.
   factory VrcUserModel.fromLibrary(LimitedUserFriend user) {
     
-    var avatarUrl = user.profilePicOverride;
-    avatarUrl ??= user.currentAvatarImageUrl;
-    avatarUrl ??= '';
+    final potentialUrls = [
+      user.profilePicOverrideThumbnail,
+      user.currentAvatarThumbnailImageUrl,
+      user.currentAvatarImageUrl,
+      user.imageUrl
+    ];
+    
+    String avatarUrl = potentialUrls.firstWhere(
+        (url) => url != null && url.isNotEmpty,
+      orElse: () => ''
+    )!;
     
     return VrcUserModel(
       id: user.id,
@@ -31,6 +39,16 @@ class VrcUserModel extends VrcUser {
     );
   }
   factory VrcUserModel.fromCurrentUser(CurrentUser user) {
+    final potentialUrls = [
+      user.profilePicOverrideThumbnail,
+      user.currentAvatarThumbnailImageUrl,
+      user.currentAvatarImageUrl,
+    ];
+
+    String avatarUrl = potentialUrls.firstWhere(
+            (url) => url.isNotEmpty,
+        orElse: () => ''
+    );
     return VrcUserModel(
       id: user.id,
       displayName: user.displayName,
@@ -38,9 +56,7 @@ class VrcUserModel extends VrcUser {
       tags: user.tags,
       location: '',
       status: user.status.value,
-      avatarUrl: user.profilePicOverride.isNotEmpty
-          ? user.profilePicOverride
-          : user.currentAvatarImageUrl,
+      avatarUrl: avatarUrl,
     );
   }
 }
