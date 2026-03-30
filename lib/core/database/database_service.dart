@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -19,11 +20,27 @@ class DatabaseService {
     return await openDatabase(
       path,
       version: _dbVersion,
-      onCreate: _onCreate,
+      onCreate: (db, version) async {
+        try {
+          await _onCreate(db, version);
+          await _createDummyData(db, version);
+        } catch (e) {
+          debugPrint("Error creating database: $e");
+          rethrow;
+        }
+      },
     );
   }
 
   Future<void> _onCreate(Database db, int version) async {
+
+    await db.execute('''
+      CREATE TABLE roles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+      )
+    ''');
+    
     await db.execute('''
       CREATE TABLE profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,5 +84,11 @@ class DatabaseService {
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');
+  }
+  
+  Future<void> _createDummyData(Database db, int version) async {
+    await db.insert('roles', {'name': 'VIP'});
+    await db.insert('roles', {'name': 'Admin'});
+    await db.insert('roles', {'name': 'Blocked'});
   }
 }

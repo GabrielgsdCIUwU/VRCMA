@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
+import 'package:vrcma/presentation/widgets/home/window/user_details_Sheet.dart';
 
 class FriendsPanel extends ConsumerWidget {
   const FriendsPanel({super.key});
@@ -88,7 +89,11 @@ class _FriendTitle extends StatelessWidget {
         ),
       ),
       onTap: () {
-        //? What info show when tap?
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) => UserDetailsSheet(user: user),
+        );
       },
     );
   }
