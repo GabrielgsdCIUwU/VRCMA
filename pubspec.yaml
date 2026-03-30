@@ -59,6 +59,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+  mockito: ^5.6.4
 
   # --- CODE GENERATION (Required for Riverpod 3) ---
   riverpod_generator: ^4.0.0+1
