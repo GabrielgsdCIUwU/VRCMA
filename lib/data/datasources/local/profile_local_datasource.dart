@@ -1,13 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 
-abstract class IProfileLocalDataSource {
-  Future<int> saveProfile(FilterProfile profile);
-  Future<List<FilterProfile>> getProfiles();
-  Future<void> deleteProfile(int id);
-}
-
-class ProfileLocalDataSourceImpl implements IProfileLocalDataSource {
+class ProfileLocalDataSourceImpl implements IProfileRepository {
   final Database _db;
 
   ProfileLocalDataSourceImpl(this._db);
@@ -97,6 +92,25 @@ class ProfileLocalDataSourceImpl implements IProfileLocalDataSource {
   @override
   Future<void> deleteProfile(int id) async {
     await _db.delete('profiles', where: 'id = ?', whereArgs: [id]);
+  }
+
+  @override
+  Future<void> setActiveProfile(int id) async {
+    return await _db.transaction((txn) async {
+      await txn.update(
+        'profiles',
+        {'is_active': 0},
+        where: 'is_active = ?',
+        whereArgs: [1]
+      );
+
+      await txn.update(
+          'profiles',
+          {'is_active': 1},
+          where: 'id = ?',
+          whereArgs: [id]
+      );
+    });
   }
 }
 
