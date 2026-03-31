@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/core/database/database_service.dart';
-import 'package:vrcma/data/datasources/local/profile_local_datasource.dart';
+import 'package:vrcma/data/repositories/profile_repository_imp.dart';
 import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
@@ -15,9 +15,9 @@ Future<Database> database(Ref ref) async {
 }
 
 @riverpod
-Future<IProfileRepository> profileLocalDataSource(Ref ref) async {
+Future<IProfileRepository> profileRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
-  return ProfileLocalDataSourceImpl(db);
+  return ProfileRepositoryImp(db);
 }
 
 @riverpod
