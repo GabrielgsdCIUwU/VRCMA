@@ -2,10 +2,10 @@ import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 
-class ProfileLocalDataSourceImpl implements IProfileRepository {
+class ProfileRepositoryImp implements IProfileRepository {
   final Database _db;
 
-  ProfileLocalDataSourceImpl(this._db);
+  ProfileRepositoryImp(this._db);
 
   @override
   Future<int> saveProfile(FilterProfile profile) async {
