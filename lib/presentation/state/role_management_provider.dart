@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
+import 'package:vrcma/presentation/state/user_details_provider.dart';
 
 part 'role_management_provider.g.dart';
 
@@ -25,6 +26,26 @@ class RoleManagement extends _$RoleManagement {
     await repo.deleteRole(id);
     ref.invalidateSelf();
     ref.invalidate(profileManagementProviderProvider);
+  }
+  
+  Future<void> updateRoleMembers(int roleId, Set<String> newUserIds) async {
+    final repo = await ref.read(localSocialRepositoryProvider.future);
+    final currentIdsInDb = await repo.getUserIdsByRole(roleId);
+    
+    for (final userId in currentIdsInDb) {
+      if (!newUserIds.contains(userId)) {
+        await repo.removeRoleFromUser(userId, roleId);
+      }
+    }
+    
+    for (final userId in newUserIds) {
+      if (!currentIdsInDb.contains(userId)) {
+        await repo.assignRoleToUser(userId, roleId);
+      }
+    }
+    
+    ref.invalidate(roleMemberCountProvider(roleId));
+    ref.invalidateSelf();
   }
 }
 
