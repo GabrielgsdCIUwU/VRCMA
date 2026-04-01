@@ -63,4 +63,24 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
         where: 'id = ?', 
         whereArgs: [roleId]);
   }
+  
+  @override
+  Future<int> getMemberCountForRole(int roleId) async {
+    final result = await _db.rawQuery(
+      'SELECT COUNT(*) as count FROM friend_roles WHERE role_id = ?',
+      [roleId]
+    );
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
+  
+  @override
+  Future<List<String>> getUserIdsByRole(int roleId) async {
+    final maps = await _db.query(
+      'friend_roles',
+      columns: ['vrc_user_id'],
+      where: 'role_id = ?',
+      whereArgs: [roleId]
+    );
+    return maps.map((e) => e['vrc_user_id'] as String).toList();
+  }
 }
