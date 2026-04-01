@@ -55,4 +55,12 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   Future<int> createRole(String name) async {
     return await _db.insert('roles', {'name': name});
   }
+  
+  @override
+  Future<void> deleteRole(int roleId) async{
+    await _db.delete(
+        'roles', 
+        where: 'id = ?', 
+        whereArgs: [roleId]);
+  }
 }
