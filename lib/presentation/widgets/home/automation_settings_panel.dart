@@ -5,6 +5,7 @@ import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
 
 class AutomationSettingsPanel extends ConsumerWidget {
   const AutomationSettingsPanel({super.key});
@@ -180,17 +181,29 @@ class _RoleTile extends ConsumerWidget {
         loading: () => const Text("Loading...", style: TextStyle(fontSize: 12)),
         error: (err, _) => Text("Error: $err", style: const TextStyle(fontSize: 12)),
       ),
-      trailing: PopupMenuButton(
-        icon: const Icon(Icons.more_vert, size: 20),
-        onSelected: (val) {
-          if (val == 'delete') {
-            _showDeleteRoleConfirmation(context, ref);
-          }
-        },
-        itemBuilder: (ctx) => [
-          const PopupMenuItem(
-            value: 'delete',
-            child: Text("Delete Role", style: TextStyle(color: Colors.red, fontSize: 14)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, size: 20),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => RoleEditorSheet(role: role)));
+            },
+            visualDensity: VisualDensity.compact,
+          ),
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert, size: 20),
+            onSelected: (val) {
+              if (val == 'delete') {
+                _showDeleteRoleConfirmation(context, ref);
+              }
+            },
+            itemBuilder: (ctx) => [
+              const PopupMenuItem(
+                value: 'delete',
+                child: Text("Delete Role", style: TextStyle(color: Colors.red, fontSize: 14)),
+              ),
+            ],
           ),
         ],
       ),
