@@ -10,19 +10,35 @@ class Role extends Equatable {
 enum RuleAction { accept, reject }
 
 class ProfileRule extends Equatable {
-  final int id;
+  final int? id;
   final Role role;
   final int priority;
   final RuleAction action;
   final int? fallbackGroup;
 
   const ProfileRule({
-    required this.id,
+    this.id,
     required this.role,
     required this.priority,
     required this.action,
     this.fallbackGroup,
   });
+  
+  ProfileRule copyWith({
+    int? id,
+    Role? role,
+    int? priority,
+    RuleAction? action,
+    int? fallbackGroup
+  }) {
+    return ProfileRule(
+      id: id?? this.id,
+      role: role ?? this.role,
+      priority: priority ?? this.priority,
+      action: action ?? this.action,
+      fallbackGroup: fallbackGroup ?? this.fallbackGroup,
+    );
+  }
 
   @override List<Object?> get props => [id, role, priority, action, fallbackGroup];
 }
@@ -41,6 +57,22 @@ class FilterProfile extends Equatable{
     this.rules = const [],
     this.defaultRole,
   });
+  
+  FilterProfile copyWith({
+    int? id,
+    String? name,
+    bool? isActive,
+    List<ProfileRule>? rules,
+    Role? defaultRole,
+  }) {
+    return FilterProfile(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      rules: rules ?? this.rules,
+      defaultRole: defaultRole ?? this.defaultRole,
+    );
+  }
 
   @override List<Object?> get props => [id, name, isActive, rules, defaultRole];
 
