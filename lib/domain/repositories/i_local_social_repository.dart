@@ -6,4 +6,5 @@ abstract class ILocalSocialRepository {
   Future<void> removeRoleFromUser(String userId, int roleId);
   Future<List<Role>> getAllAvailableRoles();
   Future<int> createRole(String name);
+  Future<void> deleteRole(int roleId);
 }
