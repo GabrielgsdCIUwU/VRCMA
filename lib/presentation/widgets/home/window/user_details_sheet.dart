@@ -33,6 +33,7 @@ class UserDetailsSheet extends ConsumerWidget {
 
                     return CheckboxListTile(
                       title: Text(role.name),
+                      secondary: const Icon(Icons.person_add_alt_1_outlined),
                       value: isAssigned,
                       onChanged: (val) {
                         ref.read(userMetadataProvider(user.id).notifier)

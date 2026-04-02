@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/presentation/state/role_management_provider.dart';
 
 
 part 'user_details_provider.g.dart';
@@ -22,6 +23,7 @@ class UserMetadataNotifier extends _$UserMetadataNotifier {
     } else {
       await repo.removeRoleFromUser(userId, role.id);
     }
+    ref.invalidate(roleMemberCountProvider(role.id));
     ref.invalidateSelf();
   }
 }

@@ -53,6 +53,58 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   
   @override
   Future<int> createRole(String name) async {
-    return await _db.insert('roles', {'name': name});
+    try {
+      return await _db.insert('roles', {'name': name});
+    } catch (e) {
+      if (e is DatabaseException && e.isUniqueConstraintError()) {
+        throw 'A role with the name "$name" already exists.';
+      }
+      rethrow;
+    }
+  }
+  
+  @override
+  Future<void> deleteRole(int roleId) async{
+    await _db.delete(
+        'roles', 
+        where: 'id = ?', 
+        whereArgs: [roleId]);
+  }
+  
+  @override
+  Future<int> getMemberCountForRole(int roleId) async {
+    final result = await _db.rawQuery(
+      'SELECT COUNT(*) as count FROM friend_roles WHERE role_id = ?',
+      [roleId]
+    );
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
+  
+  @override
+  Future<List<String>> getUserIdsByRole(int roleId) async {
+    final maps = await _db.query(
+      'friend_roles',
+      columns: ['vrc_user_id'],
+      where: 'role_id = ?',
+      whereArgs: [roleId]
+    );
+    return maps.map((e) => e['vrc_user_id'] as String).toList();
+  }
+  
+  @override
+  Future<void> updateRoleName(int roleId, String newName) async {
+    try {
+      await _db.update(
+          'roles',
+          {'name': newName},
+          where: 'id = ?',
+          whereArgs: [roleId]
+      );
+    } catch (e) {
+      if (e is DatabaseException && e.isUniqueConstraintError()) {
+        throw 'A role with the name "$newName" already exists.';
+      }
+      rethrow;
+    }
   }
 }
