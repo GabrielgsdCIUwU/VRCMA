@@ -6,9 +6,16 @@ part 'logs_provider.g.dart';
 
 @riverpod
 class AutomationLogs extends _$AutomationLogs {
+  String? _currentSearch;
+  
   @override
   FutureOr<List<AutomationLog>> build() async {
     final repo = await ref.watch(logRepositoryProvider.future);
-    return repo.getLogs();
+    return repo.getLogs(search: _currentSearch);
+  }
+  
+  void setSearch(String query) {
+    _currentSearch = query.isEmpty ? null : query;
+    ref.invalidateSelf();
   }
 }
