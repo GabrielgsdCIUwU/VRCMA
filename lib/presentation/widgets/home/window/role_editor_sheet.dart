@@ -16,8 +16,8 @@ class RoleEditorSheet extends ConsumerStatefulWidget {
 }
 
 class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
-  late Set<String> _tempUserIds;
-  late Set<String> _initialUserIds;
+  late Set<String> _tempUserIds = {};
+  late Set<String> _initialUserIds = {};
   late TextEditingController _nameController;
   late String _initialName;
   String _searchQuery = "";
@@ -120,6 +120,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
       padding: const EdgeInsets.all(16),
       child: TextField(
         controller: _nameController,
+        onChanged: (_) => setState(() {}),
         decoration: const InputDecoration(
           labelText: "Role Name",
           prefixIcon: Icon(Icons.label_important_outline),
