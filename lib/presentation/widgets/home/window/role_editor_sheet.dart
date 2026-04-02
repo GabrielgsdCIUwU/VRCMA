@@ -48,10 +48,33 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     return nameChanged || usersChanged;
   }
   
-  void _saveAndExit() {
-    //TODO: Change role name
-    ref.read(roleManagementProvider.notifier).updateRoleMembers(widget.role.id, _tempUserIds);
-    Navigator.pop(context);
+  Future<void> _saveAndExit() async {
+    try {
+      await ref.read(roleManagementProvider.notifier).saveRoleChanges(
+          roleId: widget.role.id,
+          newName: _nameController.text,
+          newUserIds: _tempUserIds
+      );
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) _showErrorDialog(e.toString());
+    }
+  }
+  
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Name already in use"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Ok"),
+          )
+        ],
+      )
+    );
   }
   
   Future<bool> _showExitConfirmation() async {
