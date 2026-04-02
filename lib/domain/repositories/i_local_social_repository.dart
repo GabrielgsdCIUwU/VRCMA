@@ -9,4 +9,5 @@ abstract class ILocalSocialRepository {
   Future<void> deleteRole(int roleId);
   Future<int> getMemberCountForRole(int roleId);
   Future<List<String>> getUserIdsByRole(int roleId);
+  Future<void> updateRoleName(int roleId, String newName);
 }
