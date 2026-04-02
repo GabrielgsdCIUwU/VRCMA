@@ -43,8 +43,20 @@ class RoleManagement extends _$RoleManagement {
         await repo.assignRoleToUser(userId, roleId);
       }
     }
+  }
+  
+  Future<void> saveRoleChanges({
+    required int roleId,
+    required String newName,
+    required Set<String> newUserIds
+  }) async {
+    final repo = await ref.read(localSocialRepositoryProvider.future);
     
+    await repo.updateRoleName(roleId, newName);
+    await updateRoleMembers(roleId, newUserIds);
+
     ref.invalidate(roleMemberCountProvider(roleId));
+    ref.invalidate(allAvailableRolesProvider);
     ref.invalidateSelf();
   }
 }
