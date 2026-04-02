@@ -53,7 +53,14 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   
   @override
   Future<int> createRole(String name) async {
-    return await _db.insert('roles', {'name': name});
+    try {
+      return await _db.insert('roles', {'name': name});
+    } catch (e) {
+      if (e is DatabaseException && e.isUniqueConstraintError()) {
+        throw 'A role with the name "$name" already exists.';
+      }
+      rethrow;
+    }
   }
   
   @override
@@ -86,11 +93,18 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   
   @override
   Future<void> updateRoleName(int roleId, String newName) async {
-    await _db.update(
-      'roles',
-      {'name': newName},
-      where: 'id = ?',
-      whereArgs: [roleId]
-    );
+    try {
+      await _db.update(
+          'roles',
+          {'name': newName},
+          where: 'id = ?',
+          whereArgs: [roleId]
+      );
+    } catch (e) {
+      if (e is DatabaseException && e.isUniqueConstraintError()) {
+        throw 'A role with the name "$newName" already exists.';
+      }
+      rethrow;
+    }
   }
 }
