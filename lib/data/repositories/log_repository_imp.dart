@@ -50,7 +50,7 @@ class LogRepositoryImp implements ILogRepository {
     final List<dynamic> whereArgs = search != null ? ['%$search%', '%$search%'] : [];
     
     final List<Map<String, dynamic>> maps = await _db.rawQuery('''
-      SELECT l.*, u.display_name, u.avatar_url
+      SELECT l.*, u.user_id, u.display_name, u.avatar_url
       FROM logs as l
       INNER JOIN vrc_users as u ON l.user_local_id = u.id
       $whereClause
