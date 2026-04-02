@@ -83,4 +83,14 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
     );
     return maps.map((e) => e['vrc_user_id'] as String).toList();
   }
+  
+  @override
+  Future<void> updateRoleName(int roleId, String newName) async {
+    await _db.update(
+      'roles',
+      {'name': newName},
+      where: 'id = ?',
+      whereArgs: [roleId]
+    );
+  }
 }
