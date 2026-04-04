@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -19,18 +20,46 @@ class DatabaseService {
     return await openDatabase(
       path,
       version: _dbVersion,
-      onCreate: _onCreate,
+      onCreate: (db, version) async {
+        try {
+          await _onCreate(db, version);
+          await _createDummyData(db, version);
+        } catch (e) {
+          debugPrint("Error creating database: $e");
+          rethrow;
+        }
+      },
     );
   }
 
   Future<void> _onCreate(Database db, int version) async {
+
+    await db.execute('''
+      CREATE TABLE roles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+      )
+    ''');
+    
+    await db.execute('''
+      CREATE TABLE vrc_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL UNIQUE,
+        display_name TEXT NOT NULL,
+        avatar_url TEXT,
+        last_updated TEXT NOT NULL
+      )
+    ''' );
+    
     await db.execute('''
       CREATE TABLE profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        allowed_roles TEXT, -- Stored as comma-separated values
         target_languages TEXT,
-        is_active INTEGER DEFAULT 0
+        is_language_filter_enabled INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 0,
+        default_role_id INTEGER,
+        FOREIGN KEY (default_role_id) REFERENCES roles (id)
       )
     ''');
     
@@ -38,10 +67,41 @@ class DatabaseService {
       CREATE TABLE logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT NOT NULL,
-        sender_name TEXT NOT NULL,
-        action TEXT NOT NULL, -- 'ACCEPTED' or 'REJECTED'
-        reason TEXT
+        user_local_id INTEGER NOT NULL,
+        invitation_type TEXT NOT NULL, -- 'INVITE' or 'REQUEST'
+        action TEXT NOT NULL, -- 'ACCEPT' or 'REJECT'
+        applied_rule TEXT,
+        FOREIGN KEY (user_local_id) REFERENCES vrc_users (id) ON DELETE CASCADE
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE friend_roles (
+        vrc_user_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (vrc_user_id, role_id),
+        FOREIGN KEY (vrc_user_id) REFERENCES vrc_users (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE profile_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
+        fallback_group INTEGER,
+        FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
+  }
+  
+  Future<void> _createDummyData(Database db, int version) async {
+    await db.insert('roles', {'name': 'VIP'});
+    await db.insert('roles', {'name': 'Admin'});
+    await db.insert('roles', {'name': 'Blocked'});
   }
 }
