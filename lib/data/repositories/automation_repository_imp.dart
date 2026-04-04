@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 
@@ -24,6 +25,14 @@ class AutomationRepositoryImp implements IAutomationRepository {
                 .getUser(userId: notification.senderUserId);
 
             var userData = userResponse.data;
+            
+            final avatarUrl = userData == null
+              ? ''
+              : VrcImageMapper.mapAvatarUrl(
+                profilePic: userData.profilePicOverrideThumbnail,
+                thumbnail: userData.currentAvatarThumbnailImageUrl,
+                currentAvatar: userData.currentAvatarImageUrl,
+              );
 
             if (notification.type == NotificationType.requestInvite) {
               return RequestInvite(
@@ -31,6 +40,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
                 senderId: notification.senderUserId,
                 senderName: userData?.displayName ?? notification.senderUserId,
                 senderTags: userData?.tags ?? [],
+                avatarUrl: avatarUrl,
               );
             }
             return InviteReceived(
@@ -38,6 +48,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
               senderId: notification.senderUserId,
               senderName: userData?.displayName ?? notification.senderUserId,
               senderTags: userData?.tags ?? [],
+              avatarUrl: avatarUrl,
             );
           } catch (e) {
             debugPrint("DEBUG: Error asyncMap: $e");
