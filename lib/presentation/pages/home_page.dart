@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/presentation/state/automation_provider.dart';
 import 'package:vrcma/presentation/state/navigation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/automation_settings_panel.dart';
 import 'package:vrcma/presentation/widgets/home/friends_panel.dart';
@@ -12,6 +13,7 @@ class HomePage extends ConsumerWidget {
     
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(automationStateProvider);
     final currentIndex = ref.watch(navigationStackProvider);
     final isWide = MediaQuery.of(context).size.width > 900;
     
