@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/animation.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
 
 /// Represents an incoming invitation request from VRChat.
 class InvitationType extends Equatable {

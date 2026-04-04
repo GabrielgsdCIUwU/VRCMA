@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
@@ -30,11 +29,11 @@ class ProfileBanner extends ConsumerWidget {
                     width: 44,
                     height: 44,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, _, __) => _buildPlaceholder(user.displayName),
+                    errorBuilder: (context, _, _) => _buildPlaceholder(user.displayName),
                   ),
                 ),
                 loading: () => const SizedBox(width: 44, height: 44, child: CircularProgressIndicator(strokeWidth: 2)),
-                error: (_, __) => _buildPlaceholder(user.displayName),
+                error: (_, _) => _buildPlaceholder(user.displayName),
               ),
 
               const SizedBox(width: 12),
