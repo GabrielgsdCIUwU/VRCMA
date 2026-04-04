@@ -76,7 +76,7 @@ class AutomationProcessor {
     await logRepository.saveLog(
       vrcUserId: invite.senderId,
       displayName: invite.senderName,
-      avatarUrl: '',
+      avatarUrl: invite.avatarUrl,
       invitationType: invite is RequestInvite ? 'REQUEST' : 'INVITE',
       action: action,
       appliedRule: "$profileName ($rule)",
