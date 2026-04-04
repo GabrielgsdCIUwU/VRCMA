@@ -42,6 +42,16 @@ class DatabaseService {
     ''');
     
     await db.execute('''
+      CREATE TABLE vrc_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL UNIQUE,
+        display_name TEXT NOT NULL,
+        avatar_url TEXT,
+        last_updated TEXT NOT NULL
+      )
+    ''' );
+    
+    await db.execute('''
       CREATE TABLE profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -57,17 +67,20 @@ class DatabaseService {
       CREATE TABLE logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT NOT NULL,
-        sender_name TEXT NOT NULL,
-        action TEXT NOT NULL, -- 'ACCEPTED' or 'REJECTED'
-        reason TEXT
+        user_local_id INTEGER NOT NULL,
+        invitation_type TEXT NOT NULL, -- 'INVITE' or 'REQUEST'
+        action TEXT NOT NULL, -- 'ACCEPT' or 'REJECT'
+        applied_rule TEXT,
+        FOREIGN KEY (user_local_id) REFERENCES vrc_users (id) ON DELETE CASCADE
       )
     ''');
 
     await db.execute('''
       CREATE TABLE friend_roles (
-        vrc_user_id TEXT NOT NULL,
+        vrc_user_id INTEGER NOT NULL,
         role_id INTEGER NOT NULL,
         PRIMARY KEY (vrc_user_id, role_id),
+        FOREIGN KEY (vrc_user_id) REFERENCES vrc_users (id) ON DELETE CASCADE,
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');

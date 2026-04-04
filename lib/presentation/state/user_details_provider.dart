@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/core/di/database_provider.dart';

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 
@@ -17,74 +19,105 @@ class AutomationRepositoryImp implements IAutomationRepository {
           event.notification.type == NotificationType.invite ||
           event.notification.type == NotificationType.requestInvite)
         .asyncMap((event) async {
-        final notification = event.notification;
-        final userResponse = await _vrcApi.rawApi.getUsersApi()
-              .getUser(userId: notification.senderUserId);
-        
-        var userData = userResponse.data;
-        
-        if (notification.type == NotificationType.requestInvite) {
-          return RequestInvite(
-            id: notification.id,
-            senderId: notification.senderUserId,
-            senderName: userData?.displayName ?? notification.senderUserId,
-            senderTags: userData?.tags ?? [],
-          );
-        }
-        return InviteReceived(
-          id: notification.id,
-          senderId: notification.senderUserId,
-          senderName: userData?.displayName ?? notification.senderUserId,
-          senderTags: userData?.tags ?? [],
-        );
+          try {
+            final notification = event.notification;
+            final userResponse = await _vrcApi.rawApi.getUsersApi()
+                .getUser(userId: notification.senderUserId);
+
+            var userData = userResponse.data;
+            
+            final avatarUrl = userData == null
+              ? ''
+              : VrcImageMapper.mapAvatarUrl(
+                profilePic: userData.profilePicOverrideThumbnail,
+                thumbnail: userData.currentAvatarThumbnailImageUrl,
+                currentAvatar: userData.currentAvatarImageUrl,
+              );
+
+            if (notification.type == NotificationType.requestInvite) {
+              return RequestInvite(
+                id: notification.id,
+                senderId: notification.senderUserId,
+                senderName: userData?.displayName ?? notification.senderUserId,
+                senderTags: userData?.tags ?? [],
+                avatarUrl: avatarUrl,
+              );
+            }
+            return InviteReceived(
+              id: notification.id,
+              senderId: notification.senderUserId,
+              senderName: userData?.displayName ?? notification.senderUserId,
+              senderTags: userData?.tags ?? [],
+              avatarUrl: avatarUrl,
+            );
+          } catch (e) {
+            debugPrint("DEBUG: Error asyncMap: $e");
+            rethrow;
+          }
     });
   }
   @override
   Future<void> acceptRequestInvitation(RequestInvite requestInvite, int? slot) async {
-    final response = await _vrcApi.rawApi.getAuthenticationApi().getCurrentUser();
-    final currentUser = response.data;
-    
-    if (currentUser == null) return;
-    
-    final presence = currentUser.presence;
-    final world = presence?.world;
-    final instanceId = presence?.instance;
-    
-    if (presence == null || world == null || world == 'offline' || world.isEmpty) return;
-    
-    
-    await _vrcApi.rawApi.getInviteApi().inviteUser(
-      userId: requestInvite.senderId,
-      inviteRequest: InviteRequest(
-        instanceId: "$world:$instanceId",
-        messageSlot: slot
-      )
-    );
+    await _safeApiCall(() async {
+      final response = await _vrcApi.rawApi.getAuthenticationApi().getCurrentUser();
+      final currentUser = response.data;
+
+      if (currentUser == null) return;
+
+      final presence = currentUser.presence;
+      final world = presence?.world;
+      final instanceId = presence?.instance;
+
+      if (presence == null || world == null || world == 'offline' || world.isEmpty) return;
+
+
+      await _vrcApi.rawApi.getInviteApi().inviteUser(
+          userId: requestInvite.senderId,
+          inviteRequest: InviteRequest(
+              instanceId: "$world:$instanceId",
+              messageSlot: slot
+          )
+      );  
+    });
     
     await dismissNotification(requestInvite);
   }
   
   @override
   Future<void> acceptInvitation(InviteReceived invite) async {
-    await _vrcApi.rawApi.getNotificationsApi().acceptFriendRequest(
-        notificationId: invite.id
-    );
-
+    //! VRChat doesn't allow to accept invitations by API, so we just dismiss them for now.
     await dismissNotification(invite);
   }
   
   @override
   Future<void> rejectNotificationWithMessage(InvitationType notification, int slot) async {
-    await _vrcApi.rawApi.getInviteApi().respondInvite(
-        notificationId: notification.id,
-        inviteResponse: InviteResponse(responseSlot: slot)
-    );
+    await _safeApiCall(() async {
+      await _vrcApi.rawApi.getInviteApi().respondInvite(
+          notificationId: notification.id,
+          inviteResponse: InviteResponse(responseSlot: slot)
+      );
+    });
   }
   
   @override
   Future<void> dismissNotification(InvitationType notification) async {
-    await _vrcApi.rawApi.getNotificationsApi().deleteNotification(
-        notificationId: notification.id
-    );
-  }  
+    await _safeApiCall(() async {
+      await _vrcApi.rawApi.getNotificationsApi().deleteNotification(
+          notificationId: notification.id
+      );  
+    });
+  }
+
+  Future<void> _safeApiCall(Future<dynamic> Function() call) async {
+    try {
+      await call();
+    } catch (e) {
+      if (e.toString().contains("CheckedFromJsonException") ||
+          e.toString().contains("created_at")) {
+        //* Inconsistent data, ignore for now
+        return;
+      }
+      rethrow;
+    }
+  }
 }

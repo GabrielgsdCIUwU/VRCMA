@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
 class ProfileBanner extends ConsumerWidget {
   const ProfileBanner({super.key});
@@ -14,8 +14,6 @@ class ProfileBanner extends ConsumerWidget {
       data: (user) {
         if (user == null) return const SizedBox.shrink();
 
-        final resolvedUrlAsync = ref.watch(vrcResolvedImageProvider(user.avatarUrl));
-
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -23,18 +21,10 @@ class ProfileBanner extends ConsumerWidget {
               border: const Border(bottom: BorderSide(color: Colors.white10))),
           child: Row(
             children: [
-              resolvedUrlAsync.when(
-                data: (finalUrl) => ClipOval(
-                  child: Image.network(
-                    finalUrl,
-                    width: 44,
-                    height: 44,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, _, __) => _buildPlaceholder(user.displayName),
-                  ),
-                ),
-                loading: () => const SizedBox(width: 44, height: 44, child: CircularProgressIndicator(strokeWidth: 2)),
-                error: (_, __) => _buildPlaceholder(user.displayName),
+              VrcAvatar(
+                imageUrl: user.avatarUrl,
+                displayName: user.displayName,
+                radius: 22,
               ),
 
               const SizedBox(width: 12),
@@ -57,14 +47,6 @@ class ProfileBanner extends ConsumerWidget {
       },
       loading: () => const LinearProgressIndicator(),
       error: (_, _) => const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildPlaceholder(String name) {
-    return CircleAvatar(
-      radius: 22,
-      backgroundColor: Colors.deepPurple,
-      child: Text(name.isNotEmpty ? name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white)),
     );
   }
 }

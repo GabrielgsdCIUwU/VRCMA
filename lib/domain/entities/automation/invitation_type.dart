@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/animation.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
 
 /// Represents an incoming invitation request from VRChat.
 class InvitationType extends Equatable {
@@ -8,24 +6,26 @@ class InvitationType extends Equatable {
   final String senderId;
   final String senderName;
   final List<String> senderTags;
+  final String avatarUrl;
   
   const InvitationType({
     required this.id,
     required this.senderId,
     required this.senderName,
     required this.senderTags,
+    required this.avatarUrl,
   });
   
   @override
-  List<Object?> get props => [id, senderId, senderName, senderTags];
+  List<Object?> get props => [id, senderId, senderName, senderTags, avatarUrl];
 }
 
 /// When someone wants to join your world.
 class RequestInvite extends InvitationType {
-  const RequestInvite({required super.id, required super.senderId, required super.senderName, required super.senderTags});
+  const RequestInvite({required super.id, required super.senderId, required super.senderName, required super.senderTags, required super.avatarUrl});
 }
 
 /// When someone invites you to join their world.
 class InviteReceived extends InvitationType {
-  const InviteReceived({required super.id, required super.senderId, required super.senderName, required super.senderTags});
+  const InviteReceived({required super.id, required super.senderId, required super.senderName, required super.senderTags, required super.avatarUrl});
 }
