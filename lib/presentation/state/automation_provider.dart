@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/data/repositories/automation_repository_imp.dart';
@@ -12,11 +13,13 @@ part 'automation_provider.g.dart';
 class AutomationState extends _$AutomationState {
   @override
   void build() {
+    ref.keepAlive();
     _init();
   }
   
   Future<void> _init() async {
     final api = await ref.watch(vrcApiProvider.future);
+    api.streaming.start();
     
     final processor = AutomationProcessor(
       automationRepository: AutomationRepositoryImp(api),
@@ -32,8 +35,16 @@ class AutomationState extends _$AutomationState {
     );
     
     AutomationRepositoryImp(api).watchInvitations().listen((invitation) async {
-      await processor.process(invitation);
-      ref.invalidate(automationLogsProvider);
-    });
+      try {
+        await processor.process(invitation);  
+        ref.invalidate(automationLogsProvider);
+      } catch (e) {
+        debugPrint("Error procesing invitation on loop: $e");
+      }
+      
+    }, onError: (error) {
+      debugPrint("Critical error!: $error");
+    }, cancelOnError: false
+    );
   }
 }
