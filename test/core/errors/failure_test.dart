@@ -17,5 +17,11 @@ void main() {
       expect(failure.methods, methods);
       expect(failure.message, '2FA required');
     });
+    
+    test('DatabaseFailure should store the correct message', () {
+      const message = 'Database connection lost';
+      const failure = DatabaseFailure(message);
+      expect(failure.message, message);
+    });
   });
 }
