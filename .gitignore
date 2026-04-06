@@ -126,3 +126,6 @@ app.*.symbols
 
 # JUST NO! >:(
 .idea
+
+# Tests
+/test/helpers/test_mocks.mocks.dart
