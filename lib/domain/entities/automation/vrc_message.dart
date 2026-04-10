@@ -4,7 +4,20 @@ enum VrcMessageType {
   invite,
   response,
   request,
-  requestResponse
+  requestResponse;
+
+  int get value {
+    switch (this) {
+      case VrcMessageType.invite:
+        return 0;
+      case VrcMessageType.response:
+        return 1;
+      case VrcMessageType.request:
+        return 2;
+      case VrcMessageType.requestResponse:
+        return 3;
+    }
+  }
 }
 
 class CustomMessage extends Equatable {
