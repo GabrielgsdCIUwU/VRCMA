@@ -47,8 +47,8 @@ class ProcessInvitationUseCase {
     final defaultRule = defaultResolver.resolve(profile);
     if (defaultRule != null) {
       return ProcessInvitationResult(
-          action: matchedRule!.action,
-          rule: matchedRule
+          action: defaultRule.action,
+          rule: defaultRule,
       );
     }
     return null;
