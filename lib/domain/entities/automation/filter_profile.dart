@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class Role extends Equatable {
   final int id;
@@ -15,6 +16,7 @@ class ProfileRule extends Equatable {
   final int priority;
   final RuleAction action;
   final int? fallbackGroup;
+  final CustomMessage? message;
 
   const ProfileRule({
     this.id,
@@ -22,6 +24,7 @@ class ProfileRule extends Equatable {
     required this.priority,
     required this.action,
     this.fallbackGroup,
+    this.message
   });
   
   ProfileRule copyWith({
@@ -29,7 +32,8 @@ class ProfileRule extends Equatable {
     Role? role,
     int? priority,
     RuleAction? action,
-    int? fallbackGroup
+    int? fallbackGroup,
+    CustomMessage? message,
   }) {
     return ProfileRule(
       id: id?? this.id,
@@ -37,6 +41,7 @@ class ProfileRule extends Equatable {
       priority: priority ?? this.priority,
       action: action ?? this.action,
       fallbackGroup: fallbackGroup ?? this.fallbackGroup,
+      message: message ?? this.message,
     );
   }
 
