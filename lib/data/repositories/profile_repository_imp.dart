@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class ProfileRepositoryImp implements IProfileRepository {
   final Database _db;
@@ -34,6 +35,7 @@ class ProfileRepositoryImp implements IProfileRepository {
           'priority': rule.priority,
           'action': rule.action == RuleAction.accept ? 'ACCEPT' : 'REJECT',
           'fallback_group': rule.fallbackGroup,
+          'message_id': rule.message?.id,
         });
       }
 
@@ -55,14 +57,28 @@ class ProfileRepositoryImp implements IProfileRepository {
       final profileId = pMap['id'] as int;
 
       final List<Map<String, dynamic>> ruleMaps = await _db.rawQuery('''
-        SELECT pr.*, r.name as role_name
+        SELECT pr.*, r.name as role_name, m.content as msg_content,
+          m.slot_index as msg_slot, m.last_updated as msg_date
         FROM profile_rules pr
         JOIN roles r ON pr.role_id = r.id
+        LEFT JOIN custom_messages m ON pr.message_id = m.id
         WHERE pr.profile_id = ?
         ORDER BY pr.priority ASC
       ''', [profileId]);
 
       final rules = ruleMaps.map((rMap) {
+
+        CustomMessage? message;
+        if (rMap['message_id'] != null) {
+          message = CustomMessage(
+            id: rMap['message_id'],
+            content: rMap['msg_content'],
+            type: VrcMessageType.values.firstWhere((e) => e.value == rMap['msg_type']),
+            slotIndex: rMap['msg_slot'],
+            lastUpdated: DateTime.parse(rMap['msg_date']),
+          );
+        }
+
         return ProfileRule(
           id: rMap['id'],
           priority: rMap['priority'],
@@ -72,6 +88,7 @@ class ProfileRepositoryImp implements IProfileRepository {
             id: rMap['role_id'],
             name: rMap['role_name'],
           ),
+          message: message,
         );
       }).toList();
 
