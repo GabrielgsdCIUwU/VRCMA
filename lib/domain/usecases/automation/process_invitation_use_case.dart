@@ -1,6 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 
+
+class ProcessInvitationResult {
+  final RuleAction action;
+  final ProfileRule rule;
+  ProcessInvitationResult({
+    required this.action,
+    required this.rule,
+  });
+}
 
 class ProcessInvitationUseCase {
   final UserRoleExtractor roleExtractor;
@@ -15,7 +25,7 @@ class ProcessInvitationUseCase {
     required this.defaultResolver,
   });
 
-  RuleAction? execute({
+  ProcessInvitationResult? execute({
     required InvitationType request,
     required FilterProfile profile,
     required List<Role> userAssignedRoles,
@@ -25,11 +35,23 @@ class ProcessInvitationUseCase {
     final userRoles = roleExtractor.extract(request, userAssignedRoles);
     final sortedRules = ruleSorter.sort(profile.rules);
 
-    final result = ruleEvaluator.evaluate(sortedRules, userRoles);
+    final matchedRule = ruleEvaluator.evaluate(sortedRules, userRoles);
 
-    if (result != null) return result;
+    if (matchedRule != null) {
+      return ProcessInvitationResult(
+        action: matchedRule.action,
+        rule: matchedRule
+      );
+    }
 
-    return defaultResolver.resolve(profile);
+    final defaultRule = defaultResolver.resolve(profile);
+    if (defaultRule != null) {
+      return ProcessInvitationResult(
+          action: matchedRule!.action,
+          rule: matchedRule
+      );
+    }
+    return null;
   }
 }
 
@@ -54,7 +76,7 @@ class RuleSorter {
 }
 
 class RuleEvaluator {
-  RuleAction? evaluate(
+  ProfileRule? evaluate(
       List<ProfileRule> rules,
       Set<String> userRoles,
       ) {
@@ -97,21 +119,21 @@ class RuleEvaluator {
     return result;
   }
 
-  RuleAction? _evaluateSegment(
+  ProfileRule? _evaluateSegment(
       List<ProfileRule> segment,
       Set<String> userRoles,
       ) {
     if (segment.length == 1 && segment.first.fallbackGroup == null) {
       final rule = segment.first;
       if (_matches(rule, userRoles)) {
-        return rule.action;
+        return rule;
       }
       return null;
     }
 
     for (final rule in segment) {
       if (_matches(rule, userRoles)) {
-        return rule.action;
+        return rule;
       }
     }
 
@@ -124,13 +146,11 @@ class RuleEvaluator {
 }
 
 class DefaultActionResolver {
-  RuleAction? resolve(FilterProfile profile) {
+  ProfileRule? resolve(FilterProfile profile) {
     if (profile.defaultRole == null) return null;
 
-    final defaultRule = profile.rules
-        .where((r) => r.role.id == profile.defaultRole!.id)
-        .firstOrNull;
-
-    return defaultRule?.action;
+    return profile.rules.firstWhereOrNull(
+      (rule) => rule.role.id == profile.defaultRole!.id,
+    );
   }
 }
