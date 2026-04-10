@@ -20,6 +20,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
    final authState = ref.watch(authStateProvider);
 
+   final bool is2FARequired = authState.hasError && authState.error is TwoFactorRequiredFailure;
+   final bool showOtp = _showOtpView || is2FARequired;
+
    ref.listen(authStateProvider, (prev, next) {
      next.whenOrNull(
        error: (error, _) {
@@ -44,7 +47,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
              const AuthHeader(),
              const SizedBox(height: 40),
 
-             if (!_showOtpView)
+             if (!showOtp)
                LoginForm(
                    isLoading: authState.isLoading,
                    onLogin: (user, pass) => ref.read(authStateProvider.notifier)
