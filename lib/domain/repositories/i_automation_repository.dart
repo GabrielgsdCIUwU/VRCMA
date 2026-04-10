@@ -1,4 +1,5 @@
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 abstract class IAutomationRepository {
   /// Stream that emits new invitation requests in real-time.
@@ -18,11 +19,12 @@ abstract class IAutomationRepository {
 
   /// Updates a specific message slot.
   /// Returns the number of minutes remaining if in cooldown (429), or 0 if success.
-  Future<int> updateVrcMessageSlot({
+  Future<void> updateVrcMessageSlot({
     required String userId,
     required String messageType,
     required int slot,
-    required String content
+    required String content,
+    required VrcMessageType type,
   });
 }
 
