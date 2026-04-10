@@ -1,5 +1,6 @@
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
@@ -39,11 +40,11 @@ class AutomationProcessor {
         return;
       }
       
-      await _executeAction(invitation, decision);
+      await _executeAction(invitation, decision.action, decision.rule.message);
       
       await _recordLog(
         invitation,
-        decision == RuleAction.accept ? 'ACCEPTED' : 'REJECTED',
+        decision.action == RuleAction.accept ? 'ACCEPTED' : 'REJECTED',
         'Profile Match',
         profile.name
       );
@@ -60,15 +61,18 @@ class AutomationProcessor {
     );
   }
   
-  Future<void> _executeAction(InvitationType invite, RuleAction action) async {
+  Future<void> _executeAction(InvitationType invite, RuleAction action, CustomMessage? message) async {
+
+    final int? slotToUse = (message != null && message.isActive) ? message.slotIndex : null;
+
     if (action == RuleAction.accept) {
       if (invite is RequestInvite) {
-        await automationRepository.acceptRequestInvitation(invite, null);
+        await automationRepository.acceptRequestInvitation(invite, slotToUse);
       } else if (invite is InviteReceived) {
         await automationRepository.acceptInvitation(invite);
       }
     } else {
-      await automationRepository.rejectNotificationWithMessage(invite, 0);
+      await automationRepository.rejectNotificationWithMessage(invite, slotToUse ?? 0);
     }
   }
   
