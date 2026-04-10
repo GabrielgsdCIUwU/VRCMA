@@ -4,6 +4,7 @@ import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
@@ -105,6 +106,23 @@ class AutomationRepositoryImp implements IAutomationRepository {
       await _vrcApi.rawApi.getNotificationsApi().deleteNotification(
           notificationId: notification.id
       );  
+    });
+  }
+  
+  @override
+  Future<void> updateVrcMessageSlot({required String userId, required String messageType, required int slot, required String content, required VrcMessageType type}) async {
+    await _safeApiCall(() async {
+      final inviteType = InviteMessageType.values.firstWhere(
+          (e) => e.value == type.toString(),
+          orElse: () => InviteMessageType.message,
+      );
+
+      await _vrcApi.rawApi.getInviteApi().updateInviteMessage(
+        userId: userId,
+        messageType: inviteType,
+        slot: slot,
+        updateInviteMessageRequest: UpdateInviteMessageRequest(message: content),
+      );
     });
   }
 
