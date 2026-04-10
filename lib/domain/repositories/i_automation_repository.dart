@@ -15,5 +15,14 @@ abstract class IAutomationRepository {
 
   /// Dismisses a notification (invite or request invite) without response
   Future<void> dismissNotification(InvitationType notification);
+
+  /// Updates a specific message slot.
+  /// Returns the number of minutes remaining if in cooldown (429), or 0 if success.
+  Future<int> updateVrcMessageSlot({
+    required String userId,
+    required String messageType,
+    required int slot,
+    required String content
+  });
 }
 
