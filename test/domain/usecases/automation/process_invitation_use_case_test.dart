@@ -54,8 +54,9 @@ void main() {
         profile: profile,
         userAssignedRoles: const [roleVIP],
       );
-      
-      expect(result, RuleAction.accept);
+      expect(result, isNotNull);
+      expect(result!.action, RuleAction.accept);
+      expect(result.rule.role, roleVIP);
     });
     
     test("Should respect rule priority when multiple rules match", () {
@@ -73,8 +74,10 @@ void main() {
         profile: profile,
         userAssignedRoles: const [roleVIP, roleBlocked],
       );
-      
-      expect(result, RuleAction.reject);
+
+      expect(result, isNotNull);
+      expect(result!.action, RuleAction.reject);
+      expect(result.rule.role, roleBlocked);
     });
     
     test("Should match roles case-insensitively", () {
@@ -92,8 +95,9 @@ void main() {
         profile: profile,
         userAssignedRoles: const [Role(id: 4, name: "Moderator")],
       );
-      
-      expect(result, RuleAction.accept);
+
+      expect(result, isNotNull);
+      expect(result!.action, RuleAction.accept);
     });
     
     test("Should return profile default action if no specific rules match", () {
@@ -112,8 +116,10 @@ void main() {
         profile: profile,
         userAssignedRoles: const [],
       );
-      
-      expect(result, RuleAction.reject);
+
+      expect(result, isNotNull);
+      expect(result!.action, RuleAction.reject);
+      expect(result.rule.role, roleFriend);
     });
   });
   
