@@ -58,7 +58,8 @@ class ProfileRepositoryImp implements IProfileRepository {
 
       final List<Map<String, dynamic>> ruleMaps = await _db.rawQuery('''
         SELECT pr.*, r.name as role_name, m.content as msg_content,
-          m.slot_index as msg_slot, m.last_updated as msg_date
+          m.slot_index as msg_slot, m.last_updated as msg_date,
+          m.type as msg_type
         FROM profile_rules pr
         JOIN roles r ON pr.role_id = r.id
         LEFT JOIN custom_messages m ON pr.message_id = m.id
@@ -73,7 +74,7 @@ class ProfileRepositoryImp implements IProfileRepository {
           message = CustomMessage(
             id: rMap['message_id'],
             content: rMap['msg_content'],
-            type: VrcMessageType.values.firstWhere((e) => e.value == rMap['msg_type']),
+            type: VrcMessageType.fromString(rMap['msg_type']),
             slotIndex: rMap['msg_slot'],
             lastUpdated: DateTime.parse(rMap['msg_date']),
           );
