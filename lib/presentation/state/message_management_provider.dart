@@ -11,13 +11,7 @@ class MessageManagement extends _$MessageManagement {
   @override
   FutureOr<List<CustomMessage>> build() async {
     final repo = await ref.watch(messageRepositoryProvider.future);
-    return repo.getMessagesByType(VrcMessageType.invite);
-  }
-  
-  Future<void> changeType(VrcMessageType type) async {
-    state = const AsyncLoading();
-    final repo = await ref.read(messageRepositoryProvider.future);
-    state = await AsyncValue.guard(() => repo.getMessagesByType(type));
+    return repo.getAllMessages();
   }
   
   Future<void> createMessage(String content, VrcMessageType type) async {
