@@ -5,6 +5,7 @@ import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
+import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 class AutomationProcessor {
@@ -13,13 +14,15 @@ class AutomationProcessor {
   final IProfileRepository profileRepository;
   final ILogRepository logRepository;
   final ProcessInvitationUseCase useCase;
+  final MessageSlotManager slotManager;
   
   AutomationProcessor({
     required this.automationRepository,
     required this.localSocialRepository,
     required this.profileRepository,
     required this.logRepository,
-    required this.useCase
+    required this.useCase,
+    required this.slotManager,
   });
   
   Future<void> process(InvitationType invitation) async {
@@ -63,7 +66,9 @@ class AutomationProcessor {
   
   Future<void> _executeAction(InvitationType invite, RuleAction action, CustomMessage? message) async {
 
-    final int? slotToUse = (message != null && message.isActive) ? message.slotIndex : null;
+    final int slotToUse = (message != null)
+      ? await slotManager.prepareSlotForMessage(invite.senderId, message)
+      : 0;
 
     if (action == RuleAction.accept) {
       if (invite is RequestInvite) {
@@ -72,7 +77,7 @@ class AutomationProcessor {
         await automationRepository.acceptInvitation(invite);
       }
     } else {
-      await automationRepository.rejectNotificationWithMessage(invite, slotToUse ?? 0);
+      await automationRepository.rejectNotificationWithMessage(invite, slotToUse);
     }
   }
   
