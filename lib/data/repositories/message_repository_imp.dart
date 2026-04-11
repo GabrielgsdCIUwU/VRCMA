@@ -23,7 +23,7 @@ class MessageRepositoryImp implements IMessageRepository {
     final data = {
       if (message.id != null) 'id': message.id,
       'content': message.content,
-      'type': message.type.value,
+      'type': message.type.name,
       'slot_index': message.slotIndex,
       'last_updated': message.lastUpdated.toIso8601String(),
     };
@@ -60,7 +60,7 @@ class MessageRepositoryImp implements IMessageRepository {
     return CustomMessage(
       id: map['id'] as int,
       content: map['content'] as String,
-      type: VrcMessageType.values.firstWhere((e) => e.value == map['type']),
+      type: VrcMessageType.fromString(map['type'] as String),
       slotIndex: map['slot_index'] as int?,
       lastUpdated: DateTime.parse(map['last_updated'] as String),
     );
@@ -85,5 +85,11 @@ class MessageRepositoryImp implements IMessageRepository {
     );
 
     return messageMap.map((m) => _mapToEntity(m)).toList();
+  }
+  
+  @override
+  Future<List<CustomMessage>> getAllMessages() async {
+    final maps = await _db.query('custom_messages', orderBy: 'last_updated DESC');
+    return maps.map((m) => _mapToEntity(m)).toList();
   }
 }
