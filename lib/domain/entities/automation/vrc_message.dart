@@ -6,17 +6,13 @@ enum VrcMessageType {
   request,
   requestResponse;
 
-  int get value {
-    switch (this) {
-      case VrcMessageType.invite:
-        return 0;
-      case VrcMessageType.response:
-        return 1;
-      case VrcMessageType.request:
-        return 2;
-      case VrcMessageType.requestResponse:
-        return 3;
-    }
+  String get value => name;
+  
+  static VrcMessageType fromString(String val) {
+    return VrcMessageType.values.firstWhere(
+        (e) => e.name == val,
+        orElse: () => VrcMessageType.invite,
+    );
   }
 }
 
