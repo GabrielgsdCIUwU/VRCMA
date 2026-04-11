@@ -45,7 +45,7 @@ class AutomationProcessor {
       await _recordLog(
         invitation,
         decision.action == RuleAction.accept ? 'ACCEPTED' : 'REJECTED',
-        'Profile Match',
+        'Match: ${decision.rule.role.name}',
         profile.name
       );
     } catch (e) {
