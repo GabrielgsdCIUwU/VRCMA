@@ -71,13 +71,9 @@ class AutomationProcessor {
       : 0;
 
     if (action == RuleAction.accept) {
-      if (invite is RequestInvite) {
-        await automationRepository.acceptRequestInvitation(invite, slotToUse);
-      } else if (invite is InviteReceived) {
-        await automationRepository.acceptInvitation(invite);
-      }
+     await _handleAccept(invite, slotToUse);
     } else {
-      await automationRepository.rejectNotificationWithMessage(invite, slotToUse);
+      await _handleReject(invite, slotToUse);
     }
   }
   
@@ -90,5 +86,18 @@ class AutomationProcessor {
       action: action,
       appliedRule: "$profileName ($rule)",
     );
+  }
+
+
+  Future<void> _handleAccept(InvitationType invite, int slot) async {
+    if (invite is RequestInvite) {
+      await automationRepository.acceptRequestInvitation(invite, slot);
+    } else if (invite is InviteReceived) {
+      await automationRepository.acceptInvitation(invite);
+    }
+  }
+
+  Future<void> _handleReject(InvitationType invite, int slot) async {
+    await automationRepository.rejectNotificationWithMessage(invite, slot);
   }
 }
