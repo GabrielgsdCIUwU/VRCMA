@@ -4,7 +4,7 @@ abstract class IMessageRepository {
   Future<List<CustomMessage>> getMessagesByType(VrcMessageType type);
   Future<int> saveMessage(CustomMessage message);
   Future<void> deleteMessage(int id);
-  Future<void> updateSlot(int messageId, int? slotIndex);
+  Future<void> updateSlot(int messageId, int? slotIndex, VrcMessageType type);
   Future<List<CustomMessage>> getActiveSlots(VrcMessageType type);
   Future<List<CustomMessage>> getAllMessages();
 }
