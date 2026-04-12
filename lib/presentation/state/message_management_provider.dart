@@ -39,7 +39,7 @@ class MessageManagement extends _$MessageManagement {
     
     if (auth == null) return;
     
-    await repo.updateSlot(message.id!, slotIndex);
+    await repo.updateSlot(message.id!, slotIndex, message.type);
     
     try {
       await vrcRepo.updateVrcMessageSlot(
@@ -56,9 +56,9 @@ class MessageManagement extends _$MessageManagement {
     }
   }
   
-  Future<void> unassignSlot(int messageId) async {
+  Future<void> unassignSlot(int messageId, VrcMessageType type) async {
     final repo = await ref.read(messageRepositoryProvider.future);
-    await repo.updateSlot(messageId, null);
+    await repo.updateSlot(messageId, null, type);
     ref.invalidateSelf();
   }
   
@@ -80,7 +80,7 @@ class MessageManagement extends _$MessageManagement {
           final existing = allLocalMessages.firstWhereOrNull((m) => m.content == remote.content);
           
           if (existing != null) {
-            await localRepo.updateSlot(existing.id!, remote.slot);
+            await localRepo.updateSlot(existing.id!, remote.slot, type);
           } else if (remote.content.isNotEmpty) {
             await localRepo.saveMessage(CustomMessage(
               content: remote.content,
