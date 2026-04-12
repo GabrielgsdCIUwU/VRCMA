@@ -122,6 +122,9 @@ class AutomationRepositoryImp implements IAutomationRepository {
             message: content),
       );
     } catch (e) {
+      if (e.toString().contains("429")) {
+        throw "VRChat limit reached. Please wait a few minutes before updating this slot again.";
+      }
       debugPrint("VRChat API Error (Update Slot): $e");
       rethrow;
     }
