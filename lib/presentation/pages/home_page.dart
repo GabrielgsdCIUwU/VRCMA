@@ -87,8 +87,8 @@ class _MainWorkspace extends StatelessWidget {
   const _MainWorkspace();
   
   static const tabs = [
-    Tab(icon: Icon(Icons.list_alt), text: "AUTOMATION LOGS"),
     Tab(icon: Icon(Icons.message), text: "MESSAGES & SLOTS"),
+    Tab(icon: Icon(Icons.list_alt), text: "AUTOMATION LOGS"),
   ];
   
   @override
@@ -101,8 +101,8 @@ class _MainWorkspace extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                const LogsPanel(),
                 const MessagesPanel(),
+                const LogsPanel(),
               ],
             ),
           )
