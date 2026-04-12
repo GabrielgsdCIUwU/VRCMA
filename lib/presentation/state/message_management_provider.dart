@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
@@ -59,5 +60,40 @@ class MessageManagement extends _$MessageManagement {
     final repo = await ref.read(messageRepositoryProvider.future);
     await repo.updateSlot(messageId, null);
     ref.invalidateSelf();
+  }
+  
+  Future<void> syncFromVrc() async {
+    state = const AsyncLoading();
+    
+    final auth = await ref.read(authStateProvider.future);
+    if (auth == null) return;
+    
+    final vrcRepo = await ref.read(automationRepositoryProvider.future);
+    final localRepo = await ref.read(messageRepositoryProvider.future);
+    
+    try {
+      for (var type in VrcMessageType.values) {
+        final List<VrcRemoteMessage> remoteMessages = await vrcRepo.getRemoteVrcMessages(auth.id, type);
+        final allLocalMessages = await localRepo.getMessagesByType(type);
+        
+        for (var remote in remoteMessages) {
+          final existing = allLocalMessages.firstWhereOrNull((m) => m.content == remote.content);
+          
+          if (existing != null) {
+            await localRepo.updateSlot(existing.id!, remote.slot);
+          } else if (remote.content.isNotEmpty) {
+            await localRepo.saveMessage(CustomMessage(
+              content: remote.content,
+              type: remote.type,
+              slotIndex: remote.slot,
+              lastUpdated: remote.lastUpdated
+            ));
+          }
+        }
+      }
+      ref.invalidateSelf();
+    } catch (e) {
+      state = AsyncValue.error("Error syncing: $e", StackTrace.current);
+    }
   }
 }
