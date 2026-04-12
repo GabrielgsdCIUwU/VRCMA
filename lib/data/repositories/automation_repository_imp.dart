@@ -111,19 +111,20 @@ class AutomationRepositoryImp implements IAutomationRepository {
   
   @override
   Future<void> updateVrcMessageSlot({required String userId, required String messageType, required int slot, required String content, required VrcMessageType type}) async {
-    await _safeApiCall(() async {
-      final inviteType = InviteMessageType.values.firstWhere(
-          (e) => e.value == type.toString(),
-          orElse: () => InviteMessageType.message,
-      );
+    try {
+      final vrcType = _mapInternalToVrcType(type);
 
       await _vrcApi.rawApi.getInviteApi().updateInviteMessage(
         userId: userId,
-        messageType: inviteType,
+        messageType: vrcType,
         slot: slot,
-        updateInviteMessageRequest: UpdateInviteMessageRequest(message: content),
+        updateInviteMessageRequest: UpdateInviteMessageRequest(
+            message: content),
       );
-    });
+    } catch (e) {
+      debugPrint("VRChat API Error (Update Slot): $e");
+      rethrow;
+    }
   }
   
   @override
