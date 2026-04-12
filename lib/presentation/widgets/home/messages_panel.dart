@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +11,6 @@ class MessagesPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messagesAsync = ref.watch(messageManagementProvider);
-    final isWide = MediaQuery.of(context).size.width > 900;
     
     return messagesAsync.when(
       data: (allMessages) => DefaultTabController(
@@ -78,18 +75,26 @@ class _CategoryWorkspace extends StatelessWidget {
   }
 }
 
-class _SlotMonitorSection extends StatelessWidget {
+class _SlotMonitorSection extends ConsumerWidget {
   final List<CustomMessage> messages;
   const _SlotMonitorSection({required this.messages});
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsetsGeometry.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionHeader(title: "VRChat Live Slots", icon: Icons.sync_alt),
+          _SectionHeader(
+              title: "VRChat Live Slots",
+              icon: Icons.sync_alt,
+            action: IconButton(
+              icon: const Icon(Icons.refresh, size: 20, color: Colors.blueAccent),
+              onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
+              tooltip: "Sync from VRChat",
+            ),
+          ),
           const SizedBox(height: 16),
           GridView.builder(
             shrinkWrap: true,
