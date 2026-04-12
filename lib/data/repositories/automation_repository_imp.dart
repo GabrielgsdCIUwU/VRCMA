@@ -125,6 +125,32 @@ class AutomationRepositoryImp implements IAutomationRepository {
       );
     });
   }
+  
+  @override
+  Future<List<VrcRemoteMessage>> getRemoteVrcMessages(String userId, VrcMessageType type) async {
+    final vrcType = _mapInternalToVrcType(type);
+    
+    final response = await _vrcApi.rawApi.getInviteApi().getInviteMessages(
+        userId: userId,
+        messageType: vrcType,
+    );
+    
+    return response.data?.map((m) => VrcRemoteMessage(
+      slot: m.slot,
+      content: m.message,
+      type: type,
+      lastUpdated: m.updatedAt
+    )).toList() ?? [];
+  }
+  
+  InviteMessageType _mapInternalToVrcType(VrcMessageType type) {
+    switch (type) {
+      case VrcMessageType.invite: return InviteMessageType.message;
+      case VrcMessageType.response: return InviteMessageType.response;
+      case VrcMessageType.request: return InviteMessageType.request;
+      case VrcMessageType.requestResponse: return InviteMessageType.requestResponse;
+    }
+  }
 
   Future<void> _safeApiCall(Future<dynamic> Function() call) async {
     try {
