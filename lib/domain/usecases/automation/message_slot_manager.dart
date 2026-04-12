@@ -27,7 +27,7 @@ class MessageSlotManager {
         messageType: message.type.name,
       );
       
-      await messageRepository.updateSlot(message.id!, slotToUse);
+      await messageRepository.updateSlot(message.id!, slotToUse, message.type);
       
       return slotToUse;
     } catch (e) {
