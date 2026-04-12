@@ -26,5 +26,8 @@ abstract class IAutomationRepository {
     required String content,
     required VrcMessageType type,
   });
+  
+  /// Get all message slots by type
+  Future<List<VrcRemoteMessage>> getRemoteVrcMessages(String userId, VrcMessageType type);
 }
 
