@@ -66,9 +66,9 @@ class AutomationProcessor {
   
   Future<void> _executeAction(InvitationType invite, RuleAction action, CustomMessage? message) async {
 
-    final int slotToUse = (message != null)
+    final int? slotToUse = (message != null)
       ? await slotManager.prepareSlotForMessage(invite.senderId, message)
-      : 0;
+      : null;
 
     if (action == RuleAction.accept) {
      await _handleAccept(invite, slotToUse);
@@ -89,7 +89,7 @@ class AutomationProcessor {
   }
 
 
-  Future<void> _handleAccept(InvitationType invite, int slot) async {
+  Future<void> _handleAccept(InvitationType invite, int? slot) async {
     if (invite is RequestInvite) {
       await automationRepository.acceptRequestInvitation(invite, slot);
     } else if (invite is InviteReceived) {
@@ -97,7 +97,11 @@ class AutomationProcessor {
     }
   }
 
-  Future<void> _handleReject(InvitationType invite, int slot) async {
+  Future<void> _handleReject(InvitationType invite, int? slot) async {
+    if (slot == null) {
+      await automationRepository.dismissNotification(invite);
+      return;
+    }
     await automationRepository.rejectNotificationWithMessage(invite, slot);
   }
 }
