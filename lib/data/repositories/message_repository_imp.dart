@@ -36,14 +36,14 @@ class MessageRepositoryImp implements IMessageRepository {
   }
 
   @override
-  Future<void> updateSlot(int messageId, int? slotIndex) async {
+  Future<void> updateSlot(int messageId, int? slotIndex, VrcMessageType type) async {
     await _db.transaction((txn) async {
       if (slotIndex != null) {
         await txn.update(
           'custom_messages',
           {'slot_index': null},
-          where: 'slot_index = ?',
-          whereArgs: [slotIndex]
+          where: 'slot_index = ? AND type = ?',
+          whereArgs: [slotIndex, type.name]
         );
       }
 
