@@ -40,3 +40,17 @@ class CustomMessage extends Equatable {
   @override
   List<Object?> get props => [id, content, type, slotIndex, lastUpdated];
 }
+
+class VrcRemoteMessage {
+  final int slot;
+  final String content;
+  final VrcMessageType type;
+  final DateTime lastUpdated;
+  
+  const VrcRemoteMessage({
+    required this.slot,
+    required this.content,
+    required this.type,
+    required this.lastUpdated,
+  });
+}
