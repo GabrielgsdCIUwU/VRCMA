@@ -93,7 +93,7 @@ class ProfileRepositoryImp implements IProfileRepository {
             ? CustomMessage(
             id: rMap['message_id'],
             content: rMap['msg_content'],
-            type: VrcMessageType.values.firstWhere((e) => e.value == rMap['msg_type']),
+            type: VrcMessageType.fromString(rMap['msg_type']),
             slotIndex: rMap['msg_slot'],
             lastUpdated: DateTime.parse(rMap['msg_date']),
           ) : null
