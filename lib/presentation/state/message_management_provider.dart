@@ -39,9 +39,14 @@ class MessageManagement extends _$MessageManagement {
     
     if (auth == null) return;
     
-    await repo.updateSlot(message.id!, slotIndex, message.type);
+    final timeSinceUpdate = DateTime.now().difference(message.lastUpdated);
+    if (message.isActive && timeSinceUpdate.inMinutes < 60) {
+      final remaining = 60 - timeSinceUpdate.inMinutes;
+      throw "This message was updated recently. Wait $remaining minutes before updating it again.";
+    }
     
     try {
+      state = const AsyncLoading();
       await vrcRepo.updateVrcMessageSlot(
         userId: auth.id,
         content: message.content,
@@ -49,10 +54,12 @@ class MessageManagement extends _$MessageManagement {
         type: message.type,
         messageType: message.type.name
       );
-    } catch (e) {
-      rethrow;
-    } finally {
+
+      await repo.updateSlot(message.id!, slotIndex, message.type);
       ref.invalidateSelf();
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
     }
   }
   
