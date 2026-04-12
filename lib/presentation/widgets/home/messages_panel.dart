@@ -53,146 +53,214 @@ class _CategoryWorkspace extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          color: Colors.black12,
-          child: _SlotMonitorSection(messages: messages),
-        ),
-        
-        const Divider(height: 1),
-        
-        Expanded(
-          child: _LibrarySection(
-            messages: messages,
-            type: type,
-            isScrollable: true,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SlotMonitorSection extends ConsumerWidget {
-  final List<CustomMessage> messages;
-  const _SlotMonitorSection({required this.messages});
-  
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsetsGeometry.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _SectionHeader(
-              title: "VRChat Live Slots",
-              icon: Icons.sync_alt,
-            action: IconButton(
-              icon: const Icon(Icons.refresh, size: 20, color: Colors.blueAccent),
-              onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
-              tooltip: "Sync from VRChat",
+    return Container(
+      color: Colors.black12,
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverToBoxAdapter(
+              child: _SlotMonitorHeader(),
             ),
           ),
-          const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              mainAxisExtent: 90,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 180,
+                mainAxisExtent: 80,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                  (context, i) {
+                    final msg = messages.firstWhereOrNull((m) => m.slotIndex == i);
+                    return SlotCard(index: i+1, message: msg);
+                  },
+                childCount: 12,
+              ),
             ),
-            itemCount: 12,
-            itemBuilder: (context, i) {
-              final msg = messages.firstWhereOrNull((m) => m.slotIndex == i);
-              return SlotCard(index: i, message: msg);
-            },
           ),
+          
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          const SliverToBoxAdapter(child: Divider(height: 1)),
+          
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: _LibraryHeader(type: type),
+            ),
+          ),
+          
+          if (messages.isEmpty)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 32),
+                child: Center(child: Text("Library is empty", style: TextStyle(color: Colors.white24))),
+              ),
+            )
+          else SliverList(
+            delegate: SliverChildBuilderDelegate(
+                (context, i) => _LibraryTile(msg: messages[i]),
+              childCount: messages.length,
+            ),
+          ),
+          
+          const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
     );
   }
 }
 
-class _LibrarySection extends ConsumerWidget {
-  final List<CustomMessage> messages;
+class _SlotMonitorHeader extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _SectionHeader(
+      title: "VRChat Live Slots",
+      icon: Icons.sync_alt,
+      action: IconButton(
+        icon: const Icon(Icons.refresh, size: 20, color: Colors.blueAccent),
+        onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
+        tooltip: "Sync from VRChat",
+      ),
+    );
+  }
+}
+
+class _LibraryHeader extends ConsumerWidget {
   final VrcMessageType type;
-  final bool isScrollable;
-  const _LibrarySection({required this.messages, required this.type, this.isScrollable = true});
+  const _LibraryHeader({required this.type});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ListView.separated(
-      shrinkWrap: !isScrollable,
-      physics: isScrollable ? null : const NeverScrollableScrollPhysics(),
-      itemCount: messages.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (context, i) {
-        final msg = messages[i];
-        return ListTile(
-          title: Text(msg.content, style: const TextStyle(fontSize: 14)),
-          subtitle: Text(msg.type.name, style: const TextStyle(fontSize: 10, color: Colors.deepPurpleAccent)),
-          trailing: msg.isActive
-            ? Badge(label: Text("Slot ${msg.slotIndex}"))
-            : IconButton(
-            icon: const Icon(Icons.delete_outline, size: 20),
-            onPressed: () => ref.read(messageManagementProvider.notifier).deleteMessage(msg.id!),
-          ),
-        );
-      },
-    );
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16),
-          child: _SectionHeader(
-              title: "Message Library",
-              icon: Icons.library_books,
-              action: IconButton(
-                icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.deepPurpleAccent),
-                onPressed: () => _showAddDialog(context, ref),
-                tooltip: "Add message to ${type.name}",
-              ),
-          ),
-        ),
-        isScrollable ? Expanded(child: list) : list,
-      ],
+    return _SectionHeader(
+      title: "Message Library",
+      icon: Icons.library_books,
+      action: IconButton(
+        icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.deepPurpleAccent),
+        onPressed: () => _showAddDialog(context, ref, type),
+        tooltip: "Add message",
+      ),
     );
   }
 
-  void _showAddDialog(BuildContext context, WidgetRef ref) {
+  void _showAddDialog(BuildContext context, WidgetRef ref, VrcMessageType type) {
     final controller = TextEditingController();
+
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("New ${type.name.toUpperCase()} Message"),
-          content: TextField(
-            controller: controller,
-            maxLength: 64,
-            autofocus: true,
-            decoration: const InputDecoration(
-              hintText: "Type your message here...",
-              border: OutlineInputBorder(),
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            const Icon(Icons.add_comment_outlined, size: 20),
+            const SizedBox(width: 10),
+            Text("New ${type.name.toUpperCase()}"),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "This message will be stored in your library and can be assigned to automation rules.",
+              style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-            ElevatedButton(
-              onPressed: () {
-                if (controller.text.isNotEmpty) {
-                  ref.read(messageManagementProvider.notifier).createMessage(controller.text, type);
-                  Navigator.pop(context);
+            const SizedBox(height: 20),
+            TextField(
+              controller: controller,
+              maxLength: 64,
+              autofocus: true,
+              maxLines: 3,
+              minLines: 1,
+              decoration: InputDecoration(
+                hintText: "Enter message text...",
+                labelText: "Message Content",
+                alignLabelWithHint: true,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                prefixIcon: const Icon(Icons.short_text),
+                counterStyle: const TextStyle(color: Colors.deepPurpleAccent),
+              ),
+              onSubmitted: (val) {
+                if (val.trim().isNotEmpty) {
+                  _handleCreate(context, ref, controller.text.trim(), type);
                 }
               },
-              child: const Text("Add"),
             ),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurpleAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                _handleCreate(context, ref, controller.text.trim(), type);
+              }
+            },
+            child: const Text("Create message"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleCreate(BuildContext context, WidgetRef ref, String text, VrcMessageType type) {
+    ref.read(messageManagementProvider.notifier).createMessage(text, type);
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Message added to $type library"),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+}
+
+class _LibraryTile extends ConsumerWidget {
+  final CustomMessage msg;
+  const _LibraryTile({required this.msg});
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      onTap: () => _showSlotPicker(context, ref, msg),
+      title: Text(
+        msg.content,
+        style: const TextStyle(fontSize: 13),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        msg.type.name.toUpperCase(),
+        style: const TextStyle(fontSize: 9, color: Colors.deepPurpleAccent, letterSpacing: 1),
+      ),
+      trailing: msg.isActive
+        ? Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.green.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text("Slot ${msg.slotIndex! + 1}", style: TextStyle(
+            color: Colors.greenAccent,
+            fontSize: 10,
+            fontWeight: FontWeight.bold
+          )),
+      )
+          : IconButton(
+        icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+        onPressed: () => ref.read(messageManagementProvider.notifier).deleteMessage(msg.id!),
+      ),
     );
   }
 }
@@ -209,16 +277,168 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: Colors.grey),
         const SizedBox(width: 8),
-        Text(
-          title.toUpperCase(),
-          style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-              color: Colors.grey
+        Expanded(
+          child: Text(
+            title.toUpperCase(),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                color: Colors.grey
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         ?action,
       ],
     );
   }
+}
+
+void _showSlotPicker(BuildContext context, WidgetRef ref, CustomMessage message) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => SlotPickerContent(message: message, ref: ref),
+  );
+}
+
+class SlotPickerContent extends StatelessWidget {
+  final CustomMessage message;
+  final WidgetRef ref;
+  
+  const SlotPickerContent({
+    super.key,
+    required this.message,
+    required this.ref,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _Header(message: message),
+          const SizedBox(height: 16),
+          _SlotGrid(message: message, ref: ref),
+          const SizedBox(height: 20)
+        ],
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  final CustomMessage message;
+
+  const _Header({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          "Select Slot for '${message.content}'",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          "Category: ${message.type.name.toUpperCase()}",
+          style: const TextStyle(color: Colors.deepPurpleAccent, fontSize: 10),
+        ),
+      ],
+    );
+  }
+}
+
+class _SlotGrid extends StatelessWidget {
+  final CustomMessage message;
+  final WidgetRef ref;
+
+  const _SlotGrid({
+    required this.message,
+    required this.ref,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+      ),
+      itemCount: 12,
+      itemBuilder: (context, i) {
+        return _SlotItem(
+          index: i,
+          isSelected: message.slotIndex == i,
+          onTap: () => _onSlotTap(context, i),
+        );
+      },
+    );
+  }
+
+  Future<void> _onSlotTap(BuildContext context, int index) async {
+    try {
+      Navigator.pop(context);
+      await ref.read(messageManagementProvider.notifier).assignToVrcSlot(message, index);
+    } catch (e) {
+      _showErrorSnackBar(context, e.toString());
+    }
+  }
+}
+
+class _SlotItem extends StatelessWidget {
+  final int index;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SlotItem({
+    required this.index,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.deepPurpleAccent
+              : Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? Colors.white : Colors.white10,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            "${index + 1}",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isSelected ? Colors.white : Colors.white70,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+void _showErrorSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.redAccent,
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
 }
