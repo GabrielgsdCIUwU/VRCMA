@@ -46,10 +46,22 @@ class MessagesPanel extends ConsumerWidget {
   }
 }
 
-class _CategoryWorkspace extends StatelessWidget {
+class _CategoryWorkspace extends StatefulWidget {
   final VrcMessageType type;
   final List<CustomMessage> messages;
+
   const _CategoryWorkspace({required this.type, required this.messages});
+
+  @override
+  State<StatefulWidget> createState() => _CategoryWorkspaceState();
+}
+
+class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
+  bool isSlotsExpanded = true;
+  bool isLibraryExpanded = true;
+  
+  List<CustomMessage> get messages => widget.messages;
+  VrcMessageType get type => widget.type;
   
   @override
   Widget build(BuildContext context) {
@@ -58,11 +70,15 @@ class _CategoryWorkspace extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             sliver: SliverToBoxAdapter(
-              child: _SlotMonitorHeader(),
+              child: _SlotMonitorHeader(
+                isExpanded: isSlotsExpanded,
+                onToggle: () => setState(() => isSlotsExpanded = !isSlotsExpanded),
+              ),
             ),
           ),
+          if (isSlotsExpanded)
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
@@ -86,13 +102,18 @@ class _CategoryWorkspace extends StatelessWidget {
           const SliverToBoxAdapter(child: Divider(height: 1)),
           
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             sliver: SliverToBoxAdapter(
-              child: _LibraryHeader(type: type),
+              child: _LibraryHeader(
+                type: type,
+                isExpanded: isLibraryExpanded,
+                onToggle: () => setState(() => isLibraryExpanded = !isLibraryExpanded),
+              ),
             ),
           ),
           
-          if (messages.isEmpty)
+          if (isLibraryExpanded) ...[
+            if (messages.isEmpty)
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
@@ -105,6 +126,7 @@ class _CategoryWorkspace extends StatelessWidget {
               childCount: messages.length,
             ),
           ),
+          ],
           
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
@@ -114,11 +136,18 @@ class _CategoryWorkspace extends StatelessWidget {
 }
 
 class _SlotMonitorHeader extends ConsumerWidget {
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  
+  const _SlotMonitorHeader({required this.isExpanded, required this.onToggle});
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return _SectionHeader(
       title: "VRChat Live Slots",
       icon: Icons.sync_alt,
+      isExpanded: isExpanded,
+      onToggle: onToggle,
       action: IconButton(
         icon: const Icon(Icons.refresh, size: 20, color: Colors.blueAccent),
         onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
@@ -130,13 +159,18 @@ class _SlotMonitorHeader extends ConsumerWidget {
 
 class _LibraryHeader extends ConsumerWidget {
   final VrcMessageType type;
-  const _LibraryHeader({required this.type});
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  
+  const _LibraryHeader({required this.type, required this.isExpanded, required this.onToggle});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return _SectionHeader(
       title: "Message Library",
       icon: Icons.library_books,
+      isExpanded: isExpanded,
+      onToggle: onToggle,
       action: IconButton(
         icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.deepPurpleAccent),
         onPressed: () => _showAddDialog(context, ref, type),
@@ -269,27 +303,47 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final IconData icon;
   final Widget? action;
-  const _SectionHeader({required this.title, required this.icon, this.action});
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  
+  const _SectionHeader({required this.title, required this.icon, this.action, required this.isExpanded, required this.onToggle});
   
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.grey),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            title.toUpperCase(),
-            style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-                color: Colors.grey
+    return InkWell(
+      onTap: onToggle,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Icon(
+              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+              size: 20,
+              color: Colors.grey,
             ),
-            overflow: TextOverflow.ellipsis,
-          ),
+            const SizedBox(width: 4),
+            Icon(icon, size: 18, color: Colors.grey),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title.toUpperCase(),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                    color: Colors.grey
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (action != null)
+              GestureDetector(
+                onTap: () {},
+                child: action!,
+              ),
+          ],
         ),
-        ?action,
-      ],
+      ),
     );
   }
 }
