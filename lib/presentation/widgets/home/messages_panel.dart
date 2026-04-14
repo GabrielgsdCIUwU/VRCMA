@@ -60,11 +60,28 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
   bool isSlotsExpanded = true;
   bool isLibraryExpanded = true;
   
-  List<CustomMessage> get messages => widget.messages;
+  bool isUnassignedExpanded = true;
+  bool isAssignedExpanded = true;
+  
   VrcMessageType get type => widget.type;
+  
+  List<CustomMessage> get assignedMessages {
+    final activeMessages = widget.messages.where((m) => m.isActive).toList();
+    activeMessages.sort((a, b) => a.slotIndex!.compareTo(b.slotIndex!));
+    return activeMessages;
+  }
+  
+  List<CustomMessage> get unassignedMessages {
+    final inactiveMessages = widget.messages.where((m) => !m.isActive).toList();
+    inactiveMessages.sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
+    return inactiveMessages;
+  }
   
   @override
   Widget build(BuildContext context) {
+    final assigned = assignedMessages;
+    final unassigned = unassignedMessages;
+    
     return Container(
       color: Colors.black12,
       child: CustomScrollView(
@@ -90,7 +107,7 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
               ),
               delegate: SliverChildBuilderDelegate(
                   (context, i) {
-                    final msg = messages.firstWhereOrNull((m) => m.slotIndex == i);
+                    final msg = widget.messages.firstWhereOrNull((m) => m.slotIndex == i);
                     return SlotCard(index: i+1, message: msg);
                   },
                 childCount: 12,
@@ -113,23 +130,174 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
           ),
           
           if (isLibraryExpanded) ...[
-            if (messages.isEmpty)
+            if (widget.messages.isEmpty)
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Center(child: Text("Library is empty", style: TextStyle(color: Colors.white24))),
               ),
             )
-          else SliverList(
-            delegate: SliverChildBuilderDelegate(
-                (context, i) => _LibraryTile(msg: messages[i]),
-              childCount: messages.length,
-            ),
-          ),
+          else ...[
+              if (unassigned.isNotEmpty) ...[
+                SliverToBoxAdapter(
+                  child: CollapsibleHeader.secondary(
+                    title: "UNASSIGNED MESSAGES", 
+                    count: unassigned.length,
+                    isExpanded: isUnassignedExpanded,
+                    onToggle: () => setState(() => isUnassignedExpanded = !isUnassignedExpanded),
+                  ),
+                ),
+                if (isUnassignedExpanded)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, i) => _LibraryTile(msg: unassigned[i]),
+                      childCount: unassigned.length,
+                    ),
+                  ),
+              ],
+              
+              if (assigned.isNotEmpty && unassigned.isNotEmpty)
+                const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+              if (assigned.isNotEmpty) ...[
+                SliverToBoxAdapter(
+                  child: CollapsibleHeader.secondary(
+                    title: "ASSIGNED TO LIVE SLOTS",
+                    count: assigned.length,
+                    isExpanded: isAssignedExpanded,
+                    onToggle: () => setState(() => isAssignedExpanded = !isAssignedExpanded),
+                  ),
+                ),
+                if (isAssignedExpanded)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (context, i) => _LibraryTile(msg: assigned[i]),
+                        childCount: assigned.length
+                    ),
+                  ),
+              ],
+            ],
           ],
           
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
+      ),
+    );
+  }
+}
+
+enum HeaderLevel {primary, secondary }
+
+class CollapsibleHeader extends StatelessWidget {
+  final String title;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final HeaderLevel level;
+  final IconData? icon;
+  final Widget? trailing;
+  
+  const CollapsibleHeader({
+    super.key,
+    required this.title,
+    required this.isExpanded,
+    required this.onToggle,
+    required this.level,
+    this.icon,
+    this.trailing,
+  });
+  
+  factory CollapsibleHeader.primary({
+   required String title,
+   required IconData icon,
+   required bool isExpanded,
+   required VoidCallback onToggle,
+   Widget? action, 
+  }) {
+    return CollapsibleHeader(
+      level: HeaderLevel.primary,
+      title: title,
+      icon: icon,
+      isExpanded: isExpanded,
+      onToggle: onToggle,
+      trailing: action,
+    );
+  }
+
+  factory CollapsibleHeader.secondary({
+    required String title,
+    required int count,
+    required bool isExpanded,
+    required VoidCallback onToggle,
+  }) {
+    return CollapsibleHeader(
+      level: HeaderLevel.secondary,
+      title: title,
+      isExpanded: isExpanded,
+      onToggle: onToggle,
+      trailing: _CountBadge(count: count),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isPrimary = level == HeaderLevel.primary;
+
+    return InkWell(
+      onTap: onToggle,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: isPrimary
+            ? const EdgeInsets.symmetric(vertical: 4)
+            : const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Row(
+          children: [
+            Icon(
+              isExpanded
+                  ? Icons.keyboard_arrow_down
+                  : (isPrimary ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_right),
+              size: isPrimary ? 20 : 16,
+              color: isPrimary ? Colors.grey : Colors.white38,
+            ),
+            const SizedBox(width: 4),
+            if (isPrimary && icon != null) ...[
+              Icon(icon, size: 18, color: Colors.grey),
+              const SizedBox(width: 8),
+            ],
+            Expanded(
+              child: Text(
+                title.toUpperCase(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  fontSize: isPrimary ? 14 : 11,
+                  color: isPrimary ? Colors.grey : Colors.white38,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            ?trailing,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CountBadge extends StatelessWidget {
+  final int count;
+  const _CountBadge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        count.toString(),
+        style: const TextStyle(fontSize: 10, color: Colors.white54),
       ),
     );
   }
@@ -143,7 +311,7 @@ class _SlotMonitorHeader extends ConsumerWidget {
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return _SectionHeader(
+    return CollapsibleHeader.primary(
       title: "VRChat Live Slots",
       icon: Icons.sync_alt,
       isExpanded: isExpanded,
@@ -166,7 +334,7 @@ class _LibraryHeader extends ConsumerWidget {
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return _SectionHeader(
+    return CollapsibleHeader.primary(
       title: "Message Library",
       icon: Icons.library_books,
       isExpanded: isExpanded,
@@ -294,55 +462,6 @@ class _LibraryTile extends ConsumerWidget {
           : IconButton(
         icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
         onPressed: () => ref.read(messageManagementProvider.notifier).deleteMessage(msg.id!),
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Widget? action;
-  final bool isExpanded;
-  final VoidCallback onToggle;
-  
-  const _SectionHeader({required this.title, required this.icon, this.action, required this.isExpanded, required this.onToggle});
-  
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onToggle,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Icon(
-              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-              size: 20,
-              color: Colors.grey,
-            ),
-            const SizedBox(width: 4),
-            Icon(icon, size: 18, color: Colors.grey),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                title.toUpperCase(),
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    color: Colors.grey
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (action != null)
-              GestureDetector(
-                onTap: () {},
-                child: action!,
-              ),
-          ],
-        ),
       ),
     );
   }
