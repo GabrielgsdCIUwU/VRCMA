@@ -6,6 +6,7 @@ import 'package:vrcma/presentation/state/navigation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/automation_settings_panel.dart';
 import 'package:vrcma/presentation/widgets/home/friends_panel.dart';
 import 'package:vrcma/presentation/widgets/home/logs_panel.dart';
+import 'package:vrcma/presentation/widgets/home/messages_panel.dart';
 import 'package:vrcma/presentation/widgets/home/profile_banner.dart';
 
 class HomePage extends ConsumerWidget {
@@ -38,6 +39,11 @@ class HomePage extends ConsumerWidget {
             label: 'Config',
           ),
           NavigationDestination(
+            icon: Icon(Icons.message_outlined),
+            selectedIcon: Icon(Icons.message),
+            label: 'Messages',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.list_alt_outlined),
             selectedIcon: Icon(Icons.list_alt),
             label: 'Logs',
@@ -57,7 +63,7 @@ class HomePage extends ConsumerWidget {
       children: [
         Expanded(flex: 2, child: AutomationSettingsPanel()),
         VerticalDivider(width: 1),
-        Expanded(flex: 3, child: LogsPanel()),
+        Expanded(flex: 3, child: _MainWorkspace()),
         VerticalDivider(width: 1),
         Expanded(flex: 2, child: FriendsPanel()),
       ],
@@ -69,9 +75,39 @@ class HomePage extends ConsumerWidget {
       index: index,
       children: const [
         AutomationSettingsPanel(),
+        MessagesPanel(),
         LogsPanel(),
         FriendsPanel(),
       ],
+    );
+  }
+}
+
+class _MainWorkspace extends StatelessWidget {
+  const _MainWorkspace();
+  
+  static const tabs = [
+    Tab(icon: Icon(Icons.message), text: "MESSAGES & SLOTS"),
+    Tab(icon: Icon(Icons.list_alt), text: "AUTOMATION LOGS"),
+  ];
+  
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: tabs.length,
+      child: Column(
+        children: [
+          const TabBar(tabs: tabs),
+          Expanded(
+            child: TabBarView(
+              children: [
+                const MessagesPanel(),
+                const LogsPanel(),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -50,6 +50,16 @@ class DatabaseService {
         last_updated TEXT NOT NULL
       )
     ''' );
+
+    await db.execute('''
+      CREATE TABLE custom_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL,
+        type TEXT NOT NULL, -- 'invite', 'response', 'request', 'requestResponse'
+        slot_index INTEGER, -- 0 to 11, NULL if not active in VRChat
+        last_updated TEXT NOT NULL
+      )
+    ''');
     
     await db.execute('''
       CREATE TABLE profiles (
@@ -93,8 +103,10 @@ class DatabaseService {
         priority INTEGER NOT NULL,
         action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
         fallback_group INTEGER,
+        message_id INTEGER,
         FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
-        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
+        FOREIGN KEY (message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
       )
     ''');
   }

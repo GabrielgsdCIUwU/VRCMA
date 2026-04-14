@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/usecases/automation/automation_processor.dart';
+import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 import '../../../helpers/test_mocks.mocks.dart';
 
@@ -45,6 +46,12 @@ void main() {
       senderTags: const [],
       avatarUrl:
           'https://tenor.com/view/trout-trout-gang-thumbs-up-funny-animal-awesome-gif-25706215',
+    );
+
+    ProfileRule createMockRule(RuleAction action) => ProfileRule(
+      role: mockRole,
+      priority: 1,
+      action: action
     );
 
     test("Should stop execution if there is no active profile", () async {
@@ -124,7 +131,10 @@ void main() {
             profile: activeProfile,
             userAssignedRoles: anyNamed("userAssignedRoles"),
           ),
-        ).thenReturn(RuleAction.accept);
+        ).thenReturn(ProcessInvitationResult(
+          action: RuleAction.accept,
+          rule: createMockRule(RuleAction.accept)
+        ));
 
         when(
           mockIAutomationRepository.acceptRequestInvitation(mockRequest, null),
@@ -173,7 +183,10 @@ void main() {
             profile: activeProfile,
             userAssignedRoles: anyNamed("userAssignedRoles"),
           ),
-        ).thenReturn(RuleAction.reject);
+        ).thenReturn(ProcessInvitationResult(
+          action: RuleAction.reject,
+          rule: createMockRule(RuleAction.reject)
+        ));
 
         when(
           mockIAutomationRepository.rejectNotificationWithMessage(

@@ -4,6 +4,7 @@ import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
@@ -106,6 +107,53 @@ class AutomationRepositoryImp implements IAutomationRepository {
           notificationId: notification.id
       );  
     });
+  }
+  
+  @override
+  Future<void> updateVrcMessageSlot({required String userId, required String messageType, required int slot, required String content, required VrcMessageType type}) async {
+    try {
+      final vrcType = _mapInternalToVrcType(type);
+
+      await _vrcApi.rawApi.getInviteApi().updateInviteMessage(
+        userId: userId,
+        messageType: vrcType,
+        slot: slot,
+        updateInviteMessageRequest: UpdateInviteMessageRequest(
+            message: content),
+      );
+    } catch (e) {
+      if (e.toString().contains("429")) {
+        throw "VRChat limit reached. Please wait a few minutes before updating this slot again.";
+      }
+      debugPrint("VRChat API Error (Update Slot): $e");
+      rethrow;
+    }
+  }
+  
+  @override
+  Future<List<VrcRemoteMessage>> getRemoteVrcMessages(String userId, VrcMessageType type) async {
+    final vrcType = _mapInternalToVrcType(type);
+    
+    final response = await _vrcApi.rawApi.getInviteApi().getInviteMessages(
+        userId: userId,
+        messageType: vrcType,
+    );
+    
+    return response.data?.map((m) => VrcRemoteMessage(
+      slot: m.slot,
+      content: m.message,
+      type: type,
+      lastUpdated: m.updatedAt
+    )).toList() ?? [];
+  }
+  
+  InviteMessageType _mapInternalToVrcType(VrcMessageType type) {
+    switch (type) {
+      case VrcMessageType.invite: return InviteMessageType.message;
+      case VrcMessageType.response: return InviteMessageType.response;
+      case VrcMessageType.request: return InviteMessageType.request;
+      case VrcMessageType.requestResponse: return InviteMessageType.requestResponse;
+    }
   }
 
   Future<void> _safeApiCall(Future<dynamic> Function() call) async {
