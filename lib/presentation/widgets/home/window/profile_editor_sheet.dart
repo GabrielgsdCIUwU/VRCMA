@@ -6,6 +6,7 @@ import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
   final FilterProfile profile;
@@ -94,132 +95,151 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         appBar: AppBar(
           title: Text("Edit Profile"),
           actions: [
-            IconButton(
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: FilledButton.icon(
                 icon: const Icon(Icons.save),
-                onPressed: _saveAndExit
+                label: const Text("Save"),
+                style: FilledButton.styleFrom(
+                  backgroundColor: _hasChanges ? Colors.greenAccent : null,
+                  foregroundColor: _hasChanges ? Colors.white : Colors.grey,
+                ),
+                onPressed: _hasChanges ? _saveAndExit : null,
+              ),
             ),
           ],
         ),
-        body: _buildEditorBody(),
+        body: _buildResponsiveBody(),
       ),
     );
   }
   
-  Widget _buildEditorBody() {
+  Widget _buildResponsiveBody() {
     final allRolesAsync = ref.watch(allAvailableRolesProvider);
+    final allMessagesAsync = ref.watch(messageManagementProvider);
+    
+    final isWide = MediaQuery.of(context).size.width > 900;
+    
+    if (isWide) {
+      return _buildDesktopLayout(allRolesAsync, allMessagesAsync);
+    }
+    return _buildMobileLayout(allRolesAsync, allMessagesAsync);
+  }
+  
+  Widget _buildDesktopLayout(AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 320,
+          color: Colors.black12,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("PROFILE SETTINGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                letterSpacing: 1.2,
+                color: Colors.grey.shade400,
+                fontWeight: FontWeight.bold
+              )),
+              const SizedBox(height: 24),
+              _buildNameField(),
+              const SizedBox(height: 40),
+              Text("ACTIONS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                letterSpacing: 1.2,
+                color: Colors.grey.shade400,
+                fontWeight: FontWeight.bold
+              )),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: _buildAddRuleButton(allRolesAsync),
+              ),
+              const Spacer(),
+              const Icon(Icons.info_outline, color: Colors.grey, size: 20),
+              const SizedBox(height: 8),
+              const Text("Higher priority rules (at the top) are evaluated first.",
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        const VerticalDivider(width: 1),
+        
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  children: [
+                    Text("AUTOMATION RULES", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      letterSpacing: 1.2,
+                      color: Colors.grey.shade400,
+                      fontWeight: FontWeight.bold
+                    )),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                      decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(12)),
+                      child: Text("${_tempRules.length}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: _buildRulesList(allMessagesAsync),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+  
+  Widget _buildMobileLayout(AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: "Profile Name"),
-          ),
+          child: _buildNameField(),
         ),
         const Divider(),
         const ListTile(
           title: Text("Priority rules"),
-          subtitle: Text("The higher-level riles are evaluated first"),
+          subtitle: Text("The higher-level rules are evaluated first"),
         ),
         Expanded(
-          child: ReorderableListView.builder(
-            itemCount: _tempRules.length,
-            onReorder: (oldIndex, newIndex) {
-              setState(() {
-                if (newIndex > oldIndex) newIndex -=1;
-                final item = _tempRules.removeAt(oldIndex);
-                _tempRules.insert(newIndex, item);
-                for (int i = 0; i < _tempRules.length; i++) {
-                  _tempRules[i] = _tempRules[i].copyWith(priority: i);
-                }
-              });
-            },
-            itemBuilder: (context, index) {
-              final rule = _tempRules[index];
-              final allMessagesAsync = ref.watch(messageManagementProvider);
-              return Card(
-                key: ValueKey("rule_${rule.role.id}"),
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: ReorderableDragStartListener(
-                          index: index,
-                          child: const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Icon(Icons.drag_handle, color: Colors.grey),
-                          ),
-                        ),
-                        title: Text(rule.role.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: rule.action == RuleAction.accept
-                                    ? Colors.green.withValues(alpha: 0.1)
-                                    : Colors.red.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: DropdownButton<RuleAction>(
-                                value: rule.action,
-                                underline: const SizedBox(),
-                                icon: const Icon(Icons.arrow_drop_down, size: 20),
-                                items: RuleAction.values.map((action) {
-                                  return DropdownMenuItem(
-                                    value: action,
-                                    child: Text(
-                                        action.name.toUpperCase(),
-                                        style: TextStyle(color: action == RuleAction.accept ? Colors.green : Colors.red)),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    _tempRules[index] = rule.copyWith(action: val);
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent, size: 22),
-                              onPressed: () => setState(() => _tempRules.removeAt(index)),
-                              tooltip: "Remove rule",
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(52, 0, 16, 8),
-                        child: Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                         children: [
-                           const Divider(height: 1),
-                           const SizedBox(height: 8),
-                           allMessagesAsync.when(
-                             data: (messages) => _buildMessageSelector(index, rule, messages),
-                             loading: () => const LinearProgressIndicator(),
-                             error: (_, _) => const Text("Error loading messages"),
-                           ),
-                         ], 
-                        )
-                      )
-                    ],
-                  ),
-                )
-                
-              );
-            },
-          ),
+          child: _buildRulesList(allMessagesAsync),
         ),
-        _buildAddRuleButton(allRolesAsync),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: double.infinity,
+            child: _buildAddRuleButton(allRolesAsync),
+          ),
+        )
       ],
     );
   }
+  
+  Widget _buildNameField() {
+    return TextField(
+      controller: _nameController,
+      decoration: const InputDecoration(
+        labelText: "Profile Name",
+        prefixIcon: Icon(Icons.badge_outlined),
+      ),
+      onChanged: (_) => setState(() {}),
+    );
+  }
+  
   
   Widget _buildMessageSelector(int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
     final hasMessage = rule.message != null;
@@ -261,172 +281,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       ),
     );
   }
-  
-  void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          expand: false,
-          builder: (context, scrollController) {
-            return _MessageSearchContent(
-              allMessages: allMessages,
-              initialSelectedId: rule.message?.id,
-              onSelected: (selectedMsg) {
-                setState(() {
-                  _tempRules[ruleIndex] = rule.copyWith(message: selectedMsg);
-                });
-                Navigator.pop(context);
-              }
-            );
-          },
-        );
-      }
-    );
-  }
-  
-  Widget _buildAddRuleButton(AsyncValue<List<Role>> allRolesAsync) {
-    return Padding(
-      padding: const EdgeInsetsGeometry.all(16),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.add),
-        label: const Text("Add role rule"),
-        onPressed: () {
-          allRolesAsync.whenData((roles) {
-            _showRoleSelectionDialog(roles);
-          });
-        },
-      ),
-    );
-  }
-  
-  void _showRoleSelectionDialog(List<Role> roles) {
-    final existingRoleIds = _tempRules.map((r) => r.role.id).toSet();
-    final availableRoles = roles.where((r) => !existingRoleIds.contains(r.id)).toList();
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Select a role"),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: availableRoles.length,
-            itemBuilder: (context, i) => ListTile(
-              title: Text(availableRoles[i].name),
-              onTap: () {
-                setState(() {
-                  _tempRules.add(ProfileRule(
-                    role: availableRoles[i],
-                    priority: _tempRules.length,
-                    action: RuleAction.accept
-                  ));
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-      )
-    );
-  }
-}
 
-class _MessageSearchContent extends StatefulWidget {
-  final List<CustomMessage> allMessages;
-  final int? initialSelectedId;
-  final Function(CustomMessage?) onSelected;
-  
-  const _MessageSearchContent({
-    required this.allMessages,
-    this.initialSelectedId,
-    required this.onSelected,
-  });
-  
-  @override
-  State<StatefulWidget> createState() => _MessageSearchContentState();
-}
-
-class _MessageSearchContentState extends State<_MessageSearchContent> {
-  String _query = "";
-  
-  @override
-  Widget build(BuildContext context) {
-    final filtered = widget.allMessages
-        .where((m) => m.content.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
-    
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          width: 40, height: 4,
-          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextField(
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: "Search messages...",
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _query.isNotEmpty
-                ? IconButton(icon: const Icon(Icons.clear), onPressed: () => setState(() => _query = ""))
-                : null,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            onChanged: (val) => setState(() => _query = val),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: ListView(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.block, color: Colors.grey),
-                title: const Text("None / Default VRChat Message"),
-                subtitle: const Text("Use the game's default notification text"),
-                selected: widget.initialSelectedId == null,
-                onTap: () => widget.onSelected(null),
-              ),
-              const Divider(),
-              ...filtered.map((msg) {
-                final typeColor = _getTypeColor(msg.type);
-              return ListTile(
-                leading: Icon(
-                _getTypeIcon(msg.type),
-                color: typeColor,
-                size: 20,
-                ),
-                title: Text(msg.content),
-                subtitle: Text(_getTypeLabel(msg.type), style: const TextStyle(fontSize: 10, letterSpacing: 1)),
-                trailing: widget.initialSelectedId == msg.id
-                ? const Icon(Icons.check_circle, color: Colors.greenAccent)
-                    : null,
-                onTap: () => widget.onSelected(msg),
-                );
-              }),
-              if (filtered.isEmpty && _query.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Center(child: Text("No messages match your search")),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
   IconData _getTypeIcon(VrcMessageType type) {
     switch (type) {
       case VrcMessageType.invite:
@@ -437,10 +292,10 @@ class _MessageSearchContentState extends State<_MessageSearchContent> {
         return Icons.hail_rounded;
       case VrcMessageType.requestResponse:
         return Icons.fact_check_rounded;
-      
+
     }
   }
-  
+
   Color _getTypeColor(VrcMessageType type) {
     switch (type) {
       case VrcMessageType.invite:
@@ -460,5 +315,199 @@ class _MessageSearchContentState extends State<_MessageSearchContent> {
       case VrcMessageType.request: return "REQUEST TO JOIN";
       case VrcMessageType.requestResponse: return "RESPONSE TO REQUEST";
     }
+  }
+  
+  void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
+    showGenericSearchSheet<CustomMessage>(
+      context: context,
+      items: allMessages,
+      searchHint: "Search messages...",
+      searchableText: (CustomMessage message) => message.content,
+      headerOption: ListTile(
+        leading: const Icon(Icons.block, color: Colors.grey),
+        title: const Text("None / Default VRChat Message"),
+        subtitle: const Text("Use the game's default notification text"),
+        selected: rule.message == null,
+        onTap: () {
+          setState(() => _tempRules[ruleIndex] = rule.copyWith(message: null));
+          Navigator.pop(context);
+        },
+      ),
+      itemBuilder: (CustomMessage msg) {
+        final typeColor = _getTypeColor(msg.type);
+        return ListTile(
+          leading: Icon(_getTypeIcon(msg.type), color: typeColor, size: 20),
+          title: Text(msg.content),
+          subtitle: Text(_getTypeLabel(msg.type), style: const TextStyle(fontSize: 10, letterSpacing: 1)),
+          trailing: rule.message?.id == msg.id ? const Icon(Icons.check_circle, color: Colors.greenAccent) : null,
+        );
+      },
+      onSelected: (CustomMessage? selectedMsg) {
+        setState(() => _tempRules[ruleIndex] = rule.copyWith(message: selectedMsg));
+        Navigator.pop(context);
+      }
+    );
+  }
+  
+  Widget _buildRulesList(AsyncValue<List<CustomMessage>> allMessagesAsync) {
+    if (_tempRules.isEmpty) {
+      return const Center(
+        child: Text("No rules added yet.\nClick 'Add role rule' to start.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white38),
+        ),
+      );
+    }
+    
+    return ReorderableListView.builder(
+      padding: const EdgeInsets.only(bottom: 80, top: 8),
+      itemCount: _tempRules.length,
+      onReorder: (oldIndex, newIndex) {
+        setState(() {
+          if (newIndex > oldIndex) newIndex -= 1;
+          final item = _tempRules.removeAt(oldIndex);
+          _tempRules.insert(newIndex, item);
+          for (int i = 0; i < _tempRules.length; i++) {
+            _tempRules[i] = _tempRules[i].copyWith(priority: i);
+          }
+        });
+      },
+      itemBuilder: (context, index) {
+        final rule = _tempRules[index];
+        return _buildRuleCard(index, rule, allMessagesAsync);
+      },
+    );
+  }
+  
+  Widget _buildRuleCard(int index, ProfileRule rule, AsyncValue<List<CustomMessage>> allMessagesAsync) {
+    return Card(
+      key: ValueKey("rule_${rule.role.id}"),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      elevation: 0,
+      color: Colors.white.withValues(alpha: 0.05),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.white10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          children: [
+            ListTile(
+              leading: ReorderableDragStartListener(
+                index: index,
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(Icons.drag_handle, color: Colors.grey),
+                ),
+              ),
+              title: Text(rule.role.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: rule.action == RuleAction.accept
+                          ? Colors.green.withValues(alpha: 0.1)
+                          : Colors.red.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButton<RuleAction>(
+                      value: rule.action,
+                      underline: const SizedBox(),
+                      icon: const Icon(Icons.arrow_drop_down, size: 20),
+                      items: RuleAction.values.map((action) {
+                        return DropdownMenuItem(
+                          value: action,
+                          child: Text(
+                            action.name.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: action == RuleAction.accept ? Colors.green : Colors.redAccent
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          _tempRules[index] = rule.copyWith(action: val);
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent, size: 20),
+                    onPressed: () => setState(() => _tempRules.removeAt(index)),
+                    tooltip: "Remove rule",
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(68, 0, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(height: 1, color: Colors.white10),
+                  const SizedBox(height: 12),
+                  allMessagesAsync.when(
+                    data: (messages) => _buildMessageSelector(index, rule, messages),
+                    loading: () => const LinearProgressIndicator(),
+                    error: (_, _) => const Text("Error loading messages"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildAddRuleButton(AsyncValue<List<Role>> allRolesAsync) {
+    return ElevatedButton.icon(
+      icon: const Icon(Icons.add),
+      label: const Text("Add role rule"),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
+      ),
+      onPressed: () {
+        allRolesAsync.whenData((roles) {
+          _showRoleSelectionDialog(roles);
+        });
+      },
+    );
+  }
+  
+  void _showRoleSelectionDialog(List<Role> roles) {
+    final existingRoleIds = _tempRules.map((r) => r.role.id).toSet();
+    final availableRoles = roles.where((r) => !existingRoleIds.contains(r.id)).toList();
+    
+    showGenericSearchSheet<Role>(
+      context: context,
+      items: availableRoles,
+      searchHint: "Search roles...",
+      searchableText: (Role role) => role.name,
+      itemBuilder: (Role role) => ListTile(
+        leading: const Icon(Icons.label_outline, color: Colors.deepPurpleAccent),
+        title: Text(role.name),
+      ),
+      onSelected: (Role? role) {
+        if (role != null) {
+          setState(() {
+            _tempRules.add(ProfileRule(
+              role: role,
+              priority: _tempRules.length,
+              action: RuleAction.accept
+            ));
+          });
+          Navigator.pop(context);
+        }
+      }
+    );
   }
 }
