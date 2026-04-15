@@ -45,7 +45,7 @@ class ProfileRule extends Equatable {
     );
   }
 
-  @override List<Object?> get props => [id, role, priority, action, fallbackGroup];
+  @override List<Object?> get props => [id, role, priority, action, fallbackGroup, message];
 }
 
 class FilterProfile extends Equatable{
