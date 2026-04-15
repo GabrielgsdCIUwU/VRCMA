@@ -6,6 +6,7 @@ import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
   final FilterProfile profile;
@@ -280,34 +281,70 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       ),
     );
   }
+
+  IconData _getTypeIcon(VrcMessageType type) {
+    switch (type) {
+      case VrcMessageType.invite:
+        return Icons.send_rounded;
+      case VrcMessageType.response:
+        return Icons.reply_rounded;
+      case VrcMessageType.request:
+        return Icons.hail_rounded;
+      case VrcMessageType.requestResponse:
+        return Icons.fact_check_rounded;
+
+    }
+  }
+
+  Color _getTypeColor(VrcMessageType type) {
+    switch (type) {
+      case VrcMessageType.invite:
+        return Colors.blueAccent;
+      case VrcMessageType.response:
+        return Colors.greenAccent;
+      case VrcMessageType.request:
+        return Colors.orangeAccent;
+      case VrcMessageType.requestResponse:
+        return Colors.purpleAccent;
+    }
+  }
+  String _getTypeLabel(VrcMessageType type) {
+    switch (type) {
+      case VrcMessageType.invite: return "INVITE";
+      case VrcMessageType.response: return "RESPONSE TO INVITE";
+      case VrcMessageType.request: return "REQUEST TO JOIN";
+      case VrcMessageType.requestResponse: return "RESPONSE TO REQUEST";
+    }
+  }
   
   void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
-    showModalBottomSheet(
+    showGenericSearchSheet<CustomMessage>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      items: allMessages,
+      searchHint: "Search messages...",
+      searchableText: (CustomMessage message) => message.content,
+      headerOption: ListTile(
+        leading: const Icon(Icons.block, color: Colors.grey),
+        title: const Text("None / Default VRChat Message"),
+        subtitle: const Text("Use the game's default notification text"),
+        selected: rule.message == null,
+        onTap: () {
+          setState(() => _tempRules[ruleIndex] = rule.copyWith(message: null));
+          Navigator.pop(context);
+        },
       ),
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          expand: false,
-          builder: (context, scrollController) {
-            return _MessageSearchContent(
-              allMessages: allMessages,
-              initialSelectedId: rule.message?.id,
-              onSelected: (selectedMsg) {
-                setState(() {
-                  _tempRules[ruleIndex] = rule.copyWith(message: selectedMsg);
-                });
-                Navigator.pop(context);
-              }
-            );
-          },
+      itemBuilder: (CustomMessage msg) {
+        final typeColor = _getTypeColor(msg.type);
+        return ListTile(
+          leading: Icon(_getTypeIcon(msg.type), color: typeColor, size: 20),
+          title: Text(msg.content),
+          subtitle: Text(_getTypeLabel(msg.type), style: const TextStyle(fontSize: 10, letterSpacing: 1)),
+          trailing: rule.message?.id == msg.id ? const Icon(Icons.check_circle, color: Colors.greenAccent) : null,
         );
+      },
+      onSelected: (CustomMessage? selectedMsg) {
+        setState(() => _tempRules[ruleIndex] = rule.copyWith(message: selectedMsg));
+        Navigator.pop(context);
       }
     );
   }
@@ -450,153 +487,27 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     final existingRoleIds = _tempRules.map((r) => r.role.id).toSet();
     final availableRoles = roles.where((r) => !existingRoleIds.contains(r.id)).toList();
     
-    showDialog(
+    showGenericSearchSheet<Role>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Select a role"),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: availableRoles.length,
-            itemBuilder: (context, i) => ListTile(
-              title: Text(availableRoles[i].name),
-              onTap: () {
-                setState(() {
-                  _tempRules.add(ProfileRule(
-                    role: availableRoles[i],
-                    priority: _tempRules.length,
-                    action: RuleAction.accept
-                  ));
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-      )
+      items: availableRoles,
+      searchHint: "Search roles...",
+      searchableText: (Role role) => role.name,
+      itemBuilder: (Role role) => ListTile(
+        leading: const Icon(Icons.label_outline, color: Colors.deepPurpleAccent),
+        title: Text(role.name),
+      ),
+      onSelected: (Role? role) {
+        if (role != null) {
+          setState(() {
+            _tempRules.add(ProfileRule(
+              role: role,
+              priority: _tempRules.length,
+              action: RuleAction.accept
+            ));
+          });
+          Navigator.pop(context);
+        }
+      }
     );
-  }
-}
-
-class _MessageSearchContent extends StatefulWidget {
-  final List<CustomMessage> allMessages;
-  final int? initialSelectedId;
-  final Function(CustomMessage?) onSelected;
-  
-  const _MessageSearchContent({
-    required this.allMessages,
-    this.initialSelectedId,
-    required this.onSelected,
-  });
-  
-  @override
-  State<StatefulWidget> createState() => _MessageSearchContentState();
-}
-
-class _MessageSearchContentState extends State<_MessageSearchContent> {
-  String _query = "";
-  
-  @override
-  Widget build(BuildContext context) {
-    final filtered = widget.allMessages
-        .where((m) => m.content.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
-    
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          width: 40, height: 4,
-          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextField(
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: "Search messages...",
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _query.isNotEmpty
-                ? IconButton(icon: const Icon(Icons.clear), onPressed: () => setState(() => _query = ""))
-                : null,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            onChanged: (val) => setState(() => _query = val),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: ListView(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.block, color: Colors.grey),
-                title: const Text("None / Default VRChat Message"),
-                subtitle: const Text("Use the game's default notification text"),
-                selected: widget.initialSelectedId == null,
-                onTap: () => widget.onSelected(null),
-              ),
-              const Divider(),
-              ...filtered.map((msg) {
-                final typeColor = _getTypeColor(msg.type);
-              return ListTile(
-                leading: Icon(
-                _getTypeIcon(msg.type),
-                color: typeColor,
-                size: 20,
-                ),
-                title: Text(msg.content),
-                subtitle: Text(_getTypeLabel(msg.type), style: const TextStyle(fontSize: 10, letterSpacing: 1)),
-                trailing: widget.initialSelectedId == msg.id
-                ? const Icon(Icons.check_circle, color: Colors.greenAccent)
-                    : null,
-                onTap: () => widget.onSelected(msg),
-                );
-              }),
-              if (filtered.isEmpty && _query.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Center(child: Text("No messages match your search")),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  IconData _getTypeIcon(VrcMessageType type) {
-    switch (type) {
-      case VrcMessageType.invite:
-        return Icons.send_rounded;
-      case VrcMessageType.response:
-        return Icons.reply_rounded;
-      case VrcMessageType.request:
-        return Icons.hail_rounded;
-      case VrcMessageType.requestResponse:
-        return Icons.fact_check_rounded;
-      
-    }
-  }
-  
-  Color _getTypeColor(VrcMessageType type) {
-    switch (type) {
-      case VrcMessageType.invite:
-        return Colors.blueAccent;
-      case VrcMessageType.response:
-        return Colors.greenAccent;
-      case VrcMessageType.request:
-        return Colors.orangeAccent;
-      case VrcMessageType.requestResponse:
-        return Colors.purpleAccent;
-    }
-  }
-  String _getTypeLabel(VrcMessageType type) {
-    switch (type) {
-      case VrcMessageType.invite: return "INVITE";
-      case VrcMessageType.response: return "RESPONSE TO INVITE";
-      case VrcMessageType.request: return "REQUEST TO JOIN";
-      case VrcMessageType.requestResponse: return "RESPONSE TO REQUEST";
-    }
   }
 }
