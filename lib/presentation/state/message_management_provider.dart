@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/usecases/messages/sync_messages_use_case.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/automation_provider.dart';
 
@@ -42,25 +44,28 @@ class MessageManagement extends _$MessageManagement {
     final timeSinceUpdate = DateTime.now().difference(message.lastUpdated);
     if (message.isActive && timeSinceUpdate.inMinutes < 60) {
       final remaining = 60 - timeSinceUpdate.inMinutes;
-      throw "This message was updated recently. Wait $remaining minutes before updating it again.";
+      state = AsyncValue.error(RateLimitFailure(remaining), StackTrace.current);
+      return;
     }
     
-    try {
-      state = const AsyncLoading();
-      await vrcRepo.updateVrcMessageSlot(
-        userId: auth.id,
-        content: message.content,
-        slot: slotIndex,
-        type: message.type,
-        messageType: message.type.name
-      );
-
-      await repo.updateSlot(message.id!, slotIndex, message.type);
-      ref.invalidateSelf();
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-      rethrow;
-    }
+   state = const AsyncLoading();
+    final result = await vrcRepo.updateVrcMessageSlot(
+      userId: auth.id,
+      content: message.content,
+      slot: slotIndex,
+      type: message.type,
+      messageType: message.type.name
+    );
+    
+    result.fold(
+        (failure) {
+          state = AsyncValue.error(failure, StackTrace.current);
+        },
+        (_) async {
+          await repo.updateSlot(message.id!, slotIndex, message.type);
+          ref.invalidateSelf();
+        }
+    );
   }
   
   Future<void> unassignSlot(int messageId, VrcMessageType type) async {
@@ -78,29 +83,12 @@ class MessageManagement extends _$MessageManagement {
     final vrcRepo = await ref.read(automationRepositoryProvider.future);
     final localRepo = await ref.read(messageRepositoryProvider.future);
     
-    try {
-      for (var type in VrcMessageType.values) {
-        final List<VrcRemoteMessage> remoteMessages = await vrcRepo.getRemoteVrcMessages(auth.id, type);
-        final allLocalMessages = await localRepo.getMessagesByType(type);
-        
-        for (var remote in remoteMessages) {
-          final existing = allLocalMessages.firstWhereOrNull((m) => m.content == remote.content);
-          
-          if (existing != null) {
-            await localRepo.updateSlot(existing.id!, remote.slot, type);
-          } else if (remote.content.isNotEmpty) {
-            await localRepo.saveMessage(CustomMessage(
-              content: remote.content,
-              type: remote.type,
-              slotIndex: remote.slot,
-              lastUpdated: remote.lastUpdated
-            ));
-          }
-        }
-      }
-      ref.invalidateSelf();
-    } catch (e) {
-      state = AsyncValue.error("Error syncing: $e", StackTrace.current);
-    }
+    final useCase = SyncMessagesUseCase(vrcRepo, localRepo);
+    final result = await useCase.execute(auth.id);
+    
+    result.fold(
+        (failure) => state = AsyncValue.error(failure, StackTrace.current),
+        (_) => ref.invalidateSelf(),
+    );
   }
 }
