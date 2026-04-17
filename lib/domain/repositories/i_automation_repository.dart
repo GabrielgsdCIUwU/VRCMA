@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
@@ -19,7 +21,7 @@ abstract class IAutomationRepository {
 
   /// Updates a specific message slot.
   /// Returns the number of minutes remaining if in cooldown (429), or 0 if success.
-  Future<void> updateVrcMessageSlot({
+  Future<Either<Failure, void>> updateVrcMessageSlot({
     required String userId,
     required String messageType,
     required int slot,
