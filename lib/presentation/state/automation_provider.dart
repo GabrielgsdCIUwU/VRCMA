@@ -22,24 +22,8 @@ class AutomationState extends _$AutomationState {
     final api = await ref.watch(vrcApiProvider.future);
     api.streaming.start();
     
-    final automationRepo = AutomationRepositoryImp(api);
-    
-    final processor = AutomationProcessor(
-      automationRepository: automationRepo,
-      localSocialRepository: await ref.watch(localSocialRepositoryProvider.future),
-      profileRepository: await ref.watch(profileRepositoryProvider.future),
-      logRepository: await ref.watch(logRepositoryProvider.future),
-      slotManager: MessageSlotManager(
-        messageRepository: await ref.watch(messageRepositoryProvider.future),
-        automationRepository: automationRepo
-      ),
-      useCase: ProcessInvitationUseCase(
-        roleExtractor: UserRoleExtractor(),
-        ruleSorter: RuleSorter(),
-        ruleEvaluator: RuleEvaluator(),
-        defaultResolver: DefaultActionResolver(),
-      ),
-    );
+    final automationRepo = await ref.watch(automationRepositoryProvider.future);
+    final processor = await ref.watch(automationProcessorProvider.future);
     
     automationRepo.watchInvitations().listen((invitation) async {
       try {
