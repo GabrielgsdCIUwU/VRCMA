@@ -6,6 +6,7 @@ import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
@@ -118,12 +119,10 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     final allRolesAsync = ref.watch(allAvailableRolesProvider);
     final allMessagesAsync = ref.watch(messageManagementProvider);
     
-    final isWide = MediaQuery.of(context).size.width > 900;
-    
-    if (isWide) {
-      return _buildDesktopLayout(allRolesAsync, allMessagesAsync);
-    }
-    return _buildMobileLayout(allRolesAsync, allMessagesAsync);
+    return ResponsiveLayout(
+        mobile: _buildMobileLayout(allRolesAsync, allMessagesAsync),
+        desktop: _buildDesktopLayout(allRolesAsync, allMessagesAsync),
+    );
   }
   
   Widget _buildDesktopLayout(AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
