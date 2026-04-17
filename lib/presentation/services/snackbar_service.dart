@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/main.dart';
 
 class SnackbarService {
-  void show(String message, BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
+  void show(String message) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(content: Text(message))
     );
   }
