@@ -39,7 +39,7 @@ class LogsPanel extends ConsumerWidget {
                  ),
                ),
                onChanged: (val) {
-                 ref.read(automationLogsProvider.notifier).setSearch(val);
+                 ref.read(logSearchQueryProvider.notifier).updateQuery(val);
                },
              )
            ],
