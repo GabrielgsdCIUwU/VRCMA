@@ -107,4 +107,23 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       rethrow;
     }
   }
+  
+  @override
+  Future<void> syncRoleMembers(int roleId, Set<String> newUserIds) async {
+    await _db.transaction((txn) async {
+      await txn.delete(
+        'friend_roles',
+        where: 'role_id = ?',
+        whereArgs: [roleId]
+      );
+      
+      for (final userId in newUserIds) {
+        await txn.insert(
+          'friend_roles', {
+            'vrc_user_id': userId,
+            'role_id': roleId
+        });
+      }
+    });
+  }
 }
