@@ -27,23 +27,6 @@ class RoleManagement extends _$RoleManagement {
     ref.invalidate(profileManagementProviderProvider);
   }
   
-  Future<void> updateRoleMembers(int roleId, Set<String> newUserIds) async {
-    final repo = await ref.read(localSocialRepositoryProvider.future);
-    final currentIdsInDb = await repo.getUserIdsByRole(roleId);
-    
-    for (final userId in currentIdsInDb) {
-      if (!newUserIds.contains(userId)) {
-        await repo.removeRoleFromUser(userId, roleId);
-      }
-    }
-    
-    for (final userId in newUserIds) {
-      if (!currentIdsInDb.contains(userId)) {
-        await repo.assignRoleToUser(userId, roleId);
-      }
-    }
-  }
-  
   Future<void> saveRoleChanges({
     required int roleId,
     required String newName,
@@ -52,7 +35,7 @@ class RoleManagement extends _$RoleManagement {
     final repo = await ref.read(localSocialRepositoryProvider.future);
     
     await repo.updateRoleName(roleId, newName);
-    await updateRoleMembers(roleId, newUserIds);
+    await repo.syncRoleMembers(roleId, newUserIds);
 
     ref.invalidate(roleMemberCountProvider(roleId));
     ref.invalidate(allAvailableRolesProvider);
