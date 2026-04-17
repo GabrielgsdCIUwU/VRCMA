@@ -18,3 +18,14 @@ class TwoFactorRequiredFailure extends Failure {
   final List<String> methods;
   const TwoFactorRequiredFailure(this.methods) : super('2FA required');
 }
+
+
+class RateLimitFailure extends Failure {
+  final int retryAfterMinutes;
+  const RateLimitFailure(this.retryAfterMinutes)
+      : super('Rate limit exceeded. Retry after $retryAfterMinutes minutes.');
+}
+
+class SyncFailure extends Failure {
+  const SyncFailure(super.message);
+}
