@@ -7,6 +7,8 @@ import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -30,6 +32,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'VRCMA',
+      scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,
