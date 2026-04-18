@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
@@ -110,7 +112,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Future<void> updateVrcMessageSlot({required String userId, required String messageType, required int slot, required String content, required VrcMessageType type}) async {
+  Future<Either<Failure, void>> updateVrcMessageSlot({required String userId, required String messageType, required int slot, required String content, required VrcMessageType type}) async {
     try {
       final vrcType = _mapInternalToVrcType(type);
 
@@ -121,12 +123,13 @@ class AutomationRepositoryImp implements IAutomationRepository {
         updateInviteMessageRequest: UpdateInviteMessageRequest(
             message: content),
       );
+      return const Right(null);
     } catch (e) {
       if (e.toString().contains("429")) {
-        throw "VRChat limit reached. Please wait a few minutes before updating this slot again.";
+       return const Left(RateLimitFailure(60));
       }
       debugPrint("VRChat API Error (Update Slot): $e");
-      rethrow;
+      return Left(ApiFailure(e.toString()));
     }
   }
   

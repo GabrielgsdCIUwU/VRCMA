@@ -4,9 +4,9 @@ import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
-import 'package:vrcma/presentation/state/profile_management_provider.dart';
-import 'package:collection/collection.dart';
+import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
+import 'package:vrcma/presentation/state/profile_editor_provider.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
   final FilterProfile profile;
@@ -17,44 +17,28 @@ class ProfileEditorSheet extends ConsumerStatefulWidget {
 }
 
 class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
-  late List<ProfileRule> _tempRules;
   late TextEditingController _nameController;
-  
-  late List<ProfileRule> _initialRules;
-  late String _initialName;
   
   @override
   void initState() {
     super.initState();
-    
-    _initialRules = List.from(widget.profile.rules);
-    _initialName = widget.profile.name;
-    
-    _tempRules = List.from(widget.profile.rules)
-      ..sort((a, b) => a.priority.compareTo(b.priority));
     _nameController = TextEditingController(text: widget.profile.name);
   }
   
-  bool get _hasChanges {
-    final nameChanged = _nameController.text != _initialName;
-    final rulesChanged = !const ListEquality().equals(_tempRules, _initialRules);
-    return nameChanged || rulesChanged;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
   
   void _saveAndExit() {
-    final updatedProfile = FilterProfile(
-      id: widget.profile.id,
-      name: _nameController.text,
-      isActive: widget.profile.isActive,
-      rules: _tempRules,
-      defaultRole: widget.profile.defaultRole
-    );
-    ref.read(profileManagementProviderProvider.notifier).updateProfile(updatedProfile);
+    ref.read(profileEditorProvider(widget.profile).notifier).save();
     Navigator.of(context).pop();
   }
   
   Future<bool> _showExitConfirmation() async {
-    if (!_hasChanges) return true;
+    final hasChanges = ref.read(profileEditorProvider(widget.profile).notifier).hasChanges;
+    if (hasChanges) return true;
     
     final result = await showDialog<String>(
       context: context,
@@ -81,8 +65,11 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   
   @override
   Widget build(BuildContext context) {
+    final currentProfile = ref.watch(profileEditorProvider(widget.profile));
+    final hasChanges = ref.watch(profileEditorProvider(widget.profile).notifier).hasChanges;
+    
     return PopScope(
-      canPop: !_hasChanges,
+      canPop: !hasChanges,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         
@@ -101,32 +88,30 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 icon: const Icon(Icons.save),
                 label: const Text("Save"),
                 style: FilledButton.styleFrom(
-                  backgroundColor: _hasChanges ? Colors.greenAccent : null,
-                  foregroundColor: _hasChanges ? Colors.white : Colors.grey,
+                  backgroundColor: hasChanges ? Colors.greenAccent : null,
+                  foregroundColor: hasChanges ? Colors.white : Colors.grey,
                 ),
-                onPressed: _hasChanges ? _saveAndExit : null,
+                onPressed: hasChanges ? _saveAndExit : null,
               ),
             ),
           ],
         ),
-        body: _buildResponsiveBody(),
+        body: _buildResponsiveBody(currentProfile),
       ),
     );
   }
   
-  Widget _buildResponsiveBody() {
+  Widget _buildResponsiveBody(FilterProfile currentProfile) {
     final allRolesAsync = ref.watch(allAvailableRolesProvider);
     final allMessagesAsync = ref.watch(messageManagementProvider);
     
-    final isWide = MediaQuery.of(context).size.width > 900;
-    
-    if (isWide) {
-      return _buildDesktopLayout(allRolesAsync, allMessagesAsync);
-    }
-    return _buildMobileLayout(allRolesAsync, allMessagesAsync);
+    return ResponsiveLayout(
+        mobile: _buildMobileLayout(currentProfile, allRolesAsync, allMessagesAsync),
+        desktop: _buildDesktopLayout(currentProfile, allRolesAsync, allMessagesAsync),
+    );
   }
   
-  Widget _buildDesktopLayout(AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
+  Widget _buildDesktopLayout(FilterProfile currentProfile, AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,7 +138,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
-                child: _buildAddRuleButton(allRolesAsync),
+                child: _buildAddRuleButton(currentProfile, allRolesAsync),
               ),
               const Spacer(),
               const Icon(Icons.info_outline, color: Colors.grey, size: 20),
@@ -183,7 +168,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                       decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(12)),
-                      child: Text("${_tempRules.length}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                      child: Text("${currentProfile.rules.length}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
                     ),
                   ],
                 ),
@@ -192,7 +177,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 800),
-                    child: _buildRulesList(allMessagesAsync),
+                    child: _buildRulesList(currentProfile, allMessagesAsync),
                   ),
                 ),
               )
@@ -203,7 +188,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     );
   }
   
-  Widget _buildMobileLayout(AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
+  Widget _buildMobileLayout(FilterProfile currentProfile, AsyncValue<List<Role>> allRolesAsync, AsyncValue<List<CustomMessage>> allMessagesAsync) {
     return Column(
       children: [
         Padding(
@@ -216,13 +201,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           subtitle: Text("The higher-level rules are evaluated first"),
         ),
         Expanded(
-          child: _buildRulesList(allMessagesAsync),
+          child: _buildRulesList(currentProfile, allMessagesAsync),
         ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: SizedBox(
             width: double.infinity,
-            child: _buildAddRuleButton(allRolesAsync),
+            child: _buildAddRuleButton(currentProfile, allRolesAsync),
           ),
         )
       ],
@@ -236,7 +221,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         labelText: "Profile Name",
         prefixIcon: Icon(Icons.badge_outlined),
       ),
-      onChanged: (_) => setState(() {}),
+      onChanged: (val) => ref.read(profileEditorProvider(widget.profile).notifier).updateName(val),
     );
   }
   
@@ -329,7 +314,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         subtitle: const Text("Use the game's default notification text"),
         selected: rule.message == null,
         onTap: () {
-          setState(() => _tempRules[ruleIndex] = rule.copyWith(message: null));
+          ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, null);
           Navigator.pop(context);
         },
       ),
@@ -343,14 +328,14 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         );
       },
       onSelected: (CustomMessage? selectedMsg) {
-        setState(() => _tempRules[ruleIndex] = rule.copyWith(message: selectedMsg));
+        ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, selectedMsg);
         Navigator.pop(context);
       }
     );
   }
   
-  Widget _buildRulesList(AsyncValue<List<CustomMessage>> allMessagesAsync) {
-    if (_tempRules.isEmpty) {
+  Widget _buildRulesList(FilterProfile currentProfile, AsyncValue<List<CustomMessage>> allMessagesAsync) {
+    if (currentProfile.rules.isEmpty) {
       return const Center(
         child: Text("No rules added yet.\nClick 'Add role rule' to start.",
           textAlign: TextAlign.center,
@@ -361,19 +346,12 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     
     return ReorderableListView.builder(
       padding: const EdgeInsets.only(bottom: 80, top: 8),
-      itemCount: _tempRules.length,
+      itemCount: currentProfile.rules.length,
       onReorder: (oldIndex, newIndex) {
-        setState(() {
-          if (newIndex > oldIndex) newIndex -= 1;
-          final item = _tempRules.removeAt(oldIndex);
-          _tempRules.insert(newIndex, item);
-          for (int i = 0; i < _tempRules.length; i++) {
-            _tempRules[i] = _tempRules[i].copyWith(priority: i);
-          }
-        });
+       ref.read(profileEditorProvider(widget.profile).notifier).reorderRules(oldIndex, newIndex);
       },
       itemBuilder: (context, index) {
-        final rule = _tempRules[index];
+        final rule = currentProfile.rules[index];
         return _buildRuleCard(index, rule, allMessagesAsync);
       },
     );
@@ -431,16 +409,17 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                         );
                       }).toList(),
                       onChanged: (val) {
-                        setState(() {
-                          _tempRules[index] = rule.copyWith(action: val);
-                        });
+                       if (val != null) {
+                         ref.read(profileEditorProvider(widget.profile).notifier)
+                             .updateRuleAction(index, val);
+                       }
                       },
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent, size: 20),
-                    onPressed: () => setState(() => _tempRules.removeAt(index)),
+                    onPressed: () => ref.read(profileEditorProvider(widget.profile).notifier).removeRule(index),
                     tooltip: "Remove rule",
                   ),
                 ],
@@ -467,7 +446,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     );
   }
   
-  Widget _buildAddRuleButton(AsyncValue<List<Role>> allRolesAsync) {
+  Widget _buildAddRuleButton(FilterProfile currentProfile, AsyncValue<List<Role>> allRolesAsync) {
     return ElevatedButton.icon(
       icon: const Icon(Icons.add),
       label: const Text("Add role rule"),
@@ -477,14 +456,14 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       ),
       onPressed: () {
         allRolesAsync.whenData((roles) {
-          _showRoleSelectionDialog(roles);
+          _showRoleSelectionDialog(currentProfile, roles);
         });
       },
     );
   }
   
-  void _showRoleSelectionDialog(List<Role> roles) {
-    final existingRoleIds = _tempRules.map((r) => r.role.id).toSet();
+  void _showRoleSelectionDialog(FilterProfile currentProfile, List<Role> roles) {
+    final existingRoleIds =currentProfile.rules.map((r) => r.role.id).toSet();
     final availableRoles = roles.where((r) => !existingRoleIds.contains(r.id)).toList();
     
     showGenericSearchSheet<Role>(
@@ -498,13 +477,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       ),
       onSelected: (Role? role) {
         if (role != null) {
-          setState(() {
-            _tempRules.add(ProfileRule(
-              role: role,
-              priority: _tempRules.length,
-              action: RuleAction.accept
-            ));
-          });
+         ref.read(profileEditorProvider(widget.profile).notifier).addRule(role);
           Navigator.pop(context);
         }
       }

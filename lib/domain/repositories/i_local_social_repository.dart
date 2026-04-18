@@ -10,4 +10,5 @@ abstract class ILocalSocialRepository {
   Future<int> getMemberCountForRole(int roleId);
   Future<List<String>> getUserIdsByRole(int roleId);
   Future<void> updateRoleName(int roleId, String newName);
+  Future<void> syncRoleMembers(int roleId, Set<String> newUserIds);
 }

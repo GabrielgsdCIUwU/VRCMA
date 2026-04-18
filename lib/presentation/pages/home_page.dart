@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/presentation/state/automation_provider.dart';
 import 'package:vrcma/presentation/state/navigation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/automation_settings_panel.dart';
+import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/friends_panel.dart';
 import 'package:vrcma/presentation/widgets/home/logs_panel.dart';
 import 'package:vrcma/presentation/widgets/home/messages_panel.dart';
@@ -16,7 +17,6 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(automationStateProvider);
     final currentIndex = ref.watch(navigationStackProvider);
-    final isWide = MediaQuery.of(context).size.width > 900;
     
     return Scaffold(
       body: SafeArea(
@@ -24,12 +24,15 @@ class HomePage extends ConsumerWidget {
             children: [
               const ProfileBanner(),
               Expanded(
-                child: isWide ? _buildWideLayout() : _buildMobileLayout(currentIndex),
+                child: ResponsiveLayout(
+                    mobile: _buildMobileLayout(currentIndex),
+                    desktop: _buildWideLayout()
+                ),
               )
             ],
           )
       ),
-      bottomNavigationBar: !isWide ? NavigationBar(
+      bottomNavigationBar: MediaQuery.of(context).size.width <= 900 ? NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (i) => ref.read(navigationStackProvider.notifier).setIndex(i),
         destinations: const [

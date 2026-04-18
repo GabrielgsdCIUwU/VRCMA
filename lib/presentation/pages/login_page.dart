@@ -29,11 +29,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
          if (error is TwoFactorRequiredFailure) {
            setState(() => _showOtpView = true);
          } else if (error is Failure) {
-           ref.read(snackbarServiceProvider).show(error.message, context);
+           ref.read(snackbarServiceProvider).show(error.message);
          }
        },
        data: (user) {
-         if (user != null) ref.read(snackbarServiceProvider).show('Login Success!', context);
+         if (user != null) ref.read(snackbarServiceProvider).show('Login Success!');
        },
      );
    });
