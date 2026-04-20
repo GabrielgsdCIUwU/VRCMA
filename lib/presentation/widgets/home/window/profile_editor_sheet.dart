@@ -226,44 +226,81 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   }
   
   
-  Widget _buildMessageSelector(int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
-    final hasMessage = rule.message != null;
-    return InkWell(
-      onTap: () => _showSearchableMessageSelector(context, ruleIndex, rule, allMessages),
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white10),
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.white.withValues(alpha: 0.02),
-        ),
-        child: Row(
+  Widget _buildMessagesSection(int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
+    return ResponsiveLayout(
+      breakpoint: 600,
+      desktop: Row(
+        children: [
+          Expanded(child: _buildMessageContextSelector(ruleIndex, rule, allMessages, RuleMessageContext.inviteResponse)),
+          const SizedBox(width: 16),
+          Expanded(child: _buildMessageContextSelector(ruleIndex, rule, allMessages, RuleMessageContext.requestResponse)),
+        ],
+      ),
+      mobile: Column(
+        children: [
+          _buildMessageContextSelector(ruleIndex, rule, allMessages, RuleMessageContext.inviteResponse),
+          const SizedBox(height: 12),
+          _buildMessageContextSelector(ruleIndex, rule, allMessages, RuleMessageContext.requestResponse),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildMessageContextSelector(int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages, RuleMessageContext contextType) {
+    final isInvite = contextType == RuleMessageContext.inviteResponse;
+    
+    final title = isInvite ? "ON INVITE RECEIVED" : "ON REQUEST TO JOIN";
+    final iconData = isInvite ? Icons.send_rounded : Icons.hail_rounded;
+    final color = isInvite ? Colors.blueAccent : Colors.orangeAccent;
+    final currentMessage = isInvite ? rule.inviteResponseMessage : rule.requestResponseMessage;
+    final hasMessage = currentMessage != null;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Icon(
-              hasMessage ? Icons.message : Icons.message_outlined,
-              size: 16,
-              color: hasMessage ? Colors.deepPurpleAccent : Colors.grey,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                hasMessage
-                  ? rule.message!.content
-                  : "None / Default VRChat Message",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: hasMessage ? Colors.white : Colors.white38,
-                  fontStyle: hasMessage ? FontStyle.normal : FontStyle.italic,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const Icon(Icons.search, size: 16, color: Colors.white24)
+            Icon(iconData, size: 14, color: color),
+            const SizedBox(width: 6),
+            Text(title, style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade400,
+                letterSpacing: 0.5
+            )),
           ],
         ),
-      ),
+        const SizedBox(height: 6),
+        InkWell(
+          onTap: () => _showSearchableMessageSelector(context, ruleIndex, rule, allMessages, contextType),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              border: Border.all(color: hasMessage ? color.withValues(alpha: 0.5) : Colors.white10),
+              borderRadius: BorderRadius.circular(8),
+              color: hasMessage ? color.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.02),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    hasMessage ? currentMessage.content : "Default VRChat Message",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: hasMessage ? Colors.white : Colors.white38,
+                      fontStyle: hasMessage ? FontStyle.normal : FontStyle.italic,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Icon(Icons.edit_note, size: 18, color: hasMessage ? color : Colors.white24)
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -302,33 +339,45 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     }
   }
   
-  void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages) {
+  void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages, RuleMessageContext contextType) {
+    final targetType = contextType == RuleMessageContext.inviteResponse
+      ? VrcMessageType.response
+      : VrcMessageType.requestResponse;
+    
+    final filteredMessages = allMessages.where((m) => m.type == targetType).toList();
+    
+    final isInvite = contextType == RuleMessageContext.inviteResponse;
+    final sheetTitle = isInvite ? "Select Invite Response" : "Select Request Response";
+    final currentMessageId = isInvite ? rule.inviteResponseMessage?.id : rule.requestResponseMessage?.id;
+    
     showGenericSearchSheet<CustomMessage>(
       context: context,
-      items: allMessages,
-      searchHint: "Search messages...",
+      items: filteredMessages,
+      searchHint: "Search $sheetTitle...",
       searchableText: (CustomMessage message) => message.content,
       headerOption: ListTile(
         leading: const Icon(Icons.block, color: Colors.grey),
         title: const Text("None / Default VRChat Message"),
         subtitle: const Text("Use the game's default notification text"),
-        selected: rule.message == null,
+        selected: rule.inviteResponseMessage == null,
         onTap: () {
-          ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, null);
+          ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, null, contextType);
           Navigator.pop(context);
         },
       ),
       itemBuilder: (CustomMessage msg) {
-        final typeColor = _getTypeColor(msg.type);
         return ListTile(
-          leading: Icon(_getTypeIcon(msg.type), color: typeColor, size: 20),
+          leading: Icon(
+              isInvite ? Icons.send_rounded : Icons.hail_rounded, 
+              color: isInvite ? Colors.blueAccent : Colors.orangeAccent,
+              size: 20
+          ),
           title: Text(msg.content),
-          subtitle: Text(_getTypeLabel(msg.type), style: const TextStyle(fontSize: 10, letterSpacing: 1)),
-          trailing: rule.message?.id == msg.id ? const Icon(Icons.check_circle, color: Colors.greenAccent) : null,
+          trailing: currentMessageId == msg.id ? const Icon(Icons.check_circle, color: Colors.greenAccent) : null,
         );
       },
       onSelected: (CustomMessage? selectedMsg) {
-        ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, selectedMsg);
+        ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, selectedMsg, contextType);
         Navigator.pop(context);
       }
     );
@@ -433,7 +482,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   const Divider(height: 1, color: Colors.white10),
                   const SizedBox(height: 12),
                   allMessagesAsync.when(
-                    data: (messages) => _buildMessageSelector(index, rule, messages),
+                    data: (messages) => _buildMessagesSection(index, rule, messages),
                     loading: () => const LinearProgressIndicator(),
                     error: (_, _) => const Text("Error loading messages"),
                   ),
