@@ -10,13 +10,17 @@ class Role extends Equatable {
 
 enum RuleAction { accept, reject }
 
+enum RuleMessageContext { inviteResponse, requestResponse}
+
 class ProfileRule extends Equatable {
   final int? id;
   final Role role;
   final int priority;
   final RuleAction action;
   final int? fallbackGroup;
-  final CustomMessage? message;
+  final CustomMessage? inviteResponseMessage;
+  final CustomMessage? requestResponseMessage;
+
 
   const ProfileRule({
     this.id,
@@ -24,7 +28,8 @@ class ProfileRule extends Equatable {
     required this.priority,
     required this.action,
     this.fallbackGroup,
-    this.message
+    this.inviteResponseMessage,
+    this.requestResponseMessage,
   });
   
   ProfileRule copyWith({
@@ -33,7 +38,8 @@ class ProfileRule extends Equatable {
     int? priority,
     RuleAction? action,
     int? fallbackGroup,
-    CustomMessage? message,
+    CustomMessage? Function()? inviteResponseMessage,
+    CustomMessage? Function()? requestResponseMessage,
   }) {
     return ProfileRule(
       id: id?? this.id,
@@ -41,11 +47,12 @@ class ProfileRule extends Equatable {
       priority: priority ?? this.priority,
       action: action ?? this.action,
       fallbackGroup: fallbackGroup ?? this.fallbackGroup,
-      message: message ?? this.message,
+      inviteResponseMessage: inviteResponseMessage != null ? inviteResponseMessage() : this.inviteResponseMessage,
+      requestResponseMessage: requestResponseMessage != null ? requestResponseMessage() : this.requestResponseMessage,
     );
   }
 
-  @override List<Object?> get props => [id, role, priority, action, fallbackGroup, message];
+  @override List<Object?> get props => [id, role, priority, action, fallbackGroup, inviteResponseMessage, requestResponseMessage];
 }
 
 class FilterProfile extends Equatable{
