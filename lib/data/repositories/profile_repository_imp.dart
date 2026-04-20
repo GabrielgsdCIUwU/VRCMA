@@ -35,7 +35,8 @@ class ProfileRepositoryImp implements IProfileRepository {
           'priority': rule.priority,
           'action': rule.action == RuleAction.accept ? 'ACCEPT' : 'REJECT',
           'fallback_group': rule.fallbackGroup,
-          'message_id': rule.message?.id,
+          'invite_message_id': rule.inviteResponseMessage?.id,
+          'request_message_id': rule.requestResponseMessage?.id,
         });
       }
 
@@ -57,29 +58,18 @@ class ProfileRepositoryImp implements IProfileRepository {
       final profileId = pMap['id'] as int;
 
       final List<Map<String, dynamic>> ruleMaps = await _db.rawQuery('''
-        SELECT pr.*, r.name as role_name, m.content as msg_content,
-          m.slot_index as msg_slot, m.last_updated as msg_date,
-          m.type as msg_type
+        SELECT pr.*, r.name as role_name, 
+          m1.id as inv_id, m1.content as inv_content, m1.slot_index as inv_slot, m1.last_updated as inv_date, m1.type as inv_type,
+          m2.id as req_id, m2.content as req_content, m2.slot_index as req_slot, m2.last_updated as req_date, m2.type as req_type
         FROM profile_rules pr
         JOIN roles r ON pr.role_id = r.id
-        LEFT JOIN custom_messages m ON pr.message_id = m.id
+        LEFT JOIN custom_messages m1 ON pr.invite_message_id = m1.id
+        LEFT JOIN custom_messages m2 ON pr.request_message_id = m2.id
         WHERE pr.profile_id = ?
         ORDER BY pr.priority ASC
       ''', [profileId]);
 
       final rules = ruleMaps.map((rMap) {
-
-        CustomMessage? message;
-        if (rMap['message_id'] != null) {
-          message = CustomMessage(
-            id: rMap['message_id'],
-            content: rMap['msg_content'],
-            type: VrcMessageType.fromString(rMap['msg_type']),
-            slotIndex: rMap['msg_slot'],
-            lastUpdated: DateTime.parse(rMap['msg_date']),
-          );
-        }
-
         return ProfileRule(
           id: rMap['id'],
           priority: rMap['priority'],
@@ -89,14 +79,8 @@ class ProfileRepositoryImp implements IProfileRepository {
             id: rMap['role_id'],
             name: rMap['role_name'],
           ),
-          message: rMap['message_id'] != null
-            ? CustomMessage(
-            id: rMap['message_id'],
-            content: rMap['msg_content'],
-            type: VrcMessageType.fromString(rMap['msg_type']),
-            slotIndex: rMap['msg_slot'],
-            lastUpdated: DateTime.parse(rMap['msg_date']),
-          ) : null
+          inviteResponseMessage: _extractMessage(rMap, 'inv'),
+          requestResponseMessage: _extractMessage(rMap, 'req'),
         );
       }).toList();
 
@@ -112,6 +96,17 @@ class ProfileRepositoryImp implements IProfileRepository {
     }
 
     return result;
+  }
+  
+  CustomMessage? _extractMessage(Map<String, dynamic> row, String prefix) {
+    if (row['${prefix}_id'] == null) return null;
+    return CustomMessage(
+      id: row['${prefix}_id'],
+      content: row['${prefix}_content'],
+      type: VrcMessageType.fromString(row['${prefix}_type']),
+      slotIndex: row['${prefix}_slot'],
+      lastUpdated: DateTime.parse(row['${prefix}_date']),
+    );
   }
 
   @override
