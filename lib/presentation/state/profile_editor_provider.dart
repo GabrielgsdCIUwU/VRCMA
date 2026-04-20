@@ -28,9 +28,25 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
     state = state.copyWith(name: name);
   }
   
-  void updateRuleMessage(int index, CustomMessage? message) {
+  void updateRuleMessage(int index, CustomMessage? message, RuleMessageContext context) {
+    if (message != null) {
+      if (context == RuleMessageContext.inviteResponse && message.type != VrcMessageType.response) {
+        throw ArgumentError("Message must be of type 'response' for invites.");
+      }
+      if (context == RuleMessageContext.requestResponse && message.type != VrcMessageType.requestResponse) {
+        throw ArgumentError("Message must be of type 'requestResponse' for requests.");
+      }
+    }
+    
     final newRules = List<ProfileRule>.from(state.rules);
-    newRules[index] = newRules[index].copyWith(message: message);
+    final rule = newRules[index];
+    
+    if (context == RuleMessageContext.inviteResponse) {
+      newRules[index] = rule.copyWith(inviteResponseMessage: () => message);
+    } else {
+      newRules[index] = rule.copyWith(requestResponseMessage: () => message);
+    }
+    
     state = state.copyWith(rules: newRules);
   }
   
