@@ -43,7 +43,7 @@ class AutomationProcessor {
         return;
       }
       
-      await _executeAction(invitation, decision.action, decision.rule.message);
+      await _executeAction(invitation, decision.action, decision.rule);
       
       await _recordLog(
         invitation,
@@ -64,10 +64,17 @@ class AutomationProcessor {
     );
   }
   
-  Future<void> _executeAction(InvitationType invite, RuleAction action, CustomMessage? message) async {
+  Future<void> _executeAction(InvitationType invite, RuleAction action, ProfileRule rule) async {
+    
+    CustomMessage? messageToUse;
+    if (invite is InviteReceived) {
+      messageToUse = rule.inviteResponseMessage;
+    } else if (invite is RequestInvite) {
+      messageToUse = rule.requestResponseMessage;
+    }
 
-    final int? slotToUse = (message != null)
-      ? await slotManager.prepareSlotForMessage(invite.senderId, message)
+    final int? slotToUse = (messageToUse != null)
+      ? await slotManager.prepareSlotForMessage(invite.senderId, messageToUse)
       : null;
 
     if (action == RuleAction.accept) {
