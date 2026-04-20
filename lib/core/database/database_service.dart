@@ -103,10 +103,12 @@ class DatabaseService {
         priority INTEGER NOT NULL,
         action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
         fallback_group INTEGER,
-        message_id INTEGER,
+        invite_message_id INTEGER,
+        request_message_id INTEGER,
         FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
-        FOREIGN KEY (message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
+        FOREIGN KEY (invite_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL,
+        FOREIGN KEY (request_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
       )
     ''');
   }
