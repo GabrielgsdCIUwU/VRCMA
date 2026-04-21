@@ -43,6 +43,25 @@ class ProcessInvitationUseCase {
         rule: matchedRule
       );
     }
+    
+    if (profile.fallbackTagsAction != FallbackTagAction.disabled && profile.fallbackTags.isNotEmpty) {
+      final matchedTag = profile.fallbackTags.firstWhereOrNull((tag) => userRoles.contains(tag.toLowerCase()));
+      
+      if (matchedTag != null) {
+        final action = profile.fallbackTagsAction == FallbackTagAction.accept
+            ? RuleAction.accept
+            : RuleAction.reject;
+        
+        return ProcessInvitationResult(
+          action: action,
+          rule: ProfileRule(
+            role: Role(id: -1, name: "Tag Match: $matchedTag"),
+            priority: 999,
+            action: action
+          )
+        );
+      }
+    }
 
     final defaultRule = defaultResolver.resolve(profile);
     if (defaultRule != null) {
