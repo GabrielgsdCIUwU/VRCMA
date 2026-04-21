@@ -29,30 +29,41 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   }
   
   void updateRuleMessage(int index, CustomMessage? message, RuleMessageContext context) {
-    if (message != null) {
-      if (context == RuleMessageContext.inviteResponse && message.type != VrcMessageType.response) {
-        throw ArgumentError("Message must be of type 'response' for invites.");
-      }
-      if (context == RuleMessageContext.requestResponse && message.type != VrcMessageType.requestResponse) {
-        throw ArgumentError("Message must be of type 'requestResponse' for requests.");
-      }
-    }
+    final rule = state.rules[index];
+    
+    _validateMessageType(message, context, rule.action);
     
     final newRules = List<ProfileRule>.from(state.rules);
-    final rule = newRules[index];
-    
-    if (context == RuleMessageContext.inviteResponse) {
-      newRules[index] = rule.copyWith(inviteResponseMessage: () => message);
-    } else {
-      newRules[index] = rule.copyWith(requestResponseMessage: () => message);
-    }
+    newRules[index] = context.applyMessageToRule(rule, message);
     
     state = state.copyWith(rules: newRules);
   }
   
+  void _validateMessageType(CustomMessage? message, RuleMessageContext context, RuleAction action) {
+    if (message == null) return;
+    
+    final expectedType = context.getExpectedMessageType(action);
+    
+    if (message.type != expectedType) {
+      throw ArgumentError(
+        "Message must be of type '${expectedType.name}' for ${context.name} when action is ${action.name}."
+      );
+    }
+  }
+  
   void updateRuleAction(int index, RuleAction action) {
     final newRules = List<ProfileRule>.from(state.rules);
-    newRules[index] = newRules[index].copyWith(action: action);
+    final currentRule = newRules[index];
+    
+    if (currentRule.action != action) {
+      newRules[index] = currentRule.copyWith(
+        action: action,
+        inviteResponseMessage: () => null,
+        requestResponseMessage: () => null,
+      );
+    } else {
+      newRules[index] = currentRule.copyWith(action: action);
+    }
     state = state.copyWith(rules: newRules);
   }
   
@@ -85,5 +96,27 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   
   void save() {
     ref.read(profileManagementProviderProvider.notifier).updateProfile(state);
+  }
+}
+
+extension RuleMessageContextExtension on RuleMessageContext {
+  VrcMessageType getExpectedMessageType(RuleAction action) {
+    final isAccept = action == RuleAction.accept;
+    
+    switch (this) {
+      case RuleMessageContext.inviteResponse:
+        return isAccept ? VrcMessageType.invite : VrcMessageType.response;
+      case RuleMessageContext.requestResponse:
+        return isAccept ? VrcMessageType.request : VrcMessageType.requestResponse;
+    }
+  }
+  
+  ProfileRule applyMessageToRule(ProfileRule rule, CustomMessage? message) {
+    switch (this) {
+      case RuleMessageContext.inviteResponse:
+        return rule.copyWith(inviteResponseMessage: () => message);
+      case RuleMessageContext.requestResponse:
+        return rule.copyWith(requestResponseMessage: () => message);
+    }
   }
 }
