@@ -9,6 +9,7 @@ class Role extends Equatable {
 }
 
 enum RuleAction { accept, reject }
+enum FallbackTagAction { disabled, accept, reject }
 
 enum RuleMessageContext { inviteResponse, requestResponse}
 
@@ -61,6 +62,8 @@ class FilterProfile extends Equatable{
   final bool isActive;
   final List<ProfileRule> rules;
   final Role? defaultRole;
+  final List<String> fallbackTags;
+  final FallbackTagAction fallbackTagsAction;
 
   const FilterProfile({
     this.id,
@@ -68,6 +71,8 @@ class FilterProfile extends Equatable{
     this.isActive = false,
     this.rules = const [],
     this.defaultRole,
+    this.fallbackTags = const [],
+    this.fallbackTagsAction = FallbackTagAction.disabled,
   });
   
   FilterProfile copyWith({
@@ -76,6 +81,8 @@ class FilterProfile extends Equatable{
     bool? isActive,
     List<ProfileRule>? rules,
     Role? defaultRole,
+    List<String>? fallbackTags,
+    FallbackTagAction? fallbackTagsAction,
   }) {
     return FilterProfile(
       id: id ?? this.id,
@@ -83,9 +90,11 @@ class FilterProfile extends Equatable{
       isActive: isActive ?? this.isActive,
       rules: rules ?? this.rules,
       defaultRole: defaultRole ?? this.defaultRole,
+      fallbackTags: fallbackTags ?? this.fallbackTags,
+      fallbackTagsAction: fallbackTagsAction ?? this.fallbackTagsAction,
     );
   }
 
-  @override List<Object?> get props => [id, name, isActive, rules, defaultRole];
+  @override List<Object?> get props => [id, name, isActive, rules, defaultRole, fallbackTags, fallbackTagsAction];
 
 }
