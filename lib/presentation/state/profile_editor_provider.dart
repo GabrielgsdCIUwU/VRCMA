@@ -21,7 +21,9 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   bool get hasChanges {
     final nameChanged = state.name != _initialProfile.name;
     final rulesChanged = !const ListEquality().equals(state.rules, _initialProfile.rules);
-    return nameChanged || rulesChanged;
+    final tagsChanged = !const ListEquality().equals(state.fallbackTags, _initialProfile.fallbackTags);
+    final tagActionChanged = state.fallbackTagsAction != _initialProfile.fallbackTagsAction;
+    return nameChanged || rulesChanged || tagsChanged || tagActionChanged;
   }
   
   void updateName(String name) {
@@ -97,6 +99,26 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   void save() {
     ref.read(profileManagementProviderProvider.notifier).updateProfile(state);
   }
+  
+  void updateFallbackTagsAction(FallbackTagAction action) {
+    if (action == FallbackTagAction.disabled) {
+      state = state.copyWith(fallbackTagsAction: action, fallbackTags: []);
+    } else {
+      state = state.copyWith(fallbackTagsAction: action);
+    }
+  }
+  
+  void addFallbackTag(String tagId) {
+    if (!state.fallbackTags.contains(tagId)) {
+      final newTags = List<String>.from(state.fallbackTags)..add(tagId);
+      state = state.copyWith(fallbackTags: newTags);
+    }
+  }
+  
+  void removeFallbackTag(String tagId) {
+    final newTags = List<String>.from(state.fallbackTags)..remove(tagId);
+    state = state.copyWith(fallbackTags: newTags);
+  } 
 }
 
 extension RuleMessageContextExtension on RuleMessageContext {
