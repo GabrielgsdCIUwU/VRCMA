@@ -247,11 +247,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   }
   
   Widget _buildMessageContextSelector(int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages, RuleMessageContext contextType) {
+    final targetType = contextType.getExpectedMessageType(rule.action);
     final isInvite = contextType == RuleMessageContext.inviteResponse;
     
     final title = isInvite ? "ON INVITE RECEIVED" : "ON REQUEST TO JOIN";
-    final iconData = isInvite ? Icons.send_rounded : Icons.hail_rounded;
-    final color = isInvite ? Colors.blueAccent : Colors.orangeAccent;
+    final iconData = _getTypeIcon(targetType);
+    final color = _getTypeColor(targetType);
+    
     final currentMessage = isInvite ? rule.inviteResponseMessage : rule.requestResponseMessage;
     final hasMessage = currentMessage != null;
     
@@ -340,14 +342,12 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   }
   
   void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages, RuleMessageContext contextType) {
-    final targetType = contextType == RuleMessageContext.inviteResponse
-      ? VrcMessageType.response
-      : VrcMessageType.requestResponse;
+    final targetType = contextType.getExpectedMessageType(rule.action);
     
     final filteredMessages = allMessages.where((m) => m.type == targetType).toList();
     
     final isInvite = contextType == RuleMessageContext.inviteResponse;
-    final sheetTitle = isInvite ? "Select Invite Response" : "Select Request Response";
+    final sheetTitle = "Select ${_getTypeLabel(targetType)}";
     final currentMessageId = isInvite ? rule.inviteResponseMessage?.id : rule.requestResponseMessage?.id;
     
     showGenericSearchSheet<CustomMessage>(
@@ -359,7 +359,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         leading: const Icon(Icons.block, color: Colors.grey),
         title: const Text("None / Default VRChat Message"),
         subtitle: const Text("Use the game's default notification text"),
-        selected: rule.inviteResponseMessage == null,
+        selected: currentMessageId == null,
         onTap: () {
           ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, null, contextType);
           Navigator.pop(context);
@@ -368,8 +368,8 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       itemBuilder: (CustomMessage msg) {
         return ListTile(
           leading: Icon(
-              isInvite ? Icons.send_rounded : Icons.hail_rounded, 
-              color: isInvite ? Colors.blueAccent : Colors.orangeAccent,
+              _getTypeIcon(targetType), 
+              color: _getTypeColor(targetType),
               size: 20
           ),
           title: Text(msg.content),
