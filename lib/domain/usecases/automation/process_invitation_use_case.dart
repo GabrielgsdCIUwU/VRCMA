@@ -17,13 +17,11 @@ class ProcessInvitationUseCase {
   final UserRoleExtractor roleExtractor;
   final RuleSorter ruleSorter;
   final RuleEvaluator ruleEvaluator;
-  final DefaultActionResolver defaultResolver;
 
   ProcessInvitationUseCase({
     required this.roleExtractor,
     required this.ruleSorter,
     required this.ruleEvaluator,
-    required this.defaultResolver,
   });
 
   ProcessInvitationResult? execute({
@@ -65,14 +63,6 @@ class ProcessInvitationUseCase {
           )
         );
       }
-    }
-
-    final defaultRule = defaultResolver.resolve(profile);
-    if (defaultRule != null) {
-      return ProcessInvitationResult(
-          action: defaultRule.action,
-          rule: defaultRule,
-      );
     }
     return null;
   }
@@ -172,15 +162,5 @@ class RuleEvaluator {
 
   bool _matches(ProfileRule rule, Set<String> userRoles) {
     return userRoles.contains(rule.role.name.toLowerCase());
-  }
-}
-
-class DefaultActionResolver {
-  ProfileRule? resolve(FilterProfile profile) {
-    if (profile.defaultRole == null) return null;
-
-    return profile.rules.firstWhereOrNull(
-      (rule) => rule.role.id == profile.defaultRole!.id,
-    );
   }
 }

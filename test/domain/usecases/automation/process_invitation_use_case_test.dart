@@ -11,7 +11,6 @@ void main() {
       roleExtractor: UserRoleExtractor(),
       ruleSorter: RuleSorter(),
       ruleEvaluator: RuleEvaluator(),
-      defaultResolver: DefaultActionResolver(),
     );
   });
   
@@ -104,7 +103,6 @@ void main() {
       final profile = FilterProfile(
         name: "Fallback Profile",
         isActive: true,
-        defaultRole: roleFriend,
         rules: const [
           ProfileRule(role: roleFriend, priority: 10, action: RuleAction.reject),
           ProfileRule(role: roleVIP, priority: 1, action: RuleAction.accept),

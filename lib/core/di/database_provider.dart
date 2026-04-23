@@ -78,7 +78,6 @@ Future<AutomationProcessor> automationProcessor(Ref ref) async {
       roleExtractor: UserRoleExtractor(),
       ruleSorter: RuleSorter(),
       ruleEvaluator: RuleEvaluator(),
-      defaultResolver: DefaultActionResolver(),
     )
   );
 }

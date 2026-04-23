@@ -19,7 +19,6 @@ class ProfileRepositoryImp implements IProfileRepository {
           if (profile.id != null) 'id': profile.id,
           'name': profile.name,
           'is_active': profile.isActive ? 1 : 0,
-          'default_role_id': profile.defaultRole?.id,
           'target_languages': profile.fallbackTags.map((t) => t.id).join(','),
           'is_language_filter_enabled': profile.fallbackTagsAction.index,
         },
@@ -91,9 +90,6 @@ class ProfileRepositoryImp implements IProfileRepository {
         name: pMap['name'],
         isActive: pMap['is_active'] == 1,
         rules: rules,
-        defaultRole: pMap['default_role_id'] != null
-            ? Role(id: pMap['default_role_id'], name: pMap['role_name'])
-            : null,
         fallbackTags: (pMap['target_languages'] as String?)
           ?.split(',')
           .where((e) => e.trim().isNotEmpty)

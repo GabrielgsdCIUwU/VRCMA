@@ -67,9 +67,7 @@ class DatabaseService {
         name TEXT NOT NULL,
         target_languages TEXT,
         is_language_filter_enabled INTEGER DEFAULT 0,
-        is_active INTEGER DEFAULT 0,
-        default_role_id INTEGER,
-        FOREIGN KEY (default_role_id) REFERENCES roles (id)
+        is_active INTEGER DEFAULT 0
       )
     ''');
     
