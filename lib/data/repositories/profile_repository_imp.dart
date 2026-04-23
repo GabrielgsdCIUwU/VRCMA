@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
@@ -18,7 +20,7 @@ class ProfileRepositoryImp implements IProfileRepository {
           'name': profile.name,
           'is_active': profile.isActive ? 1 : 0,
           'default_role_id': profile.defaultRole?.id,
-          'target_languages': profile.fallbackTags.join(','),
+          'target_languages': profile.fallbackTags.map((t) => t.id).join(','),
           'is_language_filter_enabled': profile.fallbackTagsAction.index,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -95,6 +97,8 @@ class ProfileRepositoryImp implements IProfileRepository {
         fallbackTags: (pMap['target_languages'] as String?)
           ?.split(',')
           .where((e) => e.trim().isNotEmpty)
+          .map((id)  => VrcTag.allTags.firstWhereOrNull((t) => t.id == id.trim()))
+          .nonNulls
           .toList() ?? [],
         fallbackTagsAction: FallbackTagAction.values[pMap['is_language_filter_enabled'] as int? ?? 0],
       ));
