@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 enum VrcTagCategory { admin, system, trust, language }
 
-class VrcTag {
+class VrcTag extends Equatable {
   final String id;
   final String name;
   final String description;
@@ -12,6 +14,8 @@ class VrcTag {
     required this.description,
     required this.category,
   });
+  
+  @override List<Object?> get props => [id, name, description, category];
   
   static const List<VrcTag> allTags = [
     // Trust Ranks
