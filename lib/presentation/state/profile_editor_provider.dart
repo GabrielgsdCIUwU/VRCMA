@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 
 part 'profile_editor_provider.g.dart';
@@ -108,15 +109,15 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
     }
   }
   
-  void addFallbackTag(String tagId) {
-    if (!state.fallbackTags.contains(tagId)) {
-      final newTags = List<String>.from(state.fallbackTags)..add(tagId);
+  void addFallbackTag(VrcTag tag) {
+    if (!state.fallbackTags.contains(tag)) {
+      final newTags = List<VrcTag>.from(state.fallbackTags)..add(tag);
       state = state.copyWith(fallbackTags: newTags);
     }
   }
   
-  void removeFallbackTag(String tagId) {
-    final newTags = List<String>.from(state.fallbackTags)..remove(tagId);
+  void removeFallbackTag(VrcTag tag) {
+    final newTags = List<VrcTag>.from(state.fallbackTags)..remove(tag);
     state = state.copyWith(fallbackTags: newTags);
   } 
 }
