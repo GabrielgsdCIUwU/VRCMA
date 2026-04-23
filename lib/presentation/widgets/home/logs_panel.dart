@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
 import 'package:intl/intl.dart';
@@ -86,10 +87,12 @@ class _LogTile extends StatelessWidget {
     final isAccepted = log.action == 'ACCEPTED';
     final isInvite = log.invitationType == 'INVITE';
     
+    final typeColor = isInvite ? context.vrcColors.invite : context.vrcColors.request;
+    
    return Container(
      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
      decoration: BoxDecoration(
-       color: Colors.white.withValues(alpha: 0.02),
+       color: context.colorScheme.surfaceContainerHigh.withValues(alpha: 0.4),
        borderRadius: BorderRadius.circular(12),
      ),
      child: ListTile(
@@ -120,13 +123,13 @@ class _LogTile extends StatelessWidget {
              children: [
                _TypeBadge(
                  text: log.invitationType,
-                 color: isInvite ? Colors.blueGrey : Colors.deepPurple,
+                 color: typeColor
                ),
                const SizedBox(height: 8),
                Expanded(
                  child: Text(
                    log.appliedRule,
-                   style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+                   style: TextStyle(color: context.colorScheme.onSurfaceVariant, fontSize: 12),
                    overflow: TextOverflow.ellipsis,
                  ),
                ),
@@ -135,7 +138,7 @@ class _LogTile extends StatelessWidget {
            const SizedBox(height: 4),
            Text(
              _getRelativeTime(log.timestamp),
-             style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+             style: TextStyle(fontSize: 10, color: context.colorScheme.onSurface.withValues(alpha: 0.5)),
            ),
          ],
        ),
@@ -150,7 +153,7 @@ class _ActionStatus extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final color = isAccepted ? Colors.greenAccent : Colors.redAccent;
+    final color = isAccepted ? context.vrcColors.success : context.vrcColors.error;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
