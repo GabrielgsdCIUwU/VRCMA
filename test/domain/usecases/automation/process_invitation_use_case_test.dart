@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 void main() {
@@ -16,14 +17,14 @@ void main() {
   
   group("ProcessInvitationUseCase - Logic Execution", () {
     const roleVIP = Role(id: 1, name: "VIP");
-    const roleBlocked = Role(id: 1, name: "Blocked");
-    const roleFriend = Role(id: 1, name: "Friend");
+    const roleBlocked = Role(id: 2, name: "Blocked");
+    const roleFriend = Role(id: 3, name: "Friend");
     
     final mockRequest = RequestInvite(
       id: "req_1",
       senderId: "user_1",
       senderName: "<><",
-      senderTags: const ["language_en", "system_trust_veteran"],
+      senderTags: const ["language_eng", "system_trust_veteran"],
       avatarUrl: ''
     );
     
@@ -98,14 +99,33 @@ void main() {
       expect(result, isNotNull);
       expect(result!.action, RuleAction.accept);
     });
-    
-    test("Should return profile default action if no specific rules match", () {
+    test("Should return null (ignore) if no specific rules or tags match", () {
       final profile = FilterProfile(
-        name: "Fallback Profile",
+        name: "Strict Profile",
         isActive: true,
         rules: const [
-          ProfileRule(role: roleFriend, priority: 10, action: RuleAction.reject),
-          ProfileRule(role: roleVIP, priority: 1, action: RuleAction.accept),
+          ProfileRule(role: roleFriend, priority: 1, action: RuleAction.reject),
+          ProfileRule(role: roleVIP, priority: 2, action: RuleAction.accept),
+        ],
+      );
+
+      final result = useCase.execute(
+        request: mockRequest,
+        profile: profile,
+        userAssignedRoles: const [],
+      );
+
+      expect(result, isNull);
+    });
+
+    test("Should apply fallback tag action if no rules match but user has matching VrcTag", () {
+      final profile = FilterProfile(
+        name: "Tag Profile",
+        isActive: true,
+        rules: const [],
+        fallbackTagsAction: FallbackTagAction.accept,
+        fallbackTags: const [
+          VrcTag(id: 'system_trust_veteran', name: 'Veteran User', description: '', category: VrcTagCategory.trust)
         ],
       );
       
@@ -116,8 +136,8 @@ void main() {
       );
 
       expect(result, isNotNull);
-      expect(result!.action, RuleAction.reject);
-      expect(result.rule.role, roleFriend);
+      expect(result!.action, RuleAction.accept);
+      expect(result.rule.role.name, "Tag Veteran User");
     });
   });
   
