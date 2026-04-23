@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 
 part 'profile_editor_provider.g.dart';
@@ -21,7 +22,9 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   bool get hasChanges {
     final nameChanged = state.name != _initialProfile.name;
     final rulesChanged = !const ListEquality().equals(state.rules, _initialProfile.rules);
-    return nameChanged || rulesChanged;
+    final tagsChanged = !const ListEquality().equals(state.fallbackTags, _initialProfile.fallbackTags);
+    final tagActionChanged = state.fallbackTagsAction != _initialProfile.fallbackTagsAction;
+    return nameChanged || rulesChanged || tagsChanged || tagActionChanged;
   }
   
   void updateName(String name) {
@@ -97,6 +100,26 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   void save() {
     ref.read(profileManagementProviderProvider.notifier).updateProfile(state);
   }
+  
+  void updateFallbackTagsAction(FallbackTagAction action) {
+    if (action == FallbackTagAction.disabled) {
+      state = state.copyWith(fallbackTagsAction: action, fallbackTags: []);
+    } else {
+      state = state.copyWith(fallbackTagsAction: action);
+    }
+  }
+  
+  void addFallbackTag(VrcTag tag) {
+    if (!state.fallbackTags.contains(tag)) {
+      final newTags = List<VrcTag>.from(state.fallbackTags)..add(tag);
+      state = state.copyWith(fallbackTags: newTags);
+    }
+  }
+  
+  void removeFallbackTag(VrcTag tag) {
+    final newTags = List<VrcTag>.from(state.fallbackTags)..remove(tag);
+    state = state.copyWith(fallbackTags: newTags);
+  } 
 }
 
 extension RuleMessageContextExtension on RuleMessageContext {

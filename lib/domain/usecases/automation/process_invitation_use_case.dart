@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 
 
 class ProcessInvitationResult {
@@ -43,6 +44,28 @@ class ProcessInvitationUseCase {
         rule: matchedRule
       );
     }
+    
+    if (profile.fallbackTagsAction != FallbackTagAction.disabled && profile.fallbackTags.isNotEmpty) {
+      final matchedTag = profile.fallbackTags.firstWhereOrNull(
+              (tag) => userRoles.contains(tag.id.toLowerCase())
+                  || userRoles.contains(tag.name.toLowerCase())
+      );
+      
+      if (matchedTag != null) {
+        final action = profile.fallbackTagsAction == FallbackTagAction.accept
+            ? RuleAction.accept
+            : RuleAction.reject;
+        
+        return ProcessInvitationResult(
+          action: action,
+          rule: ProfileRule(
+            role: Role(id: -1, name: "Tag ${matchedTag.name}"),
+            priority: 999,
+            action: action
+          )
+        );
+      }
+    }
 
     final defaultRule = defaultResolver.resolve(profile);
     if (defaultRule != null) {
@@ -60,8 +83,15 @@ class UserRoleExtractor {
       InvitationType request,
       List<Role> userAssignedRoles,
       ) {
+    final rawTags = request.senderTags.map((t) => t.toLowerCase()).toSet();
+    
+    final humanReadableTags = rawTags.map((tagId) {
+      final knownTag = VrcTag.allTags.firstWhereOrNull((t) => t.id.toLowerCase() == tagId);
+      return knownTag?.name.toLowerCase();
+    }).nonNulls;
     return {
-      ...request.senderTags.map((t) => t.toLowerCase()),
+      ...rawTags,
+      ...humanReadableTags,
       ...userAssignedRoles.map((r) => r.name.toLowerCase()),
     };
   }
