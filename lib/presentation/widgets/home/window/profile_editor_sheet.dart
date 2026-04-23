@@ -1,8 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
@@ -177,7 +179,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 800),
-                    child: _buildRulesList(currentProfile, allMessagesAsync),
+                    child: Column(
+                      children: [
+                        Expanded(child: _buildRulesList(currentProfile, allMessagesAsync)),
+                        const Divider(height: 1, color: Colors.white10),
+                        _buildFallbackTagsSection(currentProfile),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -195,13 +203,19 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           padding: const EdgeInsets.all(16),
           child: _buildNameField(),
         ),
-        const Divider(),
+        const Divider(height: 1),
         const ListTile(
           title: Text("Priority rules"),
           subtitle: Text("The higher-level rules are evaluated first"),
         ),
         Expanded(
-          child: _buildRulesList(currentProfile, allMessagesAsync),
+          child: Column(
+            children: [
+              Expanded(child: _buildRulesList(currentProfile, allMessagesAsync)),
+              const Divider(height: 1, color: Colors.white10),
+              _buildFallbackTagsSection(currentProfile),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16),
@@ -209,7 +223,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
             width: double.infinity,
             child: _buildAddRuleButton(currentProfile, allRolesAsync),
           ),
-        )
+        ),
       ],
     );
   }
@@ -531,5 +545,136 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         }
       }
     );
+  }
+  
+  Widget _buildFallbackTagsSection(FilterProfile currentProfile) {
+    final isEnabled = currentProfile.fallbackTagsAction != FallbackTagAction.disabled;
+    
+    return Container(
+      padding: const EdgeInsets.all(24),
+      color: Colors.black12,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("FALLBACK TAGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    letterSpacing: 1.2,
+                    color: Colors.grey.shade400,
+                    fontWeight: FontWeight.bold
+                  )),
+                  const SizedBox(height: 4),
+                  const Text("Evaluated if no role matches", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: currentProfile.fallbackTagsAction == FallbackTagAction.accept
+                      ? Colors.green.withValues(alpha: 0.1)
+                      : currentProfile.fallbackTagsAction == FallbackTagAction.reject
+                        ? Colors.red.withValues(alpha: 0.1)
+                        : Colors.grey.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButton<FallbackTagAction>(
+                  value: currentProfile.fallbackTagsAction,
+                  underline: const SizedBox(),
+                  icon: const Icon(Icons.arrow_drop_down, size: 20),
+                  items: [
+                    const DropdownMenuItem(value: FallbackTagAction.disabled, child: Text("DISABLED", style: TextStyle(fontSize: 13, color: Colors.grey))),
+                    const DropdownMenuItem(value: FallbackTagAction.accept, child: Text("ACCEPT", style: TextStyle(fontSize: 13, color: Colors.greenAccent))),
+                    const DropdownMenuItem(value: FallbackTagAction.reject, child: Text("REJECT", style: TextStyle(fontSize: 13, color: Colors.redAccent))),
+                  ],
+                  onChanged: (val) {
+                    if (val != null) {
+                      ref.read(profileEditorProvider(widget.profile).notifier).updateFallbackTagsAction(val);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          if (isEnabled) ...[
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ...currentProfile.fallbackTags.map((tag) {
+                  return Chip(
+                    label: Text(tag.name, style: const TextStyle(fontSize: 12)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () => ref.read(profileEditorProvider(widget.profile).notifier).removeFallbackTag(tag),
+                    backgroundColor: Colors.white.withValues(alpha: 0.05),
+                    side: const BorderSide(color: Colors.white10),
+                  );
+                }),
+                ActionChip(
+                  avatar: const Icon(Icons.add, size: 16),
+                  label: const Text("Add Tag"),
+                  backgroundColor: Colors.deepPurpleAccent.withValues(alpha: 0.2),
+                  side: const BorderSide(color: Colors.deepPurpleAccent),
+                  onPressed: () => _showTagSelectionDialog(currentProfile),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+  
+  void _showTagSelectionDialog(FilterProfile currentProfile) {
+    final availableTags = VrcTag.allTags.where((tag) => !currentProfile.fallbackTags.contains(tag)).toList();
+    
+    showGenericSearchSheet<VrcTag>(
+      context: context,
+      items: availableTags,
+      searchHint: "Search tags or languages...",
+      searchableText: (VrcTag tag) => "${tag.name} ${tag.description} ${tag.id}",
+      itemBuilder: (VrcTag tag) {
+        return ListTile(
+          leading: _getTagIcon(tag.category),
+          title: Text(tag.name),
+          subtitle: Text(tag.description, style: const TextStyle(fontSize: 12)),
+          trailing: Text(tag.category.name.toUpperCase(), style: const TextStyle(fontSize: 9, color: Colors.grey)),
+        );
+      },
+      onSelected: (VrcTag? tag) {
+        if (tag != null) {
+          ref.read(profileEditorProvider(widget.profile).notifier).addFallbackTag(tag);
+          Navigator.pop(context);
+        }
+      }
+    );
+  }
+  
+  Widget _getTagIcon(VrcTagCategory category) {
+    IconData icon;
+    Color color;
+    switch (category) {
+      case VrcTagCategory.admin:
+        icon = Icons.admin_panel_settings;
+        color = Colors.redAccent;
+        break;
+      case VrcTagCategory.system:
+        icon = Icons.settings_system_daydream;
+        color = Colors.blueAccent;
+        break;
+      case VrcTagCategory.trust:
+        icon = Icons.shield;
+        color = Colors.orangeAccent;
+        break;
+      case VrcTagCategory.language:
+        icon = Icons.language;
+        color = Colors.greenAccent;
+        break;
+    }
+    return Icon(icon, color: color, size: 24);
   }
 }
