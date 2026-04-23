@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 
 class Role extends Equatable {
   final int id;
@@ -62,7 +63,7 @@ class FilterProfile extends Equatable{
   final bool isActive;
   final List<ProfileRule> rules;
   final Role? defaultRole;
-  final List<String> fallbackTags;
+  final List<VrcTag> fallbackTags;
   final FallbackTagAction fallbackTagsAction;
 
   const FilterProfile({
@@ -81,7 +82,7 @@ class FilterProfile extends Equatable{
     bool? isActive,
     List<ProfileRule>? rules,
     Role? defaultRole,
-    List<String>? fallbackTags,
+    List<VrcTag>? fallbackTags,
     FallbackTagAction? fallbackTagsAction,
   }) {
     return FilterProfile(
