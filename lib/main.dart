@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
@@ -39,6 +40,21 @@ class MyApp extends ConsumerWidget {
           brightness: Brightness.dark
         ),
         useMaterial3: true,
+        extensions: const [
+          VrcSemanticColors(
+            invite: Colors.blueAccent,
+            request: Colors.orangeAccent,
+            response: Colors.greenAccent,
+            requestResponse: Colors.purpleAccent,
+            statusOnline: Colors.greenAccent,
+            statusJoinMe: Colors.blueAccent,
+            statusAskMe: Colors.orangeAccent,
+            statusBusy: Colors.redAccent,
+            statusOffline: Colors.grey,
+            success: Colors.green,
+            error: Colors.redAccent,
+          )
+        ],
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           filled: true,
