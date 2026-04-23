@@ -62,7 +62,6 @@ class FilterProfile extends Equatable{
   final String name;
   final bool isActive;
   final List<ProfileRule> rules;
-  final Role? defaultRole;
   final List<VrcTag> fallbackTags;
   final FallbackTagAction fallbackTagsAction;
 
@@ -71,7 +70,6 @@ class FilterProfile extends Equatable{
     required this.name,
     this.isActive = false,
     this.rules = const [],
-    this.defaultRole,
     this.fallbackTags = const [],
     this.fallbackTagsAction = FallbackTagAction.disabled,
   });
@@ -81,7 +79,6 @@ class FilterProfile extends Equatable{
     String? name,
     bool? isActive,
     List<ProfileRule>? rules,
-    Role? defaultRole,
     List<VrcTag>? fallbackTags,
     FallbackTagAction? fallbackTagsAction,
   }) {
@@ -90,12 +87,11 @@ class FilterProfile extends Equatable{
       name: name ?? this.name,
       isActive: isActive ?? this.isActive,
       rules: rules ?? this.rules,
-      defaultRole: defaultRole ?? this.defaultRole,
       fallbackTags: fallbackTags ?? this.fallbackTags,
       fallbackTagsAction: fallbackTagsAction ?? this.fallbackTagsAction,
     );
   }
 
-  @override List<Object?> get props => [id, name, isActive, rules, defaultRole, fallbackTags, fallbackTagsAction];
+  @override List<Object?> get props => [id, name, isActive, rules, fallbackTags, fallbackTagsAction];
 
 }
