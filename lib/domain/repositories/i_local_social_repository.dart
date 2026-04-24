@@ -1,3 +1,4 @@
+import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 
@@ -15,4 +16,6 @@ abstract class ILocalSocialRepository {
   Future<List<RoleAutomation>> getRoleAutomations();
   Future<void> saveRoleAutomation(RoleAutomation automation);
   Future<void> deleteRoleAutomation(int automationId);
+  Future<List<String>> getKnownUserIds();
+  Future<void> saveKnownUserIds(List<VrcUser> users);
 }
