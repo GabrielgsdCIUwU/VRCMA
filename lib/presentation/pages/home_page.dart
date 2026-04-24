@@ -32,7 +32,7 @@ class HomePage extends ConsumerWidget {
             ],
           )
       ),
-      bottomNavigationBar: MediaQuery.of(context).size.width <= 900 ? NavigationBar(
+      bottomNavigationBar: MediaQuery.of(context).size.width <= 1100 ? NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (i) => ref.read(navigationStackProvider.notifier).setIndex(i),
         destinations: const [
@@ -64,11 +64,11 @@ class HomePage extends ConsumerWidget {
   Widget _buildWideLayout() {
     return const Row(
       children: [
-        Expanded(flex: 2, child: AutomationSettingsPanel()),
+        Expanded(flex: 1, child: AutomationSettingsPanel()),
         VerticalDivider(width: 1),
         Expanded(flex: 3, child: _MainWorkspace()),
         VerticalDivider(width: 1),
-        Expanded(flex: 2, child: FriendsPanel()),
+        Expanded(flex: 1, child: FriendsPanel()),
       ],
     );
   }
