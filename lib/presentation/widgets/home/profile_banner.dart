@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
@@ -18,7 +19,7 @@ class ProfileBanner extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              border: const Border(bottom: BorderSide(color: Colors.white10))),
+              border: Border(bottom: BorderSide(color: context.colorScheme.outlineVariant))),
           child: Row(
             children: [
               VrcAvatar(

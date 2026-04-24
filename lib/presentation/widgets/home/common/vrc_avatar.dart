@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 
 class VrcAvatar extends ConsumerWidget {
@@ -19,7 +21,7 @@ class VrcAvatar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (imageUrl == null || imageUrl!.isEmpty) {
-      return _buildPlaceholder();
+      return _buildPlaceholder(context);
     }
     
     final resolvedUrlAsync = ref.watch(vrcResolvedImageProvider(imageUrl!));
@@ -29,28 +31,28 @@ class VrcAvatar extends ConsumerWidget {
       child: resolvedUrlAsync.when(
         data: (finalUrl) => CircleAvatar(
           radius: radius,
-          backgroundColor: Colors.black26,
+          backgroundColor: context.colorScheme.surfaceContainerHighest,
           backgroundImage: NetworkImage(finalUrl),
-          onBackgroundImageError: (_, _) => _buildPlaceholder(),
+          onBackgroundImageError: (_, _) => _buildPlaceholder(context),
         ),
         loading: () => SizedBox(
           width: radius * 2,
           height: radius * 2,
           child: const CircularProgressIndicator(strokeWidth: 2),
         ),
-        error: (err, _) => _buildPlaceholder(error: err.toString()),
+        error: (err, _) => _buildPlaceholder(context, error: err.toString()),
       ),
     );
   }
   
-  Widget _buildPlaceholder({String? error}) {
+  Widget _buildPlaceholder(BuildContext context, {String? error}) {
     return CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.deepPurple.shade700,
+      backgroundColor: context.colorScheme.primaryContainer,
       child: Text(
         displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
         style: TextStyle(
-          color: Colors.white,
+          color: context.colorScheme.onPrimaryContainer,
           fontWeight: FontWeight.bold,
           fontSize: radius * 0.8,
         ),

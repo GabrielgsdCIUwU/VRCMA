@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/slot_card.dart';
@@ -18,7 +19,7 @@ class MessagesPanel extends ConsumerWidget {
         child: Column(
           children: [
             Container(
-              color: Colors.black26,
+              color: context.colorScheme.surfaceContainerHigh,
               child: const TabBar(
                 isScrollable: true,
                 tabs: [
@@ -83,7 +84,7 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
     final unassigned = unassignedMessages;
     
     return Container(
-      color: Colors.black12,
+      color: context.colorScheme.surfaceContainer,
       child: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -131,10 +132,10 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
           
           if (isLibraryExpanded) ...[
             if (widget.messages.isEmpty)
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 32),
-                child: Center(child: Text("Library is empty", style: TextStyle(color: Colors.white24))),
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Center(child: Text("Library is empty", style: TextStyle(color: context.colorScheme.onSurfaceVariant))),
               ),
             )
           else ...[
@@ -256,11 +257,11 @@ class CollapsibleHeader extends StatelessWidget {
                   ? Icons.keyboard_arrow_down
                   : (isPrimary ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_right),
               size: isPrimary ? 20 : 16,
-              color: isPrimary ? Colors.grey : Colors.white38,
+              color: isPrimary ? context.colorScheme.onSurfaceVariant : context.colorScheme.onSurface.withValues(alpha: 0.4),
             ),
             const SizedBox(width: 4),
             if (isPrimary && icon != null) ...[
-              Icon(icon, size: 18, color: Colors.grey),
+              Icon(icon, size: 18, color: context.colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
             ],
             Expanded(
@@ -270,7 +271,7 @@ class CollapsibleHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                   fontSize: isPrimary ? 14 : 11,
-                  color: isPrimary ? Colors.grey : Colors.white38,
+                  color: isPrimary ? context.colorScheme.onSurfaceVariant : context.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -292,12 +293,12 @@ class _CountBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: context.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         count.toString(),
-        style: const TextStyle(fontSize: 10, color: Colors.white54),
+        style: TextStyle(fontSize: 10, color: context.colorScheme.onSurfaceVariant),
       ),
     );
   }
@@ -317,7 +318,7 @@ class _SlotMonitorHeader extends ConsumerWidget {
       isExpanded: isExpanded,
       onToggle: onToggle,
       action: IconButton(
-        icon: const Icon(Icons.refresh, size: 20, color: Colors.blueAccent),
+        icon: Icon(Icons.refresh, size: 20, color: context.colorScheme.primary),
         onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
         tooltip: "Sync from VRChat",
       ),
@@ -340,7 +341,7 @@ class _LibraryHeader extends ConsumerWidget {
       isExpanded: isExpanded,
       onToggle: onToggle,
       action: IconButton(
-        icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.deepPurpleAccent),
+        icon: Icon(Icons.add_circle_outline, size: 20, color: context.colorScheme.primary),
         onPressed: () => _showAddDialog(context, ref, type),
         tooltip: "Add message",
       ),
@@ -364,9 +365,9 @@ class _LibraryHeader extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               "This message will be stored in your library and can be assigned to automation rules.",
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -381,7 +382,7 @@ class _LibraryHeader extends ConsumerWidget {
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 prefixIcon: const Icon(Icons.short_text),
-                counterStyle: const TextStyle(color: Colors.deepPurpleAccent),
+                counterStyle: TextStyle(color: context.colorScheme.primary),
               ),
               onSubmitted: (val) {
                 if (val.trim().isNotEmpty) {
@@ -394,12 +395,10 @@ class _LibraryHeader extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child: Text("Cancel", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
           ),
-          ElevatedButton(
+          FilledButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurpleAccent,
-              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: () {
@@ -444,23 +443,23 @@ class _LibraryTile extends ConsumerWidget {
       ),
       subtitle: Text(
         msg.type.name.toUpperCase(),
-        style: const TextStyle(fontSize: 9, color: Colors.deepPurpleAccent, letterSpacing: 1),
+        style: TextStyle(fontSize: 9, color: context.colorScheme.primary, letterSpacing: 1),
       ),
       trailing: msg.isActive
         ? Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.green.withValues(alpha: 0.1),
+          color: context.vrcColors.success.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text("Slot ${msg.slotIndex! + 1}", style: TextStyle(
-            color: Colors.greenAccent,
+            color: context.vrcColors.success,
             fontSize: 10,
             fontWeight: FontWeight.bold
           )),
       )
           : IconButton(
-        icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+        icon: Icon(Icons.delete_outline, size: 18, color: context.colorScheme.error),
         onPressed: () => ref.read(messageManagementProvider.notifier).deleteMessage(msg.id!),
       ),
     );
@@ -521,7 +520,7 @@ class _Header extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           "Category: ${message.type.name.toUpperCase()}",
-          style: const TextStyle(color: Colors.deepPurpleAccent, fontSize: 10),
+          style: TextStyle(color: context.colorScheme.primary, fontSize: 10),
         ),
       ],
     );
@@ -585,11 +584,11 @@ class _SlotItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.deepPurpleAccent
-              : Colors.white.withValues(alpha: 0.05),
+              ? context.colorScheme.primary
+              : context.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? Colors.white : Colors.white10,
+            color: isSelected ? context.colorScheme.onPrimary : context.colorScheme.outlineVariant,
           ),
         ),
         child: Center(
@@ -597,7 +596,7 @@ class _SlotItem extends StatelessWidget {
             "${index + 1}",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.white70,
+              color: isSelected ? context.colorScheme.onPrimary : context.colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -610,7 +609,7 @@ void _showErrorSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      backgroundColor: Colors.redAccent,
+      backgroundColor: context.colorScheme.error,
       behavior: SnackBarBehavior.floating,
     ),
   );

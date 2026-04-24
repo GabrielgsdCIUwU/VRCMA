@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class SlotCard  extends StatelessWidget {
@@ -13,9 +14,9 @@ class SlotCard  extends StatelessWidget {
     
    return Card(
      elevation: 0,
-     color: isEmpty ? Colors.transparent : Colors.deepPurpleAccent.withValues(alpha: 0.05),
+     color: isEmpty ? Colors.transparent : context.colorScheme.primary.withValues(alpha: 0.05),
      shape: RoundedRectangleBorder(
-       side: BorderSide(color: isEmpty ? Colors.white10 : Colors.deepPurpleAccent.withValues(alpha: 0.3)),
+       side: BorderSide(color: isEmpty ? context.colorScheme.outlineVariant : context.colorScheme.primary.withValues(alpha: 0.3)),
        borderRadius: BorderRadiusGeometry.circular(4),
      ),
      child: Padding(
@@ -25,14 +26,16 @@ class SlotCard  extends StatelessWidget {
          children: [
            Text(
              "SLOT ${index.toString().padLeft(2, '0')}",
-             style: TextStyle(fontSize: 9, color: isEmpty ? Colors.grey : Colors.deepPurpleAccent, fontWeight: FontWeight.bold),
+             style: TextStyle(fontSize: 9, color: isEmpty ? context.colorScheme.onSurfaceVariant : context.colorScheme.primary, fontWeight: FontWeight.bold),
            ),
            const SizedBox(height: 4),
            Text(
              isEmpty ? "---" : message!.content,
              maxLines: 1,
              overflow: TextOverflow.ellipsis,
-             style: TextStyle(fontSize: 11, color: isEmpty ? Colors.white24 : Colors.white),
+             style: TextStyle(fontSize: 11, color: isEmpty
+                 ? context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
+                 : context.colorScheme.onSurface),
            ),
          ],
        ),
