@@ -109,6 +109,24 @@ class DatabaseService {
         FOREIGN KEY (request_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE role_automations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trigger_type TEXT NOT NULL,
+        target_value TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE automation_assigned_roles (
+        automation_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (automation_id, role_id),
+        FOREIGN KEY (automation_id) REFERENCES role_automations (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
