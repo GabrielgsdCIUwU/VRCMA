@@ -1,10 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
+import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
 
 class AutomationSettingsPanel extends ConsumerWidget {
@@ -30,6 +35,20 @@ class AutomationSettingsPanel extends ConsumerWidget {
            title: "Roles",
            onAdd: () => _showCreateRoleDialog(context, ref),
            child: const _RoleListContent(),
+         ),
+       ),
+       const Divider(height: 1, thickness: 1),
+
+       Expanded(
+         flex: 2,
+         child: _ConfigurationSection(
+           title: "Friend Automations",
+           onAdd: () {
+             Navigator.push(context, MaterialPageRoute(
+               builder: (_) => const RoleAutomationEditorSheet()
+             ));
+           },
+           child: const _RoleAutomationListContent(),
          ),
        ),
      ],
@@ -426,5 +445,67 @@ class _CreateProfileDialogState extends State<_CreateProfileDialog> {
     
     widget.onConfirm(_controller.text);
     Navigator.pop(context);
+  }
+}
+
+class _RoleAutomationListContent extends ConsumerWidget {
+  const _RoleAutomationListContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listAsync = ref.watch(roleAutomationListProvider);
+
+    return listAsync.when(
+      data: (automations) {
+        if (automations.isEmpty) {
+          return Center(
+            child: Text("No automations configured", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+          );
+        }
+        return ListView.separated(
+          itemCount: automations.length,
+          separatorBuilder: (_, _) => const Divider(height: 1, indent: 40),
+          itemBuilder: (context, i) {
+            final auto = automations[i];
+            final title = auto.trigger == AutomationTrigger.newFriend
+              ? "On New Friend"
+              : "Has Tag: ${VrcTag.allTags.firstWhereOrNull((t) => t.id == auto.targetValue)?.name ?? auto.targetValue}";
+
+            return ListTile(
+              dense: true,
+              leading: Icon(
+                auto.trigger == AutomationTrigger.newFriend ? Icons.person_add : Icons.tag,
+                color: context.colorScheme.primary,
+                size: 20,
+              ),
+              title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              subtitle: Text("Assigns: ${auto.roles.map((r) => r.name).join(', ')}",
+                style: const TextStyle(fontSize: 12),
+                maxLines: 1, overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (_) => RoleAutomationEditorSheet(automation: auto)
+                      ));
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline, size: 18, color: context.colorScheme.error),
+                    onPressed: () => ref.read(roleAutomationListProvider.notifier).delete(auto.id!),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text("Error: $err")),
+    );
   }
 }
