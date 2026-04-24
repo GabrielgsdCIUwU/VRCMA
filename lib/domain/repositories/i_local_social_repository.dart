@@ -1,4 +1,5 @@
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
 
 abstract class ILocalSocialRepository {
   Future<List<Role>> getRolesForUser(String userId);
@@ -11,4 +12,7 @@ abstract class ILocalSocialRepository {
   Future<List<String>> getUserIdsByRole(int roleId);
   Future<void> updateRoleName(int roleId, String newName);
   Future<void> syncRoleMembers(int roleId, Set<String> newUserIds);
+  Future<List<RoleAutomation>> getRoleAutomations();
+  Future<void> saveRoleAutomation(RoleAutomation automation);
+  Future<void> deleteRoleAutomation(int automationId);
 }
