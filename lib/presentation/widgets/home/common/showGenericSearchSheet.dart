@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 
 typedef SearchableTextCallback<T> = String Function(T item);
 typedef ItemBuilderCallback<T> = Widget Function(T item);
@@ -77,7 +78,7 @@ class _GenericSearchContentState<T> extends State<_GenericSearchContent<T>> {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 12),
           width: 40, height: 4,
-          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+          decoration: BoxDecoration(color: context.colorScheme.outlineVariant, borderRadius: BorderRadius.circular(2)),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
