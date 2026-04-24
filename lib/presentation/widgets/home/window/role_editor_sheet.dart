@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:collection/collection.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
@@ -87,7 +88,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, 'discard'),
-            child: const Text("Discard", style: TextStyle(color: Colors.red)),
+            child: Text("Discard", style: TextStyle(color: context.colorScheme.error)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, 'save'),
@@ -118,7 +119,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
           title: const Text("Edit Role"),
           actions: [
             IconButton(
-              icon: Icon(Icons.save, color: _hasChanges ? Colors.greenAccent : null),
+              icon: Icon(Icons.save, color: _hasChanges ? context.vrcColors.success : null),
               onPressed: _hasChanges ? _saveAndExit : null,
             ),
           ],
