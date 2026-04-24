@@ -9,7 +9,7 @@ class ResponsiveLayout extends StatelessWidget {
     super.key,
     required this.mobile,
     required this.desktop,
-    this.breakpoint = 900,
+    this.breakpoint = 1100,
   });
   
   @override
