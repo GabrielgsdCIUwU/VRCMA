@@ -17,5 +17,5 @@ abstract class ILocalSocialRepository {
   Future<void> saveRoleAutomation(RoleAutomation automation);
   Future<void> deleteRoleAutomation(int automationId);
   Future<List<String>> getKnownUserIds();
-  Future<void> saveKnownUserIds(List<VrcUser> users);
+  Future<void> saveKnownUsers(List<VrcUser> users);
 }

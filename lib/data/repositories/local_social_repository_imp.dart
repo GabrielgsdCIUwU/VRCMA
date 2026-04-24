@@ -199,7 +199,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   }
 
   @override
-  Future<void> saveKnownUserIds(List<VrcUser> userIds) async {
+  Future<void> saveKnownUsers(List<VrcUser> userIds) async {
     final batch = _db.batch();
     for (final user in userIds) {
       batch.insert('vrc_users', {
