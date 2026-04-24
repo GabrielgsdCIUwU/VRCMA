@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 
 class LocalSocialRepositoryImp implements ILocalSocialRepository {
@@ -125,5 +126,68 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
         });
       }
     });
+  }
+
+  @override
+  Future<List<RoleAutomation>> getRoleAutomations() async {
+    final maps = await _db.rawQuery('''
+      SELECT a.id, a.trigger_type, a.target_value, r.id as role_id, r.name as role_name
+      FROM role_automations a
+      LEFT JOIN automation_assigned_roles ar ON a.id = ar.automation_id
+      LEFT JOIN roles r ON ar.role_id = r.id
+    ''');
+
+    final Map<int, RoleAutomation> automationMap = {};
+
+    for (final row  in maps) {
+      final id = row['id'] as int;
+      final trigger = row['trigger_type'] == 'newFriend' ? AutomationTrigger.newFriend : AutomationTrigger.hasTag;
+      final targetValue = row['target_value'] as String?;
+
+      automationMap.putIfAbsent(id, () => RoleAutomation(
+        id: id,
+        trigger: trigger,
+        targetValue: targetValue,
+        roles: [],
+      ));
+
+      if (row['role_id'] != null) {
+        automationMap[id]!.roles.add(Role(
+          id: row['role_id'] as int,
+          name: row['role_name'] as String,
+        ));
+      }
+    }
+    return automationMap.values.toList();
+  }
+
+  @override
+  Future<void> saveRoleAutomation(RoleAutomation automation) async {
+    await _db.transaction((txn) async {
+      final id = await txn.insert('role_automations', {
+        if (automation.id != null) 'id': automation.id,
+        'trigger_type': automation.trigger.name,
+        'target_value': automation.targetValue,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+
+      final automationId = automation.id ?? id;
+
+      await txn.delete('automation_assigned_roles',
+        where: 'automation_id = ?',
+        whereArgs: [automationId]
+      );
+
+      for (final role in automation.roles) {
+        await txn.insert('automation_assigned_roles', {
+          'automation_id': automationId,
+          'role_id': role.id,
+        });
+      }
+    });
+  }
+
+  @override
+  Future<void> deleteRoleAutomation(int automationId) async {
+    await _db.delete('role_automations', where: 'id = ?', whereArgs: [automationId]);
   }
 }
