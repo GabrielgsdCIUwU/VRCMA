@@ -40,7 +40,7 @@ class AutomationSettingsPanel extends ConsumerWidget {
        const Divider(height: 1, thickness: 1),
 
        Expanded(
-         flex: 2,
+         flex: 1,
          child: _ConfigurationSection(
            title: "Friend Automations",
            onAdd: () {
@@ -102,12 +102,16 @@ class _ConfigurationSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title.toUpperCase(),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+              Expanded(
+                child: Text(
+                  title.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               IconButton(
