@@ -10,6 +10,7 @@ import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
 import 'package:vrcma/presentation/state/profile_editor_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/vrc_tag_extension.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
   final FilterProfile profile;
@@ -640,7 +641,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       searchableText: (VrcTag tag) => "${tag.name} ${tag.description} ${tag.id}",
       itemBuilder: (VrcTag tag) {
         return ListTile(
-          leading: _getTagIcon(tag.category),
+          leading: tag.category.getIcon(context),
           title: Text(tag.name),
           subtitle: Text(tag.description, style: const TextStyle(fontSize: 12)),
           trailing: Text(tag.category.name.toUpperCase(), style: TextStyle(fontSize: 9, color: context.colorScheme.onSurfaceVariant)),
@@ -653,29 +654,5 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         }
       }
     );
-  }
-  
-  Widget _getTagIcon(VrcTagCategory category) {
-    IconData icon;
-    Color color;
-    switch (category) {
-      case VrcTagCategory.admin:
-        icon = Icons.admin_panel_settings;
-        color = context.colorScheme.error;
-        break;
-      case VrcTagCategory.system:
-        icon = Icons.settings_system_daydream;
-        color = context.colorScheme.primary;
-        break;
-      case VrcTagCategory.trust:
-        icon = Icons.shield;
-        color = context.vrcColors.request;
-        break;
-      case VrcTagCategory.language:
-        icon = Icons.language;
-        color = context.vrcColors.success;
-        break;
-    }
-    return Icon(icon, color: color, size: 24);
   }
 }
