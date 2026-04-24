@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
@@ -37,18 +38,18 @@ class _FriendTitle extends StatelessWidget {
 
   const _FriendTitle({required this.user});
 
-  Color _getStatusColor(String? status) {
+  Color _getStatusColor(BuildContext context, String? status) {
     switch (status?.toLowerCase()) {
       case 'active':
-        return Colors.greenAccent;
+        return context.vrcColors.statusOnline;
       case 'join me':
-        return Colors.blueAccent;
+        return context.vrcColors.statusJoinMe;
       case 'ask me':
-        return Colors.orangeAccent;
+        return context.vrcColors.statusAskMe;
       case 'busy':
-        return Colors.redAccent;
+        return context.vrcColors.statusBusy;
       default:
-        return Colors.grey;
+        return context.vrcColors.statusOffline;
     }
   }
 
@@ -72,9 +73,9 @@ class _FriendTitle extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: _getStatusColor(user.status),
+                color: _getStatusColor(context, user.status),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.black, width: 2),
+                border: Border.all(color: context.colorScheme.surface, width: 2),
               ),
             ),
           ),
@@ -89,7 +90,7 @@ class _FriendTitle extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: Colors.white.withValues(alpha: 0.6),
+          color: context.colorScheme.onSurfaceVariant,
           fontSize: 12,
         ),
       ),
