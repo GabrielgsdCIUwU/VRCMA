@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
@@ -50,7 +51,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, 'discard'),
-            child: const Text("Discard", style: TextStyle(color: Colors.red)),
+            child: Text("Discard", style: TextStyle(color: context.colorScheme.error)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, 'save'),
@@ -90,8 +91,8 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 icon: const Icon(Icons.save),
                 label: const Text("Save"),
                 style: FilledButton.styleFrom(
-                  backgroundColor: hasChanges ? Colors.greenAccent : null,
-                  foregroundColor: hasChanges ? Colors.white : Colors.grey,
+                  backgroundColor: hasChanges ? context.vrcColors.success : null,
+                  foregroundColor: hasChanges ? context.colorScheme.onPrimary : context.colorScheme.onSurfaceVariant,
                 ),
                 onPressed: hasChanges ? _saveAndExit : null,
               ),
@@ -119,14 +120,14 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       children: [
         Container(
           width: 320,
-          color: Colors.black12,
+          color: context.colorScheme.surfaceContainer,
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("PROFILE SETTINGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 letterSpacing: 1.2,
-                color: Colors.grey.shade400,
+                color: context.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold
               )),
               const SizedBox(height: 24),
@@ -134,7 +135,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               const SizedBox(height: 40),
               Text("ACTIONS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 letterSpacing: 1.2,
-                color: Colors.grey.shade400,
+                color: context.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold
               )),
               const SizedBox(height: 16),
@@ -143,10 +144,10 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 child: _buildAddRuleButton(currentProfile, allRolesAsync),
               ),
               const Spacer(),
-              const Icon(Icons.info_outline, color: Colors.grey, size: 20),
+              Icon(Icons.info_outline, color: context.colorScheme.onSurfaceVariant, size: 20),
               const SizedBox(height: 8),
-              const Text("Higher priority rules (at the top) are evaluated first.",
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+              Text("Higher priority rules (at the top) are evaluated first.",
+                style: TextStyle(color: context.colorScheme.onSurfaceVariant, fontSize: 12),
               ),
             ],
           ),
@@ -163,14 +164,14 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   children: [
                     Text("AUTOMATION RULES", style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       letterSpacing: 1.2,
-                      color: Colors.grey.shade400,
+                      color: context.colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold
                     )),
                     const SizedBox(width: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                      decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(12)),
-                      child: Text("${currentProfile.rules.length}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                      decoration: BoxDecoration(color: context.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(12)),
+                      child: Text("${currentProfile.rules.length}", style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant)),
                     ),
                   ],
                 ),
@@ -182,7 +183,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                     child: Column(
                       children: [
                         Expanded(child: _buildRulesList(currentProfile, allMessagesAsync)),
-                        const Divider(height: 1, color: Colors.white10),
+                        Divider(height: 1, color: context.colorScheme.outlineVariant),
                         _buildFallbackTagsSection(currentProfile),
                       ],
                     ),
@@ -212,7 +213,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           child: Column(
             children: [
               Expanded(child: _buildRulesList(currentProfile, allMessagesAsync)),
-              const Divider(height: 1, color: Colors.white10),
+              Divider(height: 1, color: context.colorScheme.outlineVariant),
               _buildFallbackTagsSection(currentProfile),
             ],
           ),
@@ -281,7 +282,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
             Text(title, style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade400,
+                color: context.colorScheme.onSurfaceVariant,
                 letterSpacing: 0.5
             )),
           ],
@@ -293,9 +294,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              border: Border.all(color: hasMessage ? color.withValues(alpha: 0.5) : Colors.white10),
+              border: Border.all(color: hasMessage ? color.withValues(alpha: 0.5) : context.colorScheme.outlineVariant),
               borderRadius: BorderRadius.circular(8),
-              color: hasMessage ? color.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.02),
+              color: hasMessage ? color.withValues(alpha: 0.05) : context.colorScheme.onSurface.withValues(alpha: 0.02),
             ),
             child: Row(
               children: [
@@ -304,14 +305,14 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                     hasMessage ? currentMessage.content : "Default VRChat Message",
                     style: TextStyle(
                       fontSize: 13,
-                      color: hasMessage ? Colors.white : Colors.white38,
+                      color: hasMessage ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
                       fontStyle: hasMessage ? FontStyle.normal : FontStyle.italic,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Icon(Icons.edit_note, size: 18, color: hasMessage ? color : Colors.white24)
+                Icon(Icons.edit_note, size: 18, color: hasMessage ? color : context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5))
               ],
             ),
           ),
@@ -337,13 +338,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   Color _getTypeColor(VrcMessageType type) {
     switch (type) {
       case VrcMessageType.invite:
-        return Colors.blueAccent;
+        return context.vrcColors.invite;
       case VrcMessageType.response:
-        return Colors.greenAccent;
+        return context.vrcColors.response;
       case VrcMessageType.request:
-        return Colors.orangeAccent;
+        return context.vrcColors.request;
       case VrcMessageType.requestResponse:
-        return Colors.purpleAccent;
+        return context.vrcColors.requestResponse;
     }
   }
   String _getTypeLabel(VrcMessageType type) {
@@ -370,7 +371,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       searchHint: "Search $sheetTitle...",
       searchableText: (CustomMessage message) => message.content,
       headerOption: ListTile(
-        leading: const Icon(Icons.block, color: Colors.grey),
+        leading: Icon(Icons.block, color: context.colorScheme.onSurfaceVariant),
         title: const Text("None / Default VRChat Message"),
         subtitle: const Text("Use the game's default notification text"),
         selected: currentMessageId == null,
@@ -387,7 +388,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               size: 20
           ),
           title: Text(msg.content),
-          trailing: currentMessageId == msg.id ? const Icon(Icons.check_circle, color: Colors.greenAccent) : null,
+          trailing: currentMessageId == msg.id ? Icon(Icons.check_circle, color: context.vrcColors.success) : null,
         );
       },
       onSelected: (CustomMessage? selectedMsg) {
@@ -399,10 +400,10 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   
   Widget _buildRulesList(FilterProfile currentProfile, AsyncValue<List<CustomMessage>> allMessagesAsync) {
     if (currentProfile.rules.isEmpty) {
-      return const Center(
+      return Center(
         child: Text("No rules added yet.\nClick 'Add role rule' to start.",
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white38),
+          style: TextStyle(color: context.colorScheme.onSurfaceVariant),
         ),
       );
     }
@@ -425,10 +426,10 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       key: ValueKey("rule_${rule.role.id}"),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       elevation: 0,
-      color: Colors.white.withValues(alpha: 0.05),
+      color: context.colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Colors.white10),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -437,9 +438,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
             ListTile(
               leading: ReorderableDragStartListener(
                 index: index,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.drag_handle, color: Colors.grey),
+                  child: Icon(Icons.drag_handle, color: context.colorScheme.onSurfaceVariant),
                 ),
               ),
               title: Text(rule.role.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -450,8 +451,8 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: rule.action == RuleAction.accept
-                          ? Colors.green.withValues(alpha: 0.1)
-                          : Colors.red.withValues(alpha: 0.1),
+                          ? context.vrcColors.success.withValues(alpha: 0.1)
+                          : context.colorScheme.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: DropdownButton<RuleAction>(
@@ -466,7 +467,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              color: action == RuleAction.accept ? Colors.green : Colors.redAccent
+                              color: action == RuleAction.accept ? context.vrcColors.success : context.colorScheme.error,
                             ),
                           ),
                         );
@@ -481,7 +482,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent, size: 20),
+                    icon: Icon(Icons.delete_sweep_outlined, color: context.colorScheme.error, size: 20),
                     onPressed: () => ref.read(profileEditorProvider(widget.profile).notifier).removeRule(index),
                     tooltip: "Remove rule",
                   ),
@@ -493,7 +494,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Divider(height: 1, color: Colors.white10),
+                  Divider(height: 1, color: context.colorScheme.outlineVariant),
                   const SizedBox(height: 12),
                   allMessagesAsync.when(
                     data: (messages) => _buildMessagesSection(index, rule, messages),
@@ -535,7 +536,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       searchHint: "Search roles...",
       searchableText: (Role role) => role.name,
       itemBuilder: (Role role) => ListTile(
-        leading: const Icon(Icons.label_outline, color: Colors.deepPurpleAccent),
+        leading: Icon(Icons.label_outline, color: context.colorScheme.primary),
         title: Text(role.name),
       ),
       onSelected: (Role? role) {
@@ -552,7 +553,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     
     return Container(
       padding: const EdgeInsets.all(24),
-      color: Colors.black12,
+      color: context.colorScheme.surfaceContainer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -564,21 +565,21 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 children: [
                   Text("FALLBACK TAGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     letterSpacing: 1.2,
-                    color: Colors.grey.shade400,
+                    color: context.colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold
                   )),
                   const SizedBox(height: 4),
-                  const Text("Evaluated if no role matches", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text("Evaluated if no role matches", style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant)),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: currentProfile.fallbackTagsAction == FallbackTagAction.accept
-                      ? Colors.green.withValues(alpha: 0.1)
+                      ? context.vrcColors.success.withValues(alpha: 0.1)
                       : currentProfile.fallbackTagsAction == FallbackTagAction.reject
-                        ? Colors.red.withValues(alpha: 0.1)
-                        : Colors.grey.withValues(alpha: 0.1),
+                        ? context.colorScheme.error.withValues(alpha: 0.1)
+                        : context.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: DropdownButton<FallbackTagAction>(
@@ -586,9 +587,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   underline: const SizedBox(),
                   icon: const Icon(Icons.arrow_drop_down, size: 20),
                   items: [
-                    const DropdownMenuItem(value: FallbackTagAction.disabled, child: Text("DISABLED", style: TextStyle(fontSize: 13, color: Colors.grey))),
-                    const DropdownMenuItem(value: FallbackTagAction.accept, child: Text("ACCEPT", style: TextStyle(fontSize: 13, color: Colors.greenAccent))),
-                    const DropdownMenuItem(value: FallbackTagAction.reject, child: Text("REJECT", style: TextStyle(fontSize: 13, color: Colors.redAccent))),
+                    DropdownMenuItem(value: FallbackTagAction.disabled, child: Text("DISABLED", style: TextStyle(fontSize: 13, color: context.colorScheme.onSurfaceVariant))),
+                    DropdownMenuItem(value: FallbackTagAction.accept, child: Text("ACCEPT", style: TextStyle(fontSize: 13, color: context.vrcColors.success))),
+                    DropdownMenuItem(value: FallbackTagAction.reject, child: Text("REJECT", style: TextStyle(fontSize: 13, color: context.colorScheme.error))),
                   ],
                   onChanged: (val) {
                     if (val != null) {
@@ -610,15 +611,15 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                     label: Text(tag.name, style: const TextStyle(fontSize: 12)),
                     deleteIcon: const Icon(Icons.close, size: 16),
                     onDeleted: () => ref.read(profileEditorProvider(widget.profile).notifier).removeFallbackTag(tag),
-                    backgroundColor: Colors.white.withValues(alpha: 0.05),
-                    side: const BorderSide(color: Colors.white10),
+                    backgroundColor: context.colorScheme.surfaceContainerHighest,
+                    side: BorderSide(color: context.colorScheme.outlineVariant),
                   );
                 }),
                 ActionChip(
                   avatar: const Icon(Icons.add, size: 16),
                   label: const Text("Add Tag"),
-                  backgroundColor: Colors.deepPurpleAccent.withValues(alpha: 0.2),
-                  side: const BorderSide(color: Colors.deepPurpleAccent),
+                  backgroundColor: context.colorScheme.primary.withValues(alpha: 0.2),
+                  side: BorderSide(color: context.colorScheme.primary),
                   onPressed: () => _showTagSelectionDialog(currentProfile),
                 ),
               ],
@@ -642,7 +643,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           leading: _getTagIcon(tag.category),
           title: Text(tag.name),
           subtitle: Text(tag.description, style: const TextStyle(fontSize: 12)),
-          trailing: Text(tag.category.name.toUpperCase(), style: const TextStyle(fontSize: 9, color: Colors.grey)),
+          trailing: Text(tag.category.name.toUpperCase(), style: TextStyle(fontSize: 9, color: context.colorScheme.onSurfaceVariant)),
         );
       },
       onSelected: (VrcTag? tag) {
@@ -660,19 +661,19 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     switch (category) {
       case VrcTagCategory.admin:
         icon = Icons.admin_panel_settings;
-        color = Colors.redAccent;
+        color = context.colorScheme.error;
         break;
       case VrcTagCategory.system:
         icon = Icons.settings_system_daydream;
-        color = Colors.blueAccent;
+        color = context.colorScheme.primary;
         break;
       case VrcTagCategory.trust:
         icon = Icons.shield;
-        color = Colors.orangeAccent;
+        color = context.vrcColors.request;
         break;
       case VrcTagCategory.language:
         icon = Icons.language;
-        color = Colors.greenAccent;
+        color = context.vrcColors.success;
         break;
     }
     return Icon(icon, color: color, size: 24);
