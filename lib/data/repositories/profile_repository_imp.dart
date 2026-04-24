@@ -48,9 +48,8 @@ class ProfileRepositoryImp implements IProfileRepository {
   @override
   Future<List<FilterProfile>> getProfiles() async {
     final List<Map<String, dynamic>> profileMaps = await _db.rawQuery('''
-      SELECT p.*, r.name as role_name 
+      SELECT p.* 
       FROM profiles p
-      LEFT JOIN roles r ON p.default_role_id = r.id
     ''');
 
     List<FilterProfile> result = [];
