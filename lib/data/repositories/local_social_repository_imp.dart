@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
@@ -189,5 +190,26 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   @override
   Future<void> deleteRoleAutomation(int automationId) async {
     await _db.delete('role_automations', where: 'id = ?', whereArgs: [automationId]);
+  }
+
+  @override
+  Future<List<String>> getKnownUserIds() async {
+    final maps = await _db.query('vrc_users', columns: ['user_id']);
+    return maps.map((e) => e['user_id'] as String).toList();
+  }
+
+  @override
+  Future<void> saveKnownUserIds(List<VrcUser> userIds) async {
+    final batch = _db.batch();
+    for (final user in userIds) {
+      batch.insert('vrc_users', {
+        'user_id': user.id,
+        'display_name': user.displayName,
+        'avatar_url': user.avatarUrl,
+        'last_updated': DateTime.now().toIso8601String(),
+
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+    await batch.commit(noResult: true);
   }
 }
