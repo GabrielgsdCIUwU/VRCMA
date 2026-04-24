@@ -19,6 +19,20 @@ class RoleAutomation extends Equatable {
     this.targetValue,
   });
 
+  RoleAutomation copyWith({
+    int? id,
+    List<Role>? roles,
+    AutomationTrigger? trigger,
+    String? targetValue,
+  }) {
+    return RoleAutomation(
+      id: id ?? this.id,
+      roles: roles ?? this.roles,
+      trigger: trigger ?? this.trigger,
+      targetValue: targetValue ?? this.targetValue,
+    );
+  }
+
   @override
   List<Object?> get props => [id, roles, trigger, targetValue];
 }
