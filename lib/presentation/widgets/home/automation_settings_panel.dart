@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
@@ -85,7 +86,7 @@ class _ConfigurationSection extends StatelessWidget {
               Text(
                 title.toUpperCase(),
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  letterSpacing: 1.2, color: Colors.grey.shade400,
+                  letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -170,7 +171,7 @@ class _RoleTile extends ConsumerWidget {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-      leading: const Icon(Icons.label_outline, color: Colors.deepPurpleAccent, size: 22),
+      leading: Icon(Icons.label_outline, color: context.colorScheme.primary, size: 22),
       title: Text(
           role.name,
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -198,9 +199,9 @@ class _RoleTile extends ConsumerWidget {
               }
             },
             itemBuilder: (ctx) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'delete',
-                child: Text("Delete Role", style: TextStyle(color: Colors.red, fontSize: 14)),
+                child: Text("Delete Role", style: TextStyle(color: context.colorScheme.error, fontSize: 14)),
               ),
             ],
           ),
@@ -229,7 +230,7 @@ class _RoleTile extends ConsumerWidget {
               ref.read(roleManagementProvider.notifier).deleteRole(role.id);
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
             child: const Text("Delete"),
           )
         ],
@@ -287,7 +288,7 @@ class _ProfileTile extends ConsumerWidget {
         profile.name,
         style: TextStyle(
           fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-          color: isActive ? Colors.green.shade200 : null,
+          color: isActive ? context.vrcColors.success : null,
           fontSize: 14,
         ),
       ),
@@ -337,7 +338,7 @@ class _ProfileTile extends ConsumerWidget {
               ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
             child: const Text("Delete"),
           )
         ],
@@ -359,13 +360,13 @@ class _ProfileOptionsMenu extends StatelessWidget {
         if (value == 'delete') onDelete();
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete_outline, color: Colors.red, size: 20),
+              Icon(Icons.delete_outline, color: context.colorScheme.error, size: 20),
               SizedBox(width: 8),
-              Text("Delete", style: TextStyle(color: Colors.red)),
+              Text("Delete", style: TextStyle(color: context.colorScheme.error)),
             ],
           ),
         ),
@@ -384,7 +385,7 @@ class _StatusIcon extends StatelessWidget {
     return IconButton(
       icon: Icon(
         isActive ? Icons.check_circle : Icons.circle_outlined,
-        color: isActive ? Colors.green : Colors.grey,
+        color: isActive ? context.vrcColors.success : context.colorScheme.onSurfaceVariant,
       ),
       onPressed: onPressed,
       tooltip: isActive ? "Active" : "Set as active",
