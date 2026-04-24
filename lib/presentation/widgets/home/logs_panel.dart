@@ -24,7 +24,7 @@ class LogsPanel extends ConsumerWidget {
                "AUTOMATION LOGS",
                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                  letterSpacing: 1.2,
-                 color: Colors.grey.shade400,
+                 color: context.colorScheme.onSurfaceVariant,
                  fontWeight: FontWeight.bold
                ),
              ),
@@ -50,8 +50,8 @@ class LogsPanel extends ConsumerWidget {
           child: logsAsync.when(
             data: (logs) {
               if (logs.isEmpty) {
-                return const Center(
-                  child: Text("No logs found", style: TextStyle(color: Colors.grey)),
+                return Center(
+                  child: Text("No logs found", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
                 );
               }
               return ListView.builder(
