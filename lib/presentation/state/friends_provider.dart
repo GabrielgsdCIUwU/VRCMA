@@ -36,3 +36,11 @@ class FriendsList extends _$FriendsList {
     state = await AsyncValue.guard(() => _fetchFriends());
   }
 }
+
+@riverpod
+class FriendsSearchQuery extends _$FriendsSearchQuery {
+  @override
+  String build() => '';
+  
+  void updateQuery(String query) => state = query;
+}
