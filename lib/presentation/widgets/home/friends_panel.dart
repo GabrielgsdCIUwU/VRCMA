@@ -76,51 +76,82 @@ class FriendsPanel extends ConsumerWidget {
       itemCount: groups.length,
       itemBuilder: (context, index) {
         final category = groups[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _CategoryHeader(category: category),
-            ...category.friends.map((user) => _FriendTitle(user: user)),
-          ],
-        );
+        return _CategorySection(category: category);
       },
+    );
+  }
+}
+
+class _CategorySection extends ConsumerWidget {
+  final FriendGroupCategory category;
+  
+  const _CategorySection({required this.category});
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isExpanded = ref.watch(categoryExpandedProvider(category.id));
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _CategoryHeader(
+          category: category,
+          isExpanded: isExpanded,
+          onToggle: () {
+            ref.read(categoryExpandedProvider(category.id).notifier).toggle();
+          },
+        ),
+        if (isExpanded)
+          ...category.friends.map((user) => _FriendTitle(user: user)),
+      ],
     );
   }
 }
 
 class _CategoryHeader extends StatelessWidget {
   final FriendGroupCategory category;
+  final bool isExpanded;
+  final VoidCallback onToggle;
   
-  const _CategoryHeader({required this.category});
+  const _CategoryHeader({required this.category, required this.isExpanded, required this.onToggle});
   
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Row(
-        children: [
-          Icon(category.icon, size: 14, color: context.colorScheme.primary),
-          const SizedBox(width: 8),
-          Text(
-            category.title.toUpperCase(),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              letterSpacing: 1.2,
-              color: context.colorScheme.primary,
-            ),
-          ),
-          const Spacer(),
-          Text(
-            "${category.friends.length}",
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: onToggle,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        child: Row(
+          children: [
+            Icon(
+              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
+              size: 16,
               color: context.colorScheme.onSurfaceVariant,
             ),
-          ),
-        ],
-      ),
+            const SizedBox(width: 8),
+            Icon(category.icon, size: 14, color: context.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text(
+              category.title.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                letterSpacing: 1.2,
+                color: context.colorScheme.primary,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              "${category.friends.length}",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 }
