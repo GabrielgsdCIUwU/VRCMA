@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -117,11 +119,40 @@ Future<Map<String, String>> vrcImageHeaders(Ref ref, String imageUrl) async {
   };
 }
 
+class _ConcurrencyLock {
+  int _active = 0;
+  final int maxConcurrent;
+  final List<Completer<void>> _queue = [];
+  
+  _ConcurrencyLock(this.maxConcurrent);
+  
+  Future<void> acquire() async {
+    if (_active < maxConcurrent) {
+      _active++;
+      return;
+    }
+    final completer = Completer<void>();
+    _queue.add(completer);
+    return completer.future;
+  }
+  
+  void release() {
+    if (_queue.isNotEmpty) {
+      final next = _queue.removeAt(0);
+      next.complete();
+    } else {
+      _active--;
+    }
+  }
+}
+final _imageResolutionLock = _ConcurrencyLock(3);
 @riverpod
 Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
   if (imageUrl.isEmpty) return '';
-  
+
   ref.keepAlive();
+  
+  await _imageResolutionLock.acquire();
 
   final api = await ref.watch(vrcApiProvider.future);
 
@@ -130,15 +161,24 @@ Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
       imageUrl,
       options: Options(
         followRedirects: true,
-        validateStatus: (status) => status! < 400,
+        validateStatus: (status) => true,
         responseType: ResponseType.bytes,
+        receiveTimeout: const Duration(seconds: 10),
       ),
     );
+    
+    if (response.statusCode == 404 || response.statusCode == 403 || response.statusCode == 429) {
+      return '';
+    }
+    
+    await Future.delayed(const Duration(milliseconds: 100));
 
     return response.realUri.toString();
   } catch (e) {
     debugPrint("Error resolving image: $e");
     return imageUrl;
+  } finally {
+    _imageResolutionLock.release();
   }
 }
 
