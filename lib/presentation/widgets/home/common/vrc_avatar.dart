@@ -26,13 +26,19 @@ class VrcAvatar extends ConsumerWidget {
     
     final resolvedUrlAsync = ref.watch(vrcResolvedImageProvider(imageUrl!));
     
+    final cacheSize = (radius * 3 * MediaQuery.devicePixelRatioOf(context)).toInt();
+    
     return GestureDetector(
       onTap: onTap,
       child: resolvedUrlAsync.when(
         data: (finalUrl) => CircleAvatar(
           radius: radius,
           backgroundColor: context.colorScheme.surfaceContainerHighest,
-          backgroundImage: NetworkImage(finalUrl),
+          backgroundImage: ResizeImage(
+            NetworkImage(finalUrl),
+            width: cacheSize,
+            height: cacheSize,
+          ),
           onBackgroundImageError: (_, _) => _buildPlaceholder(context),
         ),
         loading: () => SizedBox(

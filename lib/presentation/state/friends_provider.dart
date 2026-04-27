@@ -15,29 +15,52 @@ part 'friends_provider.g.dart';
 class FriendsList extends _$FriendsList {
   @override
   FutureOr<List<VrcUser>> build() async {
-    return _fetchFriends();
+    return _fetchFriendsProgressively();
   }
   
-  Future<List<VrcUser>> _fetchFriends() async {
+  Future<List<VrcUser>> _fetchFriendsProgressively() async {
     final api = await ref.watch(vrcApiProvider.future);
     final repo = SocialRepositoryImp(api);
     final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
-
-    final result = await repo.getFriends();
-    return result.fold(
-          (failure) => throw failure.message,
-          (friends) async {
-            final useCase = ProcessFriendAutomationsUseCase(localSocialRepo);
-            await useCase.execute(friends);
-            
-            return friends;
-          },
+    final useCase = ProcessFriendAutomationsUseCase(localSocialRepo);
+    
+    final onlineResult = await repo.getFriends(offline: false);
+    
+    List<VrcUser> onlineFriends = onlineResult.fold(
+        (failure) => throw failure.message,
+        (friends) => friends,
+    );
+    
+    state = AsyncData(onlineFriends);
+    
+    await useCase.execute(onlineFriends);
+    
+    _fetchOfflineFriendsInBackground(repo, useCase, onlineFriends);
+    
+    return onlineFriends;
+  }
+  
+  Future<void> _fetchOfflineFriendsInBackground(
+      SocialRepositoryImp repo,
+      ProcessFriendAutomationsUseCase useCase,
+      List<VrcUser> currentOnlineFriends,
+      ) async {
+    final offlineResult = await repo.getFriends(offline: true);
+    
+    offlineResult.fold(
+        (failure) => debugPrint("Silent error: failed to load offline friends: ${failure.message}"),
+        (offlineFriends) async {
+          final allFriends = [...currentOnlineFriends, ...offlineFriends];
+          state = AsyncData(allFriends);
+          
+          await useCase.execute(offlineFriends);
+        }
     );
   }
   
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchFriends());
+    state = await AsyncValue.guard(() => _fetchFriendsProgressively());
   }
 }
 
@@ -148,5 +171,17 @@ class _FriendCategoryBuilder {
   
   void _extractOffline() {
     _extractGroup(id: 'offline', title: 'Offline', icon: Icons.bedtime, condition: (f) => f.isTrulyOffline);
+  }
+}
+
+@riverpod
+class CategoryExpanded extends _$CategoryExpanded {
+  @override
+  bool build(String categoryId) {
+    return true;
+  }
+  
+  void toggle() {
+    state = !state;
   }
 }
