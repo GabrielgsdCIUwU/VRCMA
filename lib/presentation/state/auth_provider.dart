@@ -120,6 +120,8 @@ Future<Map<String, String>> vrcImageHeaders(Ref ref, String imageUrl) async {
 @riverpod
 Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
   if (imageUrl.isEmpty) return '';
+  
+  ref.keepAlive();
 
   final api = await ref.watch(vrcApiProvider.future);
 
