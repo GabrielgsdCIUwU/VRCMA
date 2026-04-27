@@ -150,3 +150,15 @@ class _FriendCategoryBuilder {
     _extractGroup(id: 'offline', title: 'Offline', icon: Icons.bedtime, condition: (f) => f.isTrulyOffline);
   }
 }
+
+@riverpod
+class CategoryExpanded extends _$CategoryExpanded {
+  @override
+  bool build(String categoryId) {
+    return true;
+  }
+  
+  void toggle() {
+    state = !state;
+  }
+}
