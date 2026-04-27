@@ -11,19 +11,39 @@ class SocialRepositoryImp implements ISocialRepository {
   SocialRepositoryImp(this._vrcApi);
   
   @override
-  Future<Either<Failure, List<VrcUser>>> getFriends() async {
+  Future<Either<Failure, List<VrcUser>>> getFriends({bool offline = false}) async {
     try {
-      final response = await _vrcApi.rawApi.getFriendsApi().getFriends(
-        offset: 0,
-        n: 100,
-        offline: false
-      );
-      
-      final users = response.data?.map((u) => VrcUserModel.fromLibrary(u)).toList() ?? [];
+      final users = await _fetchFriendsPaginated(offline: offline);
       return Right(users);
     } catch (e) {
       return Left(ApiFailure('Failed to fetch friends: $e'));
     }
+  }
+  
+  Future<List<VrcUserModel>> _fetchFriendsPaginated({required bool offline}) async {
+    List<VrcUserModel> allFriends = [];
+    int offset = 0;
+    const int limit = 100;
+    bool hasMore = true;
+    
+    while (hasMore) {
+      final response = await _vrcApi.rawApi.getFriendsApi().getFriends(
+        offset: offset,
+        n: limit,
+        offline: offline,
+      );
+      
+      final currentBatch = response.data?.map((u) => VrcUserModel.fromLibrary(u)).toList() ?? [];
+      allFriends.addAll(currentBatch);
+      
+      if (currentBatch.length < limit) {
+        hasMore = false;
+      } else {
+        offset += limit;
+        await Future.delayed(const Duration(milliseconds: 250));
+      }
+    }
+    return allFriends;
   }
   
   @override
