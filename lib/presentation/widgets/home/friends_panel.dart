@@ -84,8 +84,9 @@ class FriendsPanel extends ConsumerWidget {
 
 class _CategorySection extends ConsumerWidget {
   final FriendGroupCategory category;
+  final int depth;
   
-  const _CategorySection({required this.category});
+  const _CategorySection({required this.category, this.depth = 0});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,12 +98,19 @@ class _CategorySection extends ConsumerWidget {
         _CategoryHeader(
           category: category,
           isExpanded: isExpanded,
+          depth: depth,
           onToggle: () {
             ref.read(categoryExpandedProvider(category.id).notifier).toggle();
           },
         ),
-        if (isExpanded)
-          ...category.friends.map((user) => _FriendTitle(user: user)),
+        if (isExpanded) ... [
+          ...category.subCategories.map((sub) => _CategorySection(category: sub, depth: depth +1)),
+          
+          ...category.friends.map((user) => Padding(
+            padding: EdgeInsets.only(left: depth * 16),
+            child: _FriendTitle(user: user),
+          )),
+        ],
       ],
     );
   }
@@ -111,16 +119,17 @@ class _CategorySection extends ConsumerWidget {
 class _CategoryHeader extends StatelessWidget {
   final FriendGroupCategory category;
   final bool isExpanded;
+  final int depth;
   final VoidCallback onToggle;
   
-  const _CategoryHeader({required this.category, required this.isExpanded, required this.onToggle});
+  const _CategoryHeader({required this.category, required this.isExpanded, required this.depth, required this.onToggle});
   
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onToggle,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        padding: EdgeInsets.fromLTRB(16 + (depth * 16), 16, 16, 8),
         child: Row(
           children: [
             Icon(
@@ -142,7 +151,7 @@ class _CategoryHeader extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "${category.friends.length}",
+              "${category.totalFriendsCount}",
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
