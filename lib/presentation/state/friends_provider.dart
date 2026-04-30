@@ -95,7 +95,7 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   
   final builder = _FriendCategoryBuilder(
     friends: filteredFriends,
-    favGroups: favGroups,
+    favoriteGroups: favGroups,
     currentUser: currentUser,
   );
   
@@ -104,7 +104,7 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
 
 class _FriendCategoryBuilder {
   final List<VrcUser> friends;
-  final List<FavoriteGroup> favGroups;
+  final List<FavoriteGroup> favoriteGroups;
   final VrcUser? currentUser;
   
   final List<FriendGroupCategory> _structuredGroups = [];
@@ -112,20 +112,111 @@ class _FriendCategoryBuilder {
   
   _FriendCategoryBuilder({
     required this.friends,
-    required this.favGroups,
+    required this.favoriteGroups,
     required this.currentUser,
   });
   
   List<FriendGroupCategory> build() {
-    _extractSameInstance();
-    _extractFavoriteGroups();
+    _extractFavoritesHierarchy();
+    _extractInstancesHierarchy();
     _extractActive();
     _extractOnline();
     _extractOffline();
     
     return _structuredGroups;
-  
   }
+  
+  void _extractFavoritesHierarchy() {
+    final List<FriendGroupCategory> favoriteSubCategories = [];
+    
+    for (final favoriteGroup in favoriteGroups) {
+      final eligibleFriends = friends.where((user) => _isEligibleForFavoriteGroup(user, favoriteGroup)).toList();
+      
+      if (eligibleFriends.isNotEmpty) {
+        _registerAndSortFriends(eligibleFriends);
+        
+        favoriteSubCategories.add(FriendGroupCategory(
+          id: 'fav_${favoriteGroup.id}',
+          title: favoriteGroup.name,
+          icon: Icons.star_border,
+          friends: eligibleFriends,
+        ));
+      }
+    }
+    
+    if (favoriteSubCategories.isNotEmpty) {
+      _structuredGroups.add(FriendGroupCategory(
+        id: 'favorites_parent',
+        title: 'Favorites',
+        icon: Icons.star,
+        subCategories: favoriteSubCategories,
+      ));
+    }
+  }
+  
+  bool _isEligibleForFavoriteGroup(VrcUser user, FavoriteGroup favoriteGroup) {
+    if (_assignedIds.contains(user.id)) return false;
+    if (user.isTrulyOffline) return false;
+    
+    return favoriteGroup.friendIds.contains(user.id);
+  }
+  
+  void _extractInstancesHierarchy() {
+    final eligibleFriendsInWorlds = friends.where(_isEligibleForWorldInstance).toList();
+    
+    if (eligibleFriendsInWorlds.isEmpty) return;
+    
+    final Map<String, List<VrcUser>> friendGroupedByLocation = _groupFriendsByLocation(eligibleFriendsInWorlds);
+    final List<FriendGroupCategory> instanceSubCategories = [];
+    
+    friendGroupedByLocation.forEach((locationId, usersInLocation) {
+      _registerAndSortFriends(usersInLocation);
+      
+      instanceSubCategories.add(
+        _createInstanceSubCategory(locationId, usersInLocation)
+      );
+    });
+    
+    instanceSubCategories.sort((a, b) =>
+        b.friends.length.compareTo(a.friends.length));
+    
+    _structuredGroups.add(FriendGroupCategory(
+      id: 'instances_parent',
+      title: 'In Worlds',
+      icon: Icons.public,
+      subCategories: instanceSubCategories,
+    ));
+  }
+  
+  bool _isEligibleForWorldInstance(VrcUser user) {
+    if (_assignedIds.contains(user.id)) return false;
+    if (user.isTrulyOffline) return false;
+    if (user.location.isEmpty || user.location == 'private' || user.location == 'offline') return false;
+    if (user.status.toLowerCase() == 'active') return false;
+    return true;
+  }
+  
+  Map<String, List<VrcUser>> _groupFriendsByLocation(List<VrcUser> users) {
+    final Map<String, List<VrcUser>> groupedFriends = {};
+    for (final user in users) {
+      groupedFriends.putIfAbsent(user.location, () => []).add(user);
+    }
+    return groupedFriends;
+  }
+  
+  FriendGroupCategory _createInstanceSubCategory(String locationId, List<VrcUser> users) {
+    final formattedLocationName = users.first.formattedLocation;
+    final shortInstanceHash = _getInstanceShortHash(locationId);
+    
+    return FriendGroupCategory(
+      id: 'inst_$locationId',
+      title: '$formattedLocationName $shortInstanceHash'.trim(),
+      icon: Icons.map_outlined,
+      friends: users,
+    );
+  }
+  
+  
   
   void _extractGroup({
     required String id,
@@ -145,32 +236,47 @@ class _FriendCategoryBuilder {
     }
   }
   
-  void _extractSameInstance() {
-    if (currentUser == null) return;
-    
-    _extractGroup(id: 'same_instance', title: 'Same Instance', icon: Icons.map, condition: (f) =>
-        !f.isTrulyOffline && f.location.isNotEmpty && f.location != 'private' && f.location == currentUser!.location
-    );
-  }
-  
-  void _extractFavoriteGroups() {
-    for (final group in favGroups) {
-      _extractGroup(id: group.id, title: group.name, icon: Icons.star, condition: (f) => group.friendIds.contains(f.id));
-    }
-  }
-  
   void _extractActive() {
-    _extractGroup(id: 'active', title: 'Active', icon: Icons.language, condition: (f) => 
+    _extractGroup(id: 'active', title: 'Active (Website)', icon: Icons.language, condition: (f) => 
     !f.isTrulyOffline && f.status.toLowerCase() == 'active'
     );
   }
   
   void _extractOnline() {
-    _extractGroup(id: 'online', title: 'Online', icon: Icons.videogame_asset, condition: (f) => !f.isTrulyOffline);
+    _extractGroup(id: 'online', title: 'Online', icon: Icons.videogame_asset, condition: (f) => !f.isTrulyOffline && f.status.toLowerCase() != 'active');
   }
   
   void _extractOffline() {
     _extractGroup(id: 'offline', title: 'Offline', icon: Icons.bedtime, condition: (f) => f.isTrulyOffline);
+  }
+  
+  void _registerAndSortFriends(List<VrcUser> users) {
+    _assignedIds.addAll(users.map((user) => user.id));
+    users.sort(_compareFriends);
+  }
+  
+  int _compareFriends(VrcUser a, VrcUser b) {
+    if (!a.isTrulyOffline && b.isTrulyOffline) return -1;
+    if (a.isTrulyOffline && !b.isTrulyOffline) return 1;
+    
+    final isAActive = a.status.toLowerCase() == 'active';
+    final isBActive = b.status.toLowerCase() == 'active';
+    
+    if (isAActive && !isBActive) return -1;
+    if (!isAActive && isBActive) return 1;
+    
+    return a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase());
+  }
+  
+  String _getInstanceShortHash(String location) {
+    if (!location.contains(':')) return '';
+    
+    final parts = location.split(':');
+    if (parts.length > 1) {
+      final instanceId = parts[1].split('~').first;
+      return instanceId.length > 5 ? '(#${instanceId.substring(0, 5)})' : '(#$instanceId)';
+    }
+    return '';
   }
 }
 
