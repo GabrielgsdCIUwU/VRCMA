@@ -155,7 +155,7 @@ class _FriendCategoryBuilder {
   
   void _extractFavoriteGroups() {
     for (final group in favGroups) {
-      _extractGroup(id: group.id, title: group.name, icon: Icons.star, condition: (f) => f.tags.contains(group.id));
+      _extractGroup(id: group.id, title: group.name, icon: Icons.star, condition: (f) => group.friendIds.contains(f.id));
     }
   }
   
