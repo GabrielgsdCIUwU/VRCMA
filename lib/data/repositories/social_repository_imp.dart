@@ -52,11 +52,41 @@ class SocialRepositoryImp implements ISocialRepository {
       final response = await _vrcApi.rawApi.getFavoritesApi().getFavoriteGroups();
       final groups = response.data ?? [];
 
+      List<Favorite> allFavorites = [];
+      int offset = 0;
+      int limit = 100;
+      bool hasMore = true;
+      
+      while (hasMore) {
+        final favoriteResponse = await _vrcApi.rawApi.getFavoritesApi().getFavorites(
+          n: limit,
+          offset: offset,
+        );
+        final favorites = favoriteResponse.data ?? [];
+        allFavorites.addAll(favorites);
+        
+        if (favorites.length < 100) {
+          hasMore = false;
+        } else {
+          offset += limit;
+        }
+      }
+      
       final favoriteGroups = groups
-          .where((g) => g.type == FavoriteType.friend)
-          .map((g) => FavoriteGroup(id: g.name, name: g.displayName))
-          .toList();
-
+        .where((g) => g.type == FavoriteType.friend)
+        .map((g) {
+          final friendIds = allFavorites
+              .where((f) => f.type == FavoriteType.friend && f.tags.contains(g.name))
+              .map((f) => f.favoriteId)
+              .toList();
+          
+          return FavoriteGroup(
+            id: g.name,
+            name: g.name,
+            friendIds: friendIds,
+          );
+      }).toList();
+      
       return Right(favoriteGroups);
     } catch (e) {
       return Left(ApiFailure('Failed to fetch favorite groups: $e'));
