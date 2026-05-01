@@ -57,11 +57,11 @@ void onBackgroundStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-  });
-  
   final container = ProviderContainer();
+
+  final subApi = container.listen(vrcApiProvider, (_, _) {});
+  final subRepo = container.listen(automationRepositoryProvider, (_, _) {});
+  final subProc = container.listen(automationProcessorProvider, (_, _) {});
   
   try {
     final api = await container.read(vrcApiProvider.future);
@@ -83,23 +83,31 @@ void onBackgroundStart(ServiceInstance service) async {
         
         if (service is AndroidServiceInstance) {
           service.setForegroundNotificationInfo(
-            title: 'VRCMA Automation',
-            content: 'Last processed: ${invitation.senderName}',
+            title: 'VRCMA Processed',
+            content: 'Last: ${invitation.senderName}',
           );
         }
+
+        service.invoke('update_ui');
+
       } catch (e) {
-        debugPrint("Background Error processing invitation $e");
+        debugPrint("BG Error processing invitation: $e");
       }
     });
-    
+
+
     service.on('stopService').listen((event) {
       subscription.cancel();
       api.streaming.stop();
+      subApi.close();
+      subRepo.close();
+      subProc.close();
       container.dispose();
       service.stopSelf();
     });
-  } catch (e) {
-    debugPrint("Background Service Init Error: $e");
+
+  } catch (e, stackTrace) {
+    debugPrint("BG Service Init Error: $e\n$stackTrace");
     service.stopSelf();
   }
 }
