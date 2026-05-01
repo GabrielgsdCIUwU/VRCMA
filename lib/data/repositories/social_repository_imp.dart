@@ -92,4 +92,15 @@ class SocialRepositoryImp implements ISocialRepository {
       return Left(ApiFailure('Failed to fetch favorite groups: $e'));
     }
   }
+  
+  @override
+  Future<Either<Failure, String>> getWorldName(String worldId) async {
+    try {
+      final response = await _vrcApi.rawApi.getWorldsApi().getWorld(worldId: worldId);
+      final name = response.data?.name ?? "Unknown World";
+      return Right(name);
+    } catch (e) {
+      return Left(ApiFailure('Failed to fetch world name: $e'));
+    }
+  }
 }
