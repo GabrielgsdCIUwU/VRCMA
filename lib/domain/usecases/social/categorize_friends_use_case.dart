@@ -42,7 +42,7 @@ class CategorizeFriendsUseCase {
       StatusStrategy(id: 'active', title: 'Active (Website)', icon: Icons.language,
         condition: (u) => !u.isTrulyOffline && u.status.toLowerCase() == 'active'
       ),
-      StatusStrategy(id: 'online', title: 'Online', icon: Icons.videogame_asset,
+      StatusStrategy(id: 'offline', title: 'Offline', icon: Icons.videogame_asset,
         condition: (u) => u.isTrulyOffline
       ),
     ];
