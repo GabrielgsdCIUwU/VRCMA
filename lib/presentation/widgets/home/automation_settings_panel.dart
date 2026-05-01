@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
@@ -17,8 +19,14 @@ class AutomationSettingsPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+  final isMobile = Platform.isAndroid || Platform.isIOS;
+  
    return Column(
      children: [
+       if (isMobile) ...[
+         _buildBackgroundToggle(context, ref),
+         const Divider(height: 1, thickness: 1),
+       ],
        Expanded(
          flex: 1,
          child: _ConfigurationSection(
@@ -75,6 +83,47 @@ class AutomationSettingsPanel extends ConsumerWidget {
         label: "Role name",
         onConfirm: (name) => ref.read(roleManagementProvider.notifier).createRole(name),
       )
+    );
+  }
+  
+  Widget _buildBackgroundToggle(BuildContext context, WidgetRef ref) {
+    final bgState = ref.watch(backgroundServiceToggleProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "BACKGROUND AUTOMATION",
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.bold, fontSize: 14,
+                  ),
+                ),
+                Text(
+                  "Keep processing invites when app is closed",
+                  style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant),
+                )
+              ],
+            ),
+          ),
+          bgState.when(
+            data: (isEnabled) => Switch(
+              value: isEnabled,
+              onChanged: (val) {
+                ref.read(backgroundServiceToggleProvider.notifier).toggle(val);
+              },
+            ),
+            loading: () => const CircularProgressIndicator(),
+            error: (_, _) => Icon(Icons.error, color: context.colorScheme.error),
+          ),
+        ],
+      ),
     );
   }
 }
