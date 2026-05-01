@@ -23,21 +23,23 @@ class SameInstanceStrategy implements IFriendCategorizationStrategy {
     final List<FriendGroupCategory> instanceSubCategories = [];
     
     groupedByLocation.forEach((locationId, usersInInstance) {
-      accountedIds.addAll(usersInInstance.map((e) => e.id));
-      usersInInstance.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
-      
-      final instance = VrcInstance.parse(locationId);
-      final worldName = worldNames[instance.worldId] ?? "Unknown World";
-      final hash = instance.instanceId != null
-          ? '#${instance.instanceId!.length > 5 ? instance.instanceId!.substring(0, 5) : instance.instanceId!}'
-          : '';
-      
-      instanceSubCategories.add(FriendGroupCategory(
-        id: 'inst_$locationId',
-        title: "$worldName $hash ${instance.accessTypeString}".trim(),
-        icon: Icons.map_outlined,
-        friends: usersInInstance,
-      ));
+      if (usersInInstance.length >= 2) {
+        accountedIds.addAll(usersInInstance.map((e) => e.id));
+        usersInInstance.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+
+        final instance = VrcInstance.parse(locationId);
+        final worldName = worldNames[instance.worldId] ?? "Unknown World";
+        final hash = instance.instanceId != null
+            ? '#${instance.instanceId!.length > 5 ? instance.instanceId!.substring(0, 5) : instance.instanceId!}'
+            : '';
+
+        instanceSubCategories.add(FriendGroupCategory(
+          id: 'inst_$locationId',
+          title: "$worldName $hash ${instance.accessTypeString}".trim(),
+          icon: Icons.map_outlined,
+          friends: usersInInstance,
+        ));
+      }
     });
     
     if (instanceSubCategories.isEmpty) return null;
