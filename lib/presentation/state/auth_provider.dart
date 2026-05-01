@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,12 +20,21 @@ part 'auth_provider.g.dart';
 @riverpod
 Future<VrchatDart> vrcApi(Ref ref) async {
   final jar = await ref.watch(cookieJarProvider.future);
+  
+  final appDocDir = await getApplicationDocumentsDirectory();
+  final String safeCookiePath = p.join(appDocDir.path, '.cookies');
+  
   final client = VrchatDart(
       userAgent: VrchatUserAgent(
           applicationName: 'VRCMA',
           version: '1.0.0',
           contactInfo: 'contacto.gabrielsuarezdominguez@gmail.com'
       ),
+    cookiePath: safeCookiePath
+  );
+  
+  client.rawApi.dio.interceptors.removeWhere(
+      (interceptor) => interceptor.runtimeType.toString() == 'CookieManager'
   );
   
   client.rawApi.dio.interceptors.add(CookieManager(jar));
