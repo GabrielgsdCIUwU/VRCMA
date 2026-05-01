@@ -13,13 +13,14 @@ class FriendCategorySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isExpanded = ref.watch(categoryExpandedProvider(category.id));
+    final collapsedSet = ref.watch(collapsedCategoriesProvider);
+    final isExpanded = !collapsedSet.contains(category.id);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeader(context, isExpanded, () {
-          ref.read(categoryExpandedProvider(category.id).notifier).toggle();
+          ref.read(collapsedCategoriesProvider.notifier).toggle(category.id);
         }),
         if (isExpanded) ...[
           ...category.subCategories.map((sub) => FriendCategorySection(category: sub, depth: depth + 1)),
