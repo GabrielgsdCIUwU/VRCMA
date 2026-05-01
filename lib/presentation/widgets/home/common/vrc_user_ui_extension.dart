@@ -1,18 +1,21 @@
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 
 extension VrcUserUiExtension on VrcUser {
   bool get isTrulyOffline => location == 'offline' || status.toLowerCase() == 'offline';
   
   String get formattedLocation {
-    if (location.isEmpty || location == 'offline') return 'Offline';
-    if (location == 'private') return 'Private Instance';
-    
-    if (location.startsWith('wrld_')) {
-      if (location.contains('~private')) return 'Invite Only / Invite+';
-      if (location.contains('~hidden')) return 'Friends+ Instance';
-      if (location.contains('~friends')) return 'Friends Instance';
-      return 'Public Instance';
-    }
-    return location;
+   if (isTrulyOffline) return 'Offline';
+   if (status.toLowerCase() == 'active') return 'Active on Website';
+   
+   final instance = VrcInstance.parse(location);
+   
+   if (instance.isTraveling) return 'Traveling...';
+   if (instance.isPrivate) return 'Private Instance';
+   
+   if (instance.isResolvableWorld) {
+     return '${instance.accessTypeString} Instance (${instance.region})';
+   }
+   return location;
   }
 }
