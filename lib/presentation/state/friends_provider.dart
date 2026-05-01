@@ -113,14 +113,18 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   return useCase.execute();
 }
 
-@riverpod
-class CategoryExpanded extends _$CategoryExpanded {
+@Riverpod(keepAlive: true)
+class CollapsedCategories extends _$CollapsedCategories {
   @override
-  bool build(String categoryId) {
-    return true;
+  Set<String> build() {
+    return {};
   }
   
-  void toggle() {
-    state = !state;
+  void toggle(String categoryId) {
+    if (state.contains(categoryId)) {
+      state = {...state}..remove(categoryId);
+    } else {
+      state = {...state}..add(categoryId);
+    }
   }
 }
