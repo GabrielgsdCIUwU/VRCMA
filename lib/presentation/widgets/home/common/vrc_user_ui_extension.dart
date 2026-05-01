@@ -6,7 +6,7 @@ extension VrcUserUiExtension on VrcUser {
   
   String get formattedLocation {
    if (isTrulyOffline) return 'Offline';
-   if (status.toLowerCase() == 'active') return 'Active on Website';
+   if (location.isEmpty) return 'Active on Website';
    
    final instance = VrcInstance.parse(location);
    
