@@ -7,16 +7,19 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'core/services/background_service.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   //! Support SQLite on Desktop else DATABASE DOESN'T LOAD
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+  } else if (Platform.isAndroid || Platform.isIOS) {
+    await initializeBackgroundService();
   }
   
   runApp(
