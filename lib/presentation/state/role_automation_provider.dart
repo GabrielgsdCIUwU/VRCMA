@@ -2,6 +2,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/usecases/automation/process_friend_automations_use_case.dart';
+import 'package:vrcma/presentation/state/friends_provider.dart';
+import 'package:vrcma/presentation/state/role_management_provider.dart';
+import 'package:vrcma/presentation/state/user_details_provider.dart';
 
 part 'role_automation_provider.g.dart';
 
@@ -17,6 +21,16 @@ class RoleAutomationList extends _$RoleAutomationList {
     state = const AsyncLoading();
     final repo = await ref.read(localSocialRepositoryProvider.future);
     await repo.saveRoleAutomation(automation);
+    
+    final currentFriends = ref.read(friendsListProvider).value;
+    
+    if (currentFriends != null && currentFriends.isNotEmpty) {
+      final useCase = ProcessFriendAutomationsUseCase(repo);
+      await useCase.execute(currentFriends);
+    }
+    
+    ref.invalidate(roleMemberCountProvider);
+    ref.invalidate(userMetadataProvider);
     ref.invalidateSelf();
   }
 
