@@ -70,6 +70,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
+  flutter_launcher_icons: ^0.14.4
+  
+  
   mockito: ^5.6.4
 
   # --- CODE GENERATION (Required for Riverpod 3) ---
@@ -95,6 +98,12 @@ dev_dependencies:
   universal_io: any
   vrchat_dart_generated: any
   path_provider_platform_interface: any
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/VRCMA-Logo.png"
+
 flutter:
 
   # The following line ensures that the Material Icons font is
