@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
@@ -87,6 +89,21 @@ Future<List<FavoriteGroup>> favoriteFriendGroups(Ref ref) async {
   );
 }
 
+sealed class FlatFriendItem {}
+
+class FlatCategoryHeader extends FlatFriendItem {
+  final FriendGroupCategory category;
+  final int depth;
+  FlatCategoryHeader(this.category, this.depth);
+}
+
+class FlatFriendTile extends FlatFriendItem {
+  final VrcUser user;
+  final int depth;
+  FlatFriendTile(this.user, this.depth);
+
+}
+
 @riverpod
 Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   final friends = await ref.watch(friendsListProvider.future);
@@ -94,7 +111,7 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   final query = ref.watch(friendsSearchQueryProvider).toLowerCase();
   
   final uniqueWorldIds = friends
-    .where((f) => !f.isTrulyOffline && f.status.toLowerCase() != 'active')
+    .where((f) => !f.isTrulyOffline && f.status.toLowerCase() != "active")
     .map((f) => VrcInstance.parse(f.location).worldId)
     .whereType<String>()
     .toSet();
@@ -104,21 +121,21 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
     resolvedWorldNames[worldId] = await ref.watch(worldNameProvider(worldId).future);
   }
   
-  final useCase = CategorizeFriendsUseCase(
-    friends: friends,
-    favoriteGroups: favGroups,
-    worldNames: resolvedWorldNames,
-    searchQuery: query,
-  );
-  return useCase.execute();
+  return await Isolate.run(() {
+    final useCase = CategorizeFriendsUseCase(
+      friends: friends,
+      favoriteGroups: favGroups,
+      worldNames: resolvedWorldNames,
+      searchQuery: query,
+    );
+    return useCase.execute();
+  });
 }
 
 @Riverpod(keepAlive: true)
 class CollapsedCategories extends _$CollapsedCategories {
   @override
-  Set<String> build() {
-    return {};
-  }
+  Set<String> build() => {};
   
   void toggle(String categoryId) {
     if (state.contains(categoryId)) {
@@ -127,4 +144,36 @@ class CollapsedCategories extends _$CollapsedCategories {
       state = {...state}..add(categoryId);
     }
   }
+}
+
+@riverpod
+List<FlatFriendItem> flatFriendsList(Ref ref) {
+  final categoriesAsync = ref.watch(structuredFriendsListProvider);
+  final collapsedSet = ref.watch(collapsedCategoriesProvider);
+  
+  return categoriesAsync.maybeWhen(
+    data: (categories) {
+      final List<FlatFriendItem> flatList = [];
+      
+      void flatten(FriendGroupCategory cat, int depth) {
+        flatList.add(FlatCategoryHeader(cat, depth));
+        
+        if (!collapsedSet.contains(cat.id)) {
+          for (var sub in cat.subCategories) {
+            flatten(sub, depth + 1);
+          }
+          
+          for (var friend in cat.friends) {
+            flatList.add(FlatFriendTile(friend, depth + 1));
+          }
+        }
+      }
+      
+      for (var c in categories) {
+        flatten(c, 0);
+      }
+      return flatList;
+    },
+    orElse: () => [],
+  );
 }

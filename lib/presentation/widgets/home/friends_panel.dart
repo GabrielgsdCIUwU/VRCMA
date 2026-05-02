@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/widgets/home/friends/friend_category_section.dart';
+import 'package:vrcma/presentation/widgets/home/friends/friend_list_tile.dart';
 
 class FriendsPanel extends ConsumerWidget {
   const FriendsPanel({super.key});
@@ -10,6 +11,7 @@ class FriendsPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final structuredFriendsAsync = ref.watch(structuredFriendsListProvider);
+    final flatList = ref.watch(flatFriendsListProvider);
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,13 +24,25 @@ class FriendsPanel extends ConsumerWidget {
               await ref.read(friendsListProvider.notifier).refresh();
             },
             child: structuredFriendsAsync.when(
-              data: (groups) {
-                if (groups.isEmpty) {
+              data: (_) {
+                if (flatList.isEmpty) {
                   return Center(child: Text("No friends found", style: TextStyle(color: context.colorScheme.onSurfaceVariant)));
                 }
                 return ListView.builder(
-                  itemCount: groups.length,
-                  itemBuilder: (context, index) => FriendCategorySection(category: groups[index]),
+                  itemCount: flatList.length,
+                  itemBuilder: (context, index) {
+                    final item = flatList[index];
+                    
+                    if (item is FlatCategoryHeader) {
+                      return FriendCategoryHeaderTile(category: item.category, depth: item.depth);
+                    } else if (item is FlatFriendTile) {
+                      return Padding(
+                        padding: EdgeInsets.only(left: (item.depth -1) * 12.0),
+                        child: FriendListTile(user: item.user),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
