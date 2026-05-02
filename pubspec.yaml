@@ -103,6 +103,11 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/VRCMA-Logo.png"
+  
+  windows:
+    generate: true
+  linux:
+    generate: true
 
 flutter:
 
