@@ -32,13 +32,13 @@ class AutomationState extends _$AutomationState {
   }
   
   Future<void> _init() async {
-    _bgSubscription = FlutterBackgroundService().on('update_ui').listen((event) {
-      debugPrint("UI: Refreshing data...");
-      ref.invalidate(automationLogsProvider);
-      ref.invalidate(friendsListProvider);
-    });
-    
     if (Platform.isAndroid || Platform.isIOS) {
+      _bgSubscription = FlutterBackgroundService().on('update_ui').listen((event) {
+        debugPrint("UI: Refreshing data...");
+        ref.invalidate(automationLogsProvider);
+        ref.invalidate(friendsListProvider);
+      });
+      
       final isBgEnabled = await ref.watch(backgroundServiceToggleProvider.future);
       if (isBgEnabled) {
         debugPrint("UI: Yielding WebSocket control to Background Service.");
