@@ -8,8 +8,16 @@ part 'network_provider.g.dart';
 
 @riverpod
 Future<CookieJar> cookieJar(Ref ref) async {
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final String path = p.join(appDocDir.path, '.cookies');
+  String basePath;
+  if (Platform.isWindows || Platform.isLinux) {
+    final exePath = Platform.resolvedExecutable;
+    final exeDir = p.dirname(exePath);
+    basePath = p.join(exeDir, 'userdata');
+  } else {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    basePath = appDocDir.path;
+  }
+  final String path = p.join(basePath, '.cookies');
   
   await Directory(path).create(recursive: true);
   
