@@ -43,7 +43,7 @@ class SameInstanceStrategy implements IFriendCategorizationStrategy {
   }
   
   bool _isUserEligible(VrcUser user) {
-    return !user.isTrulyOffline && user.status.toLowerCase() != "active";
+    return !user.isTrulyOffline && user.location.isNotEmpty;
   }
   
   bool _isInstanceEligible(VrcInstance instance) {
