@@ -67,7 +67,16 @@ class FriendsPanel extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            color: context.colorScheme.primary,
+            tooltip: "Refresh friends list",
+            onPressed: () async {
+              ref.invalidate(favoriteFriendGroupsProvider);
+              await ref.read(friendsListProvider.notifier).refresh();
+            },
+          ),
+          const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
               hintText: "Search friends...",
