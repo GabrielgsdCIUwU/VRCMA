@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 

@@ -94,6 +94,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
   universal_io: any
   vrchat_dart_generated: any
+  path_provider_platform_interface: any
 flutter:
 
   # The following line ensures that the Material Icons font is

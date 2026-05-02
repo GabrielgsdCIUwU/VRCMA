@@ -1,5 +1,4 @@
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// This class mimics the behaviour of path_provider for unit tests.
 /// It returns simple string instead of real system paths.

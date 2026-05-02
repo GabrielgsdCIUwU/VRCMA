@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
-import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/usecases/social/categorization/favorites_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/same_instance_strategy.dart';

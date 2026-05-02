@@ -1,11 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/usecases/messages/sync_messages_use_case.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
-import 'package:vrcma/presentation/state/automation_provider.dart';
 
 part 'message_management_provider.g.dart';
 
