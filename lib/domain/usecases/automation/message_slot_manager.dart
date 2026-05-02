@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
@@ -31,7 +32,7 @@ class MessageSlotManager {
       
       return slotToUse;
     } catch (e) {
-      print("Error preparing slot for message: $e");
+      debugPrint("Error preparing slot for message: $e");
       return 0;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
@@ -52,7 +53,7 @@ class AutomationProcessor {
         profile.name
       );
     } catch (e) {
-      print("Error processing invitation: $e");
+      debugPrint("Error processing invitation: $e");
     }
   }
   
