@@ -37,10 +37,10 @@ class CategorizeFriendsUseCase {
       FavoritesStrategy(),
       SameInstanceStrategy(),
       StatusStrategy(id: 'online', title: 'Online', icon: Icons.videogame_asset,
-        condition: (u) => !u.isTrulyOffline && u.status.toLowerCase() != 'active'
+        condition: (u) => !u.isTrulyOffline && u.status.isNotEmpty
       ),
       StatusStrategy(id: 'active', title: 'Active (Website)', icon: Icons.language,
-        condition: (u) => !u.isTrulyOffline && u.status.toLowerCase() == 'active'
+        condition: (u) => !u.isTrulyOffline && u.status.isEmpty
       ),
       StatusStrategy(id: 'offline', title: 'Offline', icon: Icons.videogame_asset,
         condition: (u) => u.isTrulyOffline
