@@ -6,51 +6,90 @@ import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorizat
 import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 
 class SameInstanceStrategy implements IFriendCategorizationStrategy {
+  static const int _minimumUsersToFormGroup = 2;
   @override
   FriendGroupCategory? execute({required List<VrcUser> friends, required Set<String> accountedIds, required Map<String, dynamic> contextData}) {
-    final worldNames = contextData['worldNames'] as Map<String, String>;
-    final Map<String, List<VrcUser>> groupedByLocation = {};
+    final worldNames = contextData["worldNames"] as Map<String, String>;
     
-    for (final user in friends) {
-      if (user.isTrulyOffline || user.status.toLowerCase() == 'active') continue;
-      
-      final instance = VrcInstance.parse(user.location);
-      if (instance.isOffline || instance.isPrivate || instance.isTraveling) continue;
-      
-      groupedByLocation.putIfAbsent(user.location, () => []).add(user);
-    }
+    final groupedUsers = _groupUsersByInstance(friends);
+    final subCategories = _createSubcategories(groupedUsers, worldNames, accountedIds);
     
-    final List<FriendGroupCategory> instanceSubCategories = [];
+    if (subCategories.isEmpty) return null;
     
-    groupedByLocation.forEach((locationId, usersInInstance) {
-      if (usersInInstance.length >= 2) {
-        accountedIds.addAll(usersInInstance.map((e) => e.id));
-        usersInInstance.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
-
-        final instance = VrcInstance.parse(locationId);
-        final worldName = worldNames[instance.worldId] ?? "Unknown World";
-        final hash = instance.instanceId != null
-            ? '#${instance.instanceId!.length > 5 ? instance.instanceId!.substring(0, 5) : instance.instanceId!}'
-            : '';
-
-        instanceSubCategories.add(FriendGroupCategory(
-          id: 'inst_$locationId',
-          title: "$worldName $hash ${instance.accessTypeString}".trim(),
-          icon: Icons.map_outlined,
-          friends: usersInInstance,
-        ));
-      }
-    });
-    
-    if (instanceSubCategories.isEmpty) return null;
-    
-    instanceSubCategories.sort((a, b) => b.friends.length.compareTo(a.friends.length));
+    subCategories.sort((a, b) => b.friends.length.compareTo(a.friends.length));
     
     return FriendGroupCategory(
       id: 'instances_parent',
-      title: 'In Same Instance',
+      title: 'Same Instance',
       icon: Icons.public,
-      subCategories: instanceSubCategories,
+      subCategories: subCategories,
     );
+  }
+  
+  Map<String, List<VrcUser>> _groupUsersByInstance(List<VrcUser> friends) {
+    final Map<String, List<VrcUser>> grouped = {};
+    
+    for (final user in friends) {
+      if (!_isUserEligible(user)) continue;
+      
+      final instance = VrcInstance.parse(user.location);
+      if (!_isInstanceEligible(instance)) continue;
+      
+      final instanceKey = "${instance.worldId}:${instance.instanceId}";
+      grouped.putIfAbsent(instanceKey, () => []).add(user);
+    }
+    
+    return grouped;
+  }
+  
+  bool _isUserEligible(VrcUser user) {
+    return !user.isTrulyOffline && user.status.toLowerCase() != "active";
+  }
+  
+  bool _isInstanceEligible(VrcInstance instance) {
+    return !instance.isOffline &&
+      !instance.isPrivate &&
+      !instance.isTraveling &&
+      instance.isResolvableWorld;
+  }
+  
+  List<FriendGroupCategory> _createSubcategories(
+      Map<String, List<VrcUser>> groupedUsers,
+      Map<String, String> worldNames,
+      Set<String> accountedIds,
+      ) {
+    final List<FriendGroupCategory> categories = [];
+    
+    for (final entry in groupedUsers.entries) {
+      final users = entry.value;
+      if (users.length < _minimumUsersToFormGroup) continue;
+      
+      accountedIds.addAll(users.map((e) => e.id));
+      users.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+      
+      final instance = VrcInstance.parse(users.first.location);
+      final title = _buildInstanceTitle(instance, worldNames);
+      
+      categories.add(FriendGroupCategory(
+        id: 'inst_${entry.key}',
+        title: title,
+        icon: Icons.map_outlined,
+        friends: users,
+      ));
+    }
+    
+    return categories;
+  }
+  
+  String _buildInstanceTitle(VrcInstance instance, Map<String, String> worldNames) {
+    final worldName = worldNames[instance.worldId] ?? "Unknown World";
+    final hash = _formatInstanceHash(instance.instanceId);
+    return "$worldName $hash ${instance.accessTypeString}".trim();
+  }
+  
+  String _formatInstanceHash(String? instanceId) {
+    if (instanceId == null || instanceId.isEmpty) return '';
+    final truncated = instanceId.length > 5 ? instanceId.substring(0, 5) : instanceId;
+    return '#$truncated';
   }
 }
