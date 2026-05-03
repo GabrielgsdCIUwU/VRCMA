@@ -10,6 +10,7 @@ import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 class AutomationProcessor {
+  final String currentUserId;
   final IAutomationRepository automationRepository;
   final ILocalSocialRepository localSocialRepository;
   final IProfileRepository profileRepository;
@@ -18,6 +19,7 @@ class AutomationProcessor {
   final MessageSlotManager slotManager;
   
   AutomationProcessor({
+    required this.currentUserId,
     required this.automationRepository,
     required this.localSocialRepository,
     required this.profileRepository,
@@ -75,7 +77,7 @@ class AutomationProcessor {
     }
 
     final int? slotToUse = (messageToUse != null)
-      ? await slotManager.prepareSlotForMessage(invite.senderId, messageToUse)
+      ? await slotManager.prepareSlotForMessage(currentUserId, messageToUse)
       : null;
 
     if (action == RuleAction.accept) {

@@ -65,7 +65,10 @@ Future<IAutomationRepository> automationRepository(Ref ref) async {
 Future<AutomationProcessor> automationProcessor(Ref ref) async {
   final automationRepo = await ref.watch(automationRepositoryProvider.future);
   
+  final authUser = await ref.watch(authStateProvider.future);
+  
   return AutomationProcessor(
+    currentUserId: authUser?.id ?? '',
     automationRepository: automationRepo,
     localSocialRepository: await ref.watch(localSocialRepositoryProvider.future),
     profileRepository: await ref.watch(profileRepositoryProvider.future),
