@@ -19,8 +19,7 @@ class MessageSlotManager {
     
     final slotToUse = await _determineNextAvailableSlot(message.type);
     
-    try {
-      await automationRepository.updateVrcMessageSlot(
+      final result = await automationRepository.updateVrcMessageSlot(
         userId: userId,
         slot: slotToUse,
         content: message.content,
@@ -28,13 +27,16 @@ class MessageSlotManager {
         messageType: message.type.name,
       );
       
-      await messageRepository.updateSlot(message.id!, slotToUse, message.type);
-      
-      return slotToUse;
-    } catch (e) {
-      debugPrint("Error preparing slot for message: $e");
-      return 0;
-    }
+      return await result.fold(
+          (failure) {
+            debugPrint("Error preparing slot for message: ${failure.message}");
+            return 0;
+          },
+          (_) async {
+            await messageRepository.updateSlot(message.id!, slotToUse, message.type);
+            return slotToUse;
+          }
+      );
   }
   
   Future<int> _determineNextAvailableSlot(VrcMessageType inviteType) async {
