@@ -4,5 +4,5 @@ abstract class IProfileRepository {
   Future<List<FilterProfile>> getProfiles();
   Future<void> saveProfile(FilterProfile profile);
   Future<void> deleteProfile(int id);
-  Future<void> setActiveProfile(int id);
+  Future<void> setProfileActiveStatus(int id, bool isActive);
 }
