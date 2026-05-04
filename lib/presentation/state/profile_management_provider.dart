@@ -27,7 +27,7 @@ class ProfileManagementProvider extends _$ProfileManagementProvider {
   
   Future<void> toggleProfileActive(FilterProfile profile) async {
     final repo = await ref.read(profileRepositoryProvider.future);
-    await repo.setActiveProfile(profile.id!);
+    await repo.setProfileActiveStatus(profile.id!, !profile.isActive);
     ref.invalidateSelf();
   }
   

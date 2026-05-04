@@ -412,8 +412,6 @@ class _ProfileTile extends ConsumerWidget {
   }
   
   void _handleToggle(WidgetRef ref) {
-    if (profile.isActive) return;
-    
     ref.read(profileManagementProviderProvider.notifier).toggleProfileActive(profile);
   }
   
@@ -490,7 +488,7 @@ class _StatusIcon extends StatelessWidget {
         color: isActive ? context.vrcColors.success : context.colorScheme.onSurfaceVariant,
       ),
       onPressed: onPressed,
-      tooltip: isActive ? "Active" : "Set as active",
+      tooltip: isActive ? "Deactivate profile" : "Set as active",
     );
   }
 }
