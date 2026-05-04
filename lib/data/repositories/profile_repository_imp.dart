@@ -119,18 +119,20 @@ class ProfileRepositoryImp implements IProfileRepository {
   }
 
   @override
-  Future<void> setActiveProfile(int id) async {
+  Future<void> setProfileActiveStatus(int id, bool isActive) async {
     return await _db.transaction((txn) async {
-      await txn.update(
+      if (isActive) {
+        await txn.update(
         'profiles',
         {'is_active': 0},
         where: 'is_active = ?',
         whereArgs: [1]
-      );
+        );
+      }
 
       await txn.update(
           'profiles',
-          {'is_active': 1},
+          {'is_active': isActive ? 1 : 0},
           where: 'id = ?',
           whereArgs: [id]
       );
