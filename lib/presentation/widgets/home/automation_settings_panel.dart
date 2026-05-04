@@ -6,6 +6,7 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/presentation/state/automation_settings_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
@@ -20,6 +21,9 @@ class AutomationSettingsPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
   final isMobile = Platform.isAndroid || Platform.isIOS;
+
+  final collapsedSections = ref.watch(automationPanelSectionsProvider);
+  bool isExpanded(String id) => !collapsedSections.contains(id);
   
    return Column(
      children: [
@@ -27,9 +31,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
          _buildBackgroundToggle(context, ref),
          const Divider(height: 1, thickness: 1),
        ],
-       Expanded(
-         flex: 1,
-         child: _ConfigurationSection(
+       Flexible(
+         flex: isExpanded("profiles") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "profiles",
            title: "Profiles",
            onAdd: () => _showCreateProfileDialog(context, ref),
            child: const _ProfileListContent(),
@@ -37,9 +42,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
        ),
        const Divider(height: 1, thickness: 1),
        
-       Expanded(
-         flex: 1,
-         child: _ConfigurationSection(
+       Flexible(
+         flex: isExpanded("roles") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "roles",
            title: "Roles",
            onAdd: () => _showCreateRoleDialog(context, ref),
            child: const _RoleListContent(),
@@ -47,9 +53,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
        ),
        const Divider(height: 1, thickness: 1),
 
-       Expanded(
-         flex: 1,
-         child: _ConfigurationSection(
+       Flexible(
+         flex: isExpanded("automations") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "automations",
            title: "Friend Automations",
            onAdd: () {
              Navigator.push(context, MaterialPageRoute(
@@ -70,7 +77,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
         builder: (_) => _GenericAddDialog(
           title: "New Profile",
           label: "Profile name",
-          onConfirm: (name) => ref.read(profileManagementProviderProvider.notifier).addProfile(name),
+          onConfirm: (name) {
+            ref.read(profileManagementProviderProvider.notifier).addProfile(name);
+            ref.read(automationPanelSectionsProvider.notifier).expand('profiles');
+          },
         ),
     );
   }
@@ -81,7 +91,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
       builder: (_) => _GenericAddDialog(
         title: "New Role",
         label: "Role name",
-        onConfirm: (name) => ref.read(roleManagementProvider.notifier).createRole(name),
+        onConfirm: (name) {
+          ref.read(roleManagementProvider.notifier).createRole(name);
+          ref.read(automationPanelSectionsProvider.notifier).expand('roles');
+        },
       )
     );
   }
@@ -128,50 +141,67 @@ class AutomationSettingsPanel extends ConsumerWidget {
   }
 }
 
-
-
-class _ConfigurationSection extends StatelessWidget {
+class _CollapsibleSection extends ConsumerWidget {
+  final String id;
   final String title;
   final VoidCallback onAdd;
   final Widget child;
   
-  const _ConfigurationSection({
+  const _CollapsibleSection({
+    required this.id,
     required this.title,
     required this.onAdd,
     required this.child,
   });
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collapsedSections = ref.watch(automationPanelSectionsProvider);
+    final isExpanded = !collapsedSections.contains(id);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsetsGeometry.fromLTRB(16, 12, 8, 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  title.toUpperCase(),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+        InkWell(
+          onTap: () {
+            ref.read(automationPanelSectionsProvider.notifier).toggle(id);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+            child: Row(
+              children: [
+                Icon(
+                  isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                  size: 20,
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.add, size: 18),
-                onPressed: onAdd,
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      letterSpacing: 1.2,
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add, size: 20),
+                  onPressed: onAdd,
+                  visualDensity: VisualDensity.compact,
+                  tooltip: "Add $title",
+                ),
+              ],
+            ),
           ),
         ),
-        Expanded(child: child)
+        if (isExpanded)
+          Expanded(child: child),
       ],
     );
   }
