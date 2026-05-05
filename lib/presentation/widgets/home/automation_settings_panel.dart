@@ -293,20 +293,9 @@ class _RoleTile extends ConsumerWidget {
             },
             visualDensity: VisualDensity.compact,
           ),
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert, size: 20),
-            onSelected: (val) {
-              if (val == 'delete') {
-                _showDeleteRoleConfirmation(context, ref);
-              }
-            },
-            itemBuilder: (ctx) => [
-              PopupMenuItem(
-                value: 'delete',
-                child: Text("Delete Role", style: TextStyle(color: context.colorScheme.error, fontSize: 14)),
-              ),
-            ],
-          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteRoleConfirmation(context, ref),
+          )
         ],
       ),
     );
@@ -401,9 +390,10 @@ class _ProfileTile extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => _openEditor(context),
+            visualDensity: VisualDensity.compact,
             tooltip: "Edit rules",
           ),
-          _ProfileOptionsMenu(
+          _CommonOptionsMenu(
             onDelete: () => _showDeleteConfirmation(context, ref),
           ),
         ],
@@ -447,9 +437,9 @@ class _ProfileTile extends ConsumerWidget {
   }
 }
 
-class _ProfileOptionsMenu extends StatelessWidget {
+class _CommonOptionsMenu extends StatelessWidget {
   final VoidCallback onDelete;
-  const _ProfileOptionsMenu({required this.onDelete});
+  const _CommonOptionsMenu({required this.onDelete});
   
   @override
   Widget build(BuildContext context) {
@@ -546,47 +536,80 @@ class _RoleAutomationListContent extends ConsumerWidget {
         return ListView.separated(
           itemCount: automations.length,
           separatorBuilder: (_, _) => const Divider(height: 1, indent: 40),
-          itemBuilder: (context, i) {
-            final auto = automations[i];
-            final title = auto.trigger == AutomationTrigger.newFriend
-              ? "On New Friend"
-              : "Has Tag: ${VrcTag.allTags.firstWhereOrNull((t) => t.id == auto.targetValue)?.name ?? auto.targetValue}";
-
-            return ListTile(
-              dense: true,
-              leading: Icon(
-                auto.trigger == AutomationTrigger.newFriend ? Icons.person_add : Icons.tag,
-                color: context.colorScheme.primary,
-                size: 20,
-              ),
-              title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              subtitle: Text("Assigns: ${auto.roles.map((r) => r.name).join(', ')}",
-                style: const TextStyle(fontSize: 12),
-                maxLines: 1, overflow: TextOverflow.ellipsis,
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => RoleAutomationEditorSheet(automation: auto)
-                      ));
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete_outline, size: 18, color: context.colorScheme.error),
-                    onPressed: () => ref.read(roleAutomationListProvider.notifier).delete(auto.id!),
-                  ),
-                ],
-              ),
-            );
-          },
+          itemBuilder: (context, i) => _RoleAutomationTile(automation: automations[i]),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, _) => Center(child: Text("Error: $err")),
+    );
+  }
+}
+
+class _RoleAutomationTile extends ConsumerWidget {
+  final RoleAutomation automation;
+  const _RoleAutomationTile({required this.automation});
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final title = automation.trigger == AutomationTrigger.newFriend
+        ? "On New Friend"
+        : "Has Tag ${VrcTag.allTags.firstWhereOrNull((t) => t.id == automation.targetValue)?.name ?? automation.targetValue}";
+    
+    return ListTile(
+      dense: true,
+      leading: Icon(
+        automation.trigger == AutomationTrigger.newFriend ? Icons.person_add : Icons.tag,
+        color: context.colorScheme.primary,
+        size: 20,
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+      subtitle: Text(
+        "Assigns: ${automation.roles.map((r) => r.name).join(', ')}",
+        style: const TextStyle(fontSize: 12),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, size: 20),
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => RoleAutomationEditorSheet(automation: automation)
+              ));
+            },
+          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteConfirmation(context, ref),
+          )
+        ],
+      ),
+    );
+  }
+  
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Automation?"),
+        content: const Text("Are you sure you want to delete this automation?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
     );
   }
 }
