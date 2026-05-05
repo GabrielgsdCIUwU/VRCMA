@@ -130,8 +130,64 @@ class DatabaseService {
   }
   
   Future<void> _createDummyData(Database db, int version) async {
-    await db.insert('roles', {'name': 'VIP'});
-    await db.insert('roles', {'name': 'Admin'});
-    await db.insert('roles', {'name': 'Blocked'});
+    final now = DateTime.now().toIso8601String();
+    
+    final vipId = await db.insert('roles', {'name': 'VIP'});
+    final adminId = await db.insert('roles', {'name': 'Admin'});
+    final blockedId = await db.insert('roles', {'name': 'Blocked'});
+    
+    final vipRequestInviteId = await db.insert('custom_messages', {
+      'content': 'Come on in! You are always welcome :D',
+      'type': 'invite',
+      'last_updated': now,
+    });
+    final vipInviteId = await db.insert('custom_messages', {
+      'content': 'Thanks for the invite! Joining right now :D',
+      'type': 'request',
+      'last_updated': now,
+    });
+
+    final blockedRejectInviteId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'response',
+      'last_updated': now,
+    });
+    final blockedRejectRequestId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'requestResponse',
+      'last_updated': now,
+    });
+
+    final profileId = await db.insert('profiles', {
+      'name': 'Streamer / Safe Mode Example',
+      'is_active': 0,
+      'is_language_filter_enabled': 0
+    });
+
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': blockedId,
+      'priority': 0,
+      'action': 'REJECT',
+      'invite_message_id': blockedRejectInviteId,
+      'request_message_id': blockedRejectRequestId,
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': adminId,
+      'priority': 1,
+      'action': 'ACCEPT',
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': vipId,
+      'priority': 2,
+      'action': 'ACCEPT',
+      'invite_message_id': vipInviteId, 
+      'request_message_id': vipRequestInviteId,
+    });
   }
 }
