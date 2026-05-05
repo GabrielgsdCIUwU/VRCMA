@@ -1,24 +1,31 @@
+import 'package:flutter/cupertino.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
+import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 class AutomationProcessor {
+  final String currentUserId;
   final IAutomationRepository automationRepository;
   final ILocalSocialRepository localSocialRepository;
   final IProfileRepository profileRepository;
   final ILogRepository logRepository;
   final ProcessInvitationUseCase useCase;
+  final MessageSlotManager slotManager;
   
   AutomationProcessor({
+    required this.currentUserId,
     required this.automationRepository,
     required this.localSocialRepository,
     required this.profileRepository,
     required this.logRepository,
-    required this.useCase
+    required this.useCase,
+    required this.slotManager,
   });
   
   Future<void> process(InvitationType invitation) async {
@@ -39,16 +46,16 @@ class AutomationProcessor {
         return;
       }
       
-      await _executeAction(invitation, decision);
+      await _executeAction(invitation, decision.action, decision.rule);
       
       await _recordLog(
         invitation,
-        decision == RuleAction.accept ? 'ACCEPTED' : 'REJECTED',
-        'Profile Match',
+        decision.action == RuleAction.accept ? 'ACCEPTED' : 'REJECTED',
+        'Match: ${decision.rule.role.name}',
         profile.name
       );
     } catch (e) {
-      print("Error processing invitation: $e");
+      debugPrint("Error processing invitation: $e");
     }
   }
   
@@ -60,15 +67,23 @@ class AutomationProcessor {
     );
   }
   
-  Future<void> _executeAction(InvitationType invite, RuleAction action) async {
+  Future<void> _executeAction(InvitationType invite, RuleAction action, ProfileRule rule) async {
+    
+    CustomMessage? messageToUse;
+    if (invite is InviteReceived) {
+      messageToUse = rule.inviteResponseMessage;
+    } else if (invite is RequestInvite) {
+      messageToUse = rule.requestResponseMessage;
+    }
+
+    final int? slotToUse = (messageToUse != null)
+      ? await slotManager.prepareSlotForMessage(currentUserId, messageToUse)
+      : null;
+
     if (action == RuleAction.accept) {
-      if (invite is RequestInvite) {
-        await automationRepository.acceptRequestInvitation(invite, null);
-      } else if (invite is InviteReceived) {
-        await automationRepository.acceptInvitation(invite);
-      }
+     await _handleAccept(invite, slotToUse);
     } else {
-      await automationRepository.rejectNotificationWithMessage(invite, 0);
+      await _handleReject(invite, slotToUse);
     }
   }
   
@@ -81,5 +96,22 @@ class AutomationProcessor {
       action: action,
       appliedRule: "$profileName ($rule)",
     );
+  }
+
+
+  Future<void> _handleAccept(InvitationType invite, int? slot) async {
+    if (invite is RequestInvite) {
+      await automationRepository.acceptRequestInvitation(invite, slot);
+    } else if (invite is InviteReceived) {
+      await automationRepository.acceptInvitation(invite);
+    }
+  }
+
+  Future<void> _handleReject(InvitationType invite, int? slot) async {
+    if (slot == null) {
+      await automationRepository.dismissNotification(invite);
+      return;
+    }
+    await automationRepository.rejectNotificationWithMessage(invite, slot);
   }
 }

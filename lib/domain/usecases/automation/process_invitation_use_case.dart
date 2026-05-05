@@ -1,21 +1,30 @@
+import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 
+
+class ProcessInvitationResult {
+  final RuleAction action;
+  final ProfileRule rule;
+  ProcessInvitationResult({
+    required this.action,
+    required this.rule,
+  });
+}
 
 class ProcessInvitationUseCase {
   final UserRoleExtractor roleExtractor;
   final RuleSorter ruleSorter;
   final RuleEvaluator ruleEvaluator;
-  final DefaultActionResolver defaultResolver;
 
   ProcessInvitationUseCase({
     required this.roleExtractor,
     required this.ruleSorter,
     required this.ruleEvaluator,
-    required this.defaultResolver,
   });
 
-  RuleAction? execute({
+  ProcessInvitationResult? execute({
     required InvitationType request,
     required FilterProfile profile,
     required List<Role> userAssignedRoles,
@@ -25,11 +34,37 @@ class ProcessInvitationUseCase {
     final userRoles = roleExtractor.extract(request, userAssignedRoles);
     final sortedRules = ruleSorter.sort(profile.rules);
 
-    final result = ruleEvaluator.evaluate(sortedRules, userRoles);
+    final matchedRule = ruleEvaluator.evaluate(sortedRules, userRoles);
 
-    if (result != null) return result;
-
-    return defaultResolver.resolve(profile);
+    if (matchedRule != null) {
+      return ProcessInvitationResult(
+        action: matchedRule.action,
+        rule: matchedRule
+      );
+    }
+    
+    if (profile.fallbackTagsAction != FallbackTagAction.disabled && profile.fallbackTags.isNotEmpty) {
+      final matchedTag = profile.fallbackTags.firstWhereOrNull(
+              (tag) => userRoles.contains(tag.id.toLowerCase())
+                  || userRoles.contains(tag.name.toLowerCase())
+      );
+      
+      if (matchedTag != null) {
+        final action = profile.fallbackTagsAction == FallbackTagAction.accept
+            ? RuleAction.accept
+            : RuleAction.reject;
+        
+        return ProcessInvitationResult(
+          action: action,
+          rule: ProfileRule(
+            role: Role(id: -1, name: "Tag ${matchedTag.name}"),
+            priority: 999,
+            action: action
+          )
+        );
+      }
+    }
+    return null;
   }
 }
 
@@ -38,8 +73,15 @@ class UserRoleExtractor {
       InvitationType request,
       List<Role> userAssignedRoles,
       ) {
+    final rawTags = request.senderTags.map((t) => t.toLowerCase()).toSet();
+    
+    final humanReadableTags = rawTags.map((tagId) {
+      final knownTag = VrcTag.allTags.firstWhereOrNull((t) => t.id.toLowerCase() == tagId);
+      return knownTag?.name.toLowerCase();
+    }).nonNulls;
     return {
-      ...request.senderTags.map((t) => t.toLowerCase()),
+      ...rawTags,
+      ...humanReadableTags,
       ...userAssignedRoles.map((r) => r.name.toLowerCase()),
     };
   }
@@ -54,7 +96,7 @@ class RuleSorter {
 }
 
 class RuleEvaluator {
-  RuleAction? evaluate(
+  ProfileRule? evaluate(
       List<ProfileRule> rules,
       Set<String> userRoles,
       ) {
@@ -97,21 +139,21 @@ class RuleEvaluator {
     return result;
   }
 
-  RuleAction? _evaluateSegment(
+  ProfileRule? _evaluateSegment(
       List<ProfileRule> segment,
       Set<String> userRoles,
       ) {
     if (segment.length == 1 && segment.first.fallbackGroup == null) {
       final rule = segment.first;
       if (_matches(rule, userRoles)) {
-        return rule.action;
+        return rule;
       }
       return null;
     }
 
     for (final rule in segment) {
       if (_matches(rule, userRoles)) {
-        return rule.action;
+        return rule;
       }
     }
 
@@ -120,17 +162,5 @@ class RuleEvaluator {
 
   bool _matches(ProfileRule rule, Set<String> userRoles) {
     return userRoles.contains(rule.role.name.toLowerCase());
-  }
-}
-
-class DefaultActionResolver {
-  RuleAction? resolve(FilterProfile profile) {
-    if (profile.defaultRole == null) return null;
-
-    final defaultRule = profile.rules
-        .where((r) => r.role.id == profile.defaultRole!.id)
-        .firstOrNull;
-
-    return defaultRule?.action;
   }
 }

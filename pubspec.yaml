@@ -60,10 +60,18 @@ dependencies:
   equatable: ^2.0.5
   collection: ^1.19.1
   intl: ^0.20.2
+  
+  # --- Mobile Background Execution ---
+  flutter_background_service: ^5.1.0
+  flutter_local_notifications: ^21.0.0
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+  flutter_launcher_icons: ^0.14.4
+  
   
   mockito: ^5.6.4
 
@@ -89,6 +97,18 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
   universal_io: any
   vrchat_dart_generated: any
+  path_provider_platform_interface: any
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/VRCMA-Logo.png"
+  
+  windows:
+    generate: true
+  linux:
+    generate: true
+
 flutter:
 
   # The following line ensures that the Material Icons font is

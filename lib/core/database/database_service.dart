@@ -50,6 +50,16 @@ class DatabaseService {
         last_updated TEXT NOT NULL
       )
     ''' );
+
+    await db.execute('''
+      CREATE TABLE custom_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL,
+        type TEXT NOT NULL, -- 'invite', 'response', 'request', 'requestResponse'
+        slot_index INTEGER, -- 0 to 11, NULL if not active in VRChat
+        last_updated TEXT NOT NULL
+      )
+    ''');
     
     await db.execute('''
       CREATE TABLE profiles (
@@ -57,9 +67,7 @@ class DatabaseService {
         name TEXT NOT NULL,
         target_languages TEXT,
         is_language_filter_enabled INTEGER DEFAULT 0,
-        is_active INTEGER DEFAULT 0,
-        default_role_id INTEGER,
-        FOREIGN KEY (default_role_id) REFERENCES roles (id)
+        is_active INTEGER DEFAULT 0
       )
     ''');
     
@@ -93,15 +101,93 @@ class DatabaseService {
         priority INTEGER NOT NULL,
         action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
         fallback_group INTEGER,
+        invite_message_id INTEGER,
+        request_message_id INTEGER,
         FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
+        FOREIGN KEY (invite_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL,
+        FOREIGN KEY (request_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE role_automations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trigger_type TEXT NOT NULL,
+        target_value TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE automation_assigned_roles (
+        automation_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (automation_id, role_id),
+        FOREIGN KEY (automation_id) REFERENCES role_automations (id) ON DELETE CASCADE,
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
-    await db.insert('roles', {'name': 'VIP'});
-    await db.insert('roles', {'name': 'Admin'});
-    await db.insert('roles', {'name': 'Blocked'});
+    final now = DateTime.now().toIso8601String();
+    
+    final vipId = await db.insert('roles', {'name': 'VIP'});
+    final adminId = await db.insert('roles', {'name': 'Admin'});
+    final blockedId = await db.insert('roles', {'name': 'Blocked'});
+    
+    final vipRequestInviteId = await db.insert('custom_messages', {
+      'content': 'Come on in! You are always welcome :D',
+      'type': 'invite',
+      'last_updated': now,
+    });
+    final vipInviteId = await db.insert('custom_messages', {
+      'content': 'Thanks for the invite! Joining right now :D',
+      'type': 'request',
+      'last_updated': now,
+    });
+
+    final blockedRejectInviteId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'response',
+      'last_updated': now,
+    });
+    final blockedRejectRequestId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'requestResponse',
+      'last_updated': now,
+    });
+
+    final profileId = await db.insert('profiles', {
+      'name': 'Streamer / Safe Mode Example',
+      'is_active': 0,
+      'is_language_filter_enabled': 0
+    });
+
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': blockedId,
+      'priority': 0,
+      'action': 'REJECT',
+      'invite_message_id': blockedRejectInviteId,
+      'request_message_id': blockedRejectRequestId,
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': adminId,
+      'priority': 1,
+      'action': 'ACCEPT',
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': vipId,
+      'priority': 2,
+      'action': 'ACCEPT',
+      'invite_message_id': vipInviteId, 
+      'request_message_id': vipRequestInviteId,
+    });
   }
 }

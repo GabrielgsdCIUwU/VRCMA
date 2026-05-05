@@ -24,6 +24,7 @@ class VrcUserModel extends VrcUser {
       location: user.location,
       status: user.status.value,
       avatarUrl: VrcImageMapper.mapAvatarUrl(
+        userIcon: user.userIcon,
         profilePic: user.profilePicOverrideThumbnail,
         thumbnail: user.currentAvatarThumbnailImageUrl,
         currentAvatar: user.currentAvatarImageUrl,
@@ -40,6 +41,7 @@ class VrcUserModel extends VrcUser {
       location: '',
       status: user.status.value,
       avatarUrl: VrcImageMapper.mapAvatarUrl(
+          userIcon: user.userIcon,
           profilePic: user.profilePicOverrideThumbnail,
           thumbnail: user.currentAvatarThumbnailImageUrl,
           currentAvatar: user.currentAvatarImageUrl,

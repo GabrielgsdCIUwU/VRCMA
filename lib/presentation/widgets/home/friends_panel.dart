@@ -1,105 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
-import 'package:vrcma/presentation/widgets/home/window/user_details_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/friends/friend_category_section.dart';
+import 'package:vrcma/presentation/widgets/home/friends/friend_list_tile.dart';
 
 class FriendsPanel extends ConsumerWidget {
   const FriendsPanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final friendsAsync = ref.watch(friendsListProvider);
-
-    return RefreshIndicator(
-      onRefresh: () => ref.read(friendsListProvider.notifier).refresh(),
-      child: friendsAsync.when(
-        data: (friends) {
-          if (friends.isEmpty) {
-            return const Center(child: Text("No online friends"));
-          }
-          return ListView.builder(
-            itemCount: friends.length,
-            itemBuilder: (context, index) => _FriendTitle(user: friends[index]),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text("Error: $err")),
-      ),
+    final structuredFriendsAsync = ref.watch(structuredFriendsListProvider);
+    final flatList = ref.watch(flatFriendsListProvider);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeader(context, ref),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(favoriteFriendGroupsProvider);
+              await ref.read(friendsListProvider.notifier).refresh();
+            },
+            child: structuredFriendsAsync.when(
+              data: (_) {
+                if (flatList.isEmpty) {
+                  return Center(child: Text("No friends found", style: TextStyle(color: context.colorScheme.onSurfaceVariant)));
+                }
+                return ListView.builder(
+                  itemCount: flatList.length,
+                  itemBuilder: (context, index) {
+                    final item = flatList[index];
+                    
+                    if (item is FlatCategoryHeader) {
+                      return FriendCategoryHeaderTile(category: item.category, depth: item.depth);
+                    } else if (item is FlatFriendTile) {
+                      return Padding(
+                        padding: EdgeInsets.only(left: (item.depth -1) * 12.0),
+                        child: FriendListTile(user: item.user),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) => Center(child: Text("Error: $err")),
+            ),
+          ),
+        )
+      ],
     );
   }
-}
-
-class _FriendTitle extends StatelessWidget {
-  final VrcUser user;
-
-  const _FriendTitle({required this.user});
-
-  Color _getStatusColor(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'active':
-        return Colors.greenAccent;
-      case 'join me':
-        return Colors.blueAccent;
-      case 'ask me':
-        return Colors.orangeAccent;
-      case 'busy':
-        return Colors.redAccent;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      leading: Stack(
+  Widget _buildHeader(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         VrcAvatar(
-           imageUrl: user.avatarUrl,
-           displayName: user.displayName,
-           radius: 20,
-         ),
-
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: _getStatusColor(user.status),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.black, width: 2),
-              ),
+          Text(
+            "FRIENDS",
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              letterSpacing: 1.2,
+              color: context.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            color: context.colorScheme.primary,
+            tooltip: "Refresh friends list",
+            onPressed: () async {
+              ref.invalidate(favoriteFriendGroupsProvider);
+              await ref.read(friendsListProvider.notifier).refresh();
+            },
+          ),
+          const SizedBox(height: 4),
+          TextField(
+            decoration: InputDecoration(
+              hintText: "Search friends...",
+              prefixIcon: const Icon(Icons.search, size: 20),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onChanged: (val) => ref.read(friendsSearchQueryProvider.notifier).updateQuery(val),
           ),
         ],
       ),
-      title: Text(
-        user.displayName,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-      ),
-      subtitle: Text(
-        user.location == 'private' ? "Private Instance" : (user.location),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Colors.white.withValues(alpha: 0.6),
-          fontSize: 12,
-        ),
-      ),
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          builder: (context) => UserDetailsSheet(user: user),
-        );
-      },
     );
   }
 }

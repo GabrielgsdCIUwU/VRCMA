@@ -6,6 +6,7 @@ import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
+import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
 @GenerateMocks([
@@ -17,6 +18,7 @@ import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dar
   ILocalSocialRepository,
   IProfileRepository,
   ILogRepository,
-  ProcessInvitationUseCase
+  ProcessInvitationUseCase,
+  MessageSlotManager
 ])
 void main() {}

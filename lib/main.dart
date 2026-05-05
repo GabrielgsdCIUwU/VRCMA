@@ -3,17 +3,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'core/services/background_service.dart';
 
-void main() {
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   //! Support SQLite on Desktop else DATABASE DOESN'T LOAD
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+  } else if (Platform.isAndroid || Platform.isIOS) {
+    await initializeBackgroundService();
   }
   
   runApp(
@@ -30,12 +36,28 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'VRCMA',
+      scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,
           brightness: Brightness.dark
         ),
         useMaterial3: true,
+        extensions: const [
+          VrcSemanticColors(
+            invite: Colors.blueAccent,
+            request: Colors.orangeAccent,
+            response: Colors.greenAccent,
+            requestResponse: Colors.purpleAccent,
+            statusOnline: Colors.greenAccent,
+            statusJoinMe: Colors.blueAccent,
+            statusAskMe: Colors.orangeAccent,
+            statusBusy: Colors.redAccent,
+            statusOffline: Colors.grey,
+            success: Colors.green,
+            error: Colors.redAccent,
+          )
+        ],
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           filled: true,

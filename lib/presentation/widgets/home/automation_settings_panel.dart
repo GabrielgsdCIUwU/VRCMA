@@ -1,9 +1,18 @@
+import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/presentation/state/automation_settings_provider.dart';
+import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
+import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
 
 class AutomationSettingsPanel extends ConsumerWidget {
@@ -11,11 +20,21 @@ class AutomationSettingsPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+  final isMobile = Platform.isAndroid || Platform.isIOS;
+
+  final collapsedSections = ref.watch(automationPanelSectionsProvider);
+  bool isExpanded(String id) => !collapsedSections.contains(id);
+  
    return Column(
      children: [
-       Expanded(
-         flex: 1,
-         child: _ConfigurationSection(
+       if (isMobile) ...[
+         _buildBackgroundToggle(context, ref),
+         const Divider(height: 1, thickness: 1),
+       ],
+       Flexible(
+         flex: isExpanded("profiles") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "profiles",
            title: "Profiles",
            onAdd: () => _showCreateProfileDialog(context, ref),
            child: const _ProfileListContent(),
@@ -23,12 +42,28 @@ class AutomationSettingsPanel extends ConsumerWidget {
        ),
        const Divider(height: 1, thickness: 1),
        
-       Expanded(
-         flex: 1,
-         child: _ConfigurationSection(
+       Flexible(
+         flex: isExpanded("roles") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "roles",
            title: "Roles",
            onAdd: () => _showCreateRoleDialog(context, ref),
            child: const _RoleListContent(),
+         ),
+       ),
+       const Divider(height: 1, thickness: 1),
+
+       Flexible(
+         flex: isExpanded("automations") ? 1 : 0,
+         child: _CollapsibleSection(
+           id: "automations",
+           title: "Friend Automations",
+           onAdd: () {
+             Navigator.push(context, MaterialPageRoute(
+               builder: (_) => const RoleAutomationEditorSheet()
+             ));
+           },
+           child: const _RoleAutomationListContent(),
          ),
        ),
      ],
@@ -42,7 +77,10 @@ class AutomationSettingsPanel extends ConsumerWidget {
         builder: (_) => _GenericAddDialog(
           title: "New Profile",
           label: "Profile name",
-          onConfirm: (name) => ref.read(profileManagementProviderProvider.notifier).addProfile(name),
+          onConfirm: (name) {
+            ref.read(profileManagementProviderProvider.notifier).addProfile(name);
+            ref.read(automationPanelSectionsProvider.notifier).expand('profiles');
+          },
         ),
     );
   }
@@ -53,52 +91,117 @@ class AutomationSettingsPanel extends ConsumerWidget {
       builder: (_) => _GenericAddDialog(
         title: "New Role",
         label: "Role name",
-        onConfirm: (name) => ref.read(roleManagementProvider.notifier).createRole(name),
+        onConfirm: (name) {
+          ref.read(roleManagementProvider.notifier).createRole(name);
+          ref.read(automationPanelSectionsProvider.notifier).expand('roles');
+        },
       )
+    );
+  }
+  
+  Widget _buildBackgroundToggle(BuildContext context, WidgetRef ref) {
+    final bgState = ref.watch(backgroundServiceToggleProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "BACKGROUND AUTOMATION",
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.bold, fontSize: 14,
+                  ),
+                ),
+                Text(
+                  "Keep processing invites when app is closed",
+                  style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant),
+                )
+              ],
+            ),
+          ),
+          bgState.when(
+            data: (isEnabled) => Switch(
+              value: isEnabled,
+              onChanged: (val) {
+                ref.read(backgroundServiceToggleProvider.notifier).toggle(val);
+              },
+            ),
+            loading: () => const CircularProgressIndicator(),
+            error: (_, _) => Icon(Icons.error, color: context.colorScheme.error),
+          ),
+        ],
+      ),
     );
   }
 }
 
-
-
-class _ConfigurationSection extends StatelessWidget {
+class _CollapsibleSection extends ConsumerWidget {
+  final String id;
   final String title;
   final VoidCallback onAdd;
   final Widget child;
   
-  const _ConfigurationSection({
+  const _CollapsibleSection({
+    required this.id,
     required this.title,
     required this.onAdd,
     required this.child,
   });
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collapsedSections = ref.watch(automationPanelSectionsProvider);
+    final isExpanded = !collapsedSections.contains(id);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsetsGeometry.fromLTRB(16, 12, 8, 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title.toUpperCase(),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  letterSpacing: 1.2, color: Colors.grey.shade400,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+        InkWell(
+          onTap: () {
+            ref.read(automationPanelSectionsProvider.notifier).toggle(id);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+            child: Row(
+              children: [
+                Icon(
+                  isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                  size: 20,
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.add, size: 18),
-                onPressed: onAdd,
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      letterSpacing: 1.2,
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add, size: 20),
+                  onPressed: onAdd,
+                  visualDensity: VisualDensity.compact,
+                  tooltip: "Add $title",
+                ),
+              ],
+            ),
           ),
         ),
-        Expanded(child: child)
+        if (isExpanded)
+          Expanded(child: child),
       ],
     );
   }
@@ -170,7 +273,7 @@ class _RoleTile extends ConsumerWidget {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-      leading: const Icon(Icons.label_outline, color: Colors.deepPurpleAccent, size: 22),
+      leading: Icon(Icons.label_outline, color: context.colorScheme.primary, size: 22),
       title: Text(
           role.name,
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -190,20 +293,9 @@ class _RoleTile extends ConsumerWidget {
             },
             visualDensity: VisualDensity.compact,
           ),
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert, size: 20),
-            onSelected: (val) {
-              if (val == 'delete') {
-                _showDeleteRoleConfirmation(context, ref);
-              }
-            },
-            itemBuilder: (ctx) => [
-              const PopupMenuItem(
-                value: 'delete',
-                child: Text("Delete Role", style: TextStyle(color: Colors.red, fontSize: 14)),
-              ),
-            ],
-          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteRoleConfirmation(context, ref),
+          )
         ],
       ),
     );
@@ -229,7 +321,7 @@ class _RoleTile extends ConsumerWidget {
               ref.read(roleManagementProvider.notifier).deleteRole(role.id);
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
             child: const Text("Delete"),
           )
         ],
@@ -287,7 +379,7 @@ class _ProfileTile extends ConsumerWidget {
         profile.name,
         style: TextStyle(
           fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-          color: isActive ? Colors.green.shade200 : null,
+          color: isActive ? context.vrcColors.success : null,
           fontSize: 14,
         ),
       ),
@@ -298,9 +390,10 @@ class _ProfileTile extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => _openEditor(context),
+            visualDensity: VisualDensity.compact,
             tooltip: "Edit rules",
           ),
-          _ProfileOptionsMenu(
+          _CommonOptionsMenu(
             onDelete: () => _showDeleteConfirmation(context, ref),
           ),
         ],
@@ -309,8 +402,6 @@ class _ProfileTile extends ConsumerWidget {
   }
   
   void _handleToggle(WidgetRef ref) {
-    if (profile.isActive) return;
-    
     ref.read(profileManagementProviderProvider.notifier).toggleProfileActive(profile);
   }
   
@@ -337,7 +428,7 @@ class _ProfileTile extends ConsumerWidget {
               ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
             child: const Text("Delete"),
           )
         ],
@@ -346,9 +437,9 @@ class _ProfileTile extends ConsumerWidget {
   }
 }
 
-class _ProfileOptionsMenu extends StatelessWidget {
+class _CommonOptionsMenu extends StatelessWidget {
   final VoidCallback onDelete;
-  const _ProfileOptionsMenu({required this.onDelete});
+  const _CommonOptionsMenu({required this.onDelete});
   
   @override
   Widget build(BuildContext context) {
@@ -359,13 +450,13 @@ class _ProfileOptionsMenu extends StatelessWidget {
         if (value == 'delete') onDelete();
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete_outline, color: Colors.red, size: 20),
+              Icon(Icons.delete_outline, color: context.colorScheme.error, size: 20),
               SizedBox(width: 8),
-              Text("Delete", style: TextStyle(color: Colors.red)),
+              Text("Delete", style: TextStyle(color: context.colorScheme.error)),
             ],
           ),
         ),
@@ -384,10 +475,10 @@ class _StatusIcon extends StatelessWidget {
     return IconButton(
       icon: Icon(
         isActive ? Icons.check_circle : Icons.circle_outlined,
-        color: isActive ? Colors.green : Colors.grey,
+        color: isActive ? context.vrcColors.success : context.colorScheme.onSurfaceVariant,
       ),
       onPressed: onPressed,
-      tooltip: isActive ? "Active" : "Set as active",
+      tooltip: isActive ? "Deactivate profile" : "Set as active",
     );
   }
 }
@@ -425,5 +516,100 @@ class _CreateProfileDialogState extends State<_CreateProfileDialog> {
     
     widget.onConfirm(_controller.text);
     Navigator.pop(context);
+  }
+}
+
+class _RoleAutomationListContent extends ConsumerWidget {
+  const _RoleAutomationListContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listAsync = ref.watch(roleAutomationListProvider);
+
+    return listAsync.when(
+      data: (automations) {
+        if (automations.isEmpty) {
+          return Center(
+            child: Text("No automations configured", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+          );
+        }
+        return ListView.separated(
+          itemCount: automations.length,
+          separatorBuilder: (_, _) => const Divider(height: 1, indent: 40),
+          itemBuilder: (context, i) => _RoleAutomationTile(automation: automations[i]),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text("Error: $err")),
+    );
+  }
+}
+
+class _RoleAutomationTile extends ConsumerWidget {
+  final RoleAutomation automation;
+  const _RoleAutomationTile({required this.automation});
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final title = automation.trigger == AutomationTrigger.newFriend
+        ? "On New Friend"
+        : "Has Tag ${VrcTag.allTags.firstWhereOrNull((t) => t.id == automation.targetValue)?.name ?? automation.targetValue}";
+    
+    return ListTile(
+      dense: true,
+      leading: Icon(
+        automation.trigger == AutomationTrigger.newFriend ? Icons.person_add : Icons.tag,
+        color: context.colorScheme.primary,
+        size: 20,
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+      subtitle: Text(
+        "Assigns: ${automation.roles.map((r) => r.name).join(', ')}",
+        style: const TextStyle(fontSize: 12),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, size: 20),
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => RoleAutomationEditorSheet(automation: automation)
+              ));
+            },
+          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteConfirmation(context, ref),
+          )
+        ],
+      ),
+    );
+  }
+  
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Automation?"),
+        content: const Text("Are you sure you want to delete this automation?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
   }
 }
