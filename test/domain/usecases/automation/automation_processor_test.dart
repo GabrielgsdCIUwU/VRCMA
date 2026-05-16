@@ -16,6 +16,8 @@ void main() {
   late MockILogRepository mockLogRepo;
   late MockProcessInvitationUseCase mockUseCase;
   late MockMessageSlotManager mockSlotManager;
+  
+  const tCurrentUserId = 'usr_9876';
 
   final tRequestInvite = RequestInvite(
     id: 'not_123',
@@ -72,6 +74,7 @@ void main() {
       logRepository: mockLogRepo,
       useCase: mockUseCase,
       slotManager: mockSlotManager,
+      currentUserId: tCurrentUserId,
     );
 
     when(mockLogRepo.saveLog(
@@ -131,7 +134,7 @@ void main() {
         userAssignedRoles: anyNamed('userAssignedRoles'),
       )).thenReturn(tResult);
 
-      when(mockSlotManager.prepareSlotForMessage(tRequestInvite.senderId, tMessage))
+      when(mockSlotManager.prepareSlotForMessage(tCurrentUserId, tMessage))
           .thenAnswer((_) async => 3);
 
       when(mockAutomationRepo.acceptRequestInvitation(tRequestInvite, 3))
@@ -139,8 +142,8 @@ void main() {
 
       await processor.process(tRequestInvite);
 
-      verify(mockSlotManager.prepareSlotForMessage(tRequestInvite.senderId, tMessage));
-      verify(mockAutomationRepo.acceptRequestInvitation(tRequestInvite, 3));
+      verify(mockSlotManager.prepareSlotForMessage(tCurrentUserId, tMessage)).called(1);
+      verify(mockAutomationRepo.acceptRequestInvitation(tRequestInvite, 3)).called(1);
       verify(mockLogRepo.saveLog(
         vrcUserId: tRequestInvite.senderId,
         displayName: tRequestInvite.senderName,
@@ -148,7 +151,7 @@ void main() {
         invitationType: 'REQUEST',
         action: 'ACCEPTED',
         appliedRule: '${tProfile.name} (Match: ${tRule.role.name})',
-      ));
+      )).called(1);
     });
 
     test('should prepare slot and REJECT with message when decision is reject and has message', () async {
@@ -164,7 +167,7 @@ void main() {
         userAssignedRoles: anyNamed('userAssignedRoles'),
       )).thenReturn(tResult);
 
-      when(mockSlotManager.prepareSlotForMessage(tRequestInvite.senderId, tMessage))
+      when(mockSlotManager.prepareSlotForMessage(tCurrentUserId, tMessage))
           .thenAnswer((_) async => 5);
 
       when(mockAutomationRepo.rejectNotificationWithMessage(tRequestInvite, 5))
@@ -172,7 +175,7 @@ void main() {
 
       await processor.process(tRequestInvite);
 
-      verify(mockSlotManager.prepareSlotForMessage(tRequestInvite.senderId, tMessage));
+      verify(mockSlotManager.prepareSlotForMessage(tCurrentUserId, tMessage));
       verify(mockAutomationRepo.rejectNotificationWithMessage(tRequestInvite, 5));
       verify(mockLogRepo.saveLog(
         vrcUserId: tRequestInvite.senderId,
