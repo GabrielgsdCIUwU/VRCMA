@@ -201,14 +201,16 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   @override
   Future<void> saveKnownUsers(List<VrcUser> userIds) async {
     final batch = _db.batch();
+    final now = DateTime.now().toIso8601String();
     for (final user in userIds) {
-      batch.insert('vrc_users', {
-        'user_id': user.id,
-        'display_name': user.displayName,
-        'avatar_url': user.avatarUrl,
-        'last_updated': DateTime.now().toIso8601String(),
-
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      batch.rawInsert('''
+        INSERT INTO vrc_users (user_id, display_name, avatar_url, last_updated)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET
+          display_name = excluded.display_name,
+          avatar_url = excluded.avatar_url,
+          last_updated = excluded.last_updated
+      ''', [user.id, user.displayName, user.avatarUrl, now]);
     }
     await batch.commit(noResult: true);
   }
