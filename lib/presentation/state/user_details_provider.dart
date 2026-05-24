@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 
 
