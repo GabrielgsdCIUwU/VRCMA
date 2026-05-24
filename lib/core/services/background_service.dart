@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 
 const notificationChannelId = 'vrcma_automation_channel';
 const notificationId = 888;
