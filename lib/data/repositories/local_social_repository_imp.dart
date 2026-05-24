@@ -214,4 +214,23 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
     }
     await batch.commit(noResult: true);
   }
+
+  @override
+  Future<void> assignMultipleRoles(Map<String, Set<int>> userRoles) async {
+    final batch = _db.batch();
+    
+    for (final entry in userRoles.entries) {
+      final userId = entry.key;
+      final roleIds = entry.value;
+      
+      for (final roleId in roleIds) {
+        batch.insert('friend_roles', {
+          'vrc_user_id': userId,
+          'role_id': roleId
+        }, conflictAlgorithm: ConflictAlgorithm.ignore);
+      }
+    }
+    
+    await batch.commit(noResult: true);
+  }
 }

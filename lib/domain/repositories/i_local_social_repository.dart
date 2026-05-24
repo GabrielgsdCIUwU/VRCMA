@@ -5,6 +5,7 @@ import 'package:vrcma/domain/entities/automation/role_automation.dart';
 abstract class ILocalSocialRepository {
   Future<List<Role>> getRolesForUser(String userId);
   Future<void> assignRoleToUser(String userId, int roleId);
+  Future<void> assignMultipleRoles(Map<String, Set<int>> userRoles);
   Future<void> removeRoleFromUser(String userId, int roleId);
   Future<List<Role>> getAllAvailableRoles();
   Future<int> createRole(String name);
