@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/data/repositories/social_repository_imp.dart';
-import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/core/di/database_provider.dart';
 
 part 'world_cache_provider.g.dart';
 
@@ -43,8 +42,7 @@ Future<String> worldName(Ref ref, String worldId) async {
   await _worldFetchLock.acquire();
 
   try {
-    final api = await ref.watch(vrcApiProvider.future);
-    final repo = SocialRepositoryImp(api);
+    final repo = await ref.watch(socialRepositoryProvider.future);
 
     final result = await repo.getWorldName(worldId);
 
