@@ -1,6 +1,7 @@
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 /// Data model that extends the domain entity to include JSON serialization
 /// or mapping from the specific VRChat API library.
 class VrcUserModel extends VrcUser {
@@ -20,7 +21,7 @@ class VrcUserModel extends VrcUser {
       id: user.id,
       displayName: user.displayName,
       bio: user.bio,
-      tags: user.tags,
+      tags: _internTags(user.tags),
       location: user.location,
       status: user.status.value,
       avatarUrl: VrcImageMapper.mapAvatarUrl(
@@ -47,5 +48,16 @@ class VrcUserModel extends VrcUser {
           currentAvatar: user.currentAvatarImageUrl,
       ),
     );
+  }
+  
+  static List<String> _internTags(List<String> rawTags) {
+    return rawTags.map((rawTag) {
+      final knownTag = VrcTag.allTags.firstWhere(
+          (t) => t.id == rawTag,
+        orElse: () => VrcTag(id: '', name: '', description: '', category: VrcTagCategory.system)
+      );
+      
+      return knownTag.id.isNotEmpty ? knownTag.id : rawTag;
+    }).toList();
   }
 }
