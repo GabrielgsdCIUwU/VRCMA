@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
 
 part 'world_cache_provider.g.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 
 void main() {

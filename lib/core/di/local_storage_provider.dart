@@ -19,7 +19,7 @@ import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 
-part 'database_provider.g.dart';
+part 'local_storage_provider.g.dart';
 
 @riverpod
 Future<Database> database(Ref ref) async {
@@ -39,13 +39,6 @@ Future<ILocalSocialRepository> localSocialRepository(Ref ref) async {
 }
 
 @riverpod
-Future<List<Role>> allAvailableRoles(Ref ref) async {
-  final repo = await ref.watch(localSocialRepositoryProvider.future);
-  final roles = await repo.getAllAvailableRoles();
-  return roles;
-}
-
-@riverpod
 Future<ILogRepository> logRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
   return LogRepositoryImp(db);
@@ -55,40 +48,4 @@ Future<ILogRepository> logRepository(Ref ref) async {
 Future<IMessageRepository> messageRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
   return MessageRepositoryImp(db);
-}
-
-@riverpod
-Future<IAutomationRepository> automationRepository(Ref ref) async {
-  final api = await ref.watch(vrcApiProvider.future);
-  return AutomationRepositoryImp(api);
-}
-
-@riverpod
-Future<ISocialRepository> socialRepository(Ref ref) async {
-  final api = await ref.watch(vrcApiProvider.future);
-  return SocialRepositoryImp(api);
-}
-
-@riverpod
-Future<AutomationProcessor> automationProcessor(Ref ref) async {
-  final automationRepo = await ref.watch(automationRepositoryProvider.future);
-  
-  final authUser = await ref.watch(authStateProvider.future);
-  
-  return AutomationProcessor(
-    currentUserId: authUser?.id ?? '',
-    automationRepository: automationRepo,
-    localSocialRepository: await ref.watch(localSocialRepositoryProvider.future),
-    profileRepository: await ref.watch(profileRepositoryProvider.future),
-    logRepository: await ref.watch(logRepositoryProvider.future),
-    slotManager: MessageSlotManager(
-      messageRepository: await ref.watch(messageRepositoryProvider.future),
-      automationRepository: automationRepo,
-    ),
-    useCase: ProcessInvitationUseCase(
-      roleExtractor: UserRoleExtractor(),
-      ruleSorter: RuleSorter(),
-      ruleEvaluator: RuleEvaluator(),
-    )
-  );
 }
