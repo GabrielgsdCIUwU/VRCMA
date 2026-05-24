@@ -3,14 +3,13 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/database_provider.dart';
-import 'package:vrcma/data/repositories/social_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/domain/repositories/i_social_repository.dart';
 import 'package:vrcma/domain/usecases/automation/process_friend_automations_use_case.dart';
 import 'package:vrcma/domain/usecases/social/categorize_friends_use_case.dart';
-import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/world_cache_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 
@@ -24,8 +23,7 @@ class FriendsList extends _$FriendsList {
   }
   
   Future<List<VrcUser>> _fetchFriendsProgressively() async {
-    final api = await ref.watch(vrcApiProvider.future);
-    final repo = SocialRepositoryImp(api);
+    final repo = await ref.watch(socialRepositoryProvider.future);
     final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
     final useCase = ProcessFriendAutomationsUseCase(localSocialRepo);
     
@@ -46,7 +44,7 @@ class FriendsList extends _$FriendsList {
   }
   
   Future<void> _fetchOfflineFriendsInBackground(
-      SocialRepositoryImp repo,
+      ISocialRepository repo,
       ProcessFriendAutomationsUseCase useCase,
       List<VrcUser> currentOnlineFriends,
       ) async {
@@ -79,8 +77,7 @@ class FriendsSearchQuery extends _$FriendsSearchQuery {
 
 @riverpod
 Future<List<FavoriteGroup>> favoriteFriendGroups(Ref ref) async {
-  final api = await ref.watch(vrcApiProvider.future);
-  final repo = SocialRepositoryImp(api);
+  final repo = await ref.watch(socialRepositoryProvider.future);
   final result = await repo.getFavoriteGroups();
 
   return result.fold(
