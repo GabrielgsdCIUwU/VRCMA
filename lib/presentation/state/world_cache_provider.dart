@@ -9,12 +9,23 @@ part 'world_cache_provider.g.dart';
 
 final _worldFetchLock = Pool(3, timeout: const Duration(seconds: 15));
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<String> worldName(Ref ref, String worldId) async {
   if (worldId.isEmpty || !worldId.startsWith('wrld_')) return "Unknown World";
 
+  final keepAliveLink = ref.keepAlive();
+  Timer? timer;
+  
+  ref.onDispose(() => timer?.cancel());
+  ref.onCancel(() {
+    timer = Timer(const Duration(minutes: 5), () => keepAliveLink.close());
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
+
+  final repo = await ref.watch(socialRepositoryProvider.future);
   return await _worldFetchLock.withResource(() async {
-    final repo = await ref.watch(socialRepositoryProvider.future);
 
     final result = await repo.getWorldName(worldId);
 
