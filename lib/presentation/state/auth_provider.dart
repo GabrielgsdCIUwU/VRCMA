@@ -141,12 +141,11 @@ Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
     final api = await ref.watch(vrcApiProvider.future);
 
     try {
-      final response = await api.rawApi.dio.get(
+      final response = await api.rawApi.dio.head(
         imageUrl,
         options: Options(
           followRedirects: true,
           validateStatus: (status) => true,
-          responseType: ResponseType.bytes,
           receiveTimeout: const Duration(seconds: 10),
         ),
       );
