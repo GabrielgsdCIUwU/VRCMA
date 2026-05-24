@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
@@ -52,24 +54,34 @@ class ProfileRepositoryImp implements IProfileRepository {
       FROM profiles p
     ''');
 
-    List<FilterProfile> result = [];
+    if (profileMaps.isEmpty) return [];
+
+    final List<Map<String, dynamic>> allRulesMaps = await _db.rawQuery('''
+      SELECT pr.*, r.name as role_name, 
+        m1.id as inv_id, m1.content as inv_content, m1.slot_index as inv_slot, m1.last_updated as inv_date, m1.type as inv_type,
+        m2.id as req_id, m2.content as req_content, m2.slot_index as req_slot, m2.last_updated as req_date, m2.type as req_type
+      FROM profile_rules pr
+      JOIN roles r ON pr.role_id = r.id
+      LEFT JOIN custom_messages m1 ON pr.invite_message_id = m1.id
+      LEFT JOIN custom_messages m2 ON pr.request_message_id = m2.id
+      ORDER BY pr.priority ASC
+    ''');
+
+    return await Isolate.run(() => _mapProfilesInIsolate(profileMaps, allRulesMaps));
+  }
+  
+  static List<FilterProfile> _mapProfilesInIsolate(
+      List<Map<String, dynamic>> profileMaps,
+      List<Map<String, dynamic>> allRulesMaps) {
+
+    final List<FilterProfile> result = [];
 
     for (var pMap in profileMaps) {
       final profileId = pMap['id'] as int;
 
-      final List<Map<String, dynamic>> ruleMaps = await _db.rawQuery('''
-        SELECT pr.*, r.name as role_name, 
-          m1.id as inv_id, m1.content as inv_content, m1.slot_index as inv_slot, m1.last_updated as inv_date, m1.type as inv_type,
-          m2.id as req_id, m2.content as req_content, m2.slot_index as req_slot, m2.last_updated as req_date, m2.type as req_type
-        FROM profile_rules pr
-        JOIN roles r ON pr.role_id = r.id
-        LEFT JOIN custom_messages m1 ON pr.invite_message_id = m1.id
-        LEFT JOIN custom_messages m2 ON pr.request_message_id = m2.id
-        WHERE pr.profile_id = ?
-        ORDER BY pr.priority ASC
-      ''', [profileId]);
+      final profileRulesData = allRulesMaps.where((r) => r['profile_id'] == profileId);
 
-      final rules = ruleMaps.map((rMap) {
+      final rules = profileRulesData.map((rMap) {
         return ProfileRule(
           id: rMap['id'],
           priority: rMap['priority'],
@@ -84,17 +96,19 @@ class ProfileRepositoryImp implements IProfileRepository {
         );
       }).toList();
 
+      final targetLanguagesStr = pMap['target_languages'] as String?;
+      final fallbackTags = (targetLanguagesStr?.split(',') ?? [])
+          .where((e) => e.trim().isNotEmpty)
+          .map((id) => VrcTag.allTags.firstWhereOrNull((t) => t.id == id.trim()))
+          .nonNulls
+          .toList();
+
       result.add(FilterProfile(
         id: profileId,
         name: pMap['name'],
         isActive: pMap['is_active'] == 1,
         rules: rules,
-        fallbackTags: (pMap['target_languages'] as String?)
-          ?.split(',')
-          .where((e) => e.trim().isNotEmpty)
-          .map((id)  => VrcTag.allTags.firstWhereOrNull((t) => t.id == id.trim()))
-          .nonNulls
-          .toList() ?? [],
+        fallbackTags: fallbackTags,
         fallbackTagsAction: FallbackTagAction.values[pMap['is_language_filter_enabled'] as int? ?? 0],
       ));
     }
@@ -102,7 +116,7 @@ class ProfileRepositoryImp implements IProfileRepository {
     return result;
   }
   
-  CustomMessage? _extractMessage(Map<String, dynamic> row, String prefix) {
+  static CustomMessage? _extractMessage(Map<String, dynamic> row, String prefix) {
     if (row['${prefix}_id'] == null) return null;
     return CustomMessage(
       id: row['${prefix}_id'],
