@@ -33,6 +33,8 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
+    final initialChecked = ref.watch(initialSessionCheckedProvider);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'VRCMA',
@@ -63,10 +65,11 @@ class MyApp extends ConsumerWidget {
           filled: true,
         )
       ),
-      home: authState.when(
+      home: !initialChecked
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          : authState.maybeWhen(
         data: (user) => user == null ? const LoginPage() : const HomePage(),
-        loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (_, _) => const LoginPage()
+        orElse: () => const LoginPage(),
       ),
     );
   }
