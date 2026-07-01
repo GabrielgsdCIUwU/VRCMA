@@ -13,6 +13,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -33,8 +34,22 @@ class _LoginFormState extends State<LoginForm> {
         const SizedBox(height: 16),
         TextField(
           controller: _passwordController,
-          decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.password)),
-          obscureText: true,
+          decoration: InputDecoration(
+            labelText: 'Password',
+            prefixIcon: const Icon(Icons.password),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
+              tooltip: _obscurePassword ? 'Show password' : 'Hide password',
+            ),
+          ),
+          obscureText: _obscurePassword,
           enabled: !widget.isLoading,
         ),
         const SizedBox(height: 24),
