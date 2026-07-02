@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrcma/core/errors/failure.dart';
-import 'package:vrcma/core/l10n/ll10n_extension.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 
 extension FailureLocalization on Failure {
   String toLocalizedString(BuildContext context) {
