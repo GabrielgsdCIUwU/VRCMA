@@ -10,5 +10,11 @@
   "backButton": "Volver",
   "loginSuccess": "¡Inicio de sesión correcto!",
   "connectionTimeout": "Tiempo de espera agotado. Comprueba tu conexión a Internet",
-  "unexpectedError": "Error inesperado: {error}"
+  "unexpectedError": "Error inesperado: {error}",
+  "navConfig": "Config",
+  "navMessages": "Mensajes",
+  "navLogs": "Registros",
+  "navFriends": "Amigos",
+  "workspaceTabMessages": "Mensajes y Slots",
+  "workspaceTabLogs": "Registros de Automatización"
 }

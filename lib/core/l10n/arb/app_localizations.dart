@@ -98,71 +98,107 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
-  /// Title of the login screen
+  /// The main branding/application title displayed at the top of the login header screen.
   ///
   /// In en, this message translates to:
   /// **'VRCMA'**
   String get loginTitle;
 
-  /// No description provided for @usernameLabel.
+  /// Input field label prompting the user for their VRChat username or registered email address.
   ///
   /// In en, this message translates to:
   /// **'Username or Email'**
   String get usernameLabel;
 
-  /// No description provided for @passwordLabel.
+  /// Input field label prompting the user to enter their account password.
   ///
   /// In en, this message translates to:
   /// **'Password'**
   String get passwordLabel;
 
-  /// No description provided for @loginButton.
+  /// Text displayed on the primary action button to submit credentials on the login form.
   ///
   /// In en, this message translates to:
   /// **'Login'**
   String get loginButton;
 
-  /// No description provided for @enter2faTitle.
+  /// Header title instructing the user to type in their two-factor authentication security code.
   ///
   /// In en, this message translates to:
   /// **'Enter 2FA Code'**
   String get enter2faTitle;
 
-  /// No description provided for @digitCodeLabel.
+  /// Input field placeholder/label specifically designated for entering the 6-digit security token.
   ///
   /// In en, this message translates to:
   /// **'6-Digit Code'**
   String get digitCodeLabel;
 
-  /// No description provided for @verifyButton.
+  /// Action button text to submit and validate the entered 2FA security code.
   ///
   /// In en, this message translates to:
   /// **'Verify'**
   String get verifyButton;
 
-  /// No description provided for @backButton.
+  /// Button label used to dismiss the 2FA screen and navigate back to the credentials form.
   ///
   /// In en, this message translates to:
   /// **'Back'**
   String get backButton;
 
-  /// No description provided for @loginSuccess.
+  /// Success message displayed to the user via SnackBar upon a verified and successful login.
   ///
   /// In en, this message translates to:
   /// **'Login Success!'**
   String get loginSuccess;
 
-  /// No description provided for @connectionTimeout.
+  /// Error message shown when a network request to the VRChat servers times out.
   ///
   /// In en, this message translates to:
   /// **'Connection timeout. Check your internet connection'**
   String get connectionTimeout;
 
-  /// No description provided for @unexpectedError.
+  /// A generic error wrapper when an unhandled or system-specific error occurs.
   ///
   /// In en, this message translates to:
   /// **'Unexpected error: {error}'**
   String unexpectedError(String error);
+
+  /// Label for the configuration/settings tab in the main navigation bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get navConfig;
+
+  /// Label for the message templates management tab in the main navigation bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get navMessages;
+
+  /// Label for the automation execution logs tab in the main navigation bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs'**
+  String get navLogs;
+
+  /// Label for the friends list and category mapping tab in the main navigation bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get navFriends;
+
+  /// Tab title inside the main workspace split view displaying live slots and template libraries.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages & Slots'**
+  String get workspaceTabMessages;
+
+  /// Tab title inside the main workspace split view displaying processed automation histories.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Logs'**
+  String get workspaceTabLogs;
 }
 
 class _AppLocalizationsDelegate

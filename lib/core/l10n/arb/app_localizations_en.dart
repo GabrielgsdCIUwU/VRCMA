@@ -43,4 +43,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String unexpectedError(String error) {
     return 'Unexpected error: $error';
   }
+
+  @override
+  String get navConfig => 'Config';
+
+  @override
+  String get navMessages => 'Messages';
+
+  @override
+  String get navLogs => 'Logs';
+
+  @override
+  String get navFriends => 'Friends';
+
+  @override
+  String get workspaceTabMessages => 'Messages & Slots';
+
+  @override
+  String get workspaceTabLogs => 'Automation Logs';
 }

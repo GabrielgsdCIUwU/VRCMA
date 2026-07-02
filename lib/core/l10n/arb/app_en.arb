@@ -60,5 +60,34 @@
         "example": "SocketException"
       }
     }
+  },
+  "navConfig": "Config",
+  "@navConfig": {
+    "description": "Label for the configuration/settings tab in the main navigation bar."
+  },
+  
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Label for the message templates management tab in the main navigation bar."
+  },
+  
+  "navLogs": "Logs",
+  "@navLogs": {
+    "description": "Label for the automation execution logs tab in the main navigation bar."
+  },
+  
+  "navFriends": "Friends",
+  "@navFriends": {
+    "description": "Label for the friends list and category mapping tab in the main navigation bar."
+  },
+
+  "workspaceTabMessages": "Messages & Slots",
+  "@workspaceTabMessages": {
+    "description": "Tab title inside the main workspace split view displaying live slots and template libraries."
+  },
+
+  "workspaceTabLogs": "Automation Logs",
+  "@workspaceTabLogs": {
+    "description": "Tab title inside the main workspace split view displaying processed automation histories."
   }
 }
