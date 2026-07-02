@@ -60,5 +60,20 @@
   "triggerOnNewFriend": "Al agregar nuevo amigo",
   "triggerHasTag": "Tiene la etiqueta {tagName}",
 
-  "automationAssigns": "Asigna: {roles}"
+  "automationAssigns": "Asigna: {roles}",
+
+  "logsHeader": "Registros de automatización",
+  "logsSearchHint": "Buscar por nombre o regla...",
+  "logsEmpty": "No se encontraron registros",
+
+  "timeJustNow": "Justo ahora",
+  "timeMinutesAgo": "Hace {minutes}m",
+  "timeHoursAgo": "Hace {hours}h",
+  "timeDaysAgo": "Hace {days}d",
+
+  "actionAccepted": "ACEPTADO",
+  "actionRejected": "RECHAZADO",
+
+  "tabInvite": "Invitaciones",
+  "tabRequest": "Solicitudes"
 }

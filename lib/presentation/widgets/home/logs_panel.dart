@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
@@ -21,7 +23,7 @@ class LogsPanel extends ConsumerWidget {
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
              Text(
-               "AUTOMATION LOGS",
+               context.l10n.logsHeader.toUpperCase(),
                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                  letterSpacing: 1.2,
                  color: context.colorScheme.onSurfaceVariant,
@@ -31,7 +33,7 @@ class LogsPanel extends ConsumerWidget {
              const SizedBox(height: 12),
              TextField(
                decoration: InputDecoration(
-                 hintText: "Search by name or rule...",
+                 hintText: context.l10n.logsSearchHint,
                  prefixIcon: const Icon(Icons.search, size: 20),
                  isDense: true,
                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -51,7 +53,7 @@ class LogsPanel extends ConsumerWidget {
             data: (logs) {
               if (logs.isEmpty) {
                 return Center(
-                  child: Text("No logs found", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+                  child: Text(context.l10n.logsEmpty, style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
                 );
               }
               return ListView.builder(
@@ -61,7 +63,7 @@ class LogsPanel extends ConsumerWidget {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Text("Error: $error"),
+            error: (error, _) => Text(context.l10n.stateError(error.toString())),
           ),
         )
       ],
@@ -73,13 +75,15 @@ class _LogTile extends StatelessWidget {
   final AutomationLog log;
   const _LogTile({required this.log});
   
-  String _getRelativeTime(DateTime dateTime) {
+  String _getRelativeTime(BuildContext context, DateTime dateTime) {
     final duration = DateTime.now().difference(dateTime);
-    if (duration.inMinutes < 1) return "Just now";
-    if (duration.inMinutes < 60) return "${duration.inMinutes}m ago";
-    if (duration.inHours < 24) return "${duration.inHours}h ago";
-    if (duration.inDays < 7) return "${duration.inDays}d ago";
-    return DateFormat('dd/MM/yyyy').format(dateTime);
+    if (duration.inMinutes < 1) return context.l10n.timeJustNow;
+    if (duration.inMinutes < 60) return context.l10n.timeMinutesAgo(duration.inMinutes);
+    if (duration.inHours < 24) return context.l10n.timeHoursAgo(duration.inHours);
+    if (duration.inDays < 7) return context.l10n.timeDaysAgo(duration.inDays);
+
+    final localization = Localizations.localeOf(context).toString();
+    return DateFormat.yMd(localization).format(dateTime);
   }
   
   @override
@@ -122,7 +126,7 @@ class _LogTile extends StatelessWidget {
            Row(
              children: [
                _TypeBadge(
-                 text: log.invitationType,
+                 text: isInvite ? context.l10n.tabInvite : context.l10n.tabRequest,
                  color: typeColor
                ),
                const SizedBox(height: 8),
@@ -137,7 +141,7 @@ class _LogTile extends StatelessWidget {
            ),
            const SizedBox(height: 4),
            Text(
-             _getRelativeTime(log.timestamp),
+             _getRelativeTime(context, log.timestamp),
              style: TextStyle(fontSize: 10, color: context.colorScheme.onSurface.withValues(alpha: 0.5)),
            ),
          ],
@@ -162,7 +166,7 @@ class _ActionStatus extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
-        isAccepted ? "ACCEPTED" : "REJECTED",
+        isAccepted ? context.l10n.actionAccepted : context.l10n.actionRejected,
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.w900,

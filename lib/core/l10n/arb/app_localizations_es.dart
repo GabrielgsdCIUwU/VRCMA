@@ -167,4 +167,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String automationAssigns(String roles) {
     return 'Asigna: $roles';
   }
+
+  @override
+  String get logsHeader => 'Registros de automatización';
+
+  @override
+  String get logsSearchHint => 'Buscar por nombre o regla...';
+
+  @override
+  String get logsEmpty => 'No se encontraron registros';
+
+  @override
+  String get timeJustNow => 'Justo ahora';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return 'Hace ${minutes}m';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return 'Hace ${hours}h';
+  }
+
+  @override
+  String timeDaysAgo(int days) {
+    return 'Hace ${days}d';
+  }
+
+  @override
+  String get actionAccepted => 'ACEPTADO';
+
+  @override
+  String get actionRejected => 'RECHAZADO';
+
+  @override
+  String get tabInvite => 'Invitaciones';
+
+  @override
+  String get tabRequest => 'Solicitudes';
 }

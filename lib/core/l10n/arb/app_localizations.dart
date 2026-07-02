@@ -379,6 +379,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Assigns: {roles}'**
   String automationAssigns(String roles);
+
+  /// Header title displayed at the top of the automation execution history panel.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Logs'**
+  String get logsHeader;
+
+  /// Search input box placeholder text for filtering processing logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or rule...'**
+  String get logsSearchHint;
+
+  /// Information text shown when the search query returns zero matching records.
+  ///
+  /// In en, this message translates to:
+  /// **'No logs found'**
+  String get logsEmpty;
+
+  /// Relative time indicator for actions that happened less than a minute ago.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timeJustNow;
+
+  /// Relative time indicator showing elapsed minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m ago'**
+  String timeMinutesAgo(int minutes);
+
+  /// Relative time indicator showing elapsed hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h ago'**
+  String timeHoursAgo(int hours);
+
+  /// Relative time indicator showing elapsed days.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d ago'**
+  String timeDaysAgo(int days);
+
+  /// Status badge label indicating an invite or join request was auto-approved.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCEPTED'**
+  String get actionAccepted;
+
+  /// Status badge label indicating an invite or join request was auto-declined.
+  ///
+  /// In en, this message translates to:
+  /// **'REJECTED'**
+  String get actionRejected;
+
+  /// Category label for invitations.
+  ///
+  /// In en, this message translates to:
+  /// **'INVITE'**
+  String get tabInvite;
+
+  /// Category label for requests.
+  ///
+  /// In en, this message translates to:
+  /// **'REQUEST'**
+  String get tabRequest;
 }
 
 class _AppLocalizationsDelegate

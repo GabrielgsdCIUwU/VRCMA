@@ -280,5 +280,78 @@
         "example": "VIP, Admin"
       }
     }
+  },
+
+  "logsHeader": "Automation Logs",
+  "@logsHeader": {
+    "description": "Header title displayed at the top of the automation execution history panel."
+  },
+
+  "logsSearchHint": "Search by name or rule...",
+  "@logsSearchHint": {
+    "description": "Search input box placeholder text for filtering processing logs."
+  },
+
+  "logsEmpty": "No logs found",
+  "@logsEmpty": {
+    "description": "Information text shown when the search query returns zero matching records."
+  },
+
+  "timeJustNow": "Just now",
+  "@timeJustNow": {
+    "description": "Relative time indicator for actions that happened less than a minute ago."
+  },
+
+  "timeMinutesAgo": "{minutes}m ago",
+  "@timeMinutesAgo": {
+    "description": "Relative time indicator showing elapsed minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "timeHoursAgo": "{hours}h ago",
+  "@timeHoursAgo": {
+    "description": "Relative time indicator showing elapsed hours.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "timeDaysAgo": "{days}d ago",
+  "@timeDaysAgo": {
+    "description": "Relative time indicator showing elapsed days.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "actionAccepted": "ACCEPTED",
+  "@actionAccepted": {
+    "description": "Status badge label indicating an invite or join request was auto-approved."
+  },
+
+  "actionRejected": "REJECTED",
+  "@actionRejected": {
+    "description": "Status badge label indicating an invite or join request was auto-declined."
+  },
+
+  "tabInvite": "INVITE",
+  "@tabInvite": {
+    "description": "Category label for invitations."
+  },
+
+  "tabRequest": "REQUEST",
+  "@tabRequest": {
+    "description": "Category label for requests."
   }
 }
