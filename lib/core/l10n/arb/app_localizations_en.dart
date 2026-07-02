@@ -61,4 +61,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workspaceTabLogs => 'Automation Logs';
+
+  @override
+  String get sectionProfiles => 'Profiles';
+
+  @override
+  String get sectionRoles => 'Roles';
+
+  @override
+  String get sectionFriendAutomations => 'Friend Automations';
+
+  @override
+  String get bgAutomationTitle => 'Background Automation';
+
+  @override
+  String get bgAutomationDesc => 'Keep processing invites when app is closed';
+
+  @override
+  String get dialogNewProfileTitle => 'New Profile';
+
+  @override
+  String get dialogNewProfileLabel => 'Profile name';
+
+  @override
+  String get dialogNewRoleTitle => 'New Role';
+
+  @override
+  String get dialogNewRoleLabel => 'Role name';
+
+  @override
+  String get btnCancel => 'Cancel';
+
+  @override
+  String get btnCreate => 'Create';
+
+  @override
+  String get btnDelete => 'Delete';
+
+  @override
+  String roleMembersCount(int count) {
+    return '$count members';
+  }
+
+  @override
+  String profileRulesCount(int count) {
+    return '$count automation rules';
+  }
+
+  @override
+  String get dialogDeleteRoleTitle => 'Delete Role?';
+
+  @override
+  String dialogDeleteRoleContent(String roleName) {
+    return 'Are you sure you want to delete \'$roleName\'? \nThis will remove this role from all users and profiles.';
+  }
+
+  @override
+  String get dialogDeleteProfileTitle => 'Delete Profile?';
+
+  @override
+  String dialogDeleteProfileContent(String profileName) {
+    return 'Are you sure you want to delete \'$profileName\'? This action cannot be undone.';
+  }
+
+  @override
+  String get dialogDeleteAutomationTitle => 'Delete Automation?';
+
+  @override
+  String get dialogDeleteAutomationContent =>
+      'Are you sure you want to delete this automation?';
+
+  @override
+  String get stateLoading => 'Loading...';
+
+  @override
+  String stateError(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get tooltipEdit => 'Edit';
+
+  @override
+  String get tooltipDeactivate => 'Deactivate profile';
+
+  @override
+  String get tooltipActivate => 'Set as active';
+
+  @override
+  String get tooltipMoreOptions => 'More options';
+
+  @override
+  String get noAutomationsConfigured => 'No automations configured';
+
+  @override
+  String get triggerOnNewFriend => 'On New Friend';
+
+  @override
+  String triggerHasTag(String tagName) {
+    return 'Has Tag $tagName';
+  }
+
+  @override
+  String automationAssigns(String roles) {
+    return 'Assigns: $roles';
+  }
 }

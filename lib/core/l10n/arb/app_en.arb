@@ -89,5 +89,196 @@
   "workspaceTabLogs": "Automation Logs",
   "@workspaceTabLogs": {
     "description": "Tab title inside the main workspace split view displaying processed automation histories."
+  },
+  "sectionProfiles": "Profiles",
+  "@sectionProfiles": {
+    "description": "Header title for the Profiles configuration section."
+  },
+
+  "sectionRoles": "Roles",
+  "@sectionRoles": {
+    "description": "Header title for the local security Roles configuration section."
+  },
+
+  "sectionFriendAutomations": "Friend Automations",
+  "@sectionFriendAutomations": {
+    "description": "Header title for the automated role assignment rules section."
+  },
+
+  "bgAutomationTitle": "Background Automation",
+  "@bgAutomationTitle": {
+    "description": "Label for the settings toggle that activates background automated processing."
+  },
+
+  "bgAutomationDesc": "Keep processing invites when app is closed",
+  "@bgAutomationDesc": {
+    "description": "Explanatory subtitle describing the utility of enabling background automation."
+  },
+
+  "dialogNewProfileTitle": "New Profile",
+  "@dialogNewProfileTitle": {
+    "description": "Title for the modal dialog to create a new filter profile."
+  },
+
+  "dialogNewProfileLabel": "Profile name",
+  "@dialogNewProfileLabel": {
+    "description": "Form input field label prompting for a profile name."
+  },
+
+  "dialogNewRoleTitle": "New Role",
+  "@dialogNewRoleTitle": {
+    "description": "Title for the modal dialog to create a new local security role."
+  },
+
+  "dialogNewRoleLabel": "Role name",
+  "@dialogNewRoleLabel": {
+    "description": "Form input field label prompting for a role name."
+  },
+
+  "btnCancel": "Cancel",
+  "@btnCancel": {
+    "description": "Standard action text for canceling and discarding changes on dialogs."
+  },
+
+  "btnCreate": "Create",
+  "@btnCreate": {
+    "description": "Standard action text for creating and saving a newly defined resource."
+  },
+
+  "btnDelete": "Delete",
+  "@btnDelete": {
+    "description": "Standard action text to confirm the deletion of a resource."
+  },
+
+  "roleMembersCount": "{count} members",
+  "@roleMembersCount": {
+    "description": "Displays the total number of friends mapped to a specific role.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "profileRulesCount": "{count} automation rules",
+  "@profileRulesCount": {
+    "description": "Label displaying the count of criteria rules inside a profile.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "dialogDeleteRoleTitle": "Delete Role?",
+  "@dialogDeleteRoleTitle": {
+    "description": "Header title for the role removal confirmation dialog."
+  },
+
+  "dialogDeleteRoleContent": "Are you sure you want to delete '{roleName}'? \nThis will remove this role from all users and profiles.",
+  "@dialogDeleteRoleContent": {
+    "description": "Warning reminding the user of the consequences of role deletion.",
+    "placeholders": {
+      "roleName": {
+        "type": "String",
+        "example": "VIP"
+      }
+    }
+  },
+
+  "dialogDeleteProfileTitle": "Delete Profile?",
+  "@dialogDeleteProfileTitle": {
+    "description": "Header title for the profile removal confirmation dialog."
+  },
+
+  "dialogDeleteProfileContent": "Are you sure you want to delete '{profileName}'? This action cannot be undone.",
+  "@dialogDeleteProfileContent": {
+    "description": "Warning informing the user that profile deletion is permanent.",
+    "placeholders": {
+      "profileName": {
+        "type": "String",
+        "example": "Safe Mode"
+      }
+    }
+  },
+
+
+  "dialogDeleteAutomationTitle": "Delete Automation?",
+  "@dialogDeleteAutomationTitle": {
+    "description": "Header title for deleting an automatic role mapper rule."
+  },
+
+  "dialogDeleteAutomationContent": "Are you sure you want to delete this automation?",
+  "@dialogDeleteAutomationContent": {
+    "description": "Warning label inside the role automation deletion modal."
+  },
+
+  "stateLoading": "Loading...",
+  "@stateLoading": {
+    "description": "Generic fallback loader message."
+  },
+
+  "stateError": "Error: {error}",
+  "@stateError": {
+    "description": "Generic standard error rendering block.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "tooltipEdit": "Edit",
+  "@tooltipEdit": {
+    "description": "Tooltip shown on standard inline editing pencil icons."
+  },
+
+  "tooltipDeactivate": "Deactivate profile",
+  "@tooltipDeactivate": {
+    "description": "Label indicating click will switch off the active configuration profile."
+  },
+
+  "tooltipActivate": "Set as active",
+  "@tooltipActivate": {
+    "description": "Label indicating click will activate this specific configuration profile."
+  },
+
+  "tooltipMoreOptions": "More options",
+  "@tooltipMoreOptions": {
+    "description": "Tooltip label for standard three-dot vertical popup menus."
+  },
+
+  "noAutomationsConfigured": "No automations configured",
+  "@noAutomationsConfigured": {
+    "description": "Placeholder shown when the automations database list is empty."
+  },
+
+  "triggerOnNewFriend": "On New Friend",
+  "@triggerOnNewFriend": {
+    "description": "Title for automatic mappings triggered during the first-time hand-shake friendship update."
+  },
+
+  "triggerHasTag": "Has Tag {tagName}",
+  "@triggerHasTag": {
+    "description": "Label for automatic mappings triggered when a friend holds a specific VRChat profile tag.",
+    "placeholders": {
+      "tagName": {
+        "type": "String",
+        "example": "system_trust_trusted"
+      }
+    }
+  },
+
+  "automationAssigns": "Assigns: {roles}",
+  "@automationAssigns": {
+    "description": "List indicating local roles mapped upon trigger execution.",
+    "placeholders": {
+      "roles": {
+        "type": "String",
+        "example": "VIP, Admin"
+      }
+    }
   }
 }

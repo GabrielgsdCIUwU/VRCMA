@@ -15,6 +15,50 @@
   "navMessages": "Mensajes",
   "navLogs": "Registros",
   "navFriends": "Amigos",
+  
   "workspaceTabMessages": "Mensajes y Slots",
-  "workspaceTabLogs": "Registros de Automatización"
+  "workspaceTabLogs": "Registros de Automatización",
+  "sectionProfiles": "Perfiles",
+  "sectionRoles": "Roles",
+  "sectionFriendAutomations": "Automatización de amigos",
+
+  "bgAutomationTitle": "Automatización en segundo plano",
+  "bgAutomationDesc": "Sigue procesando invitaciones cuando la aplicación esté cerrada",
+
+  "dialogNewProfileTitle": "Nuevo perfil",
+  "dialogNewProfileLabel": "Nombre del perfil",
+
+  "dialogNewRoleTitle": "Nuevo rol",
+  "dialogNewRoleLabel": "Nombre del rol",
+
+  "btnCancel": "Cancelar",
+  "btnCreate": "Crear",
+  "btnDelete": "Eliminar",
+
+  "roleMembersCount": "{count} miembros",
+  "profileRulesCount": "{count} reglas de automatización",
+
+  "dialogDeleteRoleTitle": "¿Eliminar rol?",
+  "dialogDeleteRoleContent": "¿Estás seguro de que deseas eliminar '{roleName}'?\nEsto eliminará este rol de todos los usuarios y perfiles.",
+
+  "dialogDeleteProfileTitle": "¿Eliminar perfil?",
+  "dialogDeleteProfileContent": "¿Estás seguro de que deseas eliminar '{profileName}'? Esta acción no se puede deshacer.",
+
+  "dialogDeleteAutomationTitle": "¿Eliminar automatización?",
+  "dialogDeleteAutomationContent": "¿Estás seguro de que deseas eliminar esta automatización?",
+
+  "stateLoading": "Cargando...",
+  "stateError": "Error: {error}",
+
+  "tooltipEdit": "Editar",
+  "tooltipDeactivate": "Desactivar perfil",
+  "tooltipActivate": "Establecer como activo",
+  "tooltipMoreOptions": "Más opciones",
+
+  "noAutomationsConfigured": "No hay automatizaciones configuradas",
+
+  "triggerOnNewFriend": "Al agregar nuevo amigo",
+  "triggerHasTag": "Tiene la etiqueta {tagName}",
+
+  "automationAssigns": "Asigna: {roles}"
 }
