@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "loginTitle": "VRCMA",
+  "@loginTitle": {
+    "description": "Title of the login screen"
+  },
+  "usernameLabel": "Username or Email",
+  "passwordLabel": "Password",
+  "loginButton": "Login",
+  "enter2faTitle": "Enter 2FA Code",
+  "digitCodeLabel": "6-Digit Code",
+  "verifyButton": "Verify",
+  "backButton": "Back",
+  "loginSuccess": "Login Success!",
+  "connectionTimeout": "Connection timeout. Check your internet connection",
+  "unexpectedError": "Unexpected error: {error}",
+  "@unexpectedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

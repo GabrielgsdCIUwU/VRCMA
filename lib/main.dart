@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:vrcma/core/l10n/arb/app_localizations.dart';
+import 'package:vrcma/presentation/state/locale_provider.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
@@ -33,10 +35,14 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
+    final appLocale = ref.watch(appLocaleProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'VRCMA',
       scaffoldMessengerKey: scaffoldMessengerKey,
+      locale: appLocale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,

@@ -1,0 +1,14 @@
+{
+  "@@locale": "es",
+  "loginTitle": "VRCMA",
+  "usernameLabel": "Usuario o Correo Electrónico",
+  "passwordLabel": "Contraseña",
+  "loginButton": "Iniciar Sesión",
+  "enter2faTitle": "Introduce el código 2FA",
+  "digitCodeLabel": "Código de 6 dígitos",
+  "verifyButton": "Verificar",
+  "backButton": "Volver",
+  "loginSuccess": "¡Inicio de sesión correcto!",
+  "connectionTimeout": "Tiempo de espera agotado. Comprueba tu conexión a Internet",
+  "unexpectedError": "Error inesperado: {error}"
+}
