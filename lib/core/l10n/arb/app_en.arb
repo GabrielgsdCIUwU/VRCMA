@@ -492,5 +492,376 @@
         "example": "Invite"
       }
     }
+  },
+
+  "friendsHeader": "Friends",
+  "@friendsHeader": {
+    "description": "Header title displayed at the top of the friends management panel."
+  },
+
+  "tooltipRefreshFriends": "Refresh Friends",
+  "@tooltipRefreshFriends": {
+    "description": "Tooltip shown on the refresh button used to reload the friends list from VRChat."
+  },
+
+  "searchFriendsHint": "Search friends...",
+  "@searchFriendsHint": {
+    "description": "Placeholder text displayed in the search field used to filter the friends list."
+  },
+
+  "noFriendsFound": "No friends found",
+  "@noFriendsFound": {
+    "description": "Placeholder shown when no friends match the current search or filter."
+  },
+
+  "presenceOnline": "Online",
+  "@presenceOnline": {
+    "description": "Presence status indicating that the friend is currently online."
+  },
+
+  "presenceOffline": "Offline",
+  "@presenceOffline": {
+    "description": "Presence status indicating that the friend is currently offline."
+  },
+
+  "presenceActiveWebsite": "Active on the Website",
+  "@presenceActiveWebsite": {
+    "description": "Presence status indicating that the friend is currently using the VRChat website instead of the game client."
+  },
+
+  "presenceTraveling": "Traveling...",
+  "@presenceTraveling": {
+    "description": "Presence status displayed while the friend is transitioning between VRChat worlds."
+  },
+
+  "presencePrivateInstance": "Private Instance",
+  "@presencePrivateInstance": {
+    "description": "Presence status displayed when the friend's current world instance cannot be joined."
+  },
+
+  "presenceInstanceDesc": "{accessType} Instance ({region})",
+  "@presenceInstanceDesc": {
+    "description": "Displays the access type and server region of the friend's current VRChat instance.",
+    "placeholders": {
+      "accessType": {
+        "type": "String",
+        "example": "Friends+"
+      },
+      "region": {
+        "type": "String",
+        "example": "EU"
+      }
+    }
+  },
+
+  "categoryFavorites": "Favorites",
+  "@categoryFavorites": {
+    "description": "Header for the favorites friends category."
+  },
+
+  "categorySameInstance": "Same Instance",
+  "@categorySameInstance": {
+    "description": "Header grouping friends currently in the same VRChat instance as the user."
+  },
+
+  "accessPublic": "Public",
+  "@accessPublic": {
+    "description": "Official VRChat instance access type: Public."
+  },
+
+  "accessInviteOnly": "Invite Only",
+  "@accessInviteOnly": {
+    "description": "Official VRChat instance access type: Invite Only."
+  },
+
+  "accessInvitePlus": "Invite+",
+  "@accessInvitePlus": {
+    "description": "Official VRChat instance access type: Invite+."
+  },
+
+  "accessFriends": "Friends",
+  "@accessFriends": {
+    "description": "Official VRChat instance access type: Friends."
+  },
+
+  "accessFriendsPlus": "Friends+",
+  "@accessFriendsPlus": {
+    "description": "Official VRChat instance access type: Friends+."
+  },
+
+  "accessGroup": "Group",
+  "@accessGroup": {
+    "description": "Official VRChat instance access type: Group."
+  },
+
+  "accessGroupPlus": "Group+",
+  "@accessGroupPlus": {
+    "description": "Official VRChat instance access type: Group+."
+  },
+
+  "accessGroupPublic": "Group Public",
+  "@accessGroupPublic": {
+    "description": "Official VRChat instance access type: Group Public."
+  },
+
+  "accessUnknown": "Unknown",
+  "@accessUnknown": {
+    "description": "Fallback access type displayed when the instance visibility cannot be determined."
+  },
+
+  "editProfileTitle": "Edit Profile",
+  "@editProfileTitle": {
+    "description": "App bar title displayed while editing an existing profile."
+  },
+
+  "dialogUnsavedTitle": "Unsaved Changes",
+  "@dialogUnsavedTitle": {
+    "description": "Confirmation dialog title shown when leaving an editor with unsaved changes."
+  },
+
+  "dialogUnsavedContent": "You have unsaved changes. Do you want to save them before leaving?",
+  "@dialogUnsavedContent": {
+    "description": "Confirmation message asking whether to save or discard pending changes before exiting the editor."
+  },
+
+  "btnDiscard": "Discard",
+  "@btnDiscard": {
+    "description": "Button that discards all unsaved changes."
+  },
+
+  "btnSave": "Save",
+  "@btnSave": {
+    "description": "Standard button used to save the current changes."
+  },
+
+  "btnSaveChanges": "Save Changes",
+  "@btnSaveChanges": {
+    "description": "Primary button used to save all modifications before closing the editor."
+  },
+
+  "sectionProfileSettings": "Profile Settings",
+  "@sectionProfileSettings": {
+    "description": "Section header containing the main profile configuration."
+  },
+
+  "inputProfileName": "Profile Name",
+  "@inputProfileName": {
+    "description": "Label for the text field where the profile name is entered."
+  },
+
+  "sectionActions": "Actions",
+  "@sectionActions": {
+    "description": "Section header grouping profile-related actions."
+  },
+
+  "priorityRulesCaption": "Rules with higher priority are evaluated first.",
+  "@priorityRulesCaption": {
+    "description": "Helper text explaining the execution order of automation rules."
+  },
+
+  "sectionAutomationRules": "Automation Rules",
+  "@sectionAutomationRules": {
+    "description": "Section header containing the list of automation rules assigned to the profile."
+  },
+
+  "tooltipRemoveRule": "Remove Rule",
+  "@tooltipRemoveRule": {
+    "description": "Tooltip shown on the button that removes an automation rule."
+  },
+
+  "contextOnInviteReceived": "ON INVITE RECEIVED",
+  "@contextOnInviteReceived": {
+    "description": "Label indicating rules triggered when receiving a VRChat invite."
+  },
+
+  "contextOnRequestToJoin": "ON REQUEST TO JOIN",
+  "@contextOnRequestToJoin": {
+    "description": "Label indicating rules triggered when receiving a request-to-join."
+  },
+
+  "defaultVrcMessage": "Default VRChat Message",
+  "@defaultVrcMessage": {
+    "description": "Label representing the default notification message provided by VRChat."
+  },
+
+  "dialogSelectMessage": "Select {category}",
+  "@dialogSelectMessage": {
+    "description": "Dialog title prompting the user to choose a message template.",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "defaultMessageOption": "Use Default VRChat Message",
+  "@defaultMessageOption": {
+    "description": "Option that keeps VRChat's original notification message instead of using a custom template."
+  },
+
+  "defaultMessageOptionDesc": "Use VRChat's default notification message.",
+  "@defaultMessageOptionDesc": {
+    "description": "Description explaining the default message option."
+  },
+
+  "btnAddRoleRule": "Add Role Rule",
+  "@btnAddRoleRule": {
+    "description": "Button used to add a new role rule to the profile."
+  },
+
+  "searchRolesHint": "Search roles...",
+  "@searchRolesHint": {
+    "description": "Placeholder displayed while searching available roles."
+  },
+
+  "sectionFallbackTags": "Fallback Tags",
+  "@sectionFallbackTags": {
+    "description": "Section containing fallback tag rules used when no role matches."
+  },
+
+  "fallbackTagsDesc": "Applied when no role matches.",
+  "@fallbackTagsDesc": {
+    "description": "Helper text explaining when fallback tags are evaluated."
+  },
+
+  "btnAddTag": "Add Tag",
+  "@btnAddTag": {
+    "description": "Button used to add a fallback tag."
+  },
+
+  "searchTagsHint": "Search tags or languages...",
+  "@searchTagsHint": {
+    "description": "Placeholder displayed while searching VRChat tags or language tags."
+  },
+
+  "fallbackTagActionDisabled": "DISABLED",
+  "@fallbackTagActionDisabled": {
+    "description": "Automation action indicating that no automatic response will be performed."
+  },
+
+  "fallbackTagActionAccept": "ACCEPT",
+  "@fallbackTagActionAccept": {
+    "description": "Automation action indicating that the invite or request will be accepted automatically."
+  },
+
+  "fallbackTagActionReject": "REJECT",
+  "@fallbackTagActionReject": {
+    "description": "Automation action indicating that the invite or request will be rejected automatically."
+  },
+
+  "newAutomationTitle": "New Automation",
+  "@newAutomationTitle": {
+    "description": "App bar title displayed while creating a new automation."
+  },
+
+  "editAutomationTitle": "Edit Automation",
+  "@editAutomationTitle": {
+    "description": "App bar title displayed while editing an existing automation."
+  },
+
+  "sectionCondition": "Condition",
+  "@sectionCondition": {
+    "description": "Section header containing the automation trigger conditions."
+  },
+
+  "triggerNewFriendTitle": "On Any New Friend",
+  "@triggerNewFriendTitle": {
+    "description": "Condition that matches every newly added friend."
+  },
+
+  "triggerNewFriendDesc": "Assign default roles to every new friend.",
+  "@triggerNewFriendDesc": {
+    "description": "Description of the new friend automation trigger."
+  },
+
+  "triggerHasTagTitle": "Has Specific Tag",
+  "@triggerHasTagTitle": {
+    "description": "Condition that matches users with a specific VRChat profile tag."
+  },
+
+  "triggerHasTagDesc": "Assign roles only if the user has the selected profile tag.",
+  "@triggerHasTagDesc": {
+    "description": "Description of the profile tag automation trigger."
+  },
+
+  "targetTagHeader": "Target Tag",
+  "@targetTagHeader": {
+    "description": "Section header for selecting the required VRChat profile tag."
+  },
+
+  "tagRequired": "Required",
+  "@tagRequired": {
+    "description": "Label indicating that selecting a tag is mandatory."
+  },
+
+  "tagSelected": "Selected Tag",
+  "@tagSelected": {
+    "description": "Label displaying the currently selected VRChat tag."
+  },
+
+  "tagSelectPlaceholder": "Select a tag...",
+  "@tagSelectPlaceholder": {
+    "description": "Placeholder shown before a VRChat tag has been selected."
+  },
+
+  "searchTagsVrcHint": "Search VRChat tags...",
+  "@searchTagsVrcHint": {
+    "description": "Placeholder displayed while searching VRChat profile tags."
+  },
+
+  "sectionAssignRoles": "Assign Roles",
+  "@sectionAssignRoles": {
+    "description": "Section header listing the roles assigned when the automation is triggered."
+  },
+
+  "btnAddRole": "Add Role",
+  "@btnAddRole": {
+    "description": "Button used to assign another role."
+  },
+
+  "noRolesSelectedWarning": "You must assign at least one role.",
+  "@noRolesSelectedWarning": {
+    "description": "Validation message shown when attempting to save without assigning any roles."
+  },
+
+  "searchLocalRolesHint": "Search local roles...",
+  "@searchLocalRolesHint": {
+    "description": "Placeholder displayed while searching local application roles."
+  },
+
+  "tooltipRemoveRole": "Remove Role",
+  "@tooltipRemoveRole": {
+    "description": "Tooltip shown on the button that removes an assigned role."
+  },
+
+  "editRoleTitle": "Edit Role",
+  "@editRoleTitle": {
+    "description": "App bar title displayed while editing a local role."
+  },
+
+  "errorNameInUseTitle": "Name Already Exists",
+  "@errorNameInUseTitle": {
+    "description": "Error shown when attempting to save a role or profile with a duplicate name."
+  },
+
+  "inputRoleName": "Role Name",
+  "@inputRoleName": {
+    "description": "Label for the text field where the role name is entered."
+  },
+
+  "sectionAppRoles": "App Roles",
+  "@sectionAppRoles": {
+    "description": "Section listing all local roles assigned to the selected friend."
+  },
+
+  "sectionVrcTagsReadOnly": "VRChat Tags (Read Only)",
+  "@sectionVrcTagsReadOnly": {
+    "description": "Section displaying the friend's VRChat profile tags. These values cannot be edited."
+  },
+
+  "errorLoadingRoles": "Failed to load roles",
+  "@errorLoadingRoles": {
+    "description": "Error message displayed when local roles cannot be loaded from storage."
   }
 }

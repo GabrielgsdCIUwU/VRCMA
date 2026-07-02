@@ -283,4 +283,226 @@ class AppLocalizationsEs extends AppLocalizations {
   String slotPickerCategory(String category) {
     return 'Categoría: $category';
   }
+
+  @override
+  String get friendsHeader => 'Amigos';
+
+  @override
+  String get tooltipRefreshFriends => 'Actualizar amigos';
+
+  @override
+  String get searchFriendsHint => 'Buscar amigos...';
+
+  @override
+  String get noFriendsFound => 'No se encontraron amigos';
+
+  @override
+  String get presenceOnline => 'Conectado';
+
+  @override
+  String get presenceOffline => 'Desconectado';
+
+  @override
+  String get presenceActiveWebsite => 'Activo en la web';
+
+  @override
+  String get presenceTraveling => 'Cambiando de mundo...';
+
+  @override
+  String get presencePrivateInstance => 'Instancia privada';
+
+  @override
+  String presenceInstanceDesc(String accessType, String region) {
+    return 'Instancia $accessType ($region)';
+  }
+
+  @override
+  String get categoryFavorites => 'Favoritos';
+
+  @override
+  String get categorySameInstance => 'En la misma instancia';
+
+  @override
+  String get accessPublic => 'Public';
+
+  @override
+  String get accessInviteOnly => 'Invite Only';
+
+  @override
+  String get accessInvitePlus => 'Invite+';
+
+  @override
+  String get accessFriends => 'Friends';
+
+  @override
+  String get accessFriendsPlus => 'Friends+';
+
+  @override
+  String get accessGroup => 'Group';
+
+  @override
+  String get accessGroupPlus => 'Group+';
+
+  @override
+  String get accessGroupPublic => 'Group Public';
+
+  @override
+  String get accessUnknown => 'Desconocido';
+
+  @override
+  String get editProfileTitle => 'Editar perfil';
+
+  @override
+  String get dialogUnsavedTitle => 'Cambios sin guardar';
+
+  @override
+  String get dialogUnsavedContent =>
+      'Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?';
+
+  @override
+  String get btnDiscard => 'Descartar';
+
+  @override
+  String get btnSave => 'Guardar';
+
+  @override
+  String get btnSaveChanges => 'Guardar cambios';
+
+  @override
+  String get sectionProfileSettings => 'Configuración del perfil';
+
+  @override
+  String get inputProfileName => 'Nombre del perfil';
+
+  @override
+  String get sectionActions => 'Acciones';
+
+  @override
+  String get priorityRulesCaption =>
+      'Las reglas con mayor prioridad se evalúan primero.';
+
+  @override
+  String get sectionAutomationRules => 'Reglas de automatización';
+
+  @override
+  String get tooltipRemoveRule => 'Eliminar regla';
+
+  @override
+  String get contextOnInviteReceived => 'AL RECIBIR UNA INVITACIÓN';
+
+  @override
+  String get contextOnRequestToJoin => 'AL RECIBIR UNA SOLICITUD DE UNIÓN';
+
+  @override
+  String get defaultVrcMessage => 'Mensaje predeterminado de VRChat';
+
+  @override
+  String dialogSelectMessage(String category) {
+    return 'Seleccionar $category';
+  }
+
+  @override
+  String get defaultMessageOption => 'Usar el mensaje predeterminado de VRChat';
+
+  @override
+  String get defaultMessageOptionDesc =>
+      'Usa el mensaje de notificación predeterminado de VRChat.';
+
+  @override
+  String get btnAddRoleRule => 'Añadir regla de rol';
+
+  @override
+  String get searchRolesHint => 'Buscar roles...';
+
+  @override
+  String get sectionFallbackTags => 'Etiquetas de respaldo';
+
+  @override
+  String get fallbackTagsDesc => 'Se aplican cuando ningún rol coincide.';
+
+  @override
+  String get btnAddTag => 'Añadir etiqueta';
+
+  @override
+  String get searchTagsHint => 'Buscar etiquetas o idiomas...';
+
+  @override
+  String get fallbackTagActionDisabled => 'DESACTIVADO';
+
+  @override
+  String get fallbackTagActionAccept => 'ACEPTAR';
+
+  @override
+  String get fallbackTagActionReject => 'RECHAZAR';
+
+  @override
+  String get newAutomationTitle => 'Nueva automatización';
+
+  @override
+  String get editAutomationTitle => 'Editar automatización';
+
+  @override
+  String get sectionCondition => 'Condición';
+
+  @override
+  String get triggerNewFriendTitle => 'Al añadir un nuevo amigo';
+
+  @override
+  String get triggerNewFriendDesc =>
+      'Asigna los roles predeterminados a todos los nuevos amigos.';
+
+  @override
+  String get triggerHasTagTitle => 'Tiene una etiqueta específica';
+
+  @override
+  String get triggerHasTagDesc =>
+      'Asigna roles solo si el usuario tiene la etiqueta seleccionada en su perfil.';
+
+  @override
+  String get targetTagHeader => 'Etiqueta objetivo';
+
+  @override
+  String get tagRequired => 'Obligatorio';
+
+  @override
+  String get tagSelected => 'Etiqueta seleccionada';
+
+  @override
+  String get tagSelectPlaceholder => 'Selecciona una etiqueta...';
+
+  @override
+  String get searchTagsVrcHint => 'Buscar etiquetas de VRChat...';
+
+  @override
+  String get sectionAssignRoles => 'Asignar roles';
+
+  @override
+  String get btnAddRole => 'Añadir rol';
+
+  @override
+  String get noRolesSelectedWarning => 'Debes asignar al menos un rol.';
+
+  @override
+  String get searchLocalRolesHint => 'Buscar roles locales...';
+
+  @override
+  String get tooltipRemoveRole => 'Eliminar rol';
+
+  @override
+  String get editRoleTitle => 'Editar rol';
+
+  @override
+  String get errorNameInUseTitle => 'Ese nombre ya está en uso';
+
+  @override
+  String get inputRoleName => 'Nombre del rol';
+
+  @override
+  String get sectionAppRoles => 'Roles de la aplicación';
+
+  @override
+  String get sectionVrcTagsReadOnly => 'Etiquetas de VRChat (solo lectura)';
+
+  @override
+  String get errorLoadingRoles => 'No se pudieron cargar los roles';
 }

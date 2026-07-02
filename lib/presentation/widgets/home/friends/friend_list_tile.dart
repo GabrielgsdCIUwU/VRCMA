@@ -71,7 +71,7 @@ class FriendListTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    user.formattedLocation,
+                    user.getLocalizedFormattedLocation(context),
                     style: TextStyle(color: context.colorScheme.onSurfaceVariant, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

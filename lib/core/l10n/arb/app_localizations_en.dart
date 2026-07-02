@@ -282,4 +282,226 @@ class AppLocalizationsEn extends AppLocalizations {
   String slotPickerCategory(String category) {
     return 'Category: $category';
   }
+
+  @override
+  String get friendsHeader => 'Friends';
+
+  @override
+  String get tooltipRefreshFriends => 'Refresh Friends';
+
+  @override
+  String get searchFriendsHint => 'Search friends...';
+
+  @override
+  String get noFriendsFound => 'No friends found';
+
+  @override
+  String get presenceOnline => 'Online';
+
+  @override
+  String get presenceOffline => 'Offline';
+
+  @override
+  String get presenceActiveWebsite => 'Active on the Website';
+
+  @override
+  String get presenceTraveling => 'Traveling...';
+
+  @override
+  String get presencePrivateInstance => 'Private Instance';
+
+  @override
+  String presenceInstanceDesc(String accessType, String region) {
+    return '$accessType Instance ($region)';
+  }
+
+  @override
+  String get categoryFavorites => 'Favorites';
+
+  @override
+  String get categorySameInstance => 'Same Instance';
+
+  @override
+  String get accessPublic => 'Public';
+
+  @override
+  String get accessInviteOnly => 'Invite Only';
+
+  @override
+  String get accessInvitePlus => 'Invite+';
+
+  @override
+  String get accessFriends => 'Friends';
+
+  @override
+  String get accessFriendsPlus => 'Friends+';
+
+  @override
+  String get accessGroup => 'Group';
+
+  @override
+  String get accessGroupPlus => 'Group+';
+
+  @override
+  String get accessGroupPublic => 'Group Public';
+
+  @override
+  String get accessUnknown => 'Unknown';
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get dialogUnsavedTitle => 'Unsaved Changes';
+
+  @override
+  String get dialogUnsavedContent =>
+      'You have unsaved changes. Do you want to save them before leaving?';
+
+  @override
+  String get btnDiscard => 'Discard';
+
+  @override
+  String get btnSave => 'Save';
+
+  @override
+  String get btnSaveChanges => 'Save Changes';
+
+  @override
+  String get sectionProfileSettings => 'Profile Settings';
+
+  @override
+  String get inputProfileName => 'Profile Name';
+
+  @override
+  String get sectionActions => 'Actions';
+
+  @override
+  String get priorityRulesCaption =>
+      'Rules with higher priority are evaluated first.';
+
+  @override
+  String get sectionAutomationRules => 'Automation Rules';
+
+  @override
+  String get tooltipRemoveRule => 'Remove Rule';
+
+  @override
+  String get contextOnInviteReceived => 'ON INVITE RECEIVED';
+
+  @override
+  String get contextOnRequestToJoin => 'ON REQUEST TO JOIN';
+
+  @override
+  String get defaultVrcMessage => 'Default VRChat Message';
+
+  @override
+  String dialogSelectMessage(String category) {
+    return 'Select $category';
+  }
+
+  @override
+  String get defaultMessageOption => 'Use Default VRChat Message';
+
+  @override
+  String get defaultMessageOptionDesc =>
+      'Use VRChat\'s default notification message.';
+
+  @override
+  String get btnAddRoleRule => 'Add Role Rule';
+
+  @override
+  String get searchRolesHint => 'Search roles...';
+
+  @override
+  String get sectionFallbackTags => 'Fallback Tags';
+
+  @override
+  String get fallbackTagsDesc => 'Applied when no role matches.';
+
+  @override
+  String get btnAddTag => 'Add Tag';
+
+  @override
+  String get searchTagsHint => 'Search tags or languages...';
+
+  @override
+  String get fallbackTagActionDisabled => 'DISABLED';
+
+  @override
+  String get fallbackTagActionAccept => 'ACCEPT';
+
+  @override
+  String get fallbackTagActionReject => 'REJECT';
+
+  @override
+  String get newAutomationTitle => 'New Automation';
+
+  @override
+  String get editAutomationTitle => 'Edit Automation';
+
+  @override
+  String get sectionCondition => 'Condition';
+
+  @override
+  String get triggerNewFriendTitle => 'On Any New Friend';
+
+  @override
+  String get triggerNewFriendDesc =>
+      'Assign default roles to every new friend.';
+
+  @override
+  String get triggerHasTagTitle => 'Has Specific Tag';
+
+  @override
+  String get triggerHasTagDesc =>
+      'Assign roles only if the user has the selected profile tag.';
+
+  @override
+  String get targetTagHeader => 'Target Tag';
+
+  @override
+  String get tagRequired => 'Required';
+
+  @override
+  String get tagSelected => 'Selected Tag';
+
+  @override
+  String get tagSelectPlaceholder => 'Select a tag...';
+
+  @override
+  String get searchTagsVrcHint => 'Search VRChat tags...';
+
+  @override
+  String get sectionAssignRoles => 'Assign Roles';
+
+  @override
+  String get btnAddRole => 'Add Role';
+
+  @override
+  String get noRolesSelectedWarning => 'You must assign at least one role.';
+
+  @override
+  String get searchLocalRolesHint => 'Search local roles...';
+
+  @override
+  String get tooltipRemoveRole => 'Remove Role';
+
+  @override
+  String get editRoleTitle => 'Edit Role';
+
+  @override
+  String get errorNameInUseTitle => 'Name Already Exists';
+
+  @override
+  String get inputRoleName => 'Role Name';
+
+  @override
+  String get sectionAppRoles => 'App Roles';
+
+  @override
+  String get sectionVrcTagsReadOnly => 'VRChat Tags (Read Only)';
+
+  @override
+  String get errorLoadingRoles => 'Failed to load roles';
 }

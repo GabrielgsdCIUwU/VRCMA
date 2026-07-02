@@ -102,5 +102,93 @@
   "toastMessageAdded": "Mensaje de {type} añadido a la biblioteca",
   "messageSlotLabel": "Slot {index}",
   "slotPickerTitle": "Asignar '{content}' a un Slot",
-  "slotPickerCategory": "Categoría: {category}"
+  "slotPickerCategory": "Categoría: {category}",
+
+  "friendsHeader": "Amigos",
+  "tooltipRefreshFriends": "Actualizar amigos",
+  "searchFriendsHint": "Buscar amigos...",
+  "noFriendsFound": "No se encontraron amigos",
+
+  "presenceOnline": "Conectado",
+  "presenceOffline": "Desconectado",
+  "presenceActiveWebsite": "Activo en la web",
+  "presenceTraveling": "Cambiando de mundo...",
+  "presencePrivateInstance": "Instancia privada",
+  "presenceInstanceDesc": "Instancia {accessType} ({region})",
+
+  "categorySameInstance": "En la misma instancia",
+  "categoryFavorites": "Favoritos",
+
+  "accessPublic": "Public",
+  "accessInviteOnly": "Invite Only",
+  "accessInvitePlus": "Invite+",
+  "accessFriends": "Friends",
+  "accessFriendsPlus": "Friends+",
+  "accessGroup": "Group",
+  "accessGroupPlus": "Group+",
+  "accessGroupPublic": "Group Public",
+  "accessUnknown": "Desconocido",
+
+  "editProfileTitle": "Editar perfil",
+  "dialogUnsavedTitle": "Cambios sin guardar",
+  "dialogUnsavedContent": "Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?",
+
+  "btnDiscard": "Descartar",
+  "btnSave": "Guardar",
+  "btnSaveChanges": "Guardar cambios",
+
+  "sectionProfileSettings": "Configuración del perfil",
+  "inputProfileName": "Nombre del perfil",
+  "sectionActions": "Acciones",
+  "priorityRulesCaption": "Las reglas con mayor prioridad se evalúan primero.",
+
+  "sectionAutomationRules": "Reglas de automatización",
+  "tooltipRemoveRule": "Eliminar regla",
+  "contextOnInviteReceived": "AL RECIBIR UNA INVITACIÓN",
+  "contextOnRequestToJoin": "AL RECIBIR UNA SOLICITUD DE UNIÓN",
+
+  "defaultVrcMessage": "Mensaje predeterminado de VRChat",
+  "dialogSelectMessage": "Seleccionar {category}",
+  "defaultMessageOption": "Usar el mensaje predeterminado de VRChat",
+  "defaultMessageOptionDesc": "Usa el mensaje de notificación predeterminado de VRChat.",
+
+  "btnAddRoleRule": "Añadir regla de rol",
+  "searchRolesHint": "Buscar roles...",
+
+  "sectionFallbackTags": "Etiquetas de respaldo",
+  "fallbackTagsDesc": "Se aplican cuando ningún rol coincide.",
+  "btnAddTag": "Añadir etiqueta",
+  "searchTagsHint": "Buscar etiquetas o idiomas...",
+  "fallbackTagActionDisabled": "DESACTIVADO",
+  "fallbackTagActionAccept": "ACEPTAR",
+  "fallbackTagActionReject": "RECHAZAR",
+
+  "newAutomationTitle": "Nueva automatización",
+  "editAutomationTitle": "Editar automatización",
+  "sectionCondition": "Condición",
+
+  "triggerNewFriendTitle": "Al añadir un nuevo amigo",
+  "triggerNewFriendDesc": "Asigna los roles predeterminados a todos los nuevos amigos.",
+  "triggerHasTagTitle": "Tiene una etiqueta específica",
+  "triggerHasTagDesc": "Asigna roles solo si el usuario tiene la etiqueta seleccionada en su perfil.",
+  "targetTagHeader": "Etiqueta objetivo",
+  "tagRequired": "Obligatorio",
+
+  "tagSelected": "Etiqueta seleccionada",
+  "tagSelectPlaceholder": "Selecciona una etiqueta...",
+  "searchTagsVrcHint": "Buscar etiquetas de VRChat...",
+  "sectionAssignRoles": "Asignar roles",
+
+  "btnAddRole": "Añadir rol",
+  "noRolesSelectedWarning": "Debes asignar al menos un rol.",
+  "searchLocalRolesHint": "Buscar roles locales...",
+  "tooltipRemoveRole": "Eliminar rol",
+  "editRoleTitle": "Editar rol",
+  "errorNameInUseTitle": "Ese nombre ya está en uso",
+  "inputRoleName": "Nombre del rol",
+  "sectionAppRoles": "Roles de la aplicación",
+
+  "sectionVrcTagsReadOnly": "Etiquetas de VRChat (solo lectura)",
+
+  "errorLoadingRoles": "No se pudieron cargar los roles"
 }

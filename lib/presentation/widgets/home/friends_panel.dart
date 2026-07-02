@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/widgets/home/friends/friend_category_section.dart';
@@ -26,7 +27,7 @@ class FriendsPanel extends ConsumerWidget {
             child: structuredFriendsAsync.when(
               data: (_) {
                 if (flatList.isEmpty) {
-                  return Center(child: Text("No friends found", style: TextStyle(color: context.colorScheme.onSurfaceVariant)));
+                  return Center(child: Text(context.l10n.noFriendsFound, style: TextStyle(color: context.colorScheme.onSurfaceVariant)));
                 }
                 return ListView.builder(
                   itemCount: flatList.length,
@@ -46,7 +47,7 @@ class FriendsPanel extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text("Error: $err")),
+              error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
             ),
           ),
         )
@@ -60,7 +61,7 @@ class FriendsPanel extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "FRIENDS",
+            context.l10n.friendsHeader.toUpperCase(),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               letterSpacing: 1.2,
               color: context.colorScheme.onSurfaceVariant,
@@ -70,7 +71,7 @@ class FriendsPanel extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             color: context.colorScheme.primary,
-            tooltip: "Refresh friends list",
+            tooltip: context.l10n.tooltipRefreshFriends,
             onPressed: () async {
               ref.invalidate(favoriteFriendGroupsProvider);
               await ref.read(friendsListProvider.notifier).refresh();
@@ -79,7 +80,7 @@ class FriendsPanel extends ConsumerWidget {
           const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
-              hintText: "Search friends...",
+              hintText: context.l10n.searchFriendsHint,
               prefixIcon: const Icon(Icons.search, size: 20),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(vertical: 12),

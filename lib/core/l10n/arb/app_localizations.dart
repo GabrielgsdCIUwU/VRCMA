@@ -577,6 +577,432 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category: {category}'**
   String slotPickerCategory(String category);
+
+  /// Header title displayed at the top of the friends management panel.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get friendsHeader;
+
+  /// Tooltip shown on the refresh button used to reload the friends list from VRChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Friends'**
+  String get tooltipRefreshFriends;
+
+  /// Placeholder text displayed in the search field used to filter the friends list.
+  ///
+  /// In en, this message translates to:
+  /// **'Search friends...'**
+  String get searchFriendsHint;
+
+  /// Placeholder shown when no friends match the current search or filter.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends found'**
+  String get noFriendsFound;
+
+  /// Presence status indicating that the friend is currently online.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get presenceOnline;
+
+  /// Presence status indicating that the friend is currently offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get presenceOffline;
+
+  /// Presence status indicating that the friend is currently using the VRChat website instead of the game client.
+  ///
+  /// In en, this message translates to:
+  /// **'Active on the Website'**
+  String get presenceActiveWebsite;
+
+  /// Presence status displayed while the friend is transitioning between VRChat worlds.
+  ///
+  /// In en, this message translates to:
+  /// **'Traveling...'**
+  String get presenceTraveling;
+
+  /// Presence status displayed when the friend's current world instance cannot be joined.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Instance'**
+  String get presencePrivateInstance;
+
+  /// Displays the access type and server region of the friend's current VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'{accessType} Instance ({region})'**
+  String presenceInstanceDesc(String accessType, String region);
+
+  /// Header for the favorites friends category.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get categoryFavorites;
+
+  /// Header grouping friends currently in the same VRChat instance as the user.
+  ///
+  /// In en, this message translates to:
+  /// **'Same Instance'**
+  String get categorySameInstance;
+
+  /// Official VRChat instance access type: Public.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get accessPublic;
+
+  /// Official VRChat instance access type: Invite Only.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Only'**
+  String get accessInviteOnly;
+
+  /// Official VRChat instance access type: Invite+.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite+'**
+  String get accessInvitePlus;
+
+  /// Official VRChat instance access type: Friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get accessFriends;
+
+  /// Official VRChat instance access type: Friends+.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends+'**
+  String get accessFriendsPlus;
+
+  /// Official VRChat instance access type: Group.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get accessGroup;
+
+  /// Official VRChat instance access type: Group+.
+  ///
+  /// In en, this message translates to:
+  /// **'Group+'**
+  String get accessGroupPlus;
+
+  /// Official VRChat instance access type: Group Public.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Public'**
+  String get accessGroupPublic;
+
+  /// Fallback access type displayed when the instance visibility cannot be determined.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get accessUnknown;
+
+  /// App bar title displayed while editing an existing profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// Confirmation dialog title shown when leaving an editor with unsaved changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved Changes'**
+  String get dialogUnsavedTitle;
+
+  /// Confirmation message asking whether to save or discard pending changes before exiting the editor.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Do you want to save them before leaving?'**
+  String get dialogUnsavedContent;
+
+  /// Button that discards all unsaved changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get btnDiscard;
+
+  /// Standard button used to save the current changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get btnSave;
+
+  /// Primary button used to save all modifications before closing the editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get btnSaveChanges;
+
+  /// Section header containing the main profile configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Settings'**
+  String get sectionProfileSettings;
+
+  /// Label for the text field where the profile name is entered.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Name'**
+  String get inputProfileName;
+
+  /// Section header grouping profile-related actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get sectionActions;
+
+  /// Helper text explaining the execution order of automation rules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules with higher priority are evaluated first.'**
+  String get priorityRulesCaption;
+
+  /// Section header containing the list of automation rules assigned to the profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Rules'**
+  String get sectionAutomationRules;
+
+  /// Tooltip shown on the button that removes an automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Rule'**
+  String get tooltipRemoveRule;
+
+  /// Label indicating rules triggered when receiving a VRChat invite.
+  ///
+  /// In en, this message translates to:
+  /// **'ON INVITE RECEIVED'**
+  String get contextOnInviteReceived;
+
+  /// Label indicating rules triggered when receiving a request-to-join.
+  ///
+  /// In en, this message translates to:
+  /// **'ON REQUEST TO JOIN'**
+  String get contextOnRequestToJoin;
+
+  /// Label representing the default notification message provided by VRChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Default VRChat Message'**
+  String get defaultVrcMessage;
+
+  /// Dialog title prompting the user to choose a message template.
+  ///
+  /// In en, this message translates to:
+  /// **'Select {category}'**
+  String dialogSelectMessage(String category);
+
+  /// Option that keeps VRChat's original notification message instead of using a custom template.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Default VRChat Message'**
+  String get defaultMessageOption;
+
+  /// Description explaining the default message option.
+  ///
+  /// In en, this message translates to:
+  /// **'Use VRChat\'s default notification message.'**
+  String get defaultMessageOptionDesc;
+
+  /// Button used to add a new role rule to the profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Role Rule'**
+  String get btnAddRoleRule;
+
+  /// Placeholder displayed while searching available roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Search roles...'**
+  String get searchRolesHint;
+
+  /// Section containing fallback tag rules used when no role matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Fallback Tags'**
+  String get sectionFallbackTags;
+
+  /// Helper text explaining when fallback tags are evaluated.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied when no role matches.'**
+  String get fallbackTagsDesc;
+
+  /// Button used to add a fallback tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tag'**
+  String get btnAddTag;
+
+  /// Placeholder displayed while searching VRChat tags or language tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tags or languages...'**
+  String get searchTagsHint;
+
+  /// Automation action indicating that no automatic response will be performed.
+  ///
+  /// In en, this message translates to:
+  /// **'DISABLED'**
+  String get fallbackTagActionDisabled;
+
+  /// Automation action indicating that the invite or request will be accepted automatically.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCEPT'**
+  String get fallbackTagActionAccept;
+
+  /// Automation action indicating that the invite or request will be rejected automatically.
+  ///
+  /// In en, this message translates to:
+  /// **'REJECT'**
+  String get fallbackTagActionReject;
+
+  /// App bar title displayed while creating a new automation.
+  ///
+  /// In en, this message translates to:
+  /// **'New Automation'**
+  String get newAutomationTitle;
+
+  /// App bar title displayed while editing an existing automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Automation'**
+  String get editAutomationTitle;
+
+  /// Section header containing the automation trigger conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get sectionCondition;
+
+  /// Condition that matches every newly added friend.
+  ///
+  /// In en, this message translates to:
+  /// **'On Any New Friend'**
+  String get triggerNewFriendTitle;
+
+  /// Description of the new friend automation trigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign default roles to every new friend.'**
+  String get triggerNewFriendDesc;
+
+  /// Condition that matches users with a specific VRChat profile tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Has Specific Tag'**
+  String get triggerHasTagTitle;
+
+  /// Description of the profile tag automation trigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign roles only if the user has the selected profile tag.'**
+  String get triggerHasTagDesc;
+
+  /// Section header for selecting the required VRChat profile tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Tag'**
+  String get targetTagHeader;
+
+  /// Label indicating that selecting a tag is mandatory.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get tagRequired;
+
+  /// Label displaying the currently selected VRChat tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Tag'**
+  String get tagSelected;
+
+  /// Placeholder shown before a VRChat tag has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a tag...'**
+  String get tagSelectPlaceholder;
+
+  /// Placeholder displayed while searching VRChat profile tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Search VRChat tags...'**
+  String get searchTagsVrcHint;
+
+  /// Section header listing the roles assigned when the automation is triggered.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Roles'**
+  String get sectionAssignRoles;
+
+  /// Button used to assign another role.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Role'**
+  String get btnAddRole;
+
+  /// Validation message shown when attempting to save without assigning any roles.
+  ///
+  /// In en, this message translates to:
+  /// **'You must assign at least one role.'**
+  String get noRolesSelectedWarning;
+
+  /// Placeholder displayed while searching local application roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Search local roles...'**
+  String get searchLocalRolesHint;
+
+  /// Tooltip shown on the button that removes an assigned role.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Role'**
+  String get tooltipRemoveRole;
+
+  /// App bar title displayed while editing a local role.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Role'**
+  String get editRoleTitle;
+
+  /// Error shown when attempting to save a role or profile with a duplicate name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Already Exists'**
+  String get errorNameInUseTitle;
+
+  /// Label for the text field where the role name is entered.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Name'**
+  String get inputRoleName;
+
+  /// Section listing all local roles assigned to the selected friend.
+  ///
+  /// In en, this message translates to:
+  /// **'App Roles'**
+  String get sectionAppRoles;
+
+  /// Section displaying the friend's VRChat profile tags. These values cannot be edited.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Tags (Read Only)'**
+  String get sectionVrcTagsReadOnly;
+
+  /// Error message displayed when local roles cannot be loaded from storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load roles'**
+  String get errorLoadingRoles;
 }
 
 class _AppLocalizationsDelegate
