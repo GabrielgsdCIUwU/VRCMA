@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 
 class LoginForm extends StatefulWidget {
   final bool isLoading;
@@ -27,13 +28,13 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         TextField(
           controller: _usernameController,
-          decoration: const InputDecoration(labelText: 'Username or Email', prefixIcon: Icon(Icons.person)),
+          decoration: InputDecoration(labelText: context.l10n.usernameLabel, prefixIcon: Icon(Icons.person)),
           enabled: !widget.isLoading,
         ),
         const SizedBox(height: 16),
         TextField(
           controller: _passwordController,
-          decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.password)),
+          decoration: InputDecoration(labelText: context.l10n.passwordLabel, prefixIcon: Icon(Icons.password)),
           obscureText: true,
           enabled: !widget.isLoading,
         ),
@@ -43,7 +44,7 @@ class _LoginFormState extends State<LoginForm> {
           height: 50,
           child: ElevatedButton(
             onPressed: widget.isLoading ? null : () => widget.onLogin(_usernameController.text, _passwordController.text),
-            child: widget.isLoading ? const CircularProgressIndicator() : const Text('Login'),
+            child: widget.isLoading ? const CircularProgressIndicator() : Text(context.l10n.loginButton),
           ),
         ),
       ],

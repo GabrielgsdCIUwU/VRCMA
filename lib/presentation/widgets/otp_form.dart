@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/l10n/ll10n_extension.dart';
 
 class OtpForm extends StatefulWidget {
   final bool isLoading;
@@ -29,11 +30,11 @@ class _OtpFormState extends State<OtpForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text('Enter 2FA Code', style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(context.l10n.enter2faTitle, style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         TextField(
           controller: _otpController,
-          decoration: const InputDecoration(labelText: '6-Digit Code', prefixIcon: Icon(Icons.security)),
+          decoration: InputDecoration(labelText: context.l10n.digitCodeLabel, prefixIcon: Icon(Icons.security)),
           keyboardType: TextInputType.number,
           enabled: !widget.isLoading,
         ),
@@ -43,10 +44,10 @@ class _OtpFormState extends State<OtpForm> {
           height: 50,
           child: ElevatedButton(
               onPressed: widget.isLoading ? null : () => widget.onVerify(_otpController.text),
-              child: widget.isLoading ? const CircularProgressIndicator() : const Text('Verify'),
+              child: widget.isLoading ? const CircularProgressIndicator() : Text(context.l10n.verifyButton),
           ),
         ),
-        TextButton(onPressed: widget.onCancel, child: const Text('Back')),
+        TextButton(onPressed: widget.onCancel, child: Text(context.l10n.backButton)),
       ],
     );
   }
