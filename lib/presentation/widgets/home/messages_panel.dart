@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/slot_card.dart';
+import 'package:vrcma/presentation/widgets/home/common/vrc_message_type_extension.dart';
 
 class MessagesPanel extends ConsumerWidget {
   const MessagesPanel({super.key});
@@ -20,13 +22,13 @@ class MessagesPanel extends ConsumerWidget {
           children: [
             Container(
               color: context.colorScheme.surfaceContainerHigh,
-              child: const TabBar(
+              child: TabBar(
                 isScrollable: true,
                 tabs: [
-                  Tab(text: "INVITE"),
-                  Tab(text: "RESPONSE"),
-                  Tab(text: "REQUEST"),
-                  Tab(text: "REQ. RESPONSE"),
+                  Tab(text: context.l10n.tabInvite),
+                  Tab(text: context.l10n.tabResponse),
+                  Tab(text: context.l10n.tabRequest),
+                  Tab(text: context.l10n.tabReqResponse),
                 ],
               ),
             ),
@@ -42,7 +44,7 @@ class MessagesPanel extends ConsumerWidget {
         ),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(child: Text("Error: $error")),
+      error: (error, _) => Center(child: Text(context.l10n.stateError(error.toString()))),
     );
   }
 }
@@ -135,14 +137,14 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(child: Text("Library is empty", style: TextStyle(color: context.colorScheme.onSurfaceVariant))),
+                child: Center(child: Text(context.l10n.libraryEmpty, style: TextStyle(color: context.colorScheme.onSurfaceVariant))),
               ),
             )
           else ...[
               if (unassigned.isNotEmpty) ...[
                 SliverToBoxAdapter(
                   child: CollapsibleHeader.secondary(
-                    title: "UNASSIGNED MESSAGES", 
+                    title: context.l10n.unassignedMessagesHeader, 
                     count: unassigned.length,
                     isExpanded: isUnassignedExpanded,
                     onToggle: () => setState(() => isUnassignedExpanded = !isUnassignedExpanded),
@@ -163,7 +165,7 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
               if (assigned.isNotEmpty) ...[
                 SliverToBoxAdapter(
                   child: CollapsibleHeader.secondary(
-                    title: "ASSIGNED TO LIVE SLOTS",
+                    title: context.l10n.assignedMessagesHeader,
                     count: assigned.length,
                     isExpanded: isAssignedExpanded,
                     onToggle: () => setState(() => isAssignedExpanded = !isAssignedExpanded),
@@ -313,14 +315,14 @@ class _SlotMonitorHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CollapsibleHeader.primary(
-      title: "VRChat Live Slots",
+      title: context.l10n.liveSlotsHeader,
       icon: Icons.sync_alt,
       isExpanded: isExpanded,
       onToggle: onToggle,
       action: IconButton(
         icon: Icon(Icons.refresh, size: 20, color: context.colorScheme.primary),
         onPressed: () => ref.read(messageManagementProvider.notifier).syncFromVrc(),
-        tooltip: "Sync from VRChat",
+        tooltip: context.l10n.tooltipSyncFromVrc,
       ),
     );
   }
@@ -336,14 +338,14 @@ class _LibraryHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CollapsibleHeader.primary(
-      title: "Message Library",
+      title: context.l10n.messageLibraryHeader,
       icon: Icons.library_books,
       isExpanded: isExpanded,
       onToggle: onToggle,
       action: IconButton(
         icon: Icon(Icons.add_circle_outline, size: 20, color: context.colorScheme.primary),
         onPressed: () => _showAddDialog(context, ref, type),
-        tooltip: "Add message",
+        tooltip: context.l10n.tooltipAddMessage,
       ),
     );
   }
@@ -359,14 +361,14 @@ class _LibraryHeader extends ConsumerWidget {
           children: [
             const Icon(Icons.add_comment_outlined, size: 20),
             const SizedBox(width: 10),
-            Text("New ${type.name.toUpperCase()}"),
+            Text(context.l10n.dialogNewMessageTitle(type.toLocalizedString(context))),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "This message will be stored in your library and can be assigned to automation rules.",
+              context.l10n.dialogNewMessageDesc,
               style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 20),
@@ -377,8 +379,8 @@ class _LibraryHeader extends ConsumerWidget {
               maxLines: 3,
               minLines: 1,
               decoration: InputDecoration(
-                hintText: "Enter message text...",
-                labelText: "Message Content",
+                hintText: context.l10n.inputMessageHint,
+                labelText: context.l10n.inputMessageLabel,
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 prefixIcon: const Icon(Icons.short_text),
@@ -395,7 +397,7 @@ class _LibraryHeader extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+            child: Text(context.l10n.btnCancel, style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
           ),
           FilledButton(
             style: ElevatedButton.styleFrom(
@@ -406,7 +408,7 @@ class _LibraryHeader extends ConsumerWidget {
                 _handleCreate(context, ref, controller.text.trim(), type);
               }
             },
-            child: const Text("Create message"),
+            child: Text(context.l10n.btnCreateMessage),
           ),
         ],
       ),
@@ -419,7 +421,7 @@ class _LibraryHeader extends ConsumerWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Message added to $type library"),
+        content: Text(context.l10n.toastMessageAdded(type.toLocalizedString(context))),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
@@ -442,7 +444,7 @@ class _LibraryTile extends ConsumerWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        msg.type.name.toUpperCase(),
+        msg.type.toLocalizedString(context).toUpperCase(),
         style: TextStyle(fontSize: 9, color: context.colorScheme.primary, letterSpacing: 1),
       ),
       trailing: msg.isActive
@@ -452,7 +454,7 @@ class _LibraryTile extends ConsumerWidget {
           color: context.vrcColors.success.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Text("Slot ${msg.slotIndex! + 1}", style: TextStyle(
+        child: Text(context.l10n.messageSlotLabel(msg.slotIndex! + 1), style: TextStyle(
             color: context.vrcColors.success,
             fontSize: 10,
             fontWeight: FontWeight.bold
@@ -514,12 +516,12 @@ class _Header extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Select Slot for '${message.content}'",
+          context.l10n.slotPickerTitle(message.content),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 4),
         Text(
-          "Category: ${message.type.name.toUpperCase()}",
+          context.l10n.slotPickerCategory(message.type.toLocalizedString(context)),
           style: TextStyle(color: context.colorScheme.primary, fontSize: 10),
         ),
       ],

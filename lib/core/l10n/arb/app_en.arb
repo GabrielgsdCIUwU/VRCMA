@@ -353,5 +353,144 @@
   "tabRequest": "REQUEST",
   "@tabRequest": {
     "description": "Category label for requests."
+  },
+  "messageTypeInvite": "Invite",
+  "@messageTypeInvite": {
+    "description": "Noun representing an invitation notification type."
+  },
+
+  "messageTypeResponse": "Response",
+  "@messageTypeResponse": {
+    "description": "Noun representing a response notification type."
+  },
+
+  "messageTypeRequest": "Request",
+  "@messageTypeRequest": {
+    "description": "Noun representing a request-to-join notification type."
+  },
+
+  "messageTypeRequestResponse": "Request Response",
+  "@messageTypeRequestResponse": {
+    "description": "Noun representing a response to a request-to-join notification type."
+  },
+
+  "tabResponse": "Response",
+  "@tabResponse": {
+    "description": "Category tab for message templates automatically sent in response to an incoming invite."
+  },
+
+  "tabReqResponse": "Request Response",
+  "@tabReqResponse": {
+    "description": "Category tab for message templates automatically sent in response to a request-to-join."
+  },
+
+  "liveSlotsHeader": "Live VRChat Slots",
+  "@liveSlotsHeader": {
+    "description": "Section header displaying the currently assigned VRChat live message slots available on the server."
+  },
+
+  "tooltipSyncFromVrc": "Sync with VRChat",
+  "@tooltipSyncFromVrc": {
+    "description": "Tooltip shown on the synchronization button that downloads the latest live slot configuration from VRChat."
+  },
+
+  "messageLibraryHeader": "Message Library",
+  "@messageLibraryHeader": {
+    "description": "Header for the local library containing all saved message templates."
+  },
+
+  "tooltipAddMessage": "Add Message",
+  "@tooltipAddMessage": {
+    "description": "Tooltip shown on the button used to create a new message template."
+  },
+
+  "libraryEmpty": "No messages in the library",
+  "@libraryEmpty": {
+    "description": "Placeholder displayed when the selected message library contains no saved templates."
+  },
+
+  "unassignedMessagesHeader": "UNASSIGNED MESSAGES",
+  "@unassignedMessagesHeader": {
+    "description": "Section title grouping message templates that are not currently assigned to any live VRChat slot."
+  },
+
+  "assignedMessagesHeader": "ASSIGNED TO LIVE SLOTS",
+  "@assignedMessagesHeader": {
+    "description": "Section title grouping message templates currently assigned to one of the active VRChat live slots."
+  },
+
+  "dialogNewMessageTitle": "New {type} Message",
+  "@dialogNewMessageTitle": {
+    "description": "Dialog title displayed when creating a new message template.",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "dialogNewMessageDesc": "This message will be saved to your library and can be assigned to automation rules.",
+  "@dialogNewMessageDesc": {
+    "description": "Helper text explaining what happens after creating a new message template."
+  },
+
+  "inputMessageHint": "Enter your message...",
+  "@inputMessageHint": {
+    "description": "Placeholder text displayed inside the message editor before any content is entered."
+  },
+
+  "inputMessageLabel": "Message",
+  "@inputMessageLabel": {
+    "description": "Label for the text field where the message template content is written."
+  },
+
+  "btnCreateMessage": "Create Message",
+  "@btnCreateMessage": {
+    "description": "Primary button used to save a newly created message template."
+  },
+
+  "toastMessageAdded": "{type} message added to the library",
+  "@toastMessageAdded": {
+    "description": "Confirmation message displayed after successfully creating a new message template.",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "messageSlotLabel": "Slot {index}",
+  "@messageSlotLabel": {
+    "description": "Label identifying one of the available VRChat live message slots.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "slotPickerTitle": "Assign '{content}' to a Slot",
+  "@slotPickerTitle": {
+    "description": "Dialog title prompting the user to select the live VRChat slot where the message template will be assigned.",
+    "placeholders": {
+      "content": {
+        "type": "String",
+        "example": "Welcome!"
+      }
+    }
+  },
+
+  "slotPickerCategory": "Category: {category}",
+  "@slotPickerCategory": {
+    "description": "Displays the message category currently being assigned in the slot selection dialog.",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
   }
 }

@@ -75,5 +75,32 @@
   "actionRejected": "RECHAZADO",
 
   "tabInvite": "Invitaciones",
-  "tabRequest": "Solicitudes"
+  "tabRequest": "Solicitudes",
+
+  "messageTypeInvite": "Invitación",
+  "messageTypeResponse": "Respuesta",
+  "messageTypeRequest": "Petición",
+  "messageTypeRequestResponse": "Respuesta a Petición",
+  "tabResponse": "Respuesta",
+  "tabReqResponse": "Resp. Petición",
+
+  "liveSlotsHeader": "Slots Activos en VRChat",
+  "tooltipSyncFromVrc": "Sincronizar con VRChat",
+
+  "messageLibraryHeader": "Biblioteca de Mensajes",
+  "tooltipAddMessage": "Añadir mensaje",
+  "libraryEmpty": "La biblioteca está vacía",
+
+  "unassignedMessagesHeader": "MENSAJES SIN ASIGNAR",
+  "assignedMessagesHeader": "ASIGNADOS A SLOTS ACTIVOS",
+  
+  "dialogNewMessageTitle": "Nuevo Mensaje de {type}",
+  "dialogNewMessageDesc": "Este mensaje se guardará en tu biblioteca y se podrá asignar a reglas de automatización.",
+  "inputMessageHint": "Escribe tu mensaje...",
+  "inputMessageLabel": "Mensaje",
+  "btnCreateMessage": "Crear Mensaje",
+  "toastMessageAdded": "Mensaje de {type} añadido a la biblioteca",
+  "messageSlotLabel": "Slot {index}",
+  "slotPickerTitle": "Asignar '{content}' a un Slot",
+  "slotPickerCategory": "Categoría: {category}"
 }

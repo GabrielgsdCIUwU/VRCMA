@@ -205,4 +205,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabRequest => 'REQUEST';
+
+  @override
+  String get messageTypeInvite => 'Invite';
+
+  @override
+  String get messageTypeResponse => 'Response';
+
+  @override
+  String get messageTypeRequest => 'Request';
+
+  @override
+  String get messageTypeRequestResponse => 'Request Response';
+
+  @override
+  String get tabResponse => 'Response';
+
+  @override
+  String get tabReqResponse => 'Request Response';
+
+  @override
+  String get liveSlotsHeader => 'Live VRChat Slots';
+
+  @override
+  String get tooltipSyncFromVrc => 'Sync with VRChat';
+
+  @override
+  String get messageLibraryHeader => 'Message Library';
+
+  @override
+  String get tooltipAddMessage => 'Add Message';
+
+  @override
+  String get libraryEmpty => 'No messages in the library';
+
+  @override
+  String get unassignedMessagesHeader => 'UNASSIGNED MESSAGES';
+
+  @override
+  String get assignedMessagesHeader => 'ASSIGNED TO LIVE SLOTS';
+
+  @override
+  String dialogNewMessageTitle(String type) {
+    return 'New $type Message';
+  }
+
+  @override
+  String get dialogNewMessageDesc =>
+      'This message will be saved to your library and can be assigned to automation rules.';
+
+  @override
+  String get inputMessageHint => 'Enter your message...';
+
+  @override
+  String get inputMessageLabel => 'Message';
+
+  @override
+  String get btnCreateMessage => 'Create Message';
+
+  @override
+  String toastMessageAdded(String type) {
+    return '$type message added to the library';
+  }
+
+  @override
+  String messageSlotLabel(int index) {
+    return 'Slot $index';
+  }
+
+  @override
+  String slotPickerTitle(String content) {
+    return 'Assign \'$content\' to a Slot';
+  }
+
+  @override
+  String slotPickerCategory(String category) {
+    return 'Category: $category';
+  }
 }

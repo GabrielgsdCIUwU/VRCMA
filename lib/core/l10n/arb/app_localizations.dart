@@ -445,6 +445,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'REQUEST'**
   String get tabRequest;
+
+  /// Noun representing an invitation notification type.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get messageTypeInvite;
+
+  /// Noun representing a response notification type.
+  ///
+  /// In en, this message translates to:
+  /// **'Response'**
+  String get messageTypeResponse;
+
+  /// Noun representing a request-to-join notification type.
+  ///
+  /// In en, this message translates to:
+  /// **'Request'**
+  String get messageTypeRequest;
+
+  /// Noun representing a response to a request-to-join notification type.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Response'**
+  String get messageTypeRequestResponse;
+
+  /// Category tab for message templates automatically sent in response to an incoming invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Response'**
+  String get tabResponse;
+
+  /// Category tab for message templates automatically sent in response to a request-to-join.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Response'**
+  String get tabReqResponse;
+
+  /// Section header displaying the currently assigned VRChat live message slots available on the server.
+  ///
+  /// In en, this message translates to:
+  /// **'Live VRChat Slots'**
+  String get liveSlotsHeader;
+
+  /// Tooltip shown on the synchronization button that downloads the latest live slot configuration from VRChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync with VRChat'**
+  String get tooltipSyncFromVrc;
+
+  /// Header for the local library containing all saved message templates.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Library'**
+  String get messageLibraryHeader;
+
+  /// Tooltip shown on the button used to create a new message template.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Message'**
+  String get tooltipAddMessage;
+
+  /// Placeholder displayed when the selected message library contains no saved templates.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages in the library'**
+  String get libraryEmpty;
+
+  /// Section title grouping message templates that are not currently assigned to any live VRChat slot.
+  ///
+  /// In en, this message translates to:
+  /// **'UNASSIGNED MESSAGES'**
+  String get unassignedMessagesHeader;
+
+  /// Section title grouping message templates currently assigned to one of the active VRChat live slots.
+  ///
+  /// In en, this message translates to:
+  /// **'ASSIGNED TO LIVE SLOTS'**
+  String get assignedMessagesHeader;
+
+  /// Dialog title displayed when creating a new message template.
+  ///
+  /// In en, this message translates to:
+  /// **'New {type} Message'**
+  String dialogNewMessageTitle(String type);
+
+  /// Helper text explaining what happens after creating a new message template.
+  ///
+  /// In en, this message translates to:
+  /// **'This message will be saved to your library and can be assigned to automation rules.'**
+  String get dialogNewMessageDesc;
+
+  /// Placeholder text displayed inside the message editor before any content is entered.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your message...'**
+  String get inputMessageHint;
+
+  /// Label for the text field where the message template content is written.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get inputMessageLabel;
+
+  /// Primary button used to save a newly created message template.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Message'**
+  String get btnCreateMessage;
+
+  /// Confirmation message displayed after successfully creating a new message template.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} message added to the library'**
+  String toastMessageAdded(String type);
+
+  /// Label identifying one of the available VRChat live message slots.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot {index}'**
+  String messageSlotLabel(int index);
+
+  /// Dialog title prompting the user to select the live VRChat slot where the message template will be assigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign \'{content}\' to a Slot'**
+  String slotPickerTitle(String content);
+
+  /// Displays the message category currently being assigned in the slot selection dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Category: {category}'**
+  String slotPickerCategory(String category);
 }
 
 class _AppLocalizationsDelegate

@@ -206,4 +206,81 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tabRequest => 'Solicitudes';
+
+  @override
+  String get messageTypeInvite => 'Invitación';
+
+  @override
+  String get messageTypeResponse => 'Respuesta';
+
+  @override
+  String get messageTypeRequest => 'Petición';
+
+  @override
+  String get messageTypeRequestResponse => 'Respuesta a Petición';
+
+  @override
+  String get tabResponse => 'Respuesta';
+
+  @override
+  String get tabReqResponse => 'Resp. Petición';
+
+  @override
+  String get liveSlotsHeader => 'Slots Activos en VRChat';
+
+  @override
+  String get tooltipSyncFromVrc => 'Sincronizar con VRChat';
+
+  @override
+  String get messageLibraryHeader => 'Biblioteca de Mensajes';
+
+  @override
+  String get tooltipAddMessage => 'Añadir mensaje';
+
+  @override
+  String get libraryEmpty => 'La biblioteca está vacía';
+
+  @override
+  String get unassignedMessagesHeader => 'MENSAJES SIN ASIGNAR';
+
+  @override
+  String get assignedMessagesHeader => 'ASIGNADOS A SLOTS ACTIVOS';
+
+  @override
+  String dialogNewMessageTitle(String type) {
+    return 'Nuevo Mensaje de $type';
+  }
+
+  @override
+  String get dialogNewMessageDesc =>
+      'Este mensaje se guardará en tu biblioteca y se podrá asignar a reglas de automatización.';
+
+  @override
+  String get inputMessageHint => 'Escribe tu mensaje...';
+
+  @override
+  String get inputMessageLabel => 'Mensaje';
+
+  @override
+  String get btnCreateMessage => 'Crear Mensaje';
+
+  @override
+  String toastMessageAdded(String type) {
+    return 'Mensaje de $type añadido a la biblioteca';
+  }
+
+  @override
+  String messageSlotLabel(int index) {
+    return 'Slot $index';
+  }
+
+  @override
+  String slotPickerTitle(String content) {
+    return 'Asignar \'$content\' a un Slot';
+  }
+
+  @override
+  String slotPickerCategory(String category) {
+    return 'Categoría: $category';
+  }
 }
