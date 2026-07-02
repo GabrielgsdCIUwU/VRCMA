@@ -1,23 +1,63 @@
 {
   "@@locale": "en",
+  
   "loginTitle": "VRCMA",
   "@loginTitle": {
-    "description": "Title of the login screen"
+    "description": "The main branding/application title displayed at the top of the login header screen."
   },
+  
   "usernameLabel": "Username or Email",
+  "@usernameLabel": {
+    "description": "Input field label prompting the user for their VRChat username or registered email address."
+  },
+  
   "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Input field label prompting the user to enter their account password."
+  },
+  
   "loginButton": "Login",
+  "@loginButton": {
+    "description": "Text displayed on the primary action button to submit credentials on the login form."
+  },
+  
   "enter2faTitle": "Enter 2FA Code",
+  "@enter2faTitle": {
+    "description": "Header title instructing the user to type in their two-factor authentication security code."
+  },
+  
   "digitCodeLabel": "6-Digit Code",
+  "@digitCodeLabel": {
+    "description": "Input field placeholder/label specifically designated for entering the 6-digit security token."
+  },
+  
   "verifyButton": "Verify",
+  "@verifyButton": {
+    "description": "Action button text to submit and validate the entered 2FA security code."
+  },
+  
   "backButton": "Back",
+  "@backButton": {
+    "description": "Button label used to dismiss the 2FA screen and navigate back to the credentials form."
+  },
+  
   "loginSuccess": "Login Success!",
+  "@loginSuccess": {
+    "description": "Success message displayed to the user via SnackBar upon a verified and successful login."
+  },
+  
   "connectionTimeout": "Connection timeout. Check your internet connection",
+  "@connectionTimeout": {
+    "description": "Error message shown when a network request to the VRChat servers times out."
+  },
+  
   "unexpectedError": "Unexpected error: {error}",
   "@unexpectedError": {
+    "description": "A generic error wrapper when an unhandled or system-specific error occurs.",
     "placeholders": {
       "error": {
-        "type": "String"
+        "type": "String",
+        "example": "SocketException"
       }
     }
   }
