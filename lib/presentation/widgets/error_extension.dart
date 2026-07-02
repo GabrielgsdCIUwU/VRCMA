@@ -5,6 +5,9 @@ import 'package:vrcma/core/l10n/ll10n_extension.dart';
 extension FailureLocalization on Failure {
   String toLocalizedString(BuildContext context) {
     final l10n = context.l10n;
+    if (this is TwoFactorRequiredFailure) {
+      return l10n.enter2faTitle;
+    }
     if (this is ApiFailure) {
       if (message.contains('timeout')) {
         return l10n.connectionTimeout;
