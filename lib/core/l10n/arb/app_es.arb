@@ -196,5 +196,9 @@
   "errorLoadingMessages": "Error al cargar los mensajes",
 
   "ruleActionAccept": "Aceptar",
-  "ruleActionReject": "Rechazar"
+  "ruleActionReject": "Rechazar",
+
+  "searchPlaceholder": "Buscar...",
+  "noItemsMatchSearch": "Ningún elemento coincide con la búsqueda",
+  "btnOk": "Aceptar"
 }

@@ -518,4 +518,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ruleActionReject => 'Rechazar';
+
+  @override
+  String get searchPlaceholder => 'Buscar...';
+
+  @override
+  String get noItemsMatchSearch => 'Ningún elemento coincide con la búsqueda';
+
+  @override
+  String get btnOk => 'Aceptar';
 }

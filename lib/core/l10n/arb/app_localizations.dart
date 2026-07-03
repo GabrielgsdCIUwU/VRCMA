@@ -1027,6 +1027,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reject'**
   String get ruleActionReject;
+
+  /// Standard placeholder displayed in search input fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get searchPlaceholder;
+
+  /// Information message shown when a search in a dialog or bottom sheet returns no matching results.
+  ///
+  /// In en, this message translates to:
+  /// **'No items match your search'**
+  String get noItemsMatchSearch;
+
+  /// Standard confirmation button label used to acknowledge and close dialogs or alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get btnOk;
 }
 
 class _AppLocalizationsDelegate

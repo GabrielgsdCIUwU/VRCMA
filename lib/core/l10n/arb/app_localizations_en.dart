@@ -517,4 +517,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ruleActionReject => 'Reject';
+
+  @override
+  String get searchPlaceholder => 'Search...';
+
+  @override
+  String get noItemsMatchSearch => 'No items match your search';
+
+  @override
+  String get btnOk => 'OK';
 }

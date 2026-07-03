@@ -883,5 +883,20 @@
   "ruleActionReject": "Reject",
   "@ruleActionReject": {
     "description": "Text representing the automated reject action in rule dropdowns."
+  },
+
+  "searchPlaceholder": "Search...",
+  "@searchPlaceholder": {
+    "description": "Standard placeholder displayed in search input fields."
+  },
+    
+  "noItemsMatchSearch": "No items match your search",
+  "@noItemsMatchSearch": {
+    "description": "Information message shown when a search in a dialog or bottom sheet returns no matching results."
+  },
+
+  "btnOk": "OK",
+  "@btnOk": {
+    "description": "Standard confirmation button label used to acknowledge and close dialogs or alerts."
   }
 }
