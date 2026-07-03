@@ -127,6 +127,14 @@ class DatabaseService {
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');
+
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_profile_id ON profile_rules (profile_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_role_id ON profile_rules (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_automation_assigned_roles_automation_id ON automation_assigned_roles (automation_id)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
