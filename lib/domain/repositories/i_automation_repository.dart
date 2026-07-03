@@ -1,23 +1,26 @@
 import 'package:dartz/dartz.dart';
 import 'package:vrcma/core/errors/failure.dart';
-import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 abstract class IAutomationRepository {
   /// Stream that emits new invitation requests in real-time.
-  Stream<InvitationType> watchInvitations();
+  Stream<VrcAutomationEvent> watchInvitations();
   
   /// Accepts a specific request invitation.
-  Future<void> acceptRequestInvitation(RequestInvite requestInvite, int? slot);
+  Future<void> acceptRequestInvitation(RequestInviteEvent requestInvite, int? slot);
   
   /// Accepts a specific invite
-  Future<void> acceptInvitation(InviteReceived invite);
+  Future<void> acceptInvitation(InviteReceivedEvent invite);
+
+  /// Accepts an incoming friend request.
+  Future<void> acceptFriendRequest(FriendRequestReceivedEvent request);
   
   /// Rejects a notification (invite or request invite)
-  Future<void> rejectNotificationWithMessage(InvitationType notification, int slot);
+  Future<void> rejectNotificationWithMessage(IncomingUserEvent notification, int slot);
 
   /// Dismisses a notification (invite or request invite) without response
-  Future<void> dismissNotification(InvitationType notification);
+  Future<void> dismissNotification(IncomingUserEvent notification);
 
   /// Updates a specific message slot.
   /// Returns the number of minutes remaining if in cooldown (429), or 0 if success.
