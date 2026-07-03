@@ -4,8 +4,8 @@ import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 abstract class IAutomationRepository {
-  /// Stream that emits new invitation requests in real-time.
-  Stream<VrcAutomationEvent> watchInvitations();
+  /// Stream emitting mapped real-time events processed by the pipeline.
+  Stream<VrcAutomationEvent> watchAutomationEvents();
   
   /// Accepts a specific request invitation.
   Future<void> acceptRequestInvitation(RequestInviteEvent requestInvite, int? slot);
