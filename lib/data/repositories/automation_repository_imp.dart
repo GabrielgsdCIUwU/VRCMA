@@ -10,8 +10,33 @@ import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
+
+  final Map<String, (User, DateTime)> _userCache = {};
+  static const Duration _cacheExpirationLimit = Duration(hours: 1);
   
   AutomationRepositoryImp(this._vrcApi);
+
+  Future<User?> _getEnrichedUser(String userId) async {
+    final now = DateTime.now();
+    if (_userCache.containsKey(userId)) {
+      final (cachedUser, cachedTime) = _userCache[userId]!;
+      if (now.difference(cachedTime) < _cacheExpirationLimit) {
+        return cachedUser;
+      }
+    }
+
+    try {
+      final response = await _vrcApi.rawApi.getUsersApi().getUser(userId: userId);
+      final userData = response.data;
+      if (userData != null) {
+        _userCache[userId] = (userData, now);
+        return userData;
+      }
+    } catch (e) {
+      debugPrint("Error fetching user data from API: $e");
+    }
+    return null;
+  }
   
   @override
   Stream<InvitationType> watchInvitations() {
@@ -24,11 +49,8 @@ class AutomationRepositoryImp implements IAutomationRepository {
         .asyncMap((event) async {
           try {
             final notification = event.notification;
-            final userResponse = await _vrcApi.rawApi.getUsersApi()
-                .getUser(userId: notification.senderUserId);
+            final userData = await _getEnrichedUser(notification.senderUserId);
 
-            var userData = userResponse.data;
-            
             final avatarUrl = userData == null
               ? ''
               : VrcImageMapper.mapAvatarUrl(
