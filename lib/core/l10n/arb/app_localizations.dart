@@ -1003,6 +1003,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load roles'**
   String get errorLoadingRoles;
+
+  /// Placeholder text displayed when a profile has an empty criteria rules list.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules added yet.\nClick \'Add role rule\' to start.'**
+  String get noRulesAdded;
+
+  /// Text rendered when the message database fails to load inside criteria selectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading messages'**
+  String get errorLoadingMessages;
+
+  /// Text representing the automated accept action in rule dropdowns.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get ruleActionAccept;
+
+  /// Text representing the automated reject action in rule dropdowns.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get ruleActionReject;
 }
 
 class _AppLocalizationsDelegate

@@ -504,4 +504,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLoadingRoles => 'Failed to load roles';
+
+  @override
+  String get noRulesAdded =>
+      'No rules added yet.\nClick \'Add role rule\' to start.';
+
+  @override
+  String get errorLoadingMessages => 'Error loading messages';
+
+  @override
+  String get ruleActionAccept => 'Accept';
+
+  @override
+  String get ruleActionReject => 'Reject';
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vrcma/core/l10n/ll10n_extension.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 
 class OtpForm extends StatefulWidget {
   final bool isLoading;

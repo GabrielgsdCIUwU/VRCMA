@@ -190,5 +190,11 @@
 
   "sectionVrcTagsReadOnly": "Etiquetas de VRChat (solo lectura)",
 
-  "errorLoadingRoles": "No se pudieron cargar los roles"
+  "errorLoadingRoles": "No se pudieron cargar los roles",
+
+  "noRulesAdded": "Aún no se han añadido reglas.\nHaz clic en 'Añadir regla de rol' para comenzar.",
+  "errorLoadingMessages": "Error al cargar los mensajes",
+
+  "ruleActionAccept": "Aceptar",
+  "ruleActionReject": "Rechazar"
 }

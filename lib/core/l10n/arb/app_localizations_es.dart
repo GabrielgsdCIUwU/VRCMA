@@ -505,4 +505,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorLoadingRoles => 'No se pudieron cargar los roles';
+
+  @override
+  String get noRulesAdded =>
+      'Aún no se han añadido reglas.\nHaz clic en \'Añadir regla de rol\' para comenzar.';
+
+  @override
+  String get errorLoadingMessages => 'Error al cargar los mensajes';
+
+  @override
+  String get ruleActionAccept => 'Aceptar';
+
+  @override
+  String get ruleActionReject => 'Rechazar';
 }

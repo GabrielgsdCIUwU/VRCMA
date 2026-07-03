@@ -863,5 +863,25 @@
   "errorLoadingRoles": "Failed to load roles",
   "@errorLoadingRoles": {
     "description": "Error message displayed when local roles cannot be loaded from storage."
+  },
+
+  "noRulesAdded": "No rules added yet.\nClick 'Add role rule' to start.",
+  "@noRulesAdded": {
+    "description": "Placeholder text displayed when a profile has an empty criteria rules list."
+  },
+
+  "errorLoadingMessages": "Error loading messages",
+  "@errorLoadingMessages": {
+    "description": "Text rendered when the message database fails to load inside criteria selectors."
+  },
+
+  "ruleActionAccept": "Accept",
+  "@ruleActionAccept": {
+    "description": "Text representing the automated accept action in rule dropdowns."
+  },
+
+  "ruleActionReject": "Reject",
+  "@ruleActionReject": {
+    "description": "Text representing the automated reject action in rule dropdowns."
   }
 }
