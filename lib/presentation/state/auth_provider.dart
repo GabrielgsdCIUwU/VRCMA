@@ -16,6 +16,30 @@ import 'package:vrcma/core/di/network_provider.dart';
 //! Run: dart run build_runner build
 part 'auth_provider.g.dart';
 
+/// Keeps track of whether the application has performed its initial
+/// check for an existing active user session.
+@riverpod
+class InitialSessionChecked extends _$InitialSessionChecked {
+  @override
+  bool build() => false;
+
+  void setChecked() {
+    state = true;
+  }
+}
+
+/// Holds the state of whether the OTP form is currently being displayed.
+/// This prevents losing the view state when transitioning or switching apps.
+@riverpod
+class ShowOtpView extends _$ShowOtpView {
+  @override
+  bool build() => false;
+
+  void set(bool value) {
+    state = value;
+  }
+}
+
 /// Provider for the VRChat API client.
 /// It generates [vrcApiProvider].
 @riverpod
@@ -64,6 +88,8 @@ class AuthState extends _$AuthState {
       }
     }catch (e) {
       return null;
+    } finally {
+      ref.read(initialSessionCheckedProvider.notifier).setChecked();
     }
     return null;
   }

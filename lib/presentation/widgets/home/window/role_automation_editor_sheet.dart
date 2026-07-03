@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/di/usecase_provider.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
@@ -28,13 +29,13 @@ class RoleAutomationEditorSheet extends ConsumerWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(automation == null ? "New Automation" : "Edit Automation"),
+          title: Text(automation == null ? context.l10n.newAutomationTitle : context.l10n.editAutomationTitle),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilledButton.icon(
                 icon: const Icon(Icons.save),
-                label: const Text("Save"),
+                label: Text(context.l10n.btnSave),
                 style: FilledButton.styleFrom(
                   backgroundColor: notifier.isValid && notifier.hasChanges ? context.vrcColors.success : null,
                   foregroundColor: context.colorScheme.onPrimary,
@@ -105,7 +106,7 @@ class _TriggerConfigSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("CONDITION", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+        Text(context.l10n.sectionCondition.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
           color: context.colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.bold,
           letterSpacing: 1.2,
@@ -113,16 +114,16 @@ class _TriggerConfigSection extends StatelessWidget {
         const SizedBox(height: 16),
         
         _SelectableCard(
-          title: "On Any New Friend",
-          subtitle: "Assign default roles to every new friend.",
+          title: context.l10n.triggerNewFriendTitle,
+          subtitle: context.l10n.triggerNewFriendDesc,
           icon: Icons.person_add_alt_1,
           isSelected: state.trigger == AutomationTrigger.newFriend,
           onTap: () => notifier.updateTrigger(AutomationTrigger.newFriend),
         ),
         const SizedBox(height: 8),
         _SelectableCard(
-          title: "Has Specific Tag",
-          subtitle: "Assign roles only if they have a certain tag in their profile.",
+          title: context.l10n.triggerHasTagTitle,
+          subtitle: context.l10n.triggerNewFriendDesc,
           icon: Icons.local_offer_outlined,
           isSelected: state.trigger == AutomationTrigger.hasTag,
           onTap: () => notifier.updateTrigger(AutomationTrigger.hasTag),
@@ -133,7 +134,7 @@ class _TriggerConfigSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
-              Text("TARGET TAG", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              Text(context.l10n.targetTagHeader.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: context.colorScheme.primary,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2
@@ -158,7 +159,7 @@ class _TriggerConfigSection extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                state.targetValue == null ? "Required" : "Selected Tag",
+                                state.targetValue == null ? context.l10n.tagRequired : context.l10n.tagSelected,
                                 style: TextStyle(
                                     color: context.colorScheme.primary,
                                     fontSize: 12,
@@ -166,7 +167,7 @@ class _TriggerConfigSection extends StatelessWidget {
                                 )
                             ),
                             Text(
-                                friendlyTagName ?? "Tap to select a tag...",
+                                friendlyTagName ?? context.l10n.tagSelectPlaceholder,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -191,7 +192,7 @@ class _TriggerConfigSection extends StatelessWidget {
     showGenericSearchSheet<VrcTag>(
       context: context,
       items: VrcTag.allTags,
-      searchHint: "Search VRChat tags...",
+      searchHint: context.l10n.searchTagsVrcHint,
       searchableText: (tag) => "${tag.name} ${tag.id} ${tag.description}",
       itemBuilder: (tag) => ListTile(
         leading: tag.category.getIcon(context),
@@ -224,14 +225,14 @@ class _RolesConfigSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("ASSIGN ROLES", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            Text(context.l10n.sectionAssignRoles, style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: context.colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
             )),
             FilledButton.tonalIcon(
               icon: const Icon(Icons.add, size: 18),
-              label: const Text("Add Role"),
+              label: Text(context.l10n.btnAddRole),
               onPressed: () => _showRoleSelectionDialog(context),
             ),
           ],
@@ -251,7 +252,7 @@ class _RolesConfigSection extends StatelessWidget {
               children: [
                 Icon(Icons.warning_amber_rounded, color: context.colorScheme.error, size: 32),
                 const SizedBox(height: 8),
-                Text("No roles selected. You must assign at least one role.", style: TextStyle(color: context.colorScheme.error)),
+                Text(context.l10n.noRolesSelectedWarning, style: TextStyle(color: context.colorScheme.error)),
               ],
             ),
           )
@@ -274,7 +275,7 @@ class _RolesConfigSection extends StatelessWidget {
                 trailing: IconButton(
                   icon: Icon(Icons.delete_outline, color: context.colorScheme.error),
                   onPressed: () => notifier.removeRole(role),
-                  tooltip: "Remove Role",
+                  tooltip: context.l10n.tooltipRemoveRule,
                 ),
               );
             },
@@ -293,7 +294,7 @@ class _RolesConfigSection extends StatelessWidget {
     showGenericSearchSheet<Role>(
       context: context,
       items: availableRoles,
-      searchHint: "Search local roles to assign...",
+      searchHint: context.l10n.searchLocalRolesHint,
       searchableText: (role) => role.name,
       itemBuilder: (role) => ListTile(
         leading: Icon(Icons.label, color: Theme.of(context).colorScheme.primary),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
@@ -25,7 +26,7 @@ class SlotCard  extends StatelessWidget {
          crossAxisAlignment: CrossAxisAlignment.start,
          children: [
            Text(
-             "SLOT ${index.toString().padLeft(2, '0')}",
+             context.l10n.messageSlotLabel(index).toUpperCase(),
              style: TextStyle(fontSize: 9, color: isEmpty ? context.colorScheme.onSurfaceVariant : context.colorScheme.primary, fontWeight: FontWeight.bold),
            ),
            const SizedBox(height: 4),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 
 typedef SearchableTextCallback<T> = String Function(T item);
@@ -11,7 +12,7 @@ void showGenericSearchSheet<T>({
   required SearchableTextCallback<T> searchableText,
   required ItemBuilderCallback<T> itemBuilder,
   required OnItemSelectedCallback<T> onSelected,
-  String searchHint = "Search...",
+  String? searchHint,
   Widget? headerOption,
 }) {
   showModalBottomSheet(
@@ -47,7 +48,7 @@ class _GenericSearchContent<T> extends StatefulWidget {
   final SearchableTextCallback<T> searchableText;
   final ItemBuilderCallback<T> itemBuilder;
   final OnItemSelectedCallback<T> onSelected;
-  final String searchHint;
+  final String? searchHint;
   final Widget? headerOption;
 
   const _GenericSearchContent({
@@ -55,7 +56,7 @@ class _GenericSearchContent<T> extends StatefulWidget {
     required this.searchableText,
     required this.itemBuilder,
     required this.onSelected,
-    required this.searchHint,
+    this.searchHint,
     this.headerOption,
   });
 
@@ -85,7 +86,7 @@ class _GenericSearchContentState<T> extends State<_GenericSearchContent<T>> {
           child: TextField(
             autofocus: true,
             decoration: InputDecoration(
-              hintText: widget.searchHint,
+              hintText: widget.searchHint ?? context.l10n.searchPlaceholder,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: _query.isNotEmpty
                   ? IconButton(icon: const Icon(Icons.clear), onPressed: () => setState(() => _query = ""))
@@ -108,9 +109,9 @@ class _GenericSearchContentState<T> extends State<_GenericSearchContent<T>> {
                 child: widget.itemBuilder(item),
               )),
               if (filtered.isEmpty && _query.isNotEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(32),
-                  child: Center(child: Text("No items match your search")),
+                  child: Center(child: Text(context.l10n.noItemsMatchSearch)),
                 ),
             ],
           ),
