@@ -25,3 +25,36 @@ abstract class IncomingUserEvent extends VrcAutomationEvent {
   @override
   List<Object?> get props => [id, senderId, senderName, senderTags, avatarUrl];
 }
+
+/// When someone wants to join your world.
+class RequestInviteEvent extends IncomingUserEvent {
+  const RequestInviteEvent({
+    required super.id,
+    required super.senderId,
+    required super.senderName,
+    required super.senderTags,
+    required super.avatarUrl,
+  });
+}
+
+/// When someone invites you to join their world.
+class InviteReceivedEvent extends IncomingUserEvent {
+  const InviteReceivedEvent({
+    required super.id,
+    required super.senderId,
+    required super.senderName,
+    required super.senderTags,
+    required super.avatarUrl,
+  });
+}
+
+/// When someone sends you a friend request.
+class FriendRequestReceivedEvent extends IncomingUserEvent {
+  const FriendRequestReceivedEvent({
+    required super.id,
+    required super.senderId,
+    required super.senderName,
+    required super.senderTags,
+    required super.avatarUrl,
+  });
+}
