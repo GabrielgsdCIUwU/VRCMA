@@ -200,5 +200,8 @@
 
   "searchPlaceholder": "Buscar...",
   "noItemsMatchSearch": "Ningún elemento coincide con la búsqueda",
-  "btnOk": "Aceptar"
+  "btnOk": "Aceptar",
+  
+  "tooltipShowPassword": "Mostrar contraseña",
+  "tooltipHidePassword": "Ocultar contraseña"
 }

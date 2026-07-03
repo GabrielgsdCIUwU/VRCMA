@@ -526,4 +526,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get btnOk => 'OK';
+
+  @override
+  String get tooltipShowPassword => 'Show password';
+
+  @override
+  String get tooltipHidePassword => 'Hide password';
 }

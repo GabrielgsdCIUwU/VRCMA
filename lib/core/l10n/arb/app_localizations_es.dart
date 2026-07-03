@@ -527,4 +527,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get btnOk => 'Aceptar';
+
+  @override
+  String get tooltipShowPassword => 'Mostrar contraseña';
+
+  @override
+  String get tooltipHidePassword => 'Ocultar contraseña';
 }

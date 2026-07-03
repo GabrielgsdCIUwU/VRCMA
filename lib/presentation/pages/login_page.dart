@@ -8,62 +8,60 @@ import 'package:vrcma/presentation/widgets/auth_header.dart';
 import 'package:vrcma/presentation/widgets/error_extension.dart';
 import 'package:vrcma/presentation/widgets/login_form.dart';
 import 'package:vrcma/presentation/widgets/otp_form.dart';
-class LoginPage  extends ConsumerStatefulWidget{
+
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final showOtpView = ref.watch(showOtpViewProvider);
 
-class _LoginPageState extends ConsumerState<LoginPage> {
-  bool _showOtpView = false;
+    final bool is2FARequired = authState.hasError && authState.error is TwoFactorRequiredFailure;
+    final bool showOtp = showOtpView || is2FARequired;
 
-  @override
-  Widget build(BuildContext context) {
-   final authState = ref.watch(authStateProvider);
+    ref.listen(authStateProvider, (prev, next) {
+      next.whenOrNull(
+        error: (error, _) {
+          if (error is TwoFactorRequiredFailure) {
+            ref.read(showOtpViewProvider.notifier).set(true);
+          } else if (error is Failure) {
+            ref.read(snackbarServiceProvider).show(error.toLocalizedString(context));
+          }
+        },
+        data: (user) {
+          if (user != null) {
+            ref.read(snackbarServiceProvider).show(context.l10n.loginSuccess);
+            ref.read(showOtpViewProvider.notifier).set(false);
+          }
+        },
+      );
+    });
 
-   final bool is2FARequired = authState.hasError && authState.error is TwoFactorRequiredFailure;
-   final bool showOtp = _showOtpView || is2FARequired;
-
-   ref.listen(authStateProvider, (prev, next) {
-     next.whenOrNull(
-       error: (error, _) {
-         if (error is TwoFactorRequiredFailure) {
-           setState(() => _showOtpView = true);
-         } else if (error is Failure) {
-           ref.read(snackbarServiceProvider).show(error.toLocalizedString(context));
-         }
-       },
-       data: (user) {
-         if (user != null) ref.read(snackbarServiceProvider).show(context.l10n.loginSuccess);
-       },
-     );
-   });
-
-   return Scaffold(
-     body: Center(
-       child: SingleChildScrollView(
-         padding: const EdgeInsets.all(24),
-         child: Column(
-           children: [
-             const AuthHeader(),
-             const SizedBox(height: 40),
-
-             if (!showOtp)
-               LoginForm(
-                   isLoading: authState.isLoading,
-                   onLogin: (user, pass) => ref.read(authStateProvider.notifier)
-                    .login(user, pass),
-               ) else
-                 OtpForm(
-                     isLoading: authState.isLoading,
-                     onVerify: (code) => ref.read(authStateProvider.notifier).verifyOtp(code),
-                     onCancel: () => setState(() => _showOtpView = false)
-                 ),
-           ],
-         ),
-       ),
-     )
-   );
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const AuthHeader(),
+              const SizedBox(height: 40),
+              
+              if (!showOtp)
+                LoginForm(
+                  isLoading: authState.isLoading,
+                  onLogin: (user, pass) => ref.read(authStateProvider.notifier).login(user, pass),
+                )
+              else
+                OtpForm(
+                  isLoading: authState.isLoading,
+                  onVerify: (code) => ref.read(authStateProvider.notifier).verifyOtp(code),
+                  onCancel: () => ref.read(showOtpViewProvider.notifier).set(false),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

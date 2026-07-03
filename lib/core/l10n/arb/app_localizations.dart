@@ -1045,6 +1045,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get btnOk;
+
+  /// Tooltip shown on the visibility icon to reveal the password in plain text.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get tooltipShowPassword;
+
+  /// Tooltip shown on the visibility icon to hide the password.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get tooltipHidePassword;
 }
 
 class _AppLocalizationsDelegate

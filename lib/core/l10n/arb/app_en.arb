@@ -898,5 +898,15 @@
   "btnOk": "OK",
   "@btnOk": {
     "description": "Standard confirmation button label used to acknowledge and close dialogs or alerts."
+  },
+  
+  "tooltipShowPassword": "Show password",
+  "@tooltipShowPassword": {
+    "description": "Tooltip shown on the visibility icon to reveal the password in plain text."
+  },
+
+  "tooltipHidePassword": "Hide password",
+  "@tooltipHidePassword": {
+    "description": "Tooltip shown on the visibility icon to hide the password."
   }
 }
