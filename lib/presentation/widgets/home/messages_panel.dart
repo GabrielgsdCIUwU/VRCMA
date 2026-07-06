@@ -84,8 +84,8 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
   Widget build(BuildContext context) {
     final assigned = assignedMessages;
     final unassigned = unassignedMessages;
-    
-    return Container(
+
+    return Material(
       color: context.colorScheme.surfaceContainer,
       child: CustomScrollView(
         slivers: [
@@ -99,25 +99,25 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
             ),
           ),
           if (isSlotsExpanded)
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 180,
-                mainAxisExtent: 80,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                  (context, i) {
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 180,
+                  mainAxisExtent: 80,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                      (context, i) {
                     final msg = widget.messages.firstWhereOrNull((m) => m.slotIndex == i);
                     return SlotCard(index: i+1, message: msg);
                   },
-                childCount: 12,
+                  childCount: 12,
+                ),
               ),
             ),
-          ),
-          
+
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
           const SliverToBoxAdapter(child: Divider(height: 1)),
           
@@ -134,17 +134,17 @@ class _CategoryWorkspaceState extends State<_CategoryWorkspace> {
           
           if (isLibraryExpanded) ...[
             if (widget.messages.isEmpty)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(child: Text(context.l10n.libraryEmpty, style: TextStyle(color: context.colorScheme.onSurfaceVariant))),
-              ),
-            )
-          else ...[
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: Center(child: Text(context.l10n.libraryEmpty, style: TextStyle(color: context.colorScheme.onSurfaceVariant))),
+                ),
+              )
+            else ...[
               if (unassigned.isNotEmpty) ...[
                 SliverToBoxAdapter(
                   child: CollapsibleHeader.secondary(
-                    title: context.l10n.unassignedMessagesHeader, 
+                    title: context.l10n.unassignedMessagesHeader,
                     count: unassigned.length,
                     isExpanded: isUnassignedExpanded,
                     onToggle: () => setState(() => isUnassignedExpanded = !isUnassignedExpanded),
@@ -210,11 +210,11 @@ class CollapsibleHeader extends StatelessWidget {
   });
   
   factory CollapsibleHeader.primary({
-   required String title,
-   required IconData icon,
-   required bool isExpanded,
-   required VoidCallback onToggle,
-   Widget? action, 
+    required String title,
+    required IconData icon,
+    required bool isExpanded,
+    required VoidCallback onToggle,
+    Widget? action,
   }) {
     return CollapsibleHeader(
       level: HeaderLevel.primary,
