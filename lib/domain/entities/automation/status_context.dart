@@ -11,6 +11,7 @@ class StatusContext extends Equatable {
   final bool isCharging;
   final DateTime timestamp;
   final List<String> presentFriendIds;
+  final List<String> presentFriendNames;
 
   const StatusContext({
     required this.worldName,
@@ -21,11 +22,12 @@ class StatusContext extends Equatable {
     required this.isCharging,
     required this.timestamp,
     this.presentFriendIds = const [],
+    this.presentFriendNames = const [],
   });
 
   @override
   List<Object?> get props => [
     worldName, worldId, population, instanceType,
-    batteryLevel, isCharging, timestamp, presentFriendIds
+    batteryLevel, isCharging, timestamp, presentFriendIds, presentFriendNames
   ];
 }
