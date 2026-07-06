@@ -533,4 +533,26 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tooltipHidePassword => 'Ocultar contraseña';
+
+  @override
+  String get logNoRuleMatched => 'No se aplicó ninguna regla';
+
+  @override
+  String logRuleMatched(String roleName) {
+    return 'Regla aplicada para $roleName';
+  }
+
+  @override
+  String get bgNotificationTitle => 'VRCMA en ejecución';
+
+  @override
+  String get bgInitialNotificationTitle => 'Automatización de VRCMA';
+
+  @override
+  String get bgInitialNotificationContent => 'Ejecutándose en segundo plano...';
+
+  @override
+  String bgNotificationContent(String senderName) {
+    return 'Último: $senderName';
+  }
 }

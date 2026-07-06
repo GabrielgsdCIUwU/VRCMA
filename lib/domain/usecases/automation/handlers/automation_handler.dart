@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:vrcma/core/l10n/arb/app_localizations.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
@@ -26,7 +23,6 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
   final IProfileRepository profileRepository;
   final ILogRepository logRepository;
   final ProcessInvitationUseCase useCase;
-  final AppLocalizations l10n;
 
   BaseIncomingUserEventHandler({
     required this.automationRepository,
@@ -34,7 +30,6 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
     required this.profileRepository,
     required this.logRepository,
     required this.useCase,
-    required this.l10n,
   });
 
   Future<FilterProfile?> getActiveProfile() async {
@@ -77,7 +72,6 @@ class InvitationAutomationHandler extends BaseIncomingUserEventHandler<IncomingU
     required super.profileRepository,
     required super.logRepository,
     required super.useCase,
-    required super.l10n,
     required this.currentUserId,
     required this.slotManager,
   });
@@ -169,7 +163,6 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
     required super.profileRepository,
     required super.logRepository,
     required super.useCase,
-    required super.l10n,
   });
 
   @override

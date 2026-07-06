@@ -5,6 +5,7 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:vrcma/presentation/widgets/home/common/automation_log_ui_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
 class LogsPanel extends ConsumerWidget {
@@ -87,8 +88,8 @@ class _LogTile extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final isAccepted = log.action == 'ACCEPTED';
-    final isInvite = log.invitationType == 'INVITE';
+    final isAccepted = log.action == LogActionOutcome.accepted;
+    final isInvite = log.invitationType == LogEventType.invite;
     
     final typeColor = isInvite ? context.vrcColors.invite : context.vrcColors.request;
     
@@ -131,7 +132,7 @@ class _LogTile extends StatelessWidget {
                const SizedBox(height: 8),
                Expanded(
                  child: Text(
-                   log.appliedRule,
+                   log.getLocalizedAppliedRule(context),
                    style: TextStyle(color: context.colorScheme.onSurfaceVariant, fontSize: 12),
                    overflow: TextOverflow.ellipsis,
                  ),

@@ -1057,6 +1057,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide password'**
   String get tooltipHidePassword;
+
+  /// Log message written when no automation rule matches the evaluated item or profile.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching rule applied'**
+  String get logNoRuleMatched;
+
+  /// Log message prefix written when an automation rule matches an evaluated item or profile
+  ///
+  /// In en, this message translates to:
+  /// **'Matched rule for {roleName}'**
+  String logRuleMatched(String roleName);
+
+  /// Title displayed in the Android foreground service notification while the app is processing events in the background.
+  ///
+  /// In en, this message translates to:
+  /// **'VRCMA Processed'**
+  String get bgNotificationTitle;
+
+  /// Title displayed in the Android foreground service notification when the background automation service starts.
+  ///
+  /// In en, this message translates to:
+  /// **'VRCMA Automation'**
+  String get bgInitialNotificationTitle;
+
+  /// Initial foreground service notification content shown while the background automation service is starting or waiting for events.
+  ///
+  /// In en, this message translates to:
+  /// **'Running in background...'**
+  String get bgInitialNotificationContent;
+
+  /// Foreground service notification content displaying the name of the most recently processed user.
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {senderName}'**
+  String bgNotificationContent(String senderName);
 }
 
 class _AppLocalizationsDelegate
