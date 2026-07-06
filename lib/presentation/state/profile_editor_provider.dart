@@ -86,7 +86,6 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
   }
   
   void reorderRules(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) newIndex -= 1;
     final newRules = List<ProfileRule>.from(state.rules);
     final item = newRules.removeAt(oldIndex);
     newRules.insert(newIndex, item);

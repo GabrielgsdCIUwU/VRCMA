@@ -405,7 +405,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     return ReorderableListView.builder(
       padding: const EdgeInsets.only(bottom: 80, top: 8),
       itemCount: currentProfile.rules.length,
-      onReorder: (oldIndex, newIndex) {
+      onReorderItem: (oldIndex, newIndex) {
        ref.read(profileEditorProvider(widget.profile).notifier).reorderRules(oldIndex, newIndex);
       },
       itemBuilder: (context, index) {
