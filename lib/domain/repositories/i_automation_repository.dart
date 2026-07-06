@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:vrcma/core/errors/failure.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
@@ -34,5 +35,11 @@ abstract class IAutomationRepository {
   
   /// Get all message slots by type
   Future<List<VrcRemoteMessage>> getRemoteVrcMessages(String userId, VrcMessageType type);
+
+  /// Updates the remote VRChat user status and status description.
+  Future<Either<Failure, void>> updateRemoteStatus({
+    required StatusType status,
+    required String description,
+  });
 }
 
