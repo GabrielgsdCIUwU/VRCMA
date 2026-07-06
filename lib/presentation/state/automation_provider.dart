@@ -49,7 +49,7 @@ class AutomationState extends _$AutomationState {
     final automationRepo = await ref.watch(automationRepositoryProvider.future);
     final processor = await ref.watch(automationProcessorProvider.future);
     
-    _vrcSubscription = automationRepo.watchInvitations().listen((invitation) async {
+    _vrcSubscription = automationRepo.watchAutomationEvents().listen((invitation) async {
       try {
         await processor.process(invitation);  
         ref.invalidate(automationLogsProvider);

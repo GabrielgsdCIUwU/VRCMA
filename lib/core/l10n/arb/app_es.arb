@@ -203,5 +203,13 @@
   "btnOk": "Aceptar",
   
   "tooltipShowPassword": "Mostrar contraseña",
-  "tooltipHidePassword": "Ocultar contraseña"
+  "tooltipHidePassword": "Ocultar contraseña",
+
+  "logNoRuleMatched": "No se aplicó ninguna regla",
+  "logRuleMatched": "Regla aplicada para {roleName}",
+
+  "bgInitialNotificationTitle": "Automatización de VRCMA",
+  "bgInitialNotificationContent": "Ejecutándose en segundo plano...",
+  "bgNotificationTitle": "VRCMA en ejecución",
+  "bgNotificationContent": "Último: {senderName}"
 }

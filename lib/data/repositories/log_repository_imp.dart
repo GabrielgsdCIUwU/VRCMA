@@ -58,15 +58,24 @@ class LogRepositoryImp implements ILogRepository {
       LIMIT ? OFFSET ?
     ''', [...whereArgs, limit, offset]);
     
-    return maps.map((m) => AutomationLog(
-      id: m['id'],
-      senderId: m['user_id'],
-      timestamp: DateTime.parse(m['timestamp']),
-      senderName: m['display_name'],
-      senderAvatarUrl: m['avatar_url'] ?? '',
-      invitationType: m['invitation_type'],
-      action: m['action'],
-      appliedRule: m['applied_rule'] ?? 'Default Rule',
-    )).toList();
+    return maps.map((m) {
+      final rawAppliedRule = m['applied_rule'] as String? ?? '';
+      
+      final parts = rawAppliedRule.split(':');
+      final profileName = parts.isNotEmpty ? parts[0] : 'Default Profile';
+      final matchedRoleName = parts.length > 1 ? parts[1] : null;
+
+      return AutomationLog(
+        id: m['id'],
+        senderId: m['user_id'],
+        timestamp: DateTime.parse(m['timestamp']),
+        senderName: m['display_name'],
+        senderAvatarUrl: m['avatar_url'] ?? '',
+        invitationType: LogEventType.fromString(m['invitation_type'] as String? ?? 'INVITE'),
+        action: LogActionOutcome.fromString(m['action'] as String? ?? 'IGNORED'),
+        profileName: profileName,
+        matchedRoleName: matchedRoleName,
+    );
+    }).toList();
   }
 }

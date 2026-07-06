@@ -3,18 +3,19 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
-import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
-import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/data/transformers/vrc_event_transformer.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
+  final List<VrcEventTransformer> _transformers;
 
   final Map<String, (User, DateTime)> _userCache = {};
   static const Duration _cacheExpirationLimit = Duration(hours: 1);
   
-  AutomationRepositoryImp(this._vrcApi);
+  AutomationRepositoryImp(this._vrcApi, this._transformers);
 
   Future<User?> _getEnrichedUser(String userId) async {
     final now = DateTime.now();
@@ -39,50 +40,21 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Stream<InvitationType> watchInvitations() {
+  Stream<VrcAutomationEvent> watchAutomationEvents() {
     return _vrcApi.streaming.vrcEventStream
-        .where((event) => event is NotificationReceivedEvent)
-        .cast<NotificationReceivedEvent>()
-        .where((event) =>
-          event.notification.type == NotificationType.invite ||
-          event.notification.type == NotificationType.requestInvite)
-        .asyncMap((event) async {
-          try {
-            final notification = event.notification;
-            final userData = await _getEnrichedUser(notification.senderUserId);
-
-            final avatarUrl = userData == null
-              ? ''
-              : VrcImageMapper.mapAvatarUrl(
-                profilePic: userData.profilePicOverrideThumbnail,
-                thumbnail: userData.currentAvatarThumbnailImageUrl,
-                currentAvatar: userData.currentAvatarImageUrl,
-              );
-
-            if (notification.type == NotificationType.requestInvite) {
-              return RequestInvite(
-                id: notification.id,
-                senderId: notification.senderUserId,
-                senderName: userData?.displayName ?? notification.senderUserId,
-                senderTags: userData?.tags ?? [],
-                avatarUrl: avatarUrl,
-              );
+        .asyncMap((vrcEvent) async {
+          for (final transfromer in _transformers) {
+            if (transfromer.canHandle(vrcEvent)) {
+              return await transfromer.transform(vrcEvent, _getEnrichedUser);
             }
-            return InviteReceived(
-              id: notification.id,
-              senderId: notification.senderUserId,
-              senderName: userData?.displayName ?? notification.senderUserId,
-              senderTags: userData?.tags ?? [],
-              avatarUrl: avatarUrl,
-            );
-          } catch (e) {
-            debugPrint("DEBUG: Error asyncMap: $e");
-            rethrow;
           }
-    });
+          return null;
+        })
+        .where((event) => event != null)
+        .cast<VrcAutomationEvent>();
   }
   @override
-  Future<void> acceptRequestInvitation(RequestInvite requestInvite, int? slot) async {
+  Future<void> acceptRequestInvitation(RequestInviteEvent requestInvite, int? slot) async {
     await _safeApiCall(() async {
       final response = await _vrcApi.rawApi.getAuthenticationApi().getCurrentUser();
       final currentUser = response.data;
@@ -109,13 +81,20 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Future<void> acceptInvitation(InviteReceived invite) async {
+  Future<void> acceptInvitation(InviteReceivedEvent invite) async {
     //! VRChat doesn't allow to accept invitations by API, so we just dismiss them for now.
     await dismissNotification(invite);
   }
+
+  @override
+  Future<void> acceptFriendRequest(FriendRequestReceivedEvent request) async {
+    await _safeApiCall(() async {
+      await _vrcApi.rawApi.getNotificationsApi().acceptFriendRequest(notificationId: request.id);
+    });
+  }
   
   @override
-  Future<void> rejectNotificationWithMessage(InvitationType notification, int slot) async {
+  Future<void> rejectNotificationWithMessage(IncomingUserEvent notification, int slot) async {
     await _safeApiCall(() async {
       await _vrcApi.rawApi.getInviteApi().respondInvite(
           notificationId: notification.id,
@@ -125,7 +104,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Future<void> dismissNotification(InvitationType notification) async {
+  Future<void> dismissNotification(IncomingUserEvent notification) async {
     await _safeApiCall(() async {
       await _vrcApi.rawApi.getNotificationsApi().deleteNotification(
           notificationId: notification.id
