@@ -113,7 +113,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String dialogDeleteRoleContent(String roleName) {
-    return 'Are you sure you want to delete \'$roleName\'? \nThis will remove this role from all users and profiles.';
+    return 'Are you sure you want to delete $roleName? \nThis will remove this role from all users and profiles.';
   }
 
   @override
@@ -121,7 +121,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String dialogDeleteProfileContent(String profileName) {
-    return 'Are you sure you want to delete \'$profileName\'? This action cannot be undone.';
+    return 'Are you sure you want to delete $profileName? This action cannot be undone.';
   }
 
   @override
@@ -275,7 +275,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String slotPickerTitle(String content) {
-    return 'Assign \'$content\' to a Slot';
+    return 'Assign $content to a Slot';
   }
 
   @override
@@ -554,4 +554,97 @@ class AppLocalizationsEn extends AppLocalizations {
   String bgNotificationContent(String senderName) {
     return 'Last: $senderName';
   }
+
+  @override
+  String get sectionStatusAutomation => 'Status Automation';
+
+  @override
+  String get dialogNewStatusProfileTitle => 'New Status Profile';
+
+  @override
+  String get dialogNewStatusProfileLabel => 'Profile Name';
+
+  @override
+  String get editStatusProfileTitle => 'Edit Status Profile';
+
+  @override
+  String get sectionGeneralSettings => 'General Settings';
+
+  @override
+  String get inputStatusProfileName => 'Profile Name';
+
+  @override
+  String get inputFallbackStatus => 'Fallback Status';
+
+  @override
+  String get inputFallbackTemplate => 'Fallback Message Template';
+
+  @override
+  String get statusPriorityRulesCaption =>
+      'Use templates such as: In {{world}} ({{battery}}🔋)\nStatus rules are evaluated from top to bottom by priority.';
+
+  @override
+  String get sectionAutomationConditions => 'Automation Conditions';
+
+  @override
+  String get btnAddConditionRule => 'Add Condition Rule';
+
+  @override
+  String get noStatusRulesAdded =>
+      'No dynamic status rules configured.\nThis profile will always use the fallback configuration.';
+
+  @override
+  String get rulesReorderSubtitle => 'Rules (Drag to Reorder)';
+
+  @override
+  String get dialogNewStatusRuleTitle => 'New Status Rule';
+
+  @override
+  String get inputTriggerCondition => 'Trigger Condition';
+
+  @override
+  String get inputOperator => 'Operator';
+
+  @override
+  String get inputComparisonValue => 'Comparison Value';
+
+  @override
+  String get inputTargetStatus => 'Target Status';
+
+  @override
+  String get inputStatusMessageTemplate => 'Status Message Template';
+
+  @override
+  String get btnCreateRule => 'Create Rule';
+
+  @override
+  String statusProfileSubtitle(int count, String fallback) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rules',
+      one: '1 rule',
+    );
+    return '$_temp0, fallback: $fallback';
+  }
+
+  @override
+  String get tooltipEditStatusProfile => 'Edit Status Profile';
+
+  @override
+  String get dialogDeleteStatusProfileTitle => 'Delete Status Profile';
+
+  @override
+  String dialogDeleteStatusProfileContent(String name) {
+    return 'Are you sure you want to delete \'$name\'?';
+  }
+
+  @override
+  String get statusRuleComparisonHint => 'e.g. 5, Public, 30';
+
+  @override
+  String get statusMessageTemplateHint => 'e.g. In {{world}} with {{friends}}';
+
+  @override
+  String get statusRuleNoMessage => 'No Message';
 }

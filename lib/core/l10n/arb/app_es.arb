@@ -39,7 +39,7 @@
   "profileRulesCount": "{count} reglas de automatización",
 
   "dialogDeleteRoleTitle": "¿Eliminar rol?",
-  "dialogDeleteRoleContent": "¿Estás seguro de que deseas eliminar '{roleName}'?\nEsto eliminará este rol de todos los usuarios y perfiles.",
+  "dialogDeleteRoleContent": "¿Estás seguro de que deseas eliminar ''{roleName}''?\nEsto eliminará este rol de todos los usuarios y perfiles.",
 
   "dialogDeleteProfileTitle": "¿Eliminar perfil?",
   "dialogDeleteProfileContent": "¿Estás seguro de que deseas eliminar '{profileName}'? Esta acción no se puede deshacer.",
@@ -101,7 +101,7 @@
   "btnCreateMessage": "Crear Mensaje",
   "toastMessageAdded": "Mensaje de {type} añadido a la biblioteca",
   "messageSlotLabel": "Slot {index}",
-  "slotPickerTitle": "Asignar '{content}' a un Slot",
+  "slotPickerTitle": "Asignar ''{content}'' a un Slot",
   "slotPickerCategory": "Categoría: {category}",
 
   "friendsHeader": "Amigos",
@@ -192,7 +192,7 @@
 
   "errorLoadingRoles": "No se pudieron cargar los roles",
 
-  "noRulesAdded": "Aún no se han añadido reglas.\nHaz clic en 'Añadir regla de rol' para comenzar.",
+  "noRulesAdded": "Aún no se han añadido reglas.\nHaz clic en ''Añadir regla de rol'' para comenzar.",
   "errorLoadingMessages": "Error al cargar los mensajes",
 
   "ruleActionAccept": "Aceptar",
@@ -211,5 +211,34 @@
   "bgInitialNotificationTitle": "Automatización de VRCMA",
   "bgInitialNotificationContent": "Ejecutándose en segundo plano...",
   "bgNotificationTitle": "VRCMA en ejecución",
-  "bgNotificationContent": "Último: {senderName}"
+  "bgNotificationContent": "Último: {senderName}",
+
+  "sectionStatusAutomation": "Automatización de Estado",
+  "dialogNewStatusProfileTitle": "Nuevo Perfil de Estado",
+  "dialogNewStatusProfileLabel": "Nombre del Perfil",
+  "editStatusProfileTitle": "Editar Perfil de Estado",
+  "sectionGeneralSettings": "Configuración General",
+  "inputStatusProfileName": "Nombre del Perfil",
+  "inputFallbackStatus": "Estado Predeterminado",
+  "inputFallbackTemplate": "Plantilla de Mensaje Predeterminada",
+  "statusPriorityRulesCaption": "Usa plantillas como: En '{{world}} ({{battery}}'🔋)\nLas reglas de estado se evalúan de arriba hacia abajo según su prioridad.",
+  "sectionAutomationConditions": "Condiciones de Automatización",
+  "btnAddConditionRule": "Añadir Regla de Condición",
+  "noStatusRulesAdded": "No hay reglas dinámicas de estado configuradas.\nEste perfil siempre utilizará la configuración predeterminada.",
+  "rulesReorderSubtitle": "Reglas (Arrastra para Reordenar)",
+  "dialogNewStatusRuleTitle": "Nueva Regla de Estado",
+  "inputTriggerCondition": "Condición de Activación",
+  "inputOperator": "Operador",
+  "inputComparisonValue": "Valor de Comparación",
+  "inputTargetStatus": "Estado de Destino",
+  "inputStatusMessageTemplate": "Plantilla de Mensaje de Estado",
+  "btnCreateRule": "Crear Regla",
+
+  "statusProfileSubtitle": "{count, plural, =1{1 regla} other{{count} reglas}}, predeterminado: {fallback}",
+  "tooltipEditStatusProfile": "Editar Perfil de Estado",
+  "dialogDeleteStatusProfileTitle": "Eliminar Perfil de Estado",
+  "dialogDeleteStatusProfileContent": "¿Estás seguro de que quieres eliminar ''{name}''?",
+  "statusRuleComparisonHint": "p. ej. 5, Public, 30",
+  "statusMessageTemplateHint": "p. ej. En '{{world}} con {{friends}}'",
+  "statusRuleNoMessage": "Sin mensaje"
 }

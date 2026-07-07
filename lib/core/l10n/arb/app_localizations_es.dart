@@ -122,7 +122,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String dialogDeleteProfileContent(String profileName) {
-    return '¿Estás seguro de que deseas eliminar \'$profileName\'? Esta acción no se puede deshacer.';
+    return '¿Estás seguro de que deseas eliminar {profileName}? Esta acción no se puede deshacer.';
   }
 
   @override
@@ -555,4 +555,97 @@ class AppLocalizationsEs extends AppLocalizations {
   String bgNotificationContent(String senderName) {
     return 'Último: $senderName';
   }
+
+  @override
+  String get sectionStatusAutomation => 'Automatización de Estado';
+
+  @override
+  String get dialogNewStatusProfileTitle => 'Nuevo Perfil de Estado';
+
+  @override
+  String get dialogNewStatusProfileLabel => 'Nombre del Perfil';
+
+  @override
+  String get editStatusProfileTitle => 'Editar Perfil de Estado';
+
+  @override
+  String get sectionGeneralSettings => 'Configuración General';
+
+  @override
+  String get inputStatusProfileName => 'Nombre del Perfil';
+
+  @override
+  String get inputFallbackStatus => 'Estado Predeterminado';
+
+  @override
+  String get inputFallbackTemplate => 'Plantilla de Mensaje Predeterminada';
+
+  @override
+  String get statusPriorityRulesCaption =>
+      'Usa plantillas como: En {{world}} ({{battery}}🔋)\nLas reglas de estado se evalúan de arriba hacia abajo según su prioridad.';
+
+  @override
+  String get sectionAutomationConditions => 'Condiciones de Automatización';
+
+  @override
+  String get btnAddConditionRule => 'Añadir Regla de Condición';
+
+  @override
+  String get noStatusRulesAdded =>
+      'No hay reglas dinámicas de estado configuradas.\nEste perfil siempre utilizará la configuración predeterminada.';
+
+  @override
+  String get rulesReorderSubtitle => 'Reglas (Arrastra para Reordenar)';
+
+  @override
+  String get dialogNewStatusRuleTitle => 'Nueva Regla de Estado';
+
+  @override
+  String get inputTriggerCondition => 'Condición de Activación';
+
+  @override
+  String get inputOperator => 'Operador';
+
+  @override
+  String get inputComparisonValue => 'Valor de Comparación';
+
+  @override
+  String get inputTargetStatus => 'Estado de Destino';
+
+  @override
+  String get inputStatusMessageTemplate => 'Plantilla de Mensaje de Estado';
+
+  @override
+  String get btnCreateRule => 'Crear Regla';
+
+  @override
+  String statusProfileSubtitle(int count, String fallback) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reglas',
+      one: '1 regla',
+    );
+    return '$_temp0, predeterminado: $fallback';
+  }
+
+  @override
+  String get tooltipEditStatusProfile => 'Editar Perfil de Estado';
+
+  @override
+  String get dialogDeleteStatusProfileTitle => 'Eliminar Perfil de Estado';
+
+  @override
+  String dialogDeleteStatusProfileContent(String name) {
+    return '¿Estás seguro de que quieres eliminar \'$name\'?';
+  }
+
+  @override
+  String get statusRuleComparisonHint => 'p. ej. 5, Public, 30';
+
+  @override
+  String get statusMessageTemplateHint => 'p. ej. En {{world}} con {{friends}}';
+
+  @override
+  String get statusRuleNoMessage => 'Sin mensaje';
 }

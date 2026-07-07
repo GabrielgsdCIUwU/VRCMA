@@ -293,7 +293,7 @@ abstract class AppLocalizations {
   /// Warning reminding the user of the consequences of role deletion.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete \'{roleName}\'? \nThis will remove this role from all users and profiles.'**
+  /// **'Are you sure you want to delete {roleName}? \nThis will remove this role from all users and profiles.'**
   String dialogDeleteRoleContent(String roleName);
 
   /// Header title for the profile removal confirmation dialog.
@@ -305,7 +305,7 @@ abstract class AppLocalizations {
   /// Warning informing the user that profile deletion is permanent.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete \'{profileName}\'? This action cannot be undone.'**
+  /// **'Are you sure you want to delete {profileName}? This action cannot be undone.'**
   String dialogDeleteProfileContent(String profileName);
 
   /// Header title for deleting an automatic role mapper rule.
@@ -569,7 +569,7 @@ abstract class AppLocalizations {
   /// Dialog title prompting the user to select the live VRChat slot where the message template will be assigned.
   ///
   /// In en, this message translates to:
-  /// **'Assign \'{content}\' to a Slot'**
+  /// **'Assign {content} to a Slot'**
   String slotPickerTitle(String content);
 
   /// Displays the message category currently being assigned in the slot selection dialog.
@@ -809,7 +809,7 @@ abstract class AppLocalizations {
   /// Description explaining the default message option.
   ///
   /// In en, this message translates to:
-  /// **'Use VRChat\'s default notification message.'**
+  /// **'Use VRChat\'\'s default notification message.'**
   String get defaultMessageOptionDesc;
 
   /// Button used to add a new role rule to the profile.
@@ -1007,7 +1007,7 @@ abstract class AppLocalizations {
   /// Placeholder text displayed when a profile has an empty criteria rules list.
   ///
   /// In en, this message translates to:
-  /// **'No rules added yet.\nClick \'Add role rule\' to start.'**
+  /// **'No rules added yet.\nClick \'\'Add role rule\'\' to start.'**
   String get noRulesAdded;
 
   /// Text rendered when the message database fails to load inside criteria selectors.
@@ -1093,6 +1093,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last: {senderName}'**
   String bgNotificationContent(String senderName);
+
+  /// Section header for configuring automatic VRChat status profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Automation'**
+  String get sectionStatusAutomation;
+
+  /// Title for the dialog used to create a new status automation profile.
+  ///
+  /// In en, this message translates to:
+  /// **'New Status Profile'**
+  String get dialogNewStatusProfileTitle;
+
+  /// Input field label prompting the user to enter a name for the new status profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Name'**
+  String get dialogNewStatusProfileLabel;
+
+  /// App bar title displayed while editing an existing status profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Status Profile'**
+  String get editStatusProfileTitle;
+
+  /// Section header containing the general configuration for the status profile.
+  ///
+  /// In en, this message translates to:
+  /// **'General Settings'**
+  String get sectionGeneralSettings;
+
+  /// Label for the text field where the status profile name is entered.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Name'**
+  String get inputStatusProfileName;
+
+  /// Label for the fallback VRChat status applied when no rule matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Fallback Status'**
+  String get inputFallbackStatus;
+
+  /// Label for the fallback status message template used when no automation rule matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Fallback Message Template'**
+  String get inputFallbackTemplate;
+
+  /// Helper text explaining how status message templates work and how rule priority is evaluated.
+  ///
+  /// In en, this message translates to:
+  /// **'Use templates such as: In \'{{world}} ({{battery}}\'🔋)\nStatus rules are evaluated from top to bottom by priority.'**
+  String get statusPriorityRulesCaption;
+
+  /// Section header containing the list of status automation conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Conditions'**
+  String get sectionAutomationConditions;
+
+  /// Button used to create a new status automation condition rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Condition Rule'**
+  String get btnAddConditionRule;
+
+  /// Placeholder shown when the status profile has no automation rules configured.
+  ///
+  /// In en, this message translates to:
+  /// **'No dynamic status rules configured.\nThis profile will always use the fallback configuration.'**
+  String get noStatusRulesAdded;
+
+  /// Subtitle explaining that automation rules can be reordered by dragging.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules (Drag to Reorder)'**
+  String get rulesReorderSubtitle;
+
+  /// Title for the dialog used to create a new status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'New Status Rule'**
+  String get dialogNewStatusRuleTitle;
+
+  /// Label for selecting the condition that triggers the status rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger Condition'**
+  String get inputTriggerCondition;
+
+  /// Label for selecting the comparison operator used by the condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator'**
+  String get inputOperator;
+
+  /// Label for the value compared against the selected trigger condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparison Value'**
+  String get inputComparisonValue;
+
+  /// Label for selecting the VRChat status that will be applied when the rule matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Status'**
+  String get inputTargetStatus;
+
+  /// Label for selecting the status message template applied when the rule matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Message Template'**
+  String get inputStatusMessageTemplate;
+
+  /// Primary action button used to create and save a new status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Rule'**
+  String get btnCreateRule;
+
+  /// Subtitle displayed beneath a status profile showing the total number of configured rules and the fallback status used when no rule matches.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rule} other{{count} rules}}, fallback: {fallback}'**
+  String statusProfileSubtitle(int count, String fallback);
+
+  /// Tooltip shown on the button used to edit an existing status automation profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Status Profile'**
+  String get tooltipEditStatusProfile;
+
+  /// Header title for the status profile deletion confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Status Profile'**
+  String get dialogDeleteStatusProfileTitle;
+
+  /// Confirmation message asking the user to verify deletion of the selected status profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \'\'{name}\'\'?'**
+  String dialogDeleteStatusProfileContent(String name);
+
+  /// Placeholder text showing example comparison values when creating a status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 5, Public, 30'**
+  String get statusRuleComparisonHint;
+
+  /// Placeholder text showing an example status message template with supported variables.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. In \'{{world}} with {{friends}}\''**
+  String get statusMessageTemplateHint;
+
+  /// Placeholder displayed when a status automation rule has no custom message template assigned.
+  ///
+  /// In en, this message translates to:
+  /// **'No Message'**
+  String get statusRuleNoMessage;
 }
 
 class _AppLocalizationsDelegate
