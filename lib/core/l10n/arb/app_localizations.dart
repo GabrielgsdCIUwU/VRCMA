@@ -1369,6 +1369,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g. wrld_abc, wrld_def'**
   String get statusRuleComparisonHintWorldList;
+
+  /// Notification shown when status automation is paused after the user manually changes their VRChat status outside the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation paused. Your VRChat status was changed manually.'**
+  String get statusOverrideNotification;
 }
 
 class _AppLocalizationsDelegate

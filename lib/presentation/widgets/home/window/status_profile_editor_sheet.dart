@@ -327,7 +327,7 @@ class _StatusProfileEditorSheetState
           child: const Icon(Icons.drag_handle),
         ),
         title: Text(
-          "${rule.conditionType.name.toUpperCase()} ${rule.operator.name} '${rule.conditionValue}'",
+          "${rule.conditionType.toLocalizedString(context)} ${rule.operator.toLocalizedString(context)} '${rule.conditionValue}'",
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
         ),
         subtitle: Column(
@@ -541,7 +541,7 @@ class _StatusBadge extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
-        status.name.toUpperCase(),
+        status.toLocalizedString(context).toUpperCase(),
         style: TextStyle(
           color: color,
           fontSize: 9,

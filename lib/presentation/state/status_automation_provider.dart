@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/di/usecase_provider.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/services/battery/battery_service.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_context.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/main.dart';
+import 'package:vrcma/presentation/services/snackbar_service.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/world_cache_provider.dart';
@@ -95,6 +99,12 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
       (currentStatus != lastAppliedStatus || currentDescription != lastAppliedDescription)) {
         await statusRepo.setProfileActive(activeProfile.id!, false);
         _shutdown();
+        
+        final snackbar = ref.read(snackbarServiceProvider);
+        final BuildContext? context = scaffoldMessengerKey.currentContext;
+        if (context != null) {
+          snackbar.show(context.l10n.statusOverrideNotification);
+        }
         return;
       }
     

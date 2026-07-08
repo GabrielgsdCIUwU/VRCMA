@@ -263,5 +263,7 @@
   "statusRuleComparisonHintNumber": "p. ej. 50",
   "statusRuleComparisonHintRange": "p. ej. 20-80",
   "statusRuleComparisonHintTimeRange": "p. ej. 22:00-06:00",
-  "statusRuleComparisonHintWorldList": "p. ej. wrld_abc, wrld_def"
+  "statusRuleComparisonHintWorldList": "p. ej. wrld_abc, wrld_def",
+
+  "statusOverrideNotification": "Automatización pausada. Has cambiado tu estado de VRChat manualmente."
 }

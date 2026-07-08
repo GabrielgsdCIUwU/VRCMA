@@ -1194,5 +1194,10 @@
   "statusRuleComparisonHintWorldList": "e.g. wrld_abc, wrld_def",
   "@statusRuleComparisonHintWorldList": {
     "description": "Placeholder showing example VRChat world IDs separated by commas."
+  },
+
+  "statusOverrideNotification": "Automation paused. Your VRChat status was changed manually.",
+  "@statusOverrideNotification": {
+    "description": "Notification shown when status automation is paused after the user manually changes their VRChat status outside the app."
   }
 }

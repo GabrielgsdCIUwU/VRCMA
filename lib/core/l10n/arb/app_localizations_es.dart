@@ -705,4 +705,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get statusRuleComparisonHintWorldList => 'p. ej. wrld_abc, wrld_def';
+
+  @override
+  String get statusOverrideNotification =>
+      'Automatización pausada. Has cambiado tu estado de VRChat manualmente.';
 }
