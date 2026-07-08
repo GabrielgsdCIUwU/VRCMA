@@ -15,6 +15,9 @@ class AutomationRepositoryImp implements IAutomationRepository {
 
   final Map<String, (User, DateTime)> _userCache = {};
   static const Duration _cacheExpirationLimit = Duration(hours: 1);
+
+  DateTime _lastStatusUpdate = DateTime.fromMillisecondsSinceEpoch(0);
+  static const Duration _minUpdateInterval = Duration(minutes: 1);
   
   AutomationRepositoryImp(this._vrcApi, this._transformers);
 
@@ -154,6 +157,10 @@ class AutomationRepositoryImp implements IAutomationRepository {
 
   @override
   Future<Either<Failure, void>> updateRemoteStatus({required StatusType status, required String description}) async {
+    final now = DateTime.now();
+    if (now.difference(_lastStatusUpdate) < _minUpdateInterval) {
+      return const Left(RateLimitFailure(1));
+    }
     try {
       final currentUserId = _vrcApi.auth.currentUser?.id;
       if (currentUserId == null) {
@@ -169,6 +176,8 @@ class AutomationRepositoryImp implements IAutomationRepository {
           statusDescription: description,
         ),
       );
+
+      _lastStatusUpdate = DateTime.now();
 
       return Right(null);
     } catch (e) {
