@@ -3,15 +3,11 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
-import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/core/services/battery/battery_service.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_context.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
-import 'package:vrcma/domain/usecases/automation/status/coordinate_status_automation_use_case.dart';
-import 'package:vrcma/domain/usecases/automation/status/evaluate_status_use_case.dart';
-import 'package:vrcma/domain/usecases/automation/status/matchers/status_condition_matcher.dart';
-import 'package:vrcma/domain/usecases/automation/status/matchers/status_template_resolver.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/world_cache_provider.dart';
@@ -104,23 +100,7 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     
     final context = await _buildStatusContext(currentUser);
 
-    final localSocialRepo = await ref.read(localSocialRepositoryProvider.future);
-    final automationRepo = await ref.read(automationRepositoryProvider.future);
-
-    final evaluationUseCase = EvaluateStatusUseCase(
-      matchers: [
-        NumericConditionMatcher(),
-        InstanceTypeMatcher(),
-        FriendRoleMatcher(localSocialRepo)
-      ],
-      resolver: StatusTemplateResolver()
-    );
-
-    final coordinator = CoordinateStatusAutomationUseCase(
-      statusRepository: statusRepo,
-      automationRepository: automationRepo,
-      evaluateStatusUseCase: evaluationUseCase,
-    );
+    final coordinator = await ref.read(coordinateStatusAutomationUseCaseProvider.future);
 
     final result = await coordinator.execute(
       activeProfile: activeProfile,
