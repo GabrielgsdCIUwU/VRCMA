@@ -10,6 +10,7 @@ import 'package:vrcma/core/services/battery/battery_service.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_context.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/domain/services/status_signal_manager.dart';
 import 'package:vrcma/main.dart';
 import 'package:vrcma/presentation/services/snackbar_service.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
@@ -20,8 +21,12 @@ part 'status_automation_provider.g.dart';
 
 @riverpod
 class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
-  Timer? _pollingTimer;
-  StreamSubscription? _streamSubscription;
+  StatusSignalManager? _signalManager;
+  StreamSubscription? _signalSubscription;
+  StreamSubscription? _overrideSubscription;
+
+  bool _internalUpdatePending = false;
+
   DateTime _lastExecuteTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   static const Duration _safetyCooldown = Duration(minutes: 5);
@@ -45,72 +50,106 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     _startup();
   }
 
-  void _startup() {
+  void _startup() async {
     _shutdown();
 
-    _pollingTimer = Timer.periodic(const Duration(minutes: 5), (_) {
-      triggerEvaluation();
-    });
-
-    _listenToStreamingEvents();
-  }
-
-  void _shutdown() {
-    _pollingTimer?.cancel();
-    _streamSubscription?.cancel();
-  }
-
-  Future<void> _listenToStreamingEvents() async {
-    final api  = await ref.watch(vrcApiProvider.future);
-
-    _streamSubscription = api.streaming.vrcEventStream.listen((event) {
-      if (event is UserUpdateEvent || event is UserLocationEvent) {
-        triggerEvaluation();
-      }
-    });
-  }
-
-  Future<void> triggerEvaluation() async {
-    final now = DateTime.now();
-    if (now.difference(_lastExecuteTime) < _safetyCooldown) return;
+    final api = await ref.watch(vrcApiProvider.future);
+    _signalManager = StatusSignalManager(api);
 
     final statusRepo = await ref.read(statusRepositoryProvider.future);
     final profiles = await statusRepo.getStatusProfiles();
     final activeProfile = profiles.firstWhere(
       (p) => p.isActive,
-      orElse: () => const StatusProfile(name: "", fallbackStatus: StatusType.active)
+      orElse: () => const StatusProfile(name: "", fallbackStatus: StatusType.active),
     );
 
     if (activeProfile.id == null) return;
 
+    _signalManager!.setupSignalsForProfile(activeProfile);
+
+    _signalSubscription = _signalManager!.signals.listen((signal) async {
+      await triggerEvaluation(activeProfile);
+    });
+
+    _overrideSubscription = api.streaming.vrcEventStream.listen((event) async {
+      if (event is UserUpdateEvent) {
+        final currentUser = event.user;
+        await _handleManualOverrideProtection(currentUser, activeProfile);
+      }
+    });
+  }
+
+  void _shutdown() {
+    _signalSubscription?.cancel();
+    _signalSubscription = null;
+    _overrideSubscription?.cancel();
+    _overrideSubscription = null;
+    _signalManager?.dispose();
+    _signalManager = null;
+  }
+
+  Future<void> _handleManualOverrideProtection(StreamedCurrentUser remoteUser, StatusProfile activeProfile) async {
+    final statusRepo = await ref.read(statusRepositoryProvider.future);
+    
+    final String currentStatus = remoteUser.status.value;
+    final String currentDescription = remoteUser.statusDescription;
+
+    final String lastAppliedStatus = activeProfile.lastAppliedStatus?.apiValue ?? "";
+    final String lastAppliedDescription = activeProfile.lastAppliedMessage ?? "";
+
+    if (lastAppliedStatus.isEmpty) return;
+
+    final bool statusMismatched = currentStatus != lastAppliedStatus;
+    final bool descriptionMismatched = currentDescription != lastAppliedDescription;
+
+    if (statusMismatched || descriptionMismatched) {
+      if (_internalUpdatePending) {
+        _internalUpdatePending = false;
+        debugPrint("ManualOverride: Verified automated transition safely.");
+        return;
+      }
+
+      debugPrint("ManualOverride: Mismatch detected! Current: ($currentStatus, '$currentDescription') | "
+          "Applied: ($lastAppliedStatus, '$lastAppliedDescription')");
+
+      await statusRepo.setProfileActive(activeProfile.id!, false);
+      _shutdown();
+
+      final snackbar = ref.read(snackbarServiceProvider);
+      final BuildContext? context = scaffoldMessengerKey.currentContext;
+      if (context != null) {
+        snackbar.show(context.l10n.statusOverrideNotification);
+      }
+    }
+  }
+
+  Future<void> triggerEvaluation(StatusProfile activeProfile) async {
+    final now = DateTime.now();
+    if (now.difference(_lastExecuteTime) < _safetyCooldown) return;
+
     final api = await ref.read(vrcApiProvider.future);
+    
     final currentUserResponse = await api.rawApi.getAuthenticationApi().getCurrentUser();
     final currentUser = currentUserResponse.data;
 
     if (currentUser == null) return;
 
-    final String currentStatus = currentUser.status.value;
-    final String currentDescription = currentUser.statusDescription;
-
-    final String lastAppliedStatus = activeProfile.lastAppliedStatus?.apiValue ?? "";
-    final String lastAppliedDescription = activeProfile.lastAppliedMessage ?? "";
-
-    if (lastAppliedStatus.isNotEmpty &&
-      (currentStatus != lastAppliedStatus || currentDescription != lastAppliedDescription)) {
-        await statusRepo.setProfileActive(activeProfile.id!, false);
-        _shutdown();
-        
-        final snackbar = ref.read(snackbarServiceProvider);
-        final BuildContext? context = scaffoldMessengerKey.currentContext;
-        if (context != null) {
-          snackbar.show(context.l10n.statusOverrideNotification);
-        }
-        return;
-      }
-    
     final context = await _buildStatusContext(currentUser);
 
     final coordinator = await ref.read(coordinateStatusAutomationUseCaseProvider.future);
+
+    final evaluation = await ref.read(evaluateStatusUseCaseProvider.future).then(
+      (useCase) => useCase.execute(profile: activeProfile, context: context),
+    );
+
+    final bool statusChanged = activeProfile.lastAppliedStatus != evaluation.status;
+    final bool messageChanged = activeProfile.lastAppliedMessage != evaluation.message;
+
+    if (!statusChanged && !messageChanged) {
+      return;
+    }
+
+    _internalUpdatePending = true;
 
     final result = await coordinator.execute(
       activeProfile: activeProfile,
@@ -118,7 +157,10 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     );
 
     result.fold(
-      (failure) => {},
+      (failure) {
+        _internalUpdatePending = false;
+        debugPrint("Error executing remote status change: ${failure.message}");
+      },
       (_) {
         _lastExecuteTime = DateTime.now();
       }
