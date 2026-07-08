@@ -128,6 +128,10 @@ class AuthState extends _$AuthState {
     state = const AsyncValue.loading();
     state = const AsyncValue.data(null);
   }
+
+  void reset() {
+    state = const AsyncValue.data(null);
+  }
 }
 
 @riverpod

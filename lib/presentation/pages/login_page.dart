@@ -56,7 +56,10 @@ class LoginPage extends ConsumerWidget {
                 OtpForm(
                   isLoading: authState.isLoading,
                   onVerify: (code) => ref.read(authStateProvider.notifier).verifyOtp(code),
-                  onCancel: () => ref.read(showOtpViewProvider.notifier).set(false),
+                  onCancel: () {
+                    ref.read(showOtpViewProvider.notifier).set(false);
+                    ref.read(authStateProvider.notifier).reset();
+                  },
                 ),
             ],
           ),
