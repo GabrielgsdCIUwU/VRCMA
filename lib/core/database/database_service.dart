@@ -26,6 +26,7 @@ class DatabaseService {
       onCreate: (db, version) async {
         try {
           await _onCreate(db, version);
+          await _setInitialData(db, version);
           await _createDummyData(db, version);
         } catch (e) {
           debugPrint("Error creating database: $e");
@@ -36,6 +37,13 @@ class DatabaseService {
   }
 
   Future<void> _onCreate(Database db, int version) async {
+
+    await db.execute('''
+      CREATE TABLE app_configurations (
+        config_key TEXT PRIMARY KEY,
+        config_value TEXT NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE roles (
@@ -227,5 +235,11 @@ class DatabaseService {
       'invite_message_id': vipInviteId, 
       'request_message_id': vipRequestInviteId,
     });
+  }
+
+  Future<void> _setInitialData(Database db, int version) async {
+    await db.insert('app_configurations', {'config_key': 'selected_locale_code', 'config_value': 'en'});
+    await db.insert('app_configurations', {'config_key': 'bg_automation_enabled', 'config_value': 'false'});
+    await db.insert('app_configurations', {'config_key': 'app_theme_mode', 'config_value': 'system'});
   }
 }
