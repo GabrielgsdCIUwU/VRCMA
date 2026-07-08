@@ -177,7 +177,7 @@
     "description": "Header title for the role removal confirmation dialog."
   },
 
-  "dialogDeleteRoleContent": "Are you sure you want to delete '{roleName}'? \nThis will remove this role from all users and profiles.",
+  "dialogDeleteRoleContent": "Are you sure you want to delete {roleName}? \nThis will remove this role from all users and profiles.",
   "@dialogDeleteRoleContent": {
     "description": "Warning reminding the user of the consequences of role deletion.",
     "placeholders": {
@@ -193,7 +193,7 @@
     "description": "Header title for the profile removal confirmation dialog."
   },
 
-  "dialogDeleteProfileContent": "Are you sure you want to delete '{profileName}'? This action cannot be undone.",
+  "dialogDeleteProfileContent": "Are you sure you want to delete {profileName}? This action cannot be undone.",
   "@dialogDeleteProfileContent": {
     "description": "Warning informing the user that profile deletion is permanent.",
     "placeholders": {
@@ -472,7 +472,7 @@
     }
   },
 
-  "slotPickerTitle": "Assign '{content}' to a Slot",
+  "slotPickerTitle": "Assign {content} to a Slot",
   "@slotPickerTitle": {
     "description": "Dialog title prompting the user to select the live VRChat slot where the message template will be assigned.",
     "placeholders": {
@@ -700,7 +700,7 @@
     "description": "Option that keeps VRChat's original notification message instead of using a custom template."
   },
 
-  "defaultMessageOptionDesc": "Use VRChat's default notification message.",
+  "defaultMessageOptionDesc": "Use VRChat''s default notification message.",
   "@defaultMessageOptionDesc": {
     "description": "Description explaining the default message option."
   },
@@ -865,7 +865,7 @@
     "description": "Error message displayed when local roles cannot be loaded from storage."
   },
 
-  "noRulesAdded": "No rules added yet.\nClick 'Add role rule' to start.",
+  "noRulesAdded": "No rules added yet.\nClick ''Add role rule'' to start.",
   "@noRulesAdded": {
     "description": "Placeholder text displayed when a profile has an empty criteria rules list."
   },
@@ -948,5 +948,256 @@
         "description": "Display name of the last processed user."
       }
     }
+  },
+
+  "sectionStatusAutomation": "Status Automation",
+  "@sectionStatusAutomation": {
+    "description": "Section header for configuring automatic VRChat status profiles."
+  },
+
+  "dialogNewStatusProfileTitle": "New Status Profile",
+  "@dialogNewStatusProfileTitle": {
+    "description": "Title for the dialog used to create a new status automation profile."
+  },
+
+  "dialogNewStatusProfileLabel": "Profile Name",
+  "@dialogNewStatusProfileLabel": {
+    "description": "Input field label prompting the user to enter a name for the new status profile."
+  },
+
+  "editStatusProfileTitle": "Edit Status Profile",
+  "@editStatusProfileTitle": {
+    "description": "App bar title displayed while editing an existing status profile."
+  },
+
+  "sectionGeneralSettings": "General Settings",
+  "@sectionGeneralSettings": {
+    "description": "Section header containing the general configuration for the status profile."
+  },
+
+  "inputStatusProfileName": "Profile Name",
+  "@inputStatusProfileName": {
+    "description": "Label for the text field where the status profile name is entered."
+  },
+
+  "inputFallbackStatus": "Fallback Status",
+  "@inputFallbackStatus": {
+    "description": "Label for the fallback VRChat status applied when no rule matches."
+  },
+
+  "inputFallbackTemplate": "Fallback Message Template",
+  "@inputFallbackTemplate": {
+    "description": "Label for the fallback status message template used when no automation rule matches."
+  },
+
+  "statusPriorityRulesCaption": "Use templates such as: In '{{world}} ({{battery}}'🔋)\nStatus rules are evaluated from top to bottom by priority.",
+  "@statusPriorityRulesCaption": {
+    "description": "Helper text explaining how status message templates work and how rule priority is evaluated."
+  },
+
+  "sectionAutomationConditions": "Automation Conditions",
+  "@sectionAutomationConditions": {
+    "description": "Section header containing the list of status automation conditions."
+  },
+
+  "btnAddConditionRule": "Add Condition Rule",
+  "@btnAddConditionRule": {
+    "description": "Button used to create a new status automation condition rule."
+  },
+
+  "noStatusRulesAdded": "No dynamic status rules configured.\nThis profile will always use the fallback configuration.",
+  "@noStatusRulesAdded": {
+    "description": "Placeholder shown when the status profile has no automation rules configured."
+  },
+
+  "rulesReorderSubtitle": "Rules (Drag to Reorder)",
+  "@rulesReorderSubtitle": {
+    "description": "Subtitle explaining that automation rules can be reordered by dragging."
+  },
+
+  "dialogNewStatusRuleTitle": "New Status Rule",
+  "@dialogNewStatusRuleTitle": {
+    "description": "Title for the dialog used to create a new status automation rule."
+  },
+
+  "inputTriggerCondition": "Trigger Condition",
+  "@inputTriggerCondition": {
+    "description": "Label for selecting the condition that triggers the status rule."
+  },
+
+  "inputOperator": "Operator",
+  "@inputOperator": {
+    "description": "Label for selecting the comparison operator used by the condition."
+  },
+
+  "inputComparisonValue": "Comparison Value",
+  "@inputComparisonValue": {
+    "description": "Label for the value compared against the selected trigger condition."
+  },
+
+  "inputTargetStatus": "Target Status",
+  "@inputTargetStatus": {
+    "description": "Label for selecting the VRChat status that will be applied when the rule matches."
+  },
+
+  "inputStatusMessageTemplate": "Status Message Template",
+  "@inputStatusMessageTemplate": {
+    "description": "Label for selecting the status message template applied when the rule matches."
+  },
+
+  "btnCreateRule": "Create Rule",
+  "@btnCreateRule": {
+    "description": "Primary action button used to create and save a new status automation rule."
+  },
+
+  "statusProfileSubtitle": "{count, plural, =1{1 rule} other{{count} rules}}, fallback: {fallback}",
+  "@statusProfileSubtitle": {
+    "description": "Subtitle displayed beneath a status profile showing the total number of configured rules and the fallback status used when no rule matches.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "fallback": {
+        "type": "String",
+        "example": "Online"
+      }
+    }
+  },
+
+  "tooltipEditStatusProfile": "Edit Status Profile",
+  "@tooltipEditStatusProfile": {
+    "description": "Tooltip shown on the button used to edit an existing status automation profile."
+  },
+
+  "dialogDeleteStatusProfileTitle": "Delete Status Profile",
+  "@dialogDeleteStatusProfileTitle": {
+    "description": "Header title for the status profile deletion confirmation dialog."
+  },
+
+  "dialogDeleteStatusProfileContent": "Are you sure you want to delete ''{name}''?",
+  "@dialogDeleteStatusProfileContent": {
+    "description": "Confirmation message asking the user to verify deletion of the selected status profile.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Desktop Status"
+      }
+    }
+  },
+
+  "statusRuleComparisonHint": "e.g. 5, Public, 30",
+  "@statusRuleComparisonHint": {
+    "description": "Placeholder text showing example comparison values when creating a status automation rule."
+  },
+
+  "statusMessageTemplateHint": "e.g. In '{{world}} with {{friends}}'",
+  "@statusMessageTemplateHint": {
+    "description": "Placeholder text showing an example status message template with supported variables."
+  },
+
+  "statusRuleNoMessage": "No Message",
+  "@statusRuleNoMessage": {
+    "description": "Placeholder displayed when a status automation rule has no custom message template assigned."
+  },
+
+  "statusTypeActive": "Active",
+  "@statusTypeActive": {
+    "description": "VRChat online status option. Indicates the user is available."
+  },
+
+  "statusTypeJoinMe": "Join Me",
+  "@statusTypeJoinMe": {
+    "description": "VRChat online status option. Indicates friends are encouraged to join the user's current instance."
+  },
+
+  "statusTypeAskMe": "Ask Me",
+  "@statusTypeAskMe": {
+    "description": "VRChat online status option. Indicates friends should ask for permission before joining."
+  },
+
+  "statusTypeBusy": "Busy",
+  "@statusTypeBusy": {
+    "description": "VRChat online status option. Indicates the user does not wish to be disturbed."
+  },
+
+  "conditionTypePopulation": "Player Count",
+  "@conditionTypePopulation": {
+    "description": "Rule condition based on the number of players currently in the VRChat instance."
+  },
+
+  "conditionTypeInstanceType": "Instance Access",
+  "@conditionTypeInstanceType": {
+    "description": "Rule condition based on the VRChat instance access level (Public, Friends+, Friends, Invite+, Invite, Group, etc.)."
+  },
+
+  "conditionTypeBatteryLevel": "Battery Level",
+  "@conditionTypeBatteryLevel": {
+    "description": "Rule condition based on the battery percentage of the PC or Mobile."
+  },
+
+  "conditionTypeFriendPresent": "Friend Present",
+  "@conditionTypeFriendPresent": {
+    "description": "Rule condition that checks whether a selected friend is currently present in the same VRChat instance."
+  },
+
+  "conditionTypeTimeRange": "Time Range",
+  "@conditionTypeTimeRange": {
+    "description": "Rule condition based on whether the current local time falls within the configured time range."
+  },
+
+  "conditionTypeWorld": "Current World",
+  "@conditionTypeWorld": {
+    "description": "Rule condition based on the VRChat world the user is currently in."
+  },
+
+  "operatorGreaterThan": "Greater Than",
+  "@operatorGreaterThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is greater than the comparison value."
+  },
+
+  "operatorLessThan": "Less Than",
+  "@operatorLessThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is less than the comparison value."
+  },
+
+  "operatorEqualTo": "Equals",
+  "@operatorEqualTo": {
+    "description": "Comparison operator used by a rule. Matches when both values are equal."
+  },
+
+  "operatorContains": "Contains",
+  "@operatorContains": {
+    "description": "Comparison operator used by a rule. Matches when the target value contains the comparison value."
+  },
+
+  "operatorBetween": "Between",
+  "@operatorBetween": {
+    "description": "Comparison operator used by a rule. Matches when the value falls within the configured range."
+  },
+
+  "statusRuleComparisonHintNumber": "e.g. 50",
+  "@statusRuleComparisonHintNumber": {
+    "description": "Placeholder showing an example numeric comparison value for conditions such as battery level or player count."
+  },
+
+  "statusRuleComparisonHintRange": "e.g. 20-80",
+  "@statusRuleComparisonHintRange": {
+    "description": "Placeholder showing an example numeric range for the 'Between' comparison operator."
+  },
+
+  "statusRuleComparisonHintTimeRange": "e.g. 22:00-06:00",
+  "@statusRuleComparisonHintTimeRange": {
+    "description": "Placeholder showing an example time range in 24-hour format."
+  },
+
+  "statusRuleComparisonHintWorldList": "e.g. wrld_abc, wrld_def",
+  "@statusRuleComparisonHintWorldList": {
+    "description": "Placeholder showing example VRChat world IDs separated by commas."
+  },
+
+  "statusOverrideNotification": "Automation paused. Your VRChat status was changed manually.",
+  "@statusOverrideNotification": {
+    "description": "Notification shown when status automation is paused after the user manually changes their VRChat status outside the app."
   }
 }

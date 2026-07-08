@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/data/transformers/vrc_event_transformer.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
@@ -150,6 +151,33 @@ class AutomationRepositoryImp implements IAutomationRepository {
       lastUpdated: m.updatedAt
     )).toList() ?? [];
   }
+
+  @override
+  Future<Either<Failure, void>> updateRemoteStatus({required StatusType status, required String description}) async {
+    try {
+      final currentUserId = _vrcApi.auth.currentUser?.id;
+      if (currentUserId == null) {
+        return const Left(ApiFailure("Local authenticated session not found"));
+      }
+
+      final UserStatus mappedStatus = _mapToUserStatus(status);
+
+      await _vrcApi.rawApi.getUsersApi().updateUser(
+        userId: currentUserId,
+        updateUserRequest: UpdateUserRequest(
+          status: mappedStatus,
+          statusDescription: description,
+        ),
+      );
+
+      return Right(null);
+    } catch (e) {
+      if (e.toString().contains("429")) {
+        return const Left(RateLimitFailure(5));
+      }
+      return Left(ApiFailure("Failed to update status: $e"));
+    }
+  }
   
   InviteMessageType _mapInternalToVrcType(VrcMessageType type) {
     switch (type) {
@@ -157,6 +185,15 @@ class AutomationRepositoryImp implements IAutomationRepository {
       case VrcMessageType.response: return InviteMessageType.response;
       case VrcMessageType.request: return InviteMessageType.request;
       case VrcMessageType.requestResponse: return InviteMessageType.requestResponse;
+    }
+  }
+
+  UserStatus _mapToUserStatus(StatusType internal) {
+    switch (internal) {
+      case StatusType.active: return UserStatus.active;
+      case StatusType.joinMe: return UserStatus.joinMe;
+      case StatusType.askMe: return UserStatus.askMe;
+      case StatusType.busy: return UserStatus.busy;
     }
   }
 

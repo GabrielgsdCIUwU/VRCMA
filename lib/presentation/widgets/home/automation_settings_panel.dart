@@ -6,15 +6,18 @@ import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/automation_settings_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
+import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/status_profile_editor_sheet.dart';
 
 class AutomationSettingsPanel extends ConsumerWidget {
   const AutomationSettingsPanel({super.key});
@@ -54,6 +57,17 @@ class AutomationSettingsPanel extends ConsumerWidget {
        ),
        const Divider(height: 1, thickness: 1),
 
+       Flexible(
+        flex: isExpanded("status_profiles") ? 1 : 0,
+        child: _CollapsibleSection(
+          id: "status_profiles",
+          title: context.l10n.sectionStatusAutomation,
+          onAdd: () => _showCreateStatusProfileDialog(context, ref),
+          child: const _StatusProfileListContent(),
+        ),
+       ),
+
+       const Divider(height: 1, thickness: 1),
        Flexible(
          flex: isExpanded("automations") ? 1 : 0,
          child: _CollapsibleSection(
@@ -95,6 +109,20 @@ class AutomationSettingsPanel extends ConsumerWidget {
         onConfirm: (name) {
           ref.read(roleManagementProvider.notifier).createRole(name);
           ref.read(automationPanelSectionsProvider.notifier).expand('roles');
+        },
+      )
+    );
+  }
+
+  void _showCreateStatusProfileDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (_) => _GenericAddDialog(
+        title: context.l10n.dialogNewStatusProfileTitle,
+        label: context.l10n.dialogNewStatusProfileLabel,
+        onConfirm: (name) {
+          ref.read(statusProfileManagementProvider.notifier).addProfile(name);
+          ref.read(automationPanelSectionsProvider.notifier).expand('status_profiles');
         },
       )
     );
@@ -516,6 +544,103 @@ class _CreateProfileDialogState extends State<_CreateProfileDialog> {
     
     widget.onConfirm(_controller.text);
     Navigator.pop(context);
+  }
+}
+
+class _StatusProfileListContent extends ConsumerWidget {
+  const _StatusProfileListContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stateAsync = ref.watch(statusProfileManagementProvider);
+
+    return stateAsync.when(
+      data: (profiles) => ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: profiles.length,
+        itemBuilder: (context, i) => _StatusProfileTile(profile: profiles[i]),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
+    );
+  }
+}
+
+class _StatusProfileTile extends ConsumerWidget {
+  final StatusProfile profile;
+  const _StatusProfileTile({required this.profile});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isActive = profile.isActive;
+
+    return ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      onTap: () => _handleToggle(ref),
+      leading: _StatusIcon(isActive: isActive, onPressed: () => _handleToggle(ref)),
+      title: Text(
+        profile.name,
+        style: TextStyle(
+          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+          color: isActive ? context.vrcColors.success : null,
+          fontSize: 14,
+        ),
+      ),
+      subtitle: Text(
+        context.l10n.statusProfileSubtitle(
+          profile.rules.length,
+          profile.fallbackStatus.name
+        )
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => _openEditor(context),
+            visualDensity: VisualDensity.compact,
+            tooltip: context.l10n.tooltipEditStatusProfile,
+          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteConfirmation(context, ref),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleToggle(WidgetRef ref) {
+    ref.read(statusProfileManagementProvider.notifier).toggleProfileActive(profile);
+  }
+
+  void _openEditor(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)));
+  }
+
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteStatusProfileTitle),
+        content: Text(context.l10n.dialogDeleteStatusProfileContent(profile.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.l10n.btnCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          )
+        ],
+      )
+    );
   }
 }
 

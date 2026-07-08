@@ -128,6 +128,31 @@ class DatabaseService {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE status_profiles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        is_active INTEGER DEFAULT 0,
+        fallback_status TEXT NOT NULL,
+        fallback_template TEXT,
+        last_applied_status TEXT,
+        last_applied_message TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE status_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        target_status TEXT NOT NULL,
+        message_template TEXT,
+        condition_type TEXT NOT NULL,
+        operator TEXT NOT NULL,
+        condition_value TEXT,
+        FOREIGN KEY (profile_id) REFERENCES status_profiles (id) ON DELETE CASCADE
+      )
+    ''');
 
     await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
@@ -135,6 +160,8 @@ class DatabaseService {
     await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_profile_id ON profile_rules (profile_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_role_id ON profile_rules (role_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_automation_assigned_roles_automation_id ON automation_assigned_roles (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_rules_profile_priority ON status_rules (profile_id, priority)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {

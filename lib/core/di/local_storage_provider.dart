@@ -5,10 +5,12 @@ import 'package:vrcma/data/repositories/log_repository_imp.dart';
 import 'package:vrcma/data/repositories/message_repository_imp.dart';
 import 'package:vrcma/data/repositories/profile_repository_imp.dart';
 import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
+import 'package:vrcma/data/repositories/status_repository_imp.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
+import 'package:vrcma/domain/repositories/i_status_repository.dart';
 
 part 'local_storage_provider.g.dart';
 
@@ -39,4 +41,10 @@ Future<ILogRepository> logRepository(Ref ref) async {
 Future<IMessageRepository> messageRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
   return MessageRepositoryImp(db);
+}
+
+@riverpod
+Future<IStatusRepository> statusRepository(Ref ref) async {
+  final db = await ref.watch(databaseProvider.future);
+  return StatusRepositoryImp(db);
 }
