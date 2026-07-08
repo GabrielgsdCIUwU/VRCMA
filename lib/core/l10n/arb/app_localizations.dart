@@ -1255,6 +1255,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Message'**
   String get statusRuleNoMessage;
+
+  /// VRChat online status option. Indicates the user is available.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusTypeActive;
+
+  /// VRChat online status option. Indicates friends are encouraged to join the user's current instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Me'**
+  String get statusTypeJoinMe;
+
+  /// VRChat online status option. Indicates friends should ask for permission before joining.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Me'**
+  String get statusTypeAskMe;
+
+  /// VRChat online status option. Indicates the user does not wish to be disturbed.
+  ///
+  /// In en, this message translates to:
+  /// **'Busy'**
+  String get statusTypeBusy;
+
+  /// Rule condition based on the number of players currently in the VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Player Count'**
+  String get conditionTypePopulation;
+
+  /// Rule condition based on the VRChat instance access level (Public, Friends+, Friends, Invite+, Invite, Group, etc.).
+  ///
+  /// In en, this message translates to:
+  /// **'Instance Access'**
+  String get conditionTypeInstanceType;
+
+  /// Rule condition based on the battery percentage of the PC or Mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Level'**
+  String get conditionTypeBatteryLevel;
+
+  /// Rule condition that checks whether a selected friend is currently present in the same VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend Present'**
+  String get conditionTypeFriendPresent;
+
+  /// Rule condition based on whether the current local time falls within the configured time range.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Range'**
+  String get conditionTypeTimeRange;
+
+  /// Rule condition based on the VRChat world the user is currently in.
+  ///
+  /// In en, this message translates to:
+  /// **'Current World'**
+  String get conditionTypeWorld;
+
+  /// Comparison operator used by a rule. Matches when the value is greater than the comparison value.
+  ///
+  /// In en, this message translates to:
+  /// **'Greater Than'**
+  String get operatorGreaterThan;
+
+  /// Comparison operator used by a rule. Matches when the value is less than the comparison value.
+  ///
+  /// In en, this message translates to:
+  /// **'Less Than'**
+  String get operatorLessThan;
+
+  /// Comparison operator used by a rule. Matches when both values are equal.
+  ///
+  /// In en, this message translates to:
+  /// **'Equals'**
+  String get operatorEqualTo;
+
+  /// Comparison operator used by a rule. Matches when the target value contains the comparison value.
+  ///
+  /// In en, this message translates to:
+  /// **'Contains'**
+  String get operatorContains;
+
+  /// Comparison operator used by a rule. Matches when the value falls within the configured range.
+  ///
+  /// In en, this message translates to:
+  /// **'Between'**
+  String get operatorBetween;
+
+  /// Placeholder showing an example numeric comparison value for conditions such as battery level or player count.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 50'**
+  String get statusRuleComparisonHintNumber;
+
+  /// Placeholder showing an example numeric range for the 'Between' comparison operator.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 20-80'**
+  String get statusRuleComparisonHintRange;
+
+  /// Placeholder showing an example time range in 24-hour format.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 22:00-06:00'**
+  String get statusRuleComparisonHintTimeRange;
+
+  /// Placeholder showing example VRChat world IDs separated by commas.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. wrld_abc, wrld_def'**
+  String get statusRuleComparisonHintWorldList;
 }
 
 class _AppLocalizationsDelegate

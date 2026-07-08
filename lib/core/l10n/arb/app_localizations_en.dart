@@ -647,4 +647,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusRuleNoMessage => 'No Message';
+
+  @override
+  String get statusTypeActive => 'Active';
+
+  @override
+  String get statusTypeJoinMe => 'Join Me';
+
+  @override
+  String get statusTypeAskMe => 'Ask Me';
+
+  @override
+  String get statusTypeBusy => 'Busy';
+
+  @override
+  String get conditionTypePopulation => 'Player Count';
+
+  @override
+  String get conditionTypeInstanceType => 'Instance Access';
+
+  @override
+  String get conditionTypeBatteryLevel => 'Battery Level';
+
+  @override
+  String get conditionTypeFriendPresent => 'Friend Present';
+
+  @override
+  String get conditionTypeTimeRange => 'Time Range';
+
+  @override
+  String get conditionTypeWorld => 'Current World';
+
+  @override
+  String get operatorGreaterThan => 'Greater Than';
+
+  @override
+  String get operatorLessThan => 'Less Than';
+
+  @override
+  String get operatorEqualTo => 'Equals';
+
+  @override
+  String get operatorContains => 'Contains';
+
+  @override
+  String get operatorBetween => 'Between';
+
+  @override
+  String get statusRuleComparisonHintNumber => 'e.g. 50';
+
+  @override
+  String get statusRuleComparisonHintRange => 'e.g. 20-80';
+
+  @override
+  String get statusRuleComparisonHintTimeRange => 'e.g. 22:00-06:00';
+
+  @override
+  String get statusRuleComparisonHintWorldList => 'e.g. wrld_abc, wrld_def';
 }

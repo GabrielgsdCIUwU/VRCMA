@@ -240,5 +240,28 @@
   "dialogDeleteStatusProfileContent": "¿Estás seguro de que quieres eliminar ''{name}''?",
   "statusRuleComparisonHint": "p. ej. 5, Public, 30",
   "statusMessageTemplateHint": "p. ej. En '{{world}} con {{friends}}'",
-  "statusRuleNoMessage": "Sin mensaje"
+  "statusRuleNoMessage": "Sin mensaje",
+
+  "statusTypeActive": "Activo",
+  "statusTypeJoinMe": "Únete",
+  "statusTypeAskMe": "Pregúntame",
+  "statusTypeBusy": "Ocupado",
+
+  "conditionTypePopulation": "Número de jugadores",
+  "conditionTypeInstanceType": "Acceso a la instancia",
+  "conditionTypeBatteryLevel": "Nivel de batería",
+  "conditionTypeFriendPresent": "Amigo presente",
+  "conditionTypeTimeRange": "Franja horaria",
+  "conditionTypeWorld": "Mundo actual",
+
+  "operatorGreaterThan": "Mayor que",
+  "operatorLessThan": "Menor que",
+  "operatorEqualTo": "Igual a",
+  "operatorContains": "Contiene",
+  "operatorBetween": "Entre",
+
+  "statusRuleComparisonHintNumber": "p. ej. 50",
+  "statusRuleComparisonHintRange": "p. ej. 20-80",
+  "statusRuleComparisonHintTimeRange": "p. ej. 22:00-06:00",
+  "statusRuleComparisonHintWorldList": "p. ej. wrld_abc, wrld_def"
 }

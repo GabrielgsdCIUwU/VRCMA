@@ -5,6 +5,7 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/presentation/state/status_profile_editor_provider.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
+import 'package:vrcma/presentation/widgets/home/common/status_enums_localization_extension.dart';
 
 class StatusProfileEditorSheet extends ConsumerStatefulWidget {
   final StatusProfile profile;
@@ -373,6 +374,8 @@ class _StatusProfileEditorSheetState
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            final List<RuleOperator> operatorsAvailable = conditionType.allowedOperators;
+
             return AlertDialog(
               title: Text(context.l10n.dialogNewStatusRuleTitle),
               content: SingleChildScrollView(
@@ -387,13 +390,16 @@ class _StatusProfileEditorSheetState
                       items: ConditionType.values.map((c) {
                         return DropdownMenuItem(
                           value: c,
-                          child: Text(c.name.toUpperCase()),
+                          child: Text(c.toLocalizedString(context)),
                         );
                       }).toList(),
                       onChanged: (val) {
                         if (val != null) {
                           setDialogState(() {
                             conditionType = val;
+                            if (!conditionType.allowedOperators.contains(ruleOperator)) {
+                              ruleOperator = conditionType.allowedOperators.first;
+                            }
                           });
                         }
                       },
@@ -404,10 +410,10 @@ class _StatusProfileEditorSheetState
                       decoration: InputDecoration(
                         labelText: context.l10n.inputOperator,
                       ),
-                      items: RuleOperator.values.map((o) {
+                      items: operatorsAvailable.map((o) {
                         return DropdownMenuItem(
                           value: o,
-                          child: Text(o.name.toUpperCase()),
+                          child: Text(o.toLocalizedString(context)),
                         );
                       }).toList(),
                       onChanged: (val) {
@@ -423,7 +429,13 @@ class _StatusProfileEditorSheetState
                       controller: valueController,
                       decoration: InputDecoration(
                         labelText: context.l10n.inputComparisonValue,
-                        hintText: context.l10n.statusRuleComparisonHint,
+                        hintText: conditionType == ConditionType.batteryLevel || conditionType == ConditionType.population
+                              ? (ruleOperator == RuleOperator.between
+                                  ? context.l10n.statusRuleComparisonHintRange
+                                  : context.l10n.statusRuleComparisonHintNumber)
+                              : (conditionType == ConditionType.timeRange
+                                  ? context.l10n.statusRuleComparisonHintTimeRange
+                                  : context.l10n.statusRuleComparisonHintWorldList),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -437,7 +449,7 @@ class _StatusProfileEditorSheetState
                       items: StatusType.values.map((s) {
                         return DropdownMenuItem(
                           value: s,
-                          child: Text(s.name.toUpperCase()),
+                          child: Text(s.toLocalizedString(context)),
                         );
                       }).toList(),
                       onChanged: (val) {

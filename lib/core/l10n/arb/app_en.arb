@@ -1099,5 +1099,100 @@
   "statusRuleNoMessage": "No Message",
   "@statusRuleNoMessage": {
     "description": "Placeholder displayed when a status automation rule has no custom message template assigned."
+  },
+
+  "statusTypeActive": "Active",
+  "@statusTypeActive": {
+    "description": "VRChat online status option. Indicates the user is available."
+  },
+
+  "statusTypeJoinMe": "Join Me",
+  "@statusTypeJoinMe": {
+    "description": "VRChat online status option. Indicates friends are encouraged to join the user's current instance."
+  },
+
+  "statusTypeAskMe": "Ask Me",
+  "@statusTypeAskMe": {
+    "description": "VRChat online status option. Indicates friends should ask for permission before joining."
+  },
+
+  "statusTypeBusy": "Busy",
+  "@statusTypeBusy": {
+    "description": "VRChat online status option. Indicates the user does not wish to be disturbed."
+  },
+
+  "conditionTypePopulation": "Player Count",
+  "@conditionTypePopulation": {
+    "description": "Rule condition based on the number of players currently in the VRChat instance."
+  },
+
+  "conditionTypeInstanceType": "Instance Access",
+  "@conditionTypeInstanceType": {
+    "description": "Rule condition based on the VRChat instance access level (Public, Friends+, Friends, Invite+, Invite, Group, etc.)."
+  },
+
+  "conditionTypeBatteryLevel": "Battery Level",
+  "@conditionTypeBatteryLevel": {
+    "description": "Rule condition based on the battery percentage of the PC or Mobile."
+  },
+
+  "conditionTypeFriendPresent": "Friend Present",
+  "@conditionTypeFriendPresent": {
+    "description": "Rule condition that checks whether a selected friend is currently present in the same VRChat instance."
+  },
+
+  "conditionTypeTimeRange": "Time Range",
+  "@conditionTypeTimeRange": {
+    "description": "Rule condition based on whether the current local time falls within the configured time range."
+  },
+
+  "conditionTypeWorld": "Current World",
+  "@conditionTypeWorld": {
+    "description": "Rule condition based on the VRChat world the user is currently in."
+  },
+
+  "operatorGreaterThan": "Greater Than",
+  "@operatorGreaterThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is greater than the comparison value."
+  },
+
+  "operatorLessThan": "Less Than",
+  "@operatorLessThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is less than the comparison value."
+  },
+
+  "operatorEqualTo": "Equals",
+  "@operatorEqualTo": {
+    "description": "Comparison operator used by a rule. Matches when both values are equal."
+  },
+
+  "operatorContains": "Contains",
+  "@operatorContains": {
+    "description": "Comparison operator used by a rule. Matches when the target value contains the comparison value."
+  },
+
+  "operatorBetween": "Between",
+  "@operatorBetween": {
+    "description": "Comparison operator used by a rule. Matches when the value falls within the configured range."
+  },
+
+  "statusRuleComparisonHintNumber": "e.g. 50",
+  "@statusRuleComparisonHintNumber": {
+    "description": "Placeholder showing an example numeric comparison value for conditions such as battery level or player count."
+  },
+
+  "statusRuleComparisonHintRange": "e.g. 20-80",
+  "@statusRuleComparisonHintRange": {
+    "description": "Placeholder showing an example numeric range for the 'Between' comparison operator."
+  },
+
+  "statusRuleComparisonHintTimeRange": "e.g. 22:00-06:00",
+  "@statusRuleComparisonHintTimeRange": {
+    "description": "Placeholder showing an example time range in 24-hour format."
+  },
+
+  "statusRuleComparisonHintWorldList": "e.g. wrld_abc, wrld_def",
+  "@statusRuleComparisonHintWorldList": {
+    "description": "Placeholder showing example VRChat world IDs separated by commas."
   }
 }
