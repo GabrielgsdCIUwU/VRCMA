@@ -39,7 +39,42 @@ enum RuleOperator {
   greaterThan,
   lessThan,
   equalTo,
-  contains
+  contains,
+  between,
+}
+
+/// Dynamic restriction helper to tie variables with meaningful operators
+extension ConditionTypeOperators on ConditionType {
+  List<RuleOperator> get allowedOperators {
+    switch (this) {
+      case ConditionType.population:
+      case ConditionType.batteryLevel:
+        return [
+          RuleOperator.greaterThan,
+          RuleOperator.lessThan,
+          RuleOperator.equalTo,
+          RuleOperator.between,
+        ];
+      
+      case ConditionType.timeRange:
+        return [
+          RuleOperator.between,
+          RuleOperator.equalTo,
+        ];
+      
+      case ConditionType.instanceType:
+      case ConditionType.friendPresent:
+        return [
+          RuleOperator.equalTo,
+        ];
+      
+      case ConditionType.world:
+        return [
+          RuleOperator.equalTo,
+          RuleOperator.contains
+        ];
+    }
+  }
 }
 
 /// A specific rule within a status profile.
