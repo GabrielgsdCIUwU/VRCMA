@@ -197,7 +197,42 @@ class _StatusProfileEditorSheetState
   Widget _buildMobileLayout(StatusProfile currentProfile) {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: [_buildNameField()],
+      children: [
+        _buildNameField(),
+        const SizedBox(height: 16),
+        _buildFallbackStatusSelector(currentProfile),
+        const SizedBox(height: 16),
+        _buildFallbackTemplateField(),
+        const SizedBox(height: 8),
+        Text(
+          context.l10n.statusPriorityRulesCaption,
+          style: TextStyle(
+            fontSize: 11,
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const Divider(height: 32),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context.l10n.rulesReorderSubtitle,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => _showAddRuleDialog(currentProfile),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 400,
+          child: _buildRulesList(currentProfile),
+        )
+      ],
     );
   }
 
