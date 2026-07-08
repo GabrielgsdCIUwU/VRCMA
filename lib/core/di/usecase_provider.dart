@@ -73,6 +73,7 @@ Future<EvaluateStatusUseCase> evaluateStatusUseCase(Ref ref) async {
       NumericConditionMatcher(),
       InstanceTypeMatcher(),
       FriendRoleMatcher(localSocialRepo),
+      WorldConditionMatcher(),
     ],
     resolver: StatusTemplateResolver(),
   );

@@ -30,7 +30,8 @@ enum ConditionType {
   instanceType,   //* Public, Friends+, Group...
   batteryLevel,   //* Device battery (Mobile only)
   friendPresent,  //* If a specific role or friend is in the same instance
-  timeRange       //* Specific hours of the day
+  timeRange,      //* Specific hours of the day
+  world,          //* Target world ID matching 
 }
 
 /// Comparison operators for rules.

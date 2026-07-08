@@ -54,3 +54,29 @@ class FriendRoleMatcher implements IStatusConditionMatcher {
     return context.presentFriendIds.any((id) => userIdsInRole.contains(id));
   }
 }
+
+class WorldConditionMatcher implements IStatusConditionMatcher {
+  @override
+  bool canHandle(ConditionType type) => type == ConditionType.world;
+
+  @override
+  Future<bool> matches(StatusRule rule, StatusContext context) async {
+    final currentWorldId = context.worldId.toLowerCase().trim();
+    final targetValue = rule.conditionValue.toLowerCase().trim();
+
+    switch (rule.operator) {
+      case RuleOperator.equalTo:
+        return currentWorldId == targetValue;
+      
+      case RuleOperator.contains:
+        final List<String> targetWorldIds = targetValue
+          .split(',')
+          .map((id) => id.trim())
+          .toList();
+        return targetWorldIds.contains(currentWorldId);
+
+      default:
+        return false;
+    }    
+  }
+}
