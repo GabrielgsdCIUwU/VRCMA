@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
@@ -31,8 +31,17 @@ Future<void> initializeBackgroundService() async {
       AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   
-  final prefs = await SharedPreferences.getInstance();
-  final String languageCode = prefs.getString('selected_locale_code') ?? 'en';
+  final container = ProviderContainer();
+  String languageCode = 'en';
+  try {
+    final repo = await container.read(configurationRepositoryProvider.future);
+    languageCode = await repo.getString('selected_locale_code') ?? 'en';
+  } catch (e) {
+    debugPrint("Bacground Service Init Fail: $e");
+  } finally {
+    container.dispose();
+  }
+
   final l10n = await AppLocalizations.delegate.load(Locale(languageCode));
 
   await service.configure(
@@ -72,8 +81,8 @@ void onBackgroundStart(ServiceInstance service) async {
   final subProc = container.listen(automationProcessorProvider, (_, _) {});
   
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final String languageCode = prefs.getString('selected_locale_code') ?? 'en';
+    final repo = await container.read(configurationRepositoryProvider.future);
+    final String languageCode = await repo.getString('selected_locale_code') ?? 'en';
     final l10n = await AppLocalizations.delegate.load(Locale(languageCode));
 
     final api = await container.read(vrcApiProvider.future);
