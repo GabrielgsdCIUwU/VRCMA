@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/presentation/state/user_details_provider.dart';
 
@@ -21,7 +22,7 @@ class UserDetailsSheet extends ConsumerWidget {
         children: [
           _buildHeader(user),
           const Divider(),
-          const Text("App Roles", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(context.l10n.sectionAppRoles, style: TextStyle(fontWeight: FontWeight.bold)),
           Expanded(
             child: allRolesAsync.when(
                 data: (allRoles) => ListView.builder(
@@ -42,11 +43,11 @@ class UserDetailsSheet extends ConsumerWidget {
                   },
                 ),
                 loading: () => const CircularProgressIndicator(),
-                error: (_, _) => const Text("Error loading roles")
+                error: (error, _) => Text(context.l10n.stateError(error.toString()))
             ),
           ),
           const SizedBox(height: 10),
-          const Text("VRChat Tags (Read Only)", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(context.l10n.sectionVrcTagsReadOnly, style: TextStyle(fontWeight: FontWeight.bold)),
           Wrap(
             children: user.tags.map((t) => 
                 Chip(label: Text(

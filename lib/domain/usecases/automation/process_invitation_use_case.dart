@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
-import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 
 
@@ -25,7 +25,7 @@ class ProcessInvitationUseCase {
   });
 
   ProcessInvitationResult? execute({
-    required InvitationType request,
+    required IncomingUserEvent request,
     required FilterProfile profile,
     required List<Role> userAssignedRoles,
   }) {
@@ -70,7 +70,7 @@ class ProcessInvitationUseCase {
 
 class UserRoleExtractor {
   Set<String> extract(
-      InvitationType request,
+      IncomingUserEvent request,
       List<Role> userAssignedRoles,
       ) {
     final rawTags = request.senderTags.map((t) => t.toLowerCase()).toSet();

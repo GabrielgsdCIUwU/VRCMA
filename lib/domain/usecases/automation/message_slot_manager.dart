@@ -12,7 +12,7 @@ class MessageSlotManager {
     required this.automationRepository,
   });
   
-  Future<int> prepareSlotForMessage(String userId, CustomMessage message) async {
+  Future<int?> prepareSlotForMessage(String userId, CustomMessage message) async {
     if (message.isActive && message.slotIndex != null) {
       return message.slotIndex!;
     }
@@ -30,7 +30,7 @@ class MessageSlotManager {
       return await result.fold(
           (failure) {
             debugPrint("Error preparing slot for message: ${failure.message}");
-            return 0;
+            return null;
           },
           (_) async {
             await messageRepository.updateSlot(message.id!, slotToUse, message.type);

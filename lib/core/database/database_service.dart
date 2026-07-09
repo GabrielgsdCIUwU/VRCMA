@@ -20,9 +20,13 @@ class DatabaseService {
     return await openDatabase(
       path,
       version: _dbVersion,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: (db, version) async {
         try {
           await _onCreate(db, version);
+          await _setInitialData(db, version);
           await _createDummyData(db, version);
         } catch (e) {
           debugPrint("Error creating database: $e");
@@ -33,6 +37,13 @@ class DatabaseService {
   }
 
   Future<void> _onCreate(Database db, int version) async {
+
+    await db.execute('''
+      CREATE TABLE app_configurations (
+        config_key TEXT PRIMARY KEY,
+        config_value TEXT NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE roles (
@@ -127,6 +138,41 @@ class DatabaseService {
         FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE status_profiles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        is_active INTEGER DEFAULT 0,
+        fallback_status TEXT NOT NULL,
+        fallback_template TEXT,
+        last_applied_status TEXT,
+        last_applied_message TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE status_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        target_status TEXT NOT NULL,
+        message_template TEXT,
+        condition_type TEXT NOT NULL,
+        operator TEXT NOT NULL,
+        condition_value TEXT,
+        FOREIGN KEY (profile_id) REFERENCES status_profiles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_profile_id ON profile_rules (profile_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_role_id ON profile_rules (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_automation_assigned_roles_automation_id ON automation_assigned_roles (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_rules_profile_priority ON status_rules (profile_id, priority)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
@@ -189,5 +235,11 @@ class DatabaseService {
       'invite_message_id': vipInviteId, 
       'request_message_id': vipRequestInviteId,
     });
+  }
+
+  Future<void> _setInitialData(Database db, int version) async {
+    await db.insert('app_configurations', {'config_key': 'selected_locale_code', 'config_value': 'en'});
+    await db.insert('app_configurations', {'config_key': 'bg_automation_enabled', 'config_value': 'false'});
+    await db.insert('app_configurations', {'config_key': 'app_theme_mode', 'config_value': 'system'});
   }
 }

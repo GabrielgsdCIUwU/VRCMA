@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
@@ -10,10 +11,33 @@ class FriendCategoryHeaderTile extends ConsumerWidget {
 
   const FriendCategoryHeaderTile({super.key, required this.category, this.depth = 0});
 
+  String _getLocalizedTitle(BuildContext context) {
+    switch (category.id) {
+      case 'online':
+        return context.l10n.presenceOnline;
+      
+      case 'offline':
+        return context.l10n.presenceOffline;
+      
+      case 'active':
+        return context.l10n.presenceActiveWebsite;
+      
+      case 'favorites_parent':
+        return context.l10n.categoryFavorites;
+      
+      case 'instances_parent':
+        return context.l10n.categorySameInstance;
+      
+      default:
+        return category.title;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final collapsedSet = ref.watch(collapsedCategoriesProvider);
     final isExpanded = !collapsedSet.contains(category.id);
+    final localizedTitle = _getLocalizedTitle(context);
 
     return InkWell(
       onTap: () {
@@ -33,7 +57,7 @@ class FriendCategoryHeaderTile extends ConsumerWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                category.title.toUpperCase(),
+                localizedTitle.toUpperCase(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold, 
                   fontSize: 12,

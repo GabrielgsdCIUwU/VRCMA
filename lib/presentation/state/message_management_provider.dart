@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/usecases/messages/sync_messages_use_case.dart';

@@ -2,18 +2,22 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/automation_settings_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
+import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/status_profile_editor_sheet.dart';
 
 class AutomationSettingsPanel extends ConsumerWidget {
   const AutomationSettingsPanel({super.key});
@@ -35,7 +39,7 @@ class AutomationSettingsPanel extends ConsumerWidget {
          flex: isExpanded("profiles") ? 1 : 0,
          child: _CollapsibleSection(
            id: "profiles",
-           title: "Profiles",
+           title: context.l10n.sectionProfiles,
            onAdd: () => _showCreateProfileDialog(context, ref),
            child: const _ProfileListContent(),
          ),
@@ -46,7 +50,7 @@ class AutomationSettingsPanel extends ConsumerWidget {
          flex: isExpanded("roles") ? 1 : 0,
          child: _CollapsibleSection(
            id: "roles",
-           title: "Roles",
+           title: context.l10n.sectionRoles,
            onAdd: () => _showCreateRoleDialog(context, ref),
            child: const _RoleListContent(),
          ),
@@ -54,10 +58,21 @@ class AutomationSettingsPanel extends ConsumerWidget {
        const Divider(height: 1, thickness: 1),
 
        Flexible(
+        flex: isExpanded("status_profiles") ? 1 : 0,
+        child: _CollapsibleSection(
+          id: "status_profiles",
+          title: context.l10n.sectionStatusAutomation,
+          onAdd: () => _showCreateStatusProfileDialog(context, ref),
+          child: const _StatusProfileListContent(),
+        ),
+       ),
+
+       const Divider(height: 1, thickness: 1),
+       Flexible(
          flex: isExpanded("automations") ? 1 : 0,
          child: _CollapsibleSection(
            id: "automations",
-           title: "Friend Automations",
+           title: context.l10n.sectionFriendAutomations,
            onAdd: () {
              Navigator.push(context, MaterialPageRoute(
                builder: (_) => const RoleAutomationEditorSheet()
@@ -75,8 +90,8 @@ class AutomationSettingsPanel extends ConsumerWidget {
     showDialog(
         context: context,
         builder: (_) => _GenericAddDialog(
-          title: "New Profile",
-          label: "Profile name",
+          title: context.l10n.dialogNewProfileTitle,
+          label: context.l10n.dialogNewProfileLabel,
           onConfirm: (name) {
             ref.read(profileManagementProviderProvider.notifier).addProfile(name);
             ref.read(automationPanelSectionsProvider.notifier).expand('profiles');
@@ -89,11 +104,25 @@ class AutomationSettingsPanel extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (_) => _GenericAddDialog(
-        title: "New Role",
-        label: "Role name",
+        title: context.l10n.dialogNewRoleTitle,
+        label: context.l10n.dialogNewRoleLabel,
         onConfirm: (name) {
           ref.read(roleManagementProvider.notifier).createRole(name);
           ref.read(automationPanelSectionsProvider.notifier).expand('roles');
+        },
+      )
+    );
+  }
+
+  void _showCreateStatusProfileDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (_) => _GenericAddDialog(
+        title: context.l10n.dialogNewStatusProfileTitle,
+        label: context.l10n.dialogNewStatusProfileLabel,
+        onConfirm: (name) {
+          ref.read(statusProfileManagementProvider.notifier).addProfile(name);
+          ref.read(automationPanelSectionsProvider.notifier).expand('status_profiles');
         },
       )
     );
@@ -112,14 +141,14 @@ class AutomationSettingsPanel extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "BACKGROUND AUTOMATION",
+                  context.l10n.bgAutomationTitle.toUpperCase(),
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     letterSpacing: 1.2, color: context.colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold, fontSize: 14,
                   ),
                 ),
                 Text(
-                  "Keep processing invites when app is closed",
+                  context.l10n.bgAutomationDesc,
                   style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant),
                 )
               ],
@@ -194,7 +223,7 @@ class _CollapsibleSection extends ConsumerWidget {
                   icon: const Icon(Icons.add, size: 20),
                   onPressed: onAdd,
                   visualDensity: VisualDensity.compact,
-                  tooltip: "Add $title",
+                  tooltip: context.l10n.btnCreate,
                 ),
               ],
             ),
@@ -232,8 +261,8 @@ class _GenericAddDialogState extends State<_GenericAddDialog> {
         onSubmitted: (val) => _submit(),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-        ElevatedButton(onPressed: _submit, child: const Text("Create")),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+        ElevatedButton(onPressed: _submit, child: Text(context.l10n.btnCreate)),
       ],
     );
   }
@@ -257,7 +286,7 @@ class _RoleListContent extends ConsumerWidget {
         itemBuilder: (context, i) => _RoleTile(role: roles[i]),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text("Error: $err")),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
     );
   }
 }
@@ -279,9 +308,9 @@ class _RoleTile extends ConsumerWidget {
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
       subtitle: countAsync.when(
-        data: (count) => Text("$count members", style: const TextStyle(fontSize: 12)),
-        loading: () => const Text("Loading...", style: TextStyle(fontSize: 12)),
-        error: (err, _) => Text("Error: $err", style: const TextStyle(fontSize: 12)),
+        data: (count) => Text(context.l10n.roleMembersCount(count), style: const TextStyle(fontSize: 12)),
+        loading: () => Text(context.l10n.stateLoading, style: TextStyle(fontSize: 12)),
+        error: (err, _) => Text(context.l10n.stateError(err.toString()), style: const TextStyle(fontSize: 12)),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -305,16 +334,15 @@ class _RoleTile extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Delete Role?"),
+        title: Text(context.l10n.dialogDeleteRoleTitle),
         content: Text(
-          "Are you sure you want to delete '${role.name}'? \n"
-          "This will remove this role from all users and profiles.",
+          context.l10n.dialogDeleteRoleContent(role.name),
           style: const TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(context.l10n.btnCancel),
           ),
           TextButton(
             onPressed: () {
@@ -322,7 +350,7 @@ class _RoleTile extends ConsumerWidget {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: const Text("Delete"),
+            child: Text(context.l10n.btnDelete),
           )
         ],
       )
@@ -340,7 +368,7 @@ class _ProfileListContent extends ConsumerWidget {
     return profilesAsync.when(
       data: (profiles) => _ProfileListView(profiles: profiles),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text("Error: $err")),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
     );
   }
 }
@@ -383,7 +411,7 @@ class _ProfileTile extends ConsumerWidget {
           fontSize: 14,
         ),
       ),
-      subtitle: Text("${profile.rules.length} automation rules"),
+      subtitle: Text(context.l10n.profileRulesCount(profile.rules.length)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -391,7 +419,7 @@ class _ProfileTile extends ConsumerWidget {
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => _openEditor(context),
             visualDensity: VisualDensity.compact,
-            tooltip: "Edit rules",
+            tooltip: context.l10n.tooltipEdit,
           ),
           _CommonOptionsMenu(
             onDelete: () => _showDeleteConfirmation(context, ref),
@@ -416,12 +444,12 @@ class _ProfileTile extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Delete Profile?"),
-        content: Text("Are you sure you want to delete '${profile.name}'? This action cannot be undone."),
+        title: Text(context.l10n.dialogDeleteProfileTitle),
+        content: Text(context.l10n.dialogDeleteProfileContent(profile.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(context.l10n.btnCancel),
           ),
           TextButton(
             onPressed: () {
@@ -429,7 +457,7 @@ class _ProfileTile extends ConsumerWidget {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: const Text("Delete"),
+            child: Text(context.l10n.btnDelete),
           )
         ],
       )
@@ -445,7 +473,7 @@ class _CommonOptionsMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert),
-      tooltip: "More options",
+      tooltip: context.l10n.tooltipMoreOptions,
       onSelected: (value) {
         if (value == 'delete') onDelete();
       },
@@ -456,7 +484,7 @@ class _CommonOptionsMenu extends StatelessWidget {
             children: [
               Icon(Icons.delete_outline, color: context.colorScheme.error, size: 20),
               SizedBox(width: 8),
-              Text("Delete", style: TextStyle(color: context.colorScheme.error)),
+              Text(context.l10n.btnDelete, style: TextStyle(color: context.colorScheme.error)),
             ],
           ),
         ),
@@ -478,7 +506,7 @@ class _StatusIcon extends StatelessWidget {
         color: isActive ? context.vrcColors.success : context.colorScheme.onSurfaceVariant,
       ),
       onPressed: onPressed,
-      tooltip: isActive ? "Deactivate profile" : "Set as active",
+      tooltip: isActive ? context.l10n.tooltipDeactivate : context.l10n.tooltipActivate,
     );
   }
 }
@@ -497,16 +525,16 @@ class _CreateProfileDialogState extends State<_CreateProfileDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("New Profile"),
+      title: Text(context.l10n.dialogNewProfileTitle),
       content: TextField(
         controller: _controller,
         autofocus: true,
-        decoration: const InputDecoration(labelText: "Profile name"),
+        decoration: InputDecoration(labelText: context.l10n.dialogNewProfileLabel),
         onSubmitted: (val) => _submit(),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-        ElevatedButton(onPressed: _submit, child: const Text("Create")),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+        ElevatedButton(onPressed: _submit, child: Text(context.l10n.btnCreate)),
       ],
     );
   }
@@ -516,6 +544,103 @@ class _CreateProfileDialogState extends State<_CreateProfileDialog> {
     
     widget.onConfirm(_controller.text);
     Navigator.pop(context);
+  }
+}
+
+class _StatusProfileListContent extends ConsumerWidget {
+  const _StatusProfileListContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stateAsync = ref.watch(statusProfileManagementProvider);
+
+    return stateAsync.when(
+      data: (profiles) => ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: profiles.length,
+        itemBuilder: (context, i) => _StatusProfileTile(profile: profiles[i]),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
+    );
+  }
+}
+
+class _StatusProfileTile extends ConsumerWidget {
+  final StatusProfile profile;
+  const _StatusProfileTile({required this.profile});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isActive = profile.isActive;
+
+    return ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      onTap: () => _handleToggle(ref),
+      leading: _StatusIcon(isActive: isActive, onPressed: () => _handleToggle(ref)),
+      title: Text(
+        profile.name,
+        style: TextStyle(
+          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+          color: isActive ? context.vrcColors.success : null,
+          fontSize: 14,
+        ),
+      ),
+      subtitle: Text(
+        context.l10n.statusProfileSubtitle(
+          profile.rules.length,
+          profile.fallbackStatus.name
+        )
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => _openEditor(context),
+            visualDensity: VisualDensity.compact,
+            tooltip: context.l10n.tooltipEditStatusProfile,
+          ),
+          _CommonOptionsMenu(
+            onDelete: () => _showDeleteConfirmation(context, ref),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleToggle(WidgetRef ref) {
+    ref.read(statusProfileManagementProvider.notifier).toggleProfileActive(profile);
+  }
+
+  void _openEditor(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)));
+  }
+
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteStatusProfileTitle),
+        content: Text(context.l10n.dialogDeleteStatusProfileContent(profile.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.l10n.btnCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          )
+        ],
+      )
+    );
   }
 }
 
@@ -530,7 +655,7 @@ class _RoleAutomationListContent extends ConsumerWidget {
       data: (automations) {
         if (automations.isEmpty) {
           return Center(
-            child: Text("No automations configured", style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+            child: Text(context.l10n.noAutomationsConfigured, style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
           );
         }
         return ListView.separated(
@@ -540,7 +665,7 @@ class _RoleAutomationListContent extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text("Error: $err")),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
     );
   }
 }
@@ -552,8 +677,8 @@ class _RoleAutomationTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final title = automation.trigger == AutomationTrigger.newFriend
-        ? "On New Friend"
-        : "Has Tag ${VrcTag.allTags.firstWhereOrNull((t) => t.id == automation.targetValue)?.name ?? automation.targetValue}";
+        ? context.l10n.triggerOnNewFriend
+        : context.l10n.triggerHasTag(VrcTag.allTags.firstWhereOrNull((t) => t.id == automation.targetValue)?.name ?? automation.targetValue!);
     
     return ListTile(
       dense: true,
@@ -564,7 +689,7 @@ class _RoleAutomationTile extends ConsumerWidget {
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
       subtitle: Text(
-        "Assigns: ${automation.roles.map((r) => r.name).join(', ')}",
+        context.l10n.automationAssigns(automation.roles.map((r) => r.name).join(', ')),
         style: const TextStyle(fontSize: 12),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -593,12 +718,12 @@ class _RoleAutomationTile extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Delete Automation?"),
-        content: const Text("Are you sure you want to delete this automation?"),
+        title: Text(context.l10n.dialogDeleteAutomationTitle),
+        content: Text(context.l10n.dialogDeleteAutomationContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(context.l10n.btnCancel),
           ),
           TextButton(
             onPressed: () {
@@ -606,7 +731,7 @@ class _RoleAutomationTile extends ConsumerWidget {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: const Text("Delete"),
+            child: Text(context.l10n.btnDelete),
           ),
         ],
       ),

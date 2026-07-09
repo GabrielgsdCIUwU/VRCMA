@@ -1,0 +1,319 @@
+{
+  "@@locale": "es",
+  "loginTitle": "VRCMA",
+  "usernameLabel": "Usuario o Correo Electrónico",
+  "passwordLabel": "Contraseña",
+  "loginButton": "Iniciar Sesión",
+  "enter2faTitle": "Introduce el código 2FA",
+  "digitCodeLabel": "Código de 6 dígitos",
+  "verifyButton": "Verificar",
+  "backButton": "Volver",
+  "loginSuccess": "¡Inicio de sesión correcto!",
+  "connectionTimeout": "Tiempo de espera agotado. Comprueba tu conexión a Internet",
+  "unexpectedError": "Error inesperado: {error}",
+  "navConfig": "Config",
+  "navMessages": "Mensajes",
+  "navLogs": "Registros",
+  "navFriends": "Amigos",
+  
+  "workspaceTabMessages": "Mensajes y Slots",
+  "workspaceTabLogs": "Registros de Automatización",
+  "sectionProfiles": "Perfiles",
+  "sectionRoles": "Roles",
+  "sectionFriendAutomations": "Automatización de amigos",
+
+  "bgAutomationTitle": "Automatización en segundo plano",
+  "bgAutomationDesc": "Sigue procesando invitaciones cuando la aplicación esté cerrada",
+
+  "dialogNewProfileTitle": "Nuevo perfil",
+  "dialogNewProfileLabel": "Nombre del perfil",
+
+  "dialogNewRoleTitle": "Nuevo rol",
+  "dialogNewRoleLabel": "Nombre del rol",
+
+  "btnCancel": "Cancelar",
+  "btnCreate": "Crear",
+  "btnDelete": "Eliminar",
+
+  "roleMembersCount": "{count} miembros",
+  "profileRulesCount": "{count} reglas de automatización",
+
+  "dialogDeleteRoleTitle": "¿Eliminar rol?",
+  "dialogDeleteRoleContent": "¿Estás seguro de que deseas eliminar ''{roleName}''?\nEsto eliminará este rol de todos los usuarios y perfiles.",
+
+  "dialogDeleteProfileTitle": "¿Eliminar perfil?",
+  "dialogDeleteProfileContent": "¿Estás seguro de que deseas eliminar '{profileName}'? Esta acción no se puede deshacer.",
+
+  "dialogDeleteAutomationTitle": "¿Eliminar automatización?",
+  "dialogDeleteAutomationContent": "¿Estás seguro de que deseas eliminar esta automatización?",
+
+  "stateLoading": "Cargando...",
+  "stateError": "Error: {error}",
+
+  "tooltipEdit": "Editar",
+  "tooltipDeactivate": "Desactivar perfil",
+  "tooltipActivate": "Establecer como activo",
+  "tooltipMoreOptions": "Más opciones",
+
+  "noAutomationsConfigured": "No hay automatizaciones configuradas",
+
+  "triggerOnNewFriend": "Al agregar nuevo amigo",
+  "triggerHasTag": "Tiene la etiqueta {tagName}",
+
+  "automationAssigns": "Asigna: {roles}",
+
+  "logsHeader": "Registros de automatización",
+  "logsSearchHint": "Buscar por nombre o regla...",
+  "logsEmpty": "No se encontraron registros",
+
+  "timeJustNow": "Justo ahora",
+  "timeMinutesAgo": "Hace {minutes}m",
+  "timeHoursAgo": "Hace {hours}h",
+  "timeDaysAgo": "Hace {days}d",
+
+  "actionAccepted": "ACEPTADO",
+  "actionRejected": "RECHAZADO",
+
+  "tabInvite": "Invitaciones",
+  "tabRequest": "Solicitudes",
+
+  "messageTypeInvite": "Invitación",
+  "messageTypeResponse": "Respuesta",
+  "messageTypeRequest": "Petición",
+  "messageTypeRequestResponse": "Respuesta a Petición",
+  "tabResponse": "Respuesta",
+  "tabReqResponse": "Resp. Petición",
+
+  "liveSlotsHeader": "Slots Activos en VRChat",
+  "tooltipSyncFromVrc": "Sincronizar con VRChat",
+
+  "messageLibraryHeader": "Biblioteca de Mensajes",
+  "tooltipAddMessage": "Añadir mensaje",
+  "libraryEmpty": "La biblioteca está vacía",
+
+  "unassignedMessagesHeader": "MENSAJES SIN ASIGNAR",
+  "assignedMessagesHeader": "ASIGNADOS A SLOTS ACTIVOS",
+  
+  "dialogNewMessageTitle": "Nuevo Mensaje de {type}",
+  "dialogNewMessageDesc": "Este mensaje se guardará en tu biblioteca y se podrá asignar a reglas de automatización.",
+  "inputMessageHint": "Escribe tu mensaje...",
+  "inputMessageLabel": "Mensaje",
+  "btnCreateMessage": "Crear Mensaje",
+  "toastMessageAdded": "Mensaje de {type} añadido a la biblioteca",
+  "messageSlotLabel": "Slot {index}",
+  "slotPickerTitle": "Asignar ''{content}'' a un Slot",
+  "slotPickerCategory": "Categoría: {category}",
+
+  "friendsHeader": "Amigos",
+  "tooltipRefreshFriends": "Actualizar amigos",
+  "searchFriendsHint": "Buscar amigos...",
+  "noFriendsFound": "No se encontraron amigos",
+
+  "presenceOnline": "Conectado",
+  "presenceOffline": "Desconectado",
+  "presenceActiveWebsite": "Activo en la web",
+  "presenceTraveling": "Cambiando de mundo...",
+  "presencePrivateInstance": "Instancia privada",
+  "presenceInstanceDesc": "Instancia {accessType} ({region})",
+
+  "categorySameInstance": "En la misma instancia",
+  "categoryFavorites": "Favoritos",
+
+  "accessPublic": "Public",
+  "accessInviteOnly": "Invite Only",
+  "accessInvitePlus": "Invite+",
+  "accessFriends": "Friends",
+  "accessFriendsPlus": "Friends+",
+  "accessGroup": "Group",
+  "accessGroupPlus": "Group+",
+  "accessGroupPublic": "Group Public",
+  "accessUnknown": "Desconocido",
+
+  "editProfileTitle": "Editar perfil",
+  "dialogUnsavedTitle": "Cambios sin guardar",
+  "dialogUnsavedContent": "Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?",
+
+  "btnDiscard": "Descartar",
+  "btnSave": "Guardar",
+  "btnSaveChanges": "Guardar cambios",
+
+  "sectionProfileSettings": "Configuración del perfil",
+  "inputProfileName": "Nombre del perfil",
+  "sectionActions": "Acciones",
+  "priorityRulesCaption": "Las reglas con mayor prioridad se evalúan primero.",
+
+  "sectionAutomationRules": "Reglas de automatización",
+  "tooltipRemoveRule": "Eliminar regla",
+  "contextOnInviteReceived": "AL RECIBIR UNA INVITACIÓN",
+  "contextOnRequestToJoin": "AL RECIBIR UNA SOLICITUD DE UNIÓN",
+
+  "defaultVrcMessage": "Mensaje predeterminado de VRChat",
+  "dialogSelectMessage": "Seleccionar {category}",
+  "defaultMessageOption": "Usar el mensaje predeterminado de VRChat",
+  "defaultMessageOptionDesc": "Usa el mensaje de notificación predeterminado de VRChat.",
+
+  "btnAddRoleRule": "Añadir regla de rol",
+  "searchRolesHint": "Buscar roles...",
+
+  "sectionFallbackTags": "Etiquetas de respaldo",
+  "fallbackTagsDesc": "Se aplican cuando ningún rol coincide.",
+  "btnAddTag": "Añadir etiqueta",
+  "searchTagsHint": "Buscar etiquetas o idiomas...",
+  "fallbackTagActionDisabled": "DESACTIVADO",
+  "fallbackTagActionAccept": "ACEPTAR",
+  "fallbackTagActionReject": "RECHAZAR",
+
+  "newAutomationTitle": "Nueva automatización",
+  "editAutomationTitle": "Editar automatización",
+  "sectionCondition": "Condición",
+
+  "triggerNewFriendTitle": "Al añadir un nuevo amigo",
+  "triggerNewFriendDesc": "Asigna los roles predeterminados a todos los nuevos amigos.",
+  "triggerHasTagTitle": "Tiene una etiqueta específica",
+  "triggerHasTagDesc": "Asigna roles solo si el usuario tiene la etiqueta seleccionada en su perfil.",
+  "targetTagHeader": "Etiqueta objetivo",
+  "tagRequired": "Obligatorio",
+
+  "tagSelected": "Etiqueta seleccionada",
+  "tagSelectPlaceholder": "Selecciona una etiqueta...",
+  "searchTagsVrcHint": "Buscar etiquetas de VRChat...",
+  "sectionAssignRoles": "Asignar roles",
+
+  "btnAddRole": "Añadir rol",
+  "noRolesSelectedWarning": "Debes asignar al menos un rol.",
+  "searchLocalRolesHint": "Buscar roles locales...",
+  "tooltipRemoveRole": "Eliminar rol",
+  "editRoleTitle": "Editar rol",
+  "errorNameInUseTitle": "Ese nombre ya está en uso",
+  "inputRoleName": "Nombre del rol",
+  "sectionAppRoles": "Roles de la aplicación",
+
+  "sectionVrcTagsReadOnly": "Etiquetas de VRChat (solo lectura)",
+
+  "errorLoadingRoles": "No se pudieron cargar los roles",
+
+  "noRulesAdded": "Aún no se han añadido reglas.\nHaz clic en ''Añadir regla de rol'' para comenzar.",
+  "errorLoadingMessages": "Error al cargar los mensajes",
+
+  "ruleActionAccept": "Aceptar",
+  "ruleActionReject": "Rechazar",
+
+  "searchPlaceholder": "Buscar...",
+  "noItemsMatchSearch": "Ningún elemento coincide con la búsqueda",
+  "btnOk": "Aceptar",
+  
+  "tooltipShowPassword": "Mostrar contraseña",
+  "tooltipHidePassword": "Ocultar contraseña",
+
+  "logNoRuleMatched": "No se aplicó ninguna regla",
+  "logRuleMatched": "Regla aplicada para {roleName}",
+
+  "bgInitialNotificationTitle": "Automatización de VRCMA",
+  "bgInitialNotificationContent": "Ejecutándose en segundo plano...",
+  "bgNotificationTitle": "VRCMA en ejecución",
+  "bgNotificationContent": "Último: {senderName}",
+
+  "sectionStatusAutomation": "Automatización de Estado",
+  "dialogNewStatusProfileTitle": "Nuevo Perfil de Estado",
+  "dialogNewStatusProfileLabel": "Nombre del Perfil",
+  "editStatusProfileTitle": "Editar Perfil de Estado",
+  "sectionGeneralSettings": "Configuración General",
+  "inputStatusProfileName": "Nombre del Perfil",
+  "inputFallbackStatus": "Estado Predeterminado",
+  "inputFallbackTemplate": "Plantilla de Mensaje Predeterminada",
+  "statusPriorityRulesCaption": "Usa plantillas como: En '{{world}} ({{battery}}'🔋)\nLas reglas de estado se evalúan de arriba hacia abajo según su prioridad.",
+  "sectionAutomationConditions": "Condiciones de Automatización",
+  "btnAddConditionRule": "Añadir Regla de Condición",
+  "noStatusRulesAdded": "No hay reglas dinámicas de estado configuradas.\nEste perfil siempre utilizará la configuración predeterminada.",
+  "rulesReorderSubtitle": "Reglas (Arrastra para Reordenar)",
+  "dialogNewStatusRuleTitle": "Nueva Regla de Estado",
+  "inputTriggerCondition": "Condición de Activación",
+  "inputOperator": "Operador",
+  "inputComparisonValue": "Valor de Comparación",
+  "inputTargetStatus": "Estado de Destino",
+  "inputStatusMessageTemplate": "Plantilla de Mensaje de Estado",
+  "btnCreateRule": "Crear Regla",
+
+  "statusProfileSubtitle": "{count, plural, =1{1 regla} other{{count} reglas}}, predeterminado: {fallback}",
+  "tooltipEditStatusProfile": "Editar Perfil de Estado",
+  "dialogDeleteStatusProfileTitle": "Eliminar Perfil de Estado",
+  "dialogDeleteStatusProfileContent": "¿Estás seguro de que quieres eliminar ''{name}''?",
+  "statusRuleComparisonHint": "p. ej. 5, Public, 30",
+  "statusMessageTemplateHint": "p. ej. En '{{world}} con {{friends}}'",
+  "statusRuleNoMessage": "Sin mensaje",
+
+  "statusTypeActive": "Activo",
+  "statusTypeJoinMe": "Únete",
+  "statusTypeAskMe": "Pregúntame",
+  "statusTypeBusy": "Ocupado",
+
+  "conditionTypePopulation": "Número de jugadores",
+  "conditionTypeInstanceType": "Acceso a la instancia",
+  "conditionTypeBatteryLevel": "Nivel de batería",
+  "conditionTypeFriendPresent": "Amigo presente",
+  "conditionTypeTimeRange": "Franja horaria",
+  "conditionTypeWorld": "Mundo actual",
+
+  "operatorGreaterThan": "Mayor que",
+  "operatorLessThan": "Menor que",
+  "operatorEqualTo": "Igual a",
+  "operatorContains": "Contiene",
+  "operatorBetween": "Entre",
+
+  "statusRuleComparisonHintNumber": "p. ej. 50",
+  "statusRuleComparisonHintRange": "p. ej. 20-80",
+  "statusRuleComparisonHintTimeRange": "p. ej. 22:00-06:00",
+  "statusRuleComparisonHintWorldList": "p. ej. wrld_abc, wrld_def",
+
+  "statusOverrideNotification": "Automatización pausada. Has cambiado tu estado de VRChat manualmente.",
+
+  "themeModeLabel": "Modo del tema",
+  "themeModeSystem": "Predeterminado del sistema",
+  "themeModeLight": "Claro",
+  "themeModeDark": "Oscuro",
+
+  "languageLabel": "Idioma",
+
+  "diagnosticTitle": "Diagnóstico y datos",
+
+  "clearCacheLabel": "Borrar caché de metadatos",
+  "clearCacheDesc": "Vuelve a cargar los nombres de los mundos y las imágenes de los avatares.",
+
+  "toastCacheCleared": "La caché de metadatos se ha borrado correctamente.",
+
+  "rolesManagementTitle": "Gestionar roles",
+  "rolesManagementDesc": "Crea y administra categorías personalizadas para tus amigos.",
+
+  "automationManagementDesc": "Crea reglas de automatización basadas en amigos, roles u otras condiciones.",
+
+  "dashboardHeader": "Centro de control",
+  "dashboardSubheader": "Administra los filtros activos y los perfiles de automatización de estado.",
+
+  "clearCachesBtn": "Borrar caché",
+
+  "defaultMessageCustomOption": "Sin mensaje personalizado",
+  "defaultMessageCustomOptionDesc": "Usa el mensaje de estado predeterminado sin aplicar una plantilla personalizada.",
+
+  "themeLabel": "Tema",
+
+  "toastLocaleChanged": "El idioma se ha cambiado correctamente.",
+
+  "systemLogsTitle": "Registros del sistema",
+
+  
+  "themeSeedColorLabel": "Color de Acento",
+
+  "noProfilesAdded": "Aún no se han añadido perfiles de filtro.",
+  "nativeBackgroundRuntimeFail": "Error al inicializar el servicio de segundo plano nativo.",
+  
+  "automationTriggerNewFriend": "Al agregar nuevo amigo",
+  "automationTriggerTag": "Etiqueta coincidente: {tag}",
+  "automationAssignsRoles": "Asigna: {roles}",
+
+  "colorDeepPurple": "Púrpura Profundo",
+  "colorBlue": "Azul",
+  "colorTeal": "Turquesa",
+  "colorGreen": "Verde",
+  "colorOrange": "Naranja",
+  "colorRose": "Rosa"
+}

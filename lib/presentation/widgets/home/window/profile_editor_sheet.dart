@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/fallback_tag_action_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
+import 'package:vrcma/presentation/widgets/home/common/rule_action_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
 import 'package:vrcma/presentation/state/profile_editor_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_tag_extension.dart';
@@ -46,16 +49,16 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Unsaved Changes"),
-        content: const Text("You have made changes to this profile. Do you want to save them before leaving?"),
+        title: Text(context.l10n.dialogUnsavedTitle),
+        content: Text(context.l10n.dialogUnsavedContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, 'discard'),
-            child: Text("Discard", style: TextStyle(color: context.colorScheme.error)),
+            child: Text(context.l10n.btnDiscard, style: TextStyle(color: context.colorScheme.error)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, 'save'),
-            child: const Text("Save Changes"),
+            child: Text(context.l10n.btnSaveChanges),
           ),
         ],
       ),
@@ -83,13 +86,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Edit Profile"),
+          title: Text(context.l10n.editProfileTitle),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilledButton.icon(
                 icon: const Icon(Icons.save),
-                label: const Text("Save"),
+                label: Text(context.l10n.btnSave),
                 style: FilledButton.styleFrom(
                   backgroundColor: hasChanges ? context.vrcColors.success : null,
                   foregroundColor: hasChanges ? context.colorScheme.onPrimary : context.colorScheme.onSurfaceVariant,
@@ -125,7 +128,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("PROFILE SETTINGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              Text(context.l10n.sectionProfileSettings.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 letterSpacing: 1.2,
                 color: context.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold
@@ -133,7 +136,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               const SizedBox(height: 24),
               _buildNameField(),
               const SizedBox(height: 40),
-              Text("ACTIONS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              Text(context.l10n.sectionActions.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 letterSpacing: 1.2,
                 color: context.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold
@@ -146,7 +149,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               const Spacer(),
               Icon(Icons.info_outline, color: context.colorScheme.onSurfaceVariant, size: 20),
               const SizedBox(height: 8),
-              Text("Higher priority rules (at the top) are evaluated first.",
+              Text(context.l10n.priorityRulesCaption,
                 style: TextStyle(color: context.colorScheme.onSurfaceVariant, fontSize: 12),
               ),
             ],
@@ -162,7 +165,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 padding: const EdgeInsets.all(24),
                 child: Row(
                   children: [
-                    Text("AUTOMATION RULES", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    Text(context.l10n.sectionAutomationRules.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       letterSpacing: 1.2,
                       color: context.colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold
@@ -205,9 +208,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
           child: _buildNameField(),
         ),
         const Divider(height: 1),
-        const ListTile(
-          title: Text("Priority rules"),
-          subtitle: Text("The higher-level rules are evaluated first"),
+        ListTile(
+          title: Text(context.l10n.sectionAutomationRules),
+          subtitle: Text(context.l10n.priorityRulesCaption),
         ),
         Expanded(
           child: Column(
@@ -232,8 +235,8 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   Widget _buildNameField() {
     return TextField(
       controller: _nameController,
-      decoration: const InputDecoration(
-        labelText: "Profile Name",
+      decoration: InputDecoration(
+        labelText: context.l10n.inputProfileName,
         prefixIcon: Icon(Icons.badge_outlined),
       ),
       onChanged: (val) => ref.read(profileEditorProvider(widget.profile).notifier).updateName(val),
@@ -265,7 +268,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     final targetType = contextType.getExpectedMessageType(rule.action);
     final isInvite = contextType == RuleMessageContext.inviteResponse;
     
-    final title = isInvite ? "ON INVITE RECEIVED" : "ON REQUEST TO JOIN";
+    final title = isInvite ? context.l10n.contextOnInviteReceived : context.l10n.contextOnRequestToJoin;
     final iconData = _getTypeIcon(targetType);
     final color = _getTypeColor(targetType);
     
@@ -302,7 +305,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    hasMessage ? currentMessage.content : "Default VRChat Message",
+                    hasMessage ? currentMessage.content : context.l10n.defaultVrcMessage,
                     style: TextStyle(
                       fontSize: 13,
                       color: hasMessage ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
@@ -347,14 +350,6 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
         return context.vrcColors.requestResponse;
     }
   }
-  String _getTypeLabel(VrcMessageType type) {
-    switch (type) {
-      case VrcMessageType.invite: return "INVITE";
-      case VrcMessageType.response: return "RESPONSE TO INVITE";
-      case VrcMessageType.request: return "REQUEST TO JOIN";
-      case VrcMessageType.requestResponse: return "RESPONSE TO REQUEST";
-    }
-  }
   
   void _showSearchableMessageSelector(BuildContext context, int ruleIndex, ProfileRule rule, List<CustomMessage> allMessages, RuleMessageContext contextType) {
     final targetType = contextType.getExpectedMessageType(rule.action);
@@ -362,18 +357,17 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     final filteredMessages = allMessages.where((m) => m.type == targetType).toList();
     
     final isInvite = contextType == RuleMessageContext.inviteResponse;
-    final sheetTitle = "Select ${_getTypeLabel(targetType)}";
     final currentMessageId = isInvite ? rule.inviteResponseMessage?.id : rule.requestResponseMessage?.id;
     
     showGenericSearchSheet<CustomMessage>(
       context: context,
       items: filteredMessages,
-      searchHint: "Search $sheetTitle...",
+      searchHint: context.l10n.searchFriendsHint,
       searchableText: (CustomMessage message) => message.content,
       headerOption: ListTile(
         leading: Icon(Icons.block, color: context.colorScheme.onSurfaceVariant),
-        title: const Text("None / Default VRChat Message"),
-        subtitle: const Text("Use the game's default notification text"),
+        title: Text(context.l10n.defaultMessageOption),
+        subtitle: Text(context.l10n.defaultMessageOptionDesc),
         selected: currentMessageId == null,
         onTap: () {
           ref.read(profileEditorProvider(widget.profile).notifier).updateRuleMessage(ruleIndex, null, contextType);
@@ -401,7 +395,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   Widget _buildRulesList(FilterProfile currentProfile, AsyncValue<List<CustomMessage>> allMessagesAsync) {
     if (currentProfile.rules.isEmpty) {
       return Center(
-        child: Text("No rules added yet.\nClick 'Add role rule' to start.",
+        child: Text(context.l10n.noRulesAdded,
           textAlign: TextAlign.center,
           style: TextStyle(color: context.colorScheme.onSurfaceVariant),
         ),
@@ -411,7 +405,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     return ReorderableListView.builder(
       padding: const EdgeInsets.only(bottom: 80, top: 8),
       itemCount: currentProfile.rules.length,
-      onReorder: (oldIndex, newIndex) {
+      onReorderItem: (oldIndex, newIndex) {
        ref.read(profileEditorProvider(widget.profile).notifier).reorderRules(oldIndex, newIndex);
       },
       itemBuilder: (context, index) {
@@ -463,7 +457,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                         return DropdownMenuItem(
                           value: action,
                           child: Text(
-                            action.name.toUpperCase(),
+                            action.toLocalizedString(context).toUpperCase(),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
@@ -484,7 +478,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   IconButton(
                     icon: Icon(Icons.delete_sweep_outlined, color: context.colorScheme.error, size: 20),
                     onPressed: () => ref.read(profileEditorProvider(widget.profile).notifier).removeRule(index),
-                    tooltip: "Remove rule",
+                    tooltip: context.l10n.tooltipRemoveRule,
                   ),
                 ],
               ),
@@ -499,7 +493,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   allMessagesAsync.when(
                     data: (messages) => _buildMessagesSection(index, rule, messages),
                     loading: () => const LinearProgressIndicator(),
-                    error: (_, _) => const Text("Error loading messages"),
+                    error: (_, _) => Text(context.l10n.errorLoadingMessages),
                   ),
                 ],
               ),
@@ -513,7 +507,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
   Widget _buildAddRuleButton(FilterProfile currentProfile, AsyncValue<List<Role>> allRolesAsync) {
     return ElevatedButton.icon(
       icon: const Icon(Icons.add),
-      label: const Text("Add role rule"),
+      label: Text(context.l10n.btnAddRoleRule),
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
@@ -533,7 +527,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     showGenericSearchSheet<Role>(
       context: context,
       items: availableRoles,
-      searchHint: "Search roles...",
+      searchHint: context.l10n.searchRolesHint,
       searchableText: (Role role) => role.name,
       itemBuilder: (Role role) => ListTile(
         leading: Icon(Icons.label_outline, color: context.colorScheme.primary),
@@ -563,13 +557,13 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("FALLBACK TAGS", style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  Text(context.l10n.sectionFallbackTags.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     letterSpacing: 1.2,
                     color: context.colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold
                   )),
                   const SizedBox(height: 4),
-                  Text("Evaluated if no role matches", style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant)),
+                  Text(context.l10n.fallbackTagsDesc, style: TextStyle(fontSize: 12, color: context.colorScheme.onSurfaceVariant)),
                 ],
               ),
               Container(
@@ -587,9 +581,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                   underline: const SizedBox(),
                   icon: const Icon(Icons.arrow_drop_down, size: 20),
                   items: [
-                    DropdownMenuItem(value: FallbackTagAction.disabled, child: Text("DISABLED", style: TextStyle(fontSize: 13, color: context.colorScheme.onSurfaceVariant))),
-                    DropdownMenuItem(value: FallbackTagAction.accept, child: Text("ACCEPT", style: TextStyle(fontSize: 13, color: context.vrcColors.success))),
-                    DropdownMenuItem(value: FallbackTagAction.reject, child: Text("REJECT", style: TextStyle(fontSize: 13, color: context.colorScheme.error))),
+                    DropdownMenuItem(value: FallbackTagAction.disabled, child: Text(FallbackTagAction.disabled.toLocalizedString(context).toUpperCase(), style: TextStyle(fontSize: 13, color: context.colorScheme.onSurfaceVariant))),
+                    DropdownMenuItem(value: FallbackTagAction.accept, child: Text(FallbackTagAction.accept.toLocalizedString(context).toUpperCase(), style: TextStyle(fontSize: 13, color: context.vrcColors.success))),
+                    DropdownMenuItem(value: FallbackTagAction.reject, child: Text(FallbackTagAction.reject.toLocalizedString(context).toUpperCase(), style: TextStyle(fontSize: 13, color: context.colorScheme.error))),
                   ],
                   onChanged: (val) {
                     if (val != null) {
@@ -617,7 +611,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
                 }),
                 ActionChip(
                   avatar: const Icon(Icons.add, size: 16),
-                  label: const Text("Add Tag"),
+                  label: Text(context.l10n.btnAddTag),
                   backgroundColor: context.colorScheme.primary.withValues(alpha: 0.2),
                   side: BorderSide(color: context.colorScheme.primary),
                   onPressed: () => _showTagSelectionDialog(currentProfile),
@@ -636,7 +630,7 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     showGenericSearchSheet<VrcTag>(
       context: context,
       items: availableTags,
-      searchHint: "Search tags or languages...",
+      searchHint: context.l10n.searchTagsHint,
       searchableText: (VrcTag tag) => "${tag.name} ${tag.description} ${tag.id}",
       itemBuilder: (VrcTag tag) {
         return ListTile(

@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
+import 'package:vrcma/presentation/state/status_automation_provider.dart';
 
 part 'automation_provider.g.dart';
 
@@ -28,6 +30,8 @@ class AutomationState extends _$AutomationState {
   }
   
   Future<void> _init() async {
+    ref.read(statusAutomationOrchestratorProvider);
+    
     if (Platform.isAndroid || Platform.isIOS) {
       _bgSubscription = FlutterBackgroundService().on('update_ui').listen((event) {
         debugPrint("UI: Refreshing data...");
@@ -48,7 +52,7 @@ class AutomationState extends _$AutomationState {
     final automationRepo = await ref.watch(automationRepositoryProvider.future);
     final processor = await ref.watch(automationProcessorProvider.future);
     
-    _vrcSubscription = automationRepo.watchInvitations().listen((invitation) async {
+    _vrcSubscription = automationRepo.watchAutomationEvents().listen((invitation) async {
       try {
         await processor.process(invitation);  
         ref.invalidate(automationLogsProvider);

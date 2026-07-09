@@ -1,14 +1,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
+import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:vrcma/presentation/state/app_settings_provider.dart';
 import 'package:vrcma/presentation/state/automation_provider.dart';
 import 'package:vrcma/presentation/state/navigation_provider.dart';
-import 'package:vrcma/presentation/widgets/home/automation_settings_panel.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
+import 'package:vrcma/presentation/widgets/home/dashboard_panel.dart';
 import 'package:vrcma/presentation/widgets/home/friends_panel.dart';
 import 'package:vrcma/presentation/widgets/home/logs_panel.dart';
 import 'package:vrcma/presentation/widgets/home/messages_panel.dart';
 import 'package:vrcma/presentation/widgets/home/profile_banner.dart';
+import 'package:vrcma/presentation/widgets/home/settings_panel.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -16,96 +20,194 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(automationStateProvider);
-    final currentIndex = ref.watch(navigationStackProvider);
-    
+
+    return const ResponsiveLayout(mobile: _MobileHomeView(), desktop: _DesktopHomeView());
+  }
+}
+
+class _ActiveWorkspace extends ConsumerWidget {
+  const _ActiveWorkspace();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final route = ref.watch(navigationStackProvider);
+
+    switch (route) {
+      case AppRoute.dashboard:
+        return const DashboardPanel();
+      
+      case AppRoute.messages:
+        return const MessagesPanel();
+
+      case AppRoute.logs:
+        return const LogsPanel();
+      
+      case AppRoute.settings:
+        return const SettingsPanel();
+    }    
+  }
+}
+
+class _MobileHomeView extends ConsumerWidget {
+  const _MobileHomeView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentRoute = ref.watch(navigationStackProvider);
+
     return Scaffold(
-      body: SafeArea(
-          child: Column(
-            children: [
-              const ProfileBanner(),
-              Expanded(
-                child: ResponsiveLayout(
-                    mobile: _buildMobileLayout(currentIndex),
-                    desktop: _buildWideLayout()
-                ),
-              )
-            ],
-          )
-      ),
-      bottomNavigationBar: MediaQuery.of(context).size.width <= 1100 ? NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (i) => ref.read(navigationStackProvider.notifier).setIndex(i),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Config',
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: const ProfileBanner(),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.people_alt_outlined),
+              tooltip: context.l10n.navFriends,
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.message_outlined),
-            selectedIcon: Icon(Icons.message),
-            label: 'Messages',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.list_alt_outlined),
-            selectedIcon: Icon(Icons.list_alt),
-            label: 'Logs',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.people_outline),
-            selectedIcon: Icon(Icons.people),
-            label: 'Friends',
-          )
+          const SizedBox(width: 8),
         ],
-      ) : null,
-    );
-  }
-  
-  Widget _buildWideLayout() {
-    return const Row(
-      children: [
-        Expanded(flex: 1, child: AutomationSettingsPanel()),
-        VerticalDivider(width: 1),
-        Expanded(flex: 3, child: _MainWorkspace()),
-        VerticalDivider(width: 1),
-        Expanded(flex: 1, child: FriendsPanel()),
-      ],
-    );
-  }
-  
-  Widget _buildMobileLayout(int index) {
-    return IndexedStack(
-      index: index,
-      children: const [
-        AutomationSettingsPanel(),
-        MessagesPanel(),
-        LogsPanel(),
-        FriendsPanel(),
-      ],
+      ),
+      endDrawer: const Drawer(
+        width: 320,
+        child: SafeArea(child: FriendsPanel()),
+      ),
+      body: const _ActiveWorkspace(),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentRoute.index,
+        onDestinationSelected: (idx) {
+          ref.read(navigationStackProvider.notifier).setRoute(AppRoute.values[idx]);
+        },
+        destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: const Icon(Icons.dashboard),
+            label: context.l10n.dashboardHeader,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.message_outlined),
+            selectedIcon: const Icon(Icons.message),
+            label: context.l10n.navMessages,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.list_alt_outlined),
+            selectedIcon: const Icon(Icons.list_alt),
+            label: context.l10n.navLogs,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings),
+            label: context.l10n.navConfig,
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _MainWorkspace extends StatelessWidget {
-  const _MainWorkspace();
-  
-  static const tabs = [
-    Tab(icon: Icon(Icons.message), text: "MESSAGES & SLOTS"),
-    Tab(icon: Icon(Icons.list_alt), text: "AUTOMATION LOGS"),
-  ];
-  
+class _DesktopHomeView extends ConsumerWidget {
+  const _DesktopHomeView();
+
   @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabs.length,
-      child: Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentRoute = ref.watch(navigationStackProvider);
+    final collapsed = ref.watch(friendsPanelCollapsedProvider);
+
+    return Scaffold(
+      body: Row(
         children: [
-          const TabBar(tabs: tabs),
-          Expanded(
-            child: TabBarView(
+          NavigationRail(
+            extended: false,
+            elevation: 1,
+            backgroundColor: context.colorScheme.surfaceContainerLow,
+            leading: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Icon(Icons.lock_person, size: 36, color: context.colorScheme.primary),
+            ),
+            selectedIndex: currentRoute.index,
+            onDestinationSelected: (idx) {
+              ref.read(navigationStackProvider.notifier).setRoute(AppRoute.values[idx]);
+            },
+            destinations: [
+              NavigationRailDestination(
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: const Icon(Icons.dashboard),
+                label: Text(context.l10n.dashboardHeader),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.message_outlined),
+                selectedIcon: const Icon(Icons.message),
+                label: Text(context.l10n.navMessages),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.list_alt_outlined),
+                selectedIcon: const Icon(Icons.list_alt),
+                label: Text(context.l10n.navLogs),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.settings_outlined),
+                selectedIcon: const Icon(Icons.settings),
+                label: Text(context.l10n.navConfig),
+              ),
+            ],
+          ),
+          const VerticalDivider(width: 1),
+          const Expanded(
+            child: Column(
               children: [
-                const MessagesPanel(),
-                const LogsPanel(),
+                ProfileBanner(),
+                Divider(height: 1),
+                Expanded(child: _ActiveWorkspace()),
+              ],
+            ),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  child: Row(
+                    mainAxisAlignment: collapsed ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (!collapsed) 
+                        Text(
+                          context.l10n.navFriends.toUpperCase(),
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      IconButton(
+                        icon: Icon(collapsed ? Icons.chevron_left : Icons.chevron_right),
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                if (!collapsed)
+                  const Expanded(child: FriendsPanel())
+                else
+                  Expanded(
+                    child: Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.people_alt_outlined),
+                        onPressed: () {
+                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
+                        },
+                      ),
+                    ),
+                  )
               ],
             ),
           )

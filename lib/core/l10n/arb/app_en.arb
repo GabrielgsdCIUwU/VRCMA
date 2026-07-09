@@ -1,0 +1,1363 @@
+{
+  "@@locale": "en",
+  
+  "loginTitle": "VRCMA",
+  "@loginTitle": {
+    "description": "The main branding/application title displayed at the top of the login header screen."
+  },
+  
+  "usernameLabel": "Username or Email",
+  "@usernameLabel": {
+    "description": "Input field label prompting the user for their VRChat username or registered email address."
+  },
+  
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Input field label prompting the user to enter their account password."
+  },
+  
+  "loginButton": "Login",
+  "@loginButton": {
+    "description": "Text displayed on the primary action button to submit credentials on the login form."
+  },
+  
+  "enter2faTitle": "Enter 2FA Code",
+  "@enter2faTitle": {
+    "description": "Header title instructing the user to type in their two-factor authentication security code."
+  },
+  
+  "digitCodeLabel": "6-Digit Code",
+  "@digitCodeLabel": {
+    "description": "Input field placeholder/label specifically designated for entering the 6-digit security token."
+  },
+  
+  "verifyButton": "Verify",
+  "@verifyButton": {
+    "description": "Action button text to submit and validate the entered 2FA security code."
+  },
+  
+  "backButton": "Back",
+  "@backButton": {
+    "description": "Button label used to dismiss the 2FA screen and navigate back to the credentials form."
+  },
+  
+  "loginSuccess": "Login Success!",
+  "@loginSuccess": {
+    "description": "Success message displayed to the user via SnackBar upon a verified and successful login."
+  },
+  
+  "connectionTimeout": "Connection timeout. Check your internet connection",
+  "@connectionTimeout": {
+    "description": "Error message shown when a network request to the VRChat servers times out."
+  },
+  
+  "unexpectedError": "Unexpected error: {error}",
+  "@unexpectedError": {
+    "description": "A generic error wrapper when an unhandled or system-specific error occurs.",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "SocketException"
+      }
+    }
+  },
+  "navConfig": "Config",
+  "@navConfig": {
+    "description": "Label for the configuration/settings tab in the main navigation bar."
+  },
+  
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Label for the message templates management tab in the main navigation bar."
+  },
+  
+  "navLogs": "Logs",
+  "@navLogs": {
+    "description": "Label for the automation execution logs tab in the main navigation bar."
+  },
+  
+  "navFriends": "Friends",
+  "@navFriends": {
+    "description": "Label for the friends list and category mapping tab in the main navigation bar."
+  },
+
+  "workspaceTabMessages": "Messages & Slots",
+  "@workspaceTabMessages": {
+    "description": "Tab title inside the main workspace split view displaying live slots and template libraries."
+  },
+
+  "workspaceTabLogs": "Automation Logs",
+  "@workspaceTabLogs": {
+    "description": "Tab title inside the main workspace split view displaying processed automation histories."
+  },
+  "sectionProfiles": "Profiles",
+  "@sectionProfiles": {
+    "description": "Header title for the Profiles configuration section."
+  },
+
+  "sectionRoles": "Roles",
+  "@sectionRoles": {
+    "description": "Header title for the local security Roles configuration section."
+  },
+
+  "sectionFriendAutomations": "Friend Automations",
+  "@sectionFriendAutomations": {
+    "description": "Header title for the automated role assignment rules section."
+  },
+
+  "bgAutomationTitle": "Background Automation",
+  "@bgAutomationTitle": {
+    "description": "Label for the settings toggle that activates background automated processing."
+  },
+
+  "bgAutomationDesc": "Keep processing invites when app is closed",
+  "@bgAutomationDesc": {
+    "description": "Explanatory subtitle describing the utility of enabling background automation."
+  },
+
+  "dialogNewProfileTitle": "New Profile",
+  "@dialogNewProfileTitle": {
+    "description": "Title for the modal dialog to create a new filter profile."
+  },
+
+  "dialogNewProfileLabel": "Profile name",
+  "@dialogNewProfileLabel": {
+    "description": "Form input field label prompting for a profile name."
+  },
+
+  "dialogNewRoleTitle": "New Role",
+  "@dialogNewRoleTitle": {
+    "description": "Title for the modal dialog to create a new local security role."
+  },
+
+  "dialogNewRoleLabel": "Role name",
+  "@dialogNewRoleLabel": {
+    "description": "Form input field label prompting for a role name."
+  },
+
+  "btnCancel": "Cancel",
+  "@btnCancel": {
+    "description": "Standard action text for canceling and discarding changes on dialogs."
+  },
+
+  "btnCreate": "Create",
+  "@btnCreate": {
+    "description": "Standard action text for creating and saving a newly defined resource."
+  },
+
+  "btnDelete": "Delete",
+  "@btnDelete": {
+    "description": "Standard action text to confirm the deletion of a resource."
+  },
+
+  "roleMembersCount": "{count} members",
+  "@roleMembersCount": {
+    "description": "Displays the total number of friends mapped to a specific role.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "profileRulesCount": "{count} automation rules",
+  "@profileRulesCount": {
+    "description": "Label displaying the count of criteria rules inside a profile.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "dialogDeleteRoleTitle": "Delete Role?",
+  "@dialogDeleteRoleTitle": {
+    "description": "Header title for the role removal confirmation dialog."
+  },
+
+  "dialogDeleteRoleContent": "Are you sure you want to delete {roleName}? \nThis will remove this role from all users and profiles.",
+  "@dialogDeleteRoleContent": {
+    "description": "Warning reminding the user of the consequences of role deletion.",
+    "placeholders": {
+      "roleName": {
+        "type": "String",
+        "example": "VIP"
+      }
+    }
+  },
+
+  "dialogDeleteProfileTitle": "Delete Profile?",
+  "@dialogDeleteProfileTitle": {
+    "description": "Header title for the profile removal confirmation dialog."
+  },
+
+  "dialogDeleteProfileContent": "Are you sure you want to delete {profileName}? This action cannot be undone.",
+  "@dialogDeleteProfileContent": {
+    "description": "Warning informing the user that profile deletion is permanent.",
+    "placeholders": {
+      "profileName": {
+        "type": "String",
+        "example": "Safe Mode"
+      }
+    }
+  },
+
+
+  "dialogDeleteAutomationTitle": "Delete Automation?",
+  "@dialogDeleteAutomationTitle": {
+    "description": "Header title for deleting an automatic role mapper rule."
+  },
+
+  "dialogDeleteAutomationContent": "Are you sure you want to delete this automation?",
+  "@dialogDeleteAutomationContent": {
+    "description": "Warning label inside the role automation deletion modal."
+  },
+
+  "stateLoading": "Loading...",
+  "@stateLoading": {
+    "description": "Generic fallback loader message."
+  },
+
+  "stateError": "Error: {error}",
+  "@stateError": {
+    "description": "Generic standard error rendering block.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "tooltipEdit": "Edit",
+  "@tooltipEdit": {
+    "description": "Tooltip shown on standard inline editing pencil icons."
+  },
+
+  "tooltipDeactivate": "Deactivate profile",
+  "@tooltipDeactivate": {
+    "description": "Label indicating click will switch off the active configuration profile."
+  },
+
+  "tooltipActivate": "Set as active",
+  "@tooltipActivate": {
+    "description": "Label indicating click will activate this specific configuration profile."
+  },
+
+  "tooltipMoreOptions": "More options",
+  "@tooltipMoreOptions": {
+    "description": "Tooltip label for standard three-dot vertical popup menus."
+  },
+
+  "noAutomationsConfigured": "No automations configured",
+  "@noAutomationsConfigured": {
+    "description": "Placeholder shown when the automations database list is empty."
+  },
+
+  "triggerOnNewFriend": "On New Friend",
+  "@triggerOnNewFriend": {
+    "description": "Title for automatic mappings triggered during the first-time hand-shake friendship update."
+  },
+
+  "triggerHasTag": "Has Tag {tagName}",
+  "@triggerHasTag": {
+    "description": "Label for automatic mappings triggered when a friend holds a specific VRChat profile tag.",
+    "placeholders": {
+      "tagName": {
+        "type": "String",
+        "example": "system_trust_trusted"
+      }
+    }
+  },
+
+  "automationAssigns": "Assigns: {roles}",
+  "@automationAssigns": {
+    "description": "List indicating local roles mapped upon trigger execution.",
+    "placeholders": {
+      "roles": {
+        "type": "String",
+        "example": "VIP, Admin"
+      }
+    }
+  },
+
+  "logsHeader": "Automation Logs",
+  "@logsHeader": {
+    "description": "Header title displayed at the top of the automation execution history panel."
+  },
+
+  "logsSearchHint": "Search by name or rule...",
+  "@logsSearchHint": {
+    "description": "Search input box placeholder text for filtering processing logs."
+  },
+
+  "logsEmpty": "No logs found",
+  "@logsEmpty": {
+    "description": "Information text shown when the search query returns zero matching records."
+  },
+
+  "timeJustNow": "Just now",
+  "@timeJustNow": {
+    "description": "Relative time indicator for actions that happened less than a minute ago."
+  },
+
+  "timeMinutesAgo": "{minutes}m ago",
+  "@timeMinutesAgo": {
+    "description": "Relative time indicator showing elapsed minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "timeHoursAgo": "{hours}h ago",
+  "@timeHoursAgo": {
+    "description": "Relative time indicator showing elapsed hours.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "timeDaysAgo": "{days}d ago",
+  "@timeDaysAgo": {
+    "description": "Relative time indicator showing elapsed days.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "actionAccepted": "ACCEPTED",
+  "@actionAccepted": {
+    "description": "Status badge label indicating an invite or join request was auto-approved."
+  },
+
+  "actionRejected": "REJECTED",
+  "@actionRejected": {
+    "description": "Status badge label indicating an invite or join request was auto-declined."
+  },
+
+  "tabInvite": "INVITE",
+  "@tabInvite": {
+    "description": "Category label for invitations."
+  },
+
+  "tabRequest": "REQUEST",
+  "@tabRequest": {
+    "description": "Category label for requests."
+  },
+  "messageTypeInvite": "Invite",
+  "@messageTypeInvite": {
+    "description": "Noun representing an invitation notification type."
+  },
+
+  "messageTypeResponse": "Response",
+  "@messageTypeResponse": {
+    "description": "Noun representing a response notification type."
+  },
+
+  "messageTypeRequest": "Request",
+  "@messageTypeRequest": {
+    "description": "Noun representing a request-to-join notification type."
+  },
+
+  "messageTypeRequestResponse": "Request Response",
+  "@messageTypeRequestResponse": {
+    "description": "Noun representing a response to a request-to-join notification type."
+  },
+
+  "tabResponse": "Response",
+  "@tabResponse": {
+    "description": "Category tab for message templates automatically sent in response to an incoming invite."
+  },
+
+  "tabReqResponse": "Request Response",
+  "@tabReqResponse": {
+    "description": "Category tab for message templates automatically sent in response to a request-to-join."
+  },
+
+  "liveSlotsHeader": "Live VRChat Slots",
+  "@liveSlotsHeader": {
+    "description": "Section header displaying the currently assigned VRChat live message slots available on the server."
+  },
+
+  "tooltipSyncFromVrc": "Sync with VRChat",
+  "@tooltipSyncFromVrc": {
+    "description": "Tooltip shown on the synchronization button that downloads the latest live slot configuration from VRChat."
+  },
+
+  "messageLibraryHeader": "Message Library",
+  "@messageLibraryHeader": {
+    "description": "Header for the local library containing all saved message templates."
+  },
+
+  "tooltipAddMessage": "Add Message",
+  "@tooltipAddMessage": {
+    "description": "Tooltip shown on the button used to create a new message template."
+  },
+
+  "libraryEmpty": "No messages in the library",
+  "@libraryEmpty": {
+    "description": "Placeholder displayed when the selected message library contains no saved templates."
+  },
+
+  "unassignedMessagesHeader": "UNASSIGNED MESSAGES",
+  "@unassignedMessagesHeader": {
+    "description": "Section title grouping message templates that are not currently assigned to any live VRChat slot."
+  },
+
+  "assignedMessagesHeader": "ASSIGNED TO LIVE SLOTS",
+  "@assignedMessagesHeader": {
+    "description": "Section title grouping message templates currently assigned to one of the active VRChat live slots."
+  },
+
+  "dialogNewMessageTitle": "New {type} Message",
+  "@dialogNewMessageTitle": {
+    "description": "Dialog title displayed when creating a new message template.",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "dialogNewMessageDesc": "This message will be saved to your library and can be assigned to automation rules.",
+  "@dialogNewMessageDesc": {
+    "description": "Helper text explaining what happens after creating a new message template."
+  },
+
+  "inputMessageHint": "Enter your message...",
+  "@inputMessageHint": {
+    "description": "Placeholder text displayed inside the message editor before any content is entered."
+  },
+
+  "inputMessageLabel": "Message",
+  "@inputMessageLabel": {
+    "description": "Label for the text field where the message template content is written."
+  },
+
+  "btnCreateMessage": "Create Message",
+  "@btnCreateMessage": {
+    "description": "Primary button used to save a newly created message template."
+  },
+
+  "toastMessageAdded": "{type} message added to the library",
+  "@toastMessageAdded": {
+    "description": "Confirmation message displayed after successfully creating a new message template.",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "messageSlotLabel": "Slot {index}",
+  "@messageSlotLabel": {
+    "description": "Label identifying one of the available VRChat live message slots.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "slotPickerTitle": "Assign {content} to a Slot",
+  "@slotPickerTitle": {
+    "description": "Dialog title prompting the user to select the live VRChat slot where the message template will be assigned.",
+    "placeholders": {
+      "content": {
+        "type": "String",
+        "example": "Welcome!"
+      }
+    }
+  },
+
+  "slotPickerCategory": "Category: {category}",
+  "@slotPickerCategory": {
+    "description": "Displays the message category currently being assigned in the slot selection dialog.",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "friendsHeader": "Friends",
+  "@friendsHeader": {
+    "description": "Header title displayed at the top of the friends management panel."
+  },
+
+  "tooltipRefreshFriends": "Refresh Friends",
+  "@tooltipRefreshFriends": {
+    "description": "Tooltip shown on the refresh button used to reload the friends list from VRChat."
+  },
+
+  "searchFriendsHint": "Search friends...",
+  "@searchFriendsHint": {
+    "description": "Placeholder text displayed in the search field used to filter the friends list."
+  },
+
+  "noFriendsFound": "No friends found",
+  "@noFriendsFound": {
+    "description": "Placeholder shown when no friends match the current search or filter."
+  },
+
+  "presenceOnline": "Online",
+  "@presenceOnline": {
+    "description": "Presence status indicating that the friend is currently online."
+  },
+
+  "presenceOffline": "Offline",
+  "@presenceOffline": {
+    "description": "Presence status indicating that the friend is currently offline."
+  },
+
+  "presenceActiveWebsite": "Active on the Website",
+  "@presenceActiveWebsite": {
+    "description": "Presence status indicating that the friend is currently using the VRChat website instead of the game client."
+  },
+
+  "presenceTraveling": "Traveling...",
+  "@presenceTraveling": {
+    "description": "Presence status displayed while the friend is transitioning between VRChat worlds."
+  },
+
+  "presencePrivateInstance": "Private Instance",
+  "@presencePrivateInstance": {
+    "description": "Presence status displayed when the friend's current world instance cannot be joined."
+  },
+
+  "presenceInstanceDesc": "{accessType} Instance ({region})",
+  "@presenceInstanceDesc": {
+    "description": "Displays the access type and server region of the friend's current VRChat instance.",
+    "placeholders": {
+      "accessType": {
+        "type": "String",
+        "example": "Friends+"
+      },
+      "region": {
+        "type": "String",
+        "example": "EU"
+      }
+    }
+  },
+
+  "categoryFavorites": "Favorites",
+  "@categoryFavorites": {
+    "description": "Header for the favorites friends category."
+  },
+
+  "categorySameInstance": "Same Instance",
+  "@categorySameInstance": {
+    "description": "Header grouping friends currently in the same VRChat instance as the user."
+  },
+
+  "accessPublic": "Public",
+  "@accessPublic": {
+    "description": "Official VRChat instance access type: Public."
+  },
+
+  "accessInviteOnly": "Invite Only",
+  "@accessInviteOnly": {
+    "description": "Official VRChat instance access type: Invite Only."
+  },
+
+  "accessInvitePlus": "Invite+",
+  "@accessInvitePlus": {
+    "description": "Official VRChat instance access type: Invite+."
+  },
+
+  "accessFriends": "Friends",
+  "@accessFriends": {
+    "description": "Official VRChat instance access type: Friends."
+  },
+
+  "accessFriendsPlus": "Friends+",
+  "@accessFriendsPlus": {
+    "description": "Official VRChat instance access type: Friends+."
+  },
+
+  "accessGroup": "Group",
+  "@accessGroup": {
+    "description": "Official VRChat instance access type: Group."
+  },
+
+  "accessGroupPlus": "Group+",
+  "@accessGroupPlus": {
+    "description": "Official VRChat instance access type: Group+."
+  },
+
+  "accessGroupPublic": "Group Public",
+  "@accessGroupPublic": {
+    "description": "Official VRChat instance access type: Group Public."
+  },
+
+  "accessUnknown": "Unknown",
+  "@accessUnknown": {
+    "description": "Fallback access type displayed when the instance visibility cannot be determined."
+  },
+
+  "editProfileTitle": "Edit Profile",
+  "@editProfileTitle": {
+    "description": "App bar title displayed while editing an existing profile."
+  },
+
+  "dialogUnsavedTitle": "Unsaved Changes",
+  "@dialogUnsavedTitle": {
+    "description": "Confirmation dialog title shown when leaving an editor with unsaved changes."
+  },
+
+  "dialogUnsavedContent": "You have unsaved changes. Do you want to save them before leaving?",
+  "@dialogUnsavedContent": {
+    "description": "Confirmation message asking whether to save or discard pending changes before exiting the editor."
+  },
+
+  "btnDiscard": "Discard",
+  "@btnDiscard": {
+    "description": "Button that discards all unsaved changes."
+  },
+
+  "btnSave": "Save",
+  "@btnSave": {
+    "description": "Standard button used to save the current changes."
+  },
+
+  "btnSaveChanges": "Save Changes",
+  "@btnSaveChanges": {
+    "description": "Primary button used to save all modifications before closing the editor."
+  },
+
+  "sectionProfileSettings": "Profile Settings",
+  "@sectionProfileSettings": {
+    "description": "Section header containing the main profile configuration."
+  },
+
+  "inputProfileName": "Profile Name",
+  "@inputProfileName": {
+    "description": "Label for the text field where the profile name is entered."
+  },
+
+  "sectionActions": "Actions",
+  "@sectionActions": {
+    "description": "Section header grouping profile-related actions."
+  },
+
+  "priorityRulesCaption": "Rules with higher priority are evaluated first.",
+  "@priorityRulesCaption": {
+    "description": "Helper text explaining the execution order of automation rules."
+  },
+
+  "sectionAutomationRules": "Automation Rules",
+  "@sectionAutomationRules": {
+    "description": "Section header containing the list of automation rules assigned to the profile."
+  },
+
+  "tooltipRemoveRule": "Remove Rule",
+  "@tooltipRemoveRule": {
+    "description": "Tooltip shown on the button that removes an automation rule."
+  },
+
+  "contextOnInviteReceived": "ON INVITE RECEIVED",
+  "@contextOnInviteReceived": {
+    "description": "Label indicating rules triggered when receiving a VRChat invite."
+  },
+
+  "contextOnRequestToJoin": "ON REQUEST TO JOIN",
+  "@contextOnRequestToJoin": {
+    "description": "Label indicating rules triggered when receiving a request-to-join."
+  },
+
+  "defaultVrcMessage": "Default VRChat Message",
+  "@defaultVrcMessage": {
+    "description": "Label representing the default notification message provided by VRChat."
+  },
+
+  "dialogSelectMessage": "Select {category}",
+  "@dialogSelectMessage": {
+    "description": "Dialog title prompting the user to choose a message template.",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "example": "Invite"
+      }
+    }
+  },
+
+  "defaultMessageOption": "Use Default VRChat Message",
+  "@defaultMessageOption": {
+    "description": "Option that keeps VRChat's original notification message instead of using a custom template."
+  },
+
+  "defaultMessageOptionDesc": "Use VRChat''s default notification message.",
+  "@defaultMessageOptionDesc": {
+    "description": "Description explaining the default message option."
+  },
+
+  "btnAddRoleRule": "Add Role Rule",
+  "@btnAddRoleRule": {
+    "description": "Button used to add a new role rule to the profile."
+  },
+
+  "searchRolesHint": "Search roles...",
+  "@searchRolesHint": {
+    "description": "Placeholder displayed while searching available roles."
+  },
+
+  "sectionFallbackTags": "Fallback Tags",
+  "@sectionFallbackTags": {
+    "description": "Section containing fallback tag rules used when no role matches."
+  },
+
+  "fallbackTagsDesc": "Applied when no role matches.",
+  "@fallbackTagsDesc": {
+    "description": "Helper text explaining when fallback tags are evaluated."
+  },
+
+  "btnAddTag": "Add Tag",
+  "@btnAddTag": {
+    "description": "Button used to add a fallback tag."
+  },
+
+  "searchTagsHint": "Search tags or languages...",
+  "@searchTagsHint": {
+    "description": "Placeholder displayed while searching VRChat tags or language tags."
+  },
+
+  "fallbackTagActionDisabled": "DISABLED",
+  "@fallbackTagActionDisabled": {
+    "description": "Automation action indicating that no automatic response will be performed."
+  },
+
+  "fallbackTagActionAccept": "ACCEPT",
+  "@fallbackTagActionAccept": {
+    "description": "Automation action indicating that the invite or request will be accepted automatically."
+  },
+
+  "fallbackTagActionReject": "REJECT",
+  "@fallbackTagActionReject": {
+    "description": "Automation action indicating that the invite or request will be rejected automatically."
+  },
+
+  "newAutomationTitle": "New Automation",
+  "@newAutomationTitle": {
+    "description": "App bar title displayed while creating a new automation."
+  },
+
+  "editAutomationTitle": "Edit Automation",
+  "@editAutomationTitle": {
+    "description": "App bar title displayed while editing an existing automation."
+  },
+
+  "sectionCondition": "Condition",
+  "@sectionCondition": {
+    "description": "Section header containing the automation trigger conditions."
+  },
+
+  "triggerNewFriendTitle": "On Any New Friend",
+  "@triggerNewFriendTitle": {
+    "description": "Condition that matches every newly added friend."
+  },
+
+  "triggerNewFriendDesc": "Assign default roles to every new friend.",
+  "@triggerNewFriendDesc": {
+    "description": "Description of the new friend automation trigger."
+  },
+
+  "triggerHasTagTitle": "Has Specific Tag",
+  "@triggerHasTagTitle": {
+    "description": "Condition that matches users with a specific VRChat profile tag."
+  },
+
+  "triggerHasTagDesc": "Assign roles only if the user has the selected profile tag.",
+  "@triggerHasTagDesc": {
+    "description": "Description of the profile tag automation trigger."
+  },
+
+  "targetTagHeader": "Target Tag",
+  "@targetTagHeader": {
+    "description": "Section header for selecting the required VRChat profile tag."
+  },
+
+  "tagRequired": "Required",
+  "@tagRequired": {
+    "description": "Label indicating that selecting a tag is mandatory."
+  },
+
+  "tagSelected": "Selected Tag",
+  "@tagSelected": {
+    "description": "Label displaying the currently selected VRChat tag."
+  },
+
+  "tagSelectPlaceholder": "Select a tag...",
+  "@tagSelectPlaceholder": {
+    "description": "Placeholder shown before a VRChat tag has been selected."
+  },
+
+  "searchTagsVrcHint": "Search VRChat tags...",
+  "@searchTagsVrcHint": {
+    "description": "Placeholder displayed while searching VRChat profile tags."
+  },
+
+  "sectionAssignRoles": "Assign Roles",
+  "@sectionAssignRoles": {
+    "description": "Section header listing the roles assigned when the automation is triggered."
+  },
+
+  "btnAddRole": "Add Role",
+  "@btnAddRole": {
+    "description": "Button used to assign another role."
+  },
+
+  "noRolesSelectedWarning": "You must assign at least one role.",
+  "@noRolesSelectedWarning": {
+    "description": "Validation message shown when attempting to save without assigning any roles."
+  },
+
+  "searchLocalRolesHint": "Search local roles...",
+  "@searchLocalRolesHint": {
+    "description": "Placeholder displayed while searching local application roles."
+  },
+
+  "tooltipRemoveRole": "Remove Role",
+  "@tooltipRemoveRole": {
+    "description": "Tooltip shown on the button that removes an assigned role."
+  },
+
+  "editRoleTitle": "Edit Role",
+  "@editRoleTitle": {
+    "description": "App bar title displayed while editing a local role."
+  },
+
+  "errorNameInUseTitle": "Name Already Exists",
+  "@errorNameInUseTitle": {
+    "description": "Error shown when attempting to save a role or profile with a duplicate name."
+  },
+
+  "inputRoleName": "Role Name",
+  "@inputRoleName": {
+    "description": "Label for the text field where the role name is entered."
+  },
+
+  "sectionAppRoles": "App Roles",
+  "@sectionAppRoles": {
+    "description": "Section listing all local roles assigned to the selected friend."
+  },
+
+  "sectionVrcTagsReadOnly": "VRChat Tags (Read Only)",
+  "@sectionVrcTagsReadOnly": {
+    "description": "Section displaying the friend's VRChat profile tags. These values cannot be edited."
+  },
+
+  "errorLoadingRoles": "Failed to load roles",
+  "@errorLoadingRoles": {
+    "description": "Error message displayed when local roles cannot be loaded from storage."
+  },
+
+  "noRulesAdded": "No rules added yet.\nClick ''Add role rule'' to start.",
+  "@noRulesAdded": {
+    "description": "Placeholder text displayed when a profile has an empty criteria rules list."
+  },
+
+  "errorLoadingMessages": "Error loading messages",
+  "@errorLoadingMessages": {
+    "description": "Text rendered when the message database fails to load inside criteria selectors."
+  },
+
+  "ruleActionAccept": "Accept",
+  "@ruleActionAccept": {
+    "description": "Text representing the automated accept action in rule dropdowns."
+  },
+
+  "ruleActionReject": "Reject",
+  "@ruleActionReject": {
+    "description": "Text representing the automated reject action in rule dropdowns."
+  },
+
+  "searchPlaceholder": "Search...",
+  "@searchPlaceholder": {
+    "description": "Standard placeholder displayed in search input fields."
+  },
+    
+  "noItemsMatchSearch": "No items match your search",
+  "@noItemsMatchSearch": {
+    "description": "Information message shown when a search in a dialog or bottom sheet returns no matching results."
+  },
+
+  "btnOk": "OK",
+  "@btnOk": {
+    "description": "Standard confirmation button label used to acknowledge and close dialogs or alerts."
+  },
+  
+  "tooltipShowPassword": "Show password",
+  "@tooltipShowPassword": {
+    "description": "Tooltip shown on the visibility icon to reveal the password in plain text."
+  },
+
+  "tooltipHidePassword": "Hide password",
+  "@tooltipHidePassword": {
+    "description": "Tooltip shown on the visibility icon to hide the password."
+  },
+
+  "logNoRuleMatched": "No matching rule applied",
+  "@logNoRuleMatched": {
+    "description": "Log message written when no automation rule matches the evaluated item or profile."
+  },
+
+  "logRuleMatched": "Matched rule for {roleName}",
+  "@logRuleMatched": {
+    "description": "Log message prefix written when an automation rule matches an evaluated item or profile",
+    "placeholders": {
+      "roleName": {
+        "type": "String",
+        "example": "VIP"
+      }
+    }
+  },
+
+  "bgNotificationTitle": "VRCMA Processed",
+  "@bgNotificationTitle": {
+    "description": "Title displayed in the Android foreground service notification while the app is processing events in the background."
+  },
+
+  "bgInitialNotificationTitle": "VRCMA Automation",
+  "@bgInitialNotificationTitle": {
+    "description": "Title displayed in the Android foreground service notification when the background automation service starts."
+  },
+  "bgInitialNotificationContent": "Running in background...",
+  "@bgInitialNotificationContent": {
+    "description": "Initial foreground service notification content shown while the background automation service is starting or waiting for events."
+  },
+  "bgNotificationContent": "Last: {senderName}",
+  "@bgNotificationContent": {
+    "description": "Foreground service notification content displaying the name of the most recently processed user.",
+    "placeholders": {
+      "senderName": {
+        "type": "String",
+        "description": "Display name of the last processed user."
+      }
+    }
+  },
+
+  "sectionStatusAutomation": "Status Automation",
+  "@sectionStatusAutomation": {
+    "description": "Section header for configuring automatic VRChat status profiles."
+  },
+
+  "dialogNewStatusProfileTitle": "New Status Profile",
+  "@dialogNewStatusProfileTitle": {
+    "description": "Title for the dialog used to create a new status automation profile."
+  },
+
+  "dialogNewStatusProfileLabel": "Profile Name",
+  "@dialogNewStatusProfileLabel": {
+    "description": "Input field label prompting the user to enter a name for the new status profile."
+  },
+
+  "editStatusProfileTitle": "Edit Status Profile",
+  "@editStatusProfileTitle": {
+    "description": "App bar title displayed while editing an existing status profile."
+  },
+
+  "sectionGeneralSettings": "General Settings",
+  "@sectionGeneralSettings": {
+    "description": "Section header containing the general configuration for the status profile."
+  },
+
+  "inputStatusProfileName": "Profile Name",
+  "@inputStatusProfileName": {
+    "description": "Label for the text field where the status profile name is entered."
+  },
+
+  "inputFallbackStatus": "Fallback Status",
+  "@inputFallbackStatus": {
+    "description": "Label for the fallback VRChat status applied when no rule matches."
+  },
+
+  "inputFallbackTemplate": "Fallback Message Template",
+  "@inputFallbackTemplate": {
+    "description": "Label for the fallback status message template used when no automation rule matches."
+  },
+
+  "statusPriorityRulesCaption": "Use templates such as: In '{{world}} ({{battery}}'🔋)\nStatus rules are evaluated from top to bottom by priority.",
+  "@statusPriorityRulesCaption": {
+    "description": "Helper text explaining how status message templates work and how rule priority is evaluated."
+  },
+
+  "sectionAutomationConditions": "Automation Conditions",
+  "@sectionAutomationConditions": {
+    "description": "Section header containing the list of status automation conditions."
+  },
+
+  "btnAddConditionRule": "Add Condition Rule",
+  "@btnAddConditionRule": {
+    "description": "Button used to create a new status automation condition rule."
+  },
+
+  "noStatusRulesAdded": "No dynamic status rules configured.\nThis profile will always use the fallback configuration.",
+  "@noStatusRulesAdded": {
+    "description": "Placeholder shown when the status profile has no automation rules configured."
+  },
+
+  "rulesReorderSubtitle": "Rules (Drag to Reorder)",
+  "@rulesReorderSubtitle": {
+    "description": "Subtitle explaining that automation rules can be reordered by dragging."
+  },
+
+  "dialogNewStatusRuleTitle": "New Status Rule",
+  "@dialogNewStatusRuleTitle": {
+    "description": "Title for the dialog used to create a new status automation rule."
+  },
+
+  "inputTriggerCondition": "Trigger Condition",
+  "@inputTriggerCondition": {
+    "description": "Label for selecting the condition that triggers the status rule."
+  },
+
+  "inputOperator": "Operator",
+  "@inputOperator": {
+    "description": "Label for selecting the comparison operator used by the condition."
+  },
+
+  "inputComparisonValue": "Comparison Value",
+  "@inputComparisonValue": {
+    "description": "Label for the value compared against the selected trigger condition."
+  },
+
+  "inputTargetStatus": "Target Status",
+  "@inputTargetStatus": {
+    "description": "Label for selecting the VRChat status that will be applied when the rule matches."
+  },
+
+  "inputStatusMessageTemplate": "Status Message Template",
+  "@inputStatusMessageTemplate": {
+    "description": "Label for selecting the status message template applied when the rule matches."
+  },
+
+  "btnCreateRule": "Create Rule",
+  "@btnCreateRule": {
+    "description": "Primary action button used to create and save a new status automation rule."
+  },
+
+  "statusProfileSubtitle": "{count, plural, =1{1 rule} other{{count} rules}}, fallback: {fallback}",
+  "@statusProfileSubtitle": {
+    "description": "Subtitle displayed beneath a status profile showing the total number of configured rules and the fallback status used when no rule matches.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "fallback": {
+        "type": "String",
+        "example": "Online"
+      }
+    }
+  },
+
+  "tooltipEditStatusProfile": "Edit Status Profile",
+  "@tooltipEditStatusProfile": {
+    "description": "Tooltip shown on the button used to edit an existing status automation profile."
+  },
+
+  "dialogDeleteStatusProfileTitle": "Delete Status Profile",
+  "@dialogDeleteStatusProfileTitle": {
+    "description": "Header title for the status profile deletion confirmation dialog."
+  },
+
+  "dialogDeleteStatusProfileContent": "Are you sure you want to delete ''{name}''?",
+  "@dialogDeleteStatusProfileContent": {
+    "description": "Confirmation message asking the user to verify deletion of the selected status profile.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Desktop Status"
+      }
+    }
+  },
+
+  "statusRuleComparisonHint": "e.g. 5, Public, 30",
+  "@statusRuleComparisonHint": {
+    "description": "Placeholder text showing example comparison values when creating a status automation rule."
+  },
+
+  "statusMessageTemplateHint": "e.g. In '{{world}} with {{friends}}'",
+  "@statusMessageTemplateHint": {
+    "description": "Placeholder text showing an example status message template with supported variables."
+  },
+
+  "statusRuleNoMessage": "No Message",
+  "@statusRuleNoMessage": {
+    "description": "Placeholder displayed when a status automation rule has no custom message template assigned."
+  },
+
+  "statusTypeActive": "Active",
+  "@statusTypeActive": {
+    "description": "VRChat online status option. Indicates the user is available."
+  },
+
+  "statusTypeJoinMe": "Join Me",
+  "@statusTypeJoinMe": {
+    "description": "VRChat online status option. Indicates friends are encouraged to join the user's current instance."
+  },
+
+  "statusTypeAskMe": "Ask Me",
+  "@statusTypeAskMe": {
+    "description": "VRChat online status option. Indicates friends should ask for permission before joining."
+  },
+
+  "statusTypeBusy": "Busy",
+  "@statusTypeBusy": {
+    "description": "VRChat online status option. Indicates the user does not wish to be disturbed."
+  },
+
+  "conditionTypePopulation": "Player Count",
+  "@conditionTypePopulation": {
+    "description": "Rule condition based on the number of players currently in the VRChat instance."
+  },
+
+  "conditionTypeInstanceType": "Instance Access",
+  "@conditionTypeInstanceType": {
+    "description": "Rule condition based on the VRChat instance access level (Public, Friends+, Friends, Invite+, Invite, Group, etc.)."
+  },
+
+  "conditionTypeBatteryLevel": "Battery Level",
+  "@conditionTypeBatteryLevel": {
+    "description": "Rule condition based on the battery percentage of the PC or Mobile."
+  },
+
+  "conditionTypeFriendPresent": "Friend Present",
+  "@conditionTypeFriendPresent": {
+    "description": "Rule condition that checks whether a selected friend is currently present in the same VRChat instance."
+  },
+
+  "conditionTypeTimeRange": "Time Range",
+  "@conditionTypeTimeRange": {
+    "description": "Rule condition based on whether the current local time falls within the configured time range."
+  },
+
+  "conditionTypeWorld": "Current World",
+  "@conditionTypeWorld": {
+    "description": "Rule condition based on the VRChat world the user is currently in."
+  },
+
+  "operatorGreaterThan": "Greater Than",
+  "@operatorGreaterThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is greater than the comparison value."
+  },
+
+  "operatorLessThan": "Less Than",
+  "@operatorLessThan": {
+    "description": "Comparison operator used by a rule. Matches when the value is less than the comparison value."
+  },
+
+  "operatorEqualTo": "Equals",
+  "@operatorEqualTo": {
+    "description": "Comparison operator used by a rule. Matches when both values are equal."
+  },
+
+  "operatorContains": "Contains",
+  "@operatorContains": {
+    "description": "Comparison operator used by a rule. Matches when the target value contains the comparison value."
+  },
+
+  "operatorBetween": "Between",
+  "@operatorBetween": {
+    "description": "Comparison operator used by a rule. Matches when the value falls within the configured range."
+  },
+
+  "statusRuleComparisonHintNumber": "e.g. 50",
+  "@statusRuleComparisonHintNumber": {
+    "description": "Placeholder showing an example numeric comparison value for conditions such as battery level or player count."
+  },
+
+  "statusRuleComparisonHintRange": "e.g. 20-80",
+  "@statusRuleComparisonHintRange": {
+    "description": "Placeholder showing an example numeric range for the 'Between' comparison operator."
+  },
+
+  "statusRuleComparisonHintTimeRange": "e.g. 22:00-06:00",
+  "@statusRuleComparisonHintTimeRange": {
+    "description": "Placeholder showing an example time range in 24-hour format."
+  },
+
+  "statusRuleComparisonHintWorldList": "e.g. wrld_abc, wrld_def",
+  "@statusRuleComparisonHintWorldList": {
+    "description": "Placeholder showing example VRChat world IDs separated by commas."
+  },
+
+  "statusOverrideNotification": "Automation paused. Your VRChat status was changed manually.",
+  "@statusOverrideNotification": {
+    "description": "Notification shown when status automation is paused after the user manually changes their VRChat status outside the app."
+  },
+
+  "themeModeLabel": "Theme Mode",
+  "@themeModeLabel": {
+    "description": "Label for the application theme mode setting."
+  },
+
+  "themeModeSystem": "System Default",
+  "@themeModeSystem": {
+    "description": "Theme mode option that follows the operating system's appearance setting."
+  },
+
+  "themeModeLight": "Light",
+  "@themeModeLight": {
+    "description": "Theme mode option that always uses the light theme."
+  },
+
+  "themeModeDark": "Dark",
+  "@themeModeDark": {
+    "description": "Theme mode option that always uses the dark theme."
+  },
+
+  "languageLabel": "Language",
+  "@languageLabel": {
+    "description": "Label for the application language setting."
+  },
+
+  "diagnosticTitle": "Diagnostics & Data",
+  "@diagnosticTitle": {
+    "description": "Section title for diagnostics, logs, and cached application data."
+  },
+
+  "clearCacheLabel": "Clear Metadata Cache",
+  "@clearCacheLabel": {
+    "description": "Action label used to clear cached metadata such as world names and avatar images."
+  },
+
+  "clearCacheDesc": "Force refresh cached world names and avatar images.",
+  "@clearCacheDesc": {
+    "description": "Description explaining that cached VRChat metadata will be refreshed the next time it is needed."
+  },
+
+  "toastCacheCleared": "Metadata cache cleared successfully.",
+  "@toastCacheCleared": {
+    "description": "Toast notification displayed after cached metadata has been successfully cleared."
+  },
+
+  "rolesManagementTitle": "Manage Roles",
+  "@rolesManagementTitle": {
+    "description": "Title for the roles management section."
+  },
+
+  "rolesManagementDesc": "Create and manage custom categories for your friends.",
+  "@rolesManagementDesc": {
+    "description": "Description for the roles management section where users organize friends into custom roles."
+  },
+
+  "automationManagementDesc": "Create automation rules based on friends, roles, or other conditions.",
+  "@automationManagementDesc": {
+    "description": "Description for the automation management section."
+  },
+
+  "dashboardHeader": "Control Room",
+  "@dashboardHeader": {
+    "description": "Main heading displayed on the application's dashboard."
+  },
+
+  "dashboardSubheader": "Manage active filters and status automation profiles.",
+  "@dashboardSubheader": {
+    "description": "Subtitle displayed below the dashboard heading."
+  },
+
+  "clearCachesBtn": "Clear Cache",
+  "@clearCachesBtn": {
+    "description": "Button label used to clear cached metadata."
+  },
+
+  "defaultMessageCustomOption": "No Custom Message",
+  "@defaultMessageCustomOption": {
+    "description": "Option indicating that no custom automatic status message should be used."
+  },
+
+  "defaultMessageCustomOptionDesc": "Use the default status message without applying a custom template.",
+  "@defaultMessageCustomOptionDesc": {
+    "description": "Description for the option that disables custom status message templates."
+  },
+
+  "themeLabel": "Theme",
+  "@themeLabel": {
+    "description": "Section title for appearance and theme settings."
+  },
+
+  "toastLocaleChanged": "Language changed successfully.",
+  "@toastLocaleChanged": {
+    "description": "Toast notification displayed after changing the application language."
+  },
+
+  "systemLogsTitle": "System Logs",
+  "@systemLogsTitle": {
+    "description": "Title for the screen displaying application logs."
+  },
+
+  "themeSeedColorLabel": "Accent Color",
+  "@themeSeedColorLabel": {
+    "description": "Label for choosing the primary accent color of the app."
+  },
+  "noProfilesAdded": "No filter profiles added yet.",
+  "@noProfilesAdded": {
+    "description": "Text displayed in dashboard when no invitation filter profiles exist."
+  },
+
+  "nativeBackgroundRuntimeFail": "Native background runtime initialization failed.",
+  "@nativeBackgroundRuntimeFail": {
+    "description": "Error message shown when background execution service fails."
+  },
+  "automationTriggerNewFriend": "On New Friend Added",
+  "@automationTriggerNewFriend": {
+    "description": "Title displayed for new friend automation rule."
+  },
+  "automationTriggerTag": "Matching Tag: {tag}",
+  "@automationTriggerTag": {
+    "description": "Title displayed for tag-matched automation rule.",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "automationAssignsRoles": "Assigns: {roles}",
+  "@automationAssignsRoles": {
+    "description": "Subtitle displaying list of roles assigned by automation rule.",
+    "placeholders": {
+      "roles": {
+        "type": "String"
+      }
+    }
+  },
+  "colorDeepPurple": "Deep Purple",
+  "@colorDeepPurple": {
+    "description": "Name of deep purple theme accent color."
+  },
+  "colorBlue": "Blue",
+  "@colorBlue": {
+    "description": "Name of blue theme accent color."
+  },
+  "colorTeal": "Teal",
+  "@colorTeal": {
+    "description": "Name of teal theme accent color."
+  },
+  "colorGreen": "Green",
+  "@colorGreen": {
+    "description": "Name of green theme accent color."
+  },
+  "colorOrange": "Orange",
+  "@colorOrange": {
+    "description": "Name of orange theme accent color."
+  },
+  "colorRose": "Rose",
+  "@colorRose": {
+    "description": "Name of rose theme accent color."
+  }
+}

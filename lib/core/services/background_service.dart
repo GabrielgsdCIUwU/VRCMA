@@ -3,8 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/l10n/arb/app_localizations.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 
 const notificationChannelId = 'vrcma_automation_channel';
 const notificationId = 888;
@@ -26,6 +30,19 @@ Future<void> initializeBackgroundService() async {
       .resolvePlatformSpecificImplementation<
       AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
+  
+  final container = ProviderContainer();
+  String languageCode = 'en';
+  try {
+    final repo = await container.read(configurationRepositoryProvider.future);
+    languageCode = await repo.getString('selected_locale_code') ?? 'en';
+  } catch (e) {
+    debugPrint("Bacground Service Init Fail: $e");
+  } finally {
+    container.dispose();
+  }
+
+  final l10n = await AppLocalizations.delegate.load(Locale(languageCode));
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
@@ -33,8 +50,8 @@ Future<void> initializeBackgroundService() async {
       autoStart: false,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationTitle: 'VRCMA Automation',
-      initialNotificationContent: 'Running in background...',
+      initialNotificationTitle: l10n.bgInitialNotificationTitle,
+      initialNotificationContent: l10n.bgInitialNotificationContent,
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
@@ -64,6 +81,10 @@ void onBackgroundStart(ServiceInstance service) async {
   final subProc = container.listen(automationProcessorProvider, (_, _) {});
   
   try {
+    final repo = await container.read(configurationRepositoryProvider.future);
+    final String languageCode = await repo.getString('selected_locale_code') ?? 'en';
+    final l10n = await AppLocalizations.delegate.load(Locale(languageCode));
+
     final api = await container.read(vrcApiProvider.future);
     final userResponse = await api.rawApi.getAuthenticationApi().getCurrentUser();
     
@@ -77,14 +98,18 @@ void onBackgroundStart(ServiceInstance service) async {
     
     api.streaming.start();
     
-    final subscription = automationRepo.watchInvitations().listen((invitation) async {
+    final subscription = automationRepo.watchAutomationEvents().listen((event) async {
       try {
-        await processor.process(invitation);
+        await processor.process(event);
         
         if (service is AndroidServiceInstance) {
+          final String senderName = event is IncomingUserEvent
+            ? event.senderName
+            : 'System';
+          
           service.setForegroundNotificationInfo(
-            title: 'VRCMA Processed',
-            content: 'Last: ${invitation.senderName}',
+            title: l10n.bgNotificationTitle,
+            content: l10n.bgNotificationContent(senderName),
           );
         }
 

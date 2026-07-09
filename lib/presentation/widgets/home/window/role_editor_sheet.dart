@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrcma/core/di/database_provider.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
+import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:collection/collection.dart';
@@ -65,12 +66,12 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Name already in use"),
+        title: Text(context.l10n.errorNameInUseTitle),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Ok"),
+            child: Text(context.l10n.btnOk),
           )
         ],
       )
@@ -83,16 +84,16 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Unsaved Changes"),
-        content: const Text("You have made changes to this role. Do you want to save them before leaving?"),
+        title: Text(context.l10n.dialogUnsavedTitle),
+        content: Text(context.l10n.dialogUnsavedContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, 'discard'),
-            child: Text("Discard", style: TextStyle(color: context.colorScheme.error)),
+            child: Text(context.l10n.btnDiscard, style: TextStyle(color: context.colorScheme.error)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, 'save'),
-            child: const Text("Save Changes"),
+            child: Text(context.l10n.btnSaveChanges),
           )
         ],
       ),
@@ -116,7 +117,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Edit Role"),
+          title: Text(context.l10n.editRoleTitle),
           actions: [
             IconButton(
               icon: Icon(Icons.save, color: _hasChanges ? context.vrcColors.success : null),
@@ -144,8 +145,8 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
       child: TextField(
         controller: _nameController,
         onChanged: (_) => setState(() {}),
-        decoration: const InputDecoration(
-          labelText: "Role Name",
+        decoration: InputDecoration(
+          labelText: context.l10n.inputRoleName,
           prefixIcon: Icon(Icons.label_important_outline),
         ),
       ),
@@ -156,8 +157,8 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
-        decoration: const InputDecoration(
-          hintText: "Search friends...",
+        decoration: InputDecoration(
+          hintText: context.l10n.searchFriendsHint,
           prefixIcon: Icon(Icons.search),
           isDense: true,
         ),
@@ -193,7 +194,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text("Error: $err")),
+      error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
     );
   }
 }

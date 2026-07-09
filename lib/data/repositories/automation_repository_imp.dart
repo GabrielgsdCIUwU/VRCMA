@@ -3,64 +3,62 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
-import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
-import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/data/transformers/vrc_event_transformer.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
+  final List<VrcEventTransformer> _transformers;
+
+  final Map<String, (User, DateTime)> _userCache = {};
+  static const Duration _cacheExpirationLimit = Duration(hours: 1);
+
+  DateTime _lastStatusUpdate = DateTime.fromMillisecondsSinceEpoch(0);
+  static const Duration _minUpdateInterval = Duration(minutes: 1);
   
-  AutomationRepositoryImp(this._vrcApi);
+  AutomationRepositoryImp(this._vrcApi, this._transformers);
+
+  Future<User?> _getEnrichedUser(String userId) async {
+    final now = DateTime.now();
+    if (_userCache.containsKey(userId)) {
+      final (cachedUser, cachedTime) = _userCache[userId]!;
+      if (now.difference(cachedTime) < _cacheExpirationLimit) {
+        return cachedUser;
+      }
+    }
+
+    try {
+      final response = await _vrcApi.rawApi.getUsersApi().getUser(userId: userId);
+      final userData = response.data;
+      if (userData != null) {
+        _userCache[userId] = (userData, now);
+        return userData;
+      }
+    } catch (e) {
+      debugPrint("Error fetching user data from API: $e");
+    }
+    return null;
+  }
   
   @override
-  Stream<InvitationType> watchInvitations() {
+  Stream<VrcAutomationEvent> watchAutomationEvents() {
     return _vrcApi.streaming.vrcEventStream
-        .where((event) => event is NotificationReceivedEvent)
-        .cast<NotificationReceivedEvent>()
-        .where((event) =>
-          event.notification.type == NotificationType.invite ||
-          event.notification.type == NotificationType.requestInvite)
-        .asyncMap((event) async {
-          try {
-            final notification = event.notification;
-            final userResponse = await _vrcApi.rawApi.getUsersApi()
-                .getUser(userId: notification.senderUserId);
-
-            var userData = userResponse.data;
-            
-            final avatarUrl = userData == null
-              ? ''
-              : VrcImageMapper.mapAvatarUrl(
-                profilePic: userData.profilePicOverrideThumbnail,
-                thumbnail: userData.currentAvatarThumbnailImageUrl,
-                currentAvatar: userData.currentAvatarImageUrl,
-              );
-
-            if (notification.type == NotificationType.requestInvite) {
-              return RequestInvite(
-                id: notification.id,
-                senderId: notification.senderUserId,
-                senderName: userData?.displayName ?? notification.senderUserId,
-                senderTags: userData?.tags ?? [],
-                avatarUrl: avatarUrl,
-              );
+        .asyncMap((vrcEvent) async {
+          for (final transfromer in _transformers) {
+            if (transfromer.canHandle(vrcEvent)) {
+              return await transfromer.transform(vrcEvent, _getEnrichedUser);
             }
-            return InviteReceived(
-              id: notification.id,
-              senderId: notification.senderUserId,
-              senderName: userData?.displayName ?? notification.senderUserId,
-              senderTags: userData?.tags ?? [],
-              avatarUrl: avatarUrl,
-            );
-          } catch (e) {
-            debugPrint("DEBUG: Error asyncMap: $e");
-            rethrow;
           }
-    });
+          return null;
+        })
+        .where((event) => event != null)
+        .cast<VrcAutomationEvent>();
   }
   @override
-  Future<void> acceptRequestInvitation(RequestInvite requestInvite, int? slot) async {
+  Future<void> acceptRequestInvitation(RequestInviteEvent requestInvite, int? slot) async {
     await _safeApiCall(() async {
       final response = await _vrcApi.rawApi.getAuthenticationApi().getCurrentUser();
       final currentUser = response.data;
@@ -87,13 +85,20 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Future<void> acceptInvitation(InviteReceived invite) async {
+  Future<void> acceptInvitation(InviteReceivedEvent invite) async {
     //! VRChat doesn't allow to accept invitations by API, so we just dismiss them for now.
     await dismissNotification(invite);
   }
+
+  @override
+  Future<void> acceptFriendRequest(FriendRequestReceivedEvent request) async {
+    await _safeApiCall(() async {
+      await _vrcApi.rawApi.getNotificationsApi().acceptFriendRequest(notificationId: request.id);
+    });
+  }
   
   @override
-  Future<void> rejectNotificationWithMessage(InvitationType notification, int slot) async {
+  Future<void> rejectNotificationWithMessage(IncomingUserEvent notification, int slot) async {
     await _safeApiCall(() async {
       await _vrcApi.rawApi.getInviteApi().respondInvite(
           notificationId: notification.id,
@@ -103,7 +108,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
   }
   
   @override
-  Future<void> dismissNotification(InvitationType notification) async {
+  Future<void> dismissNotification(IncomingUserEvent notification) async {
     await _safeApiCall(() async {
       await _vrcApi.rawApi.getNotificationsApi().deleteNotification(
           notificationId: notification.id
@@ -149,6 +154,39 @@ class AutomationRepositoryImp implements IAutomationRepository {
       lastUpdated: m.updatedAt
     )).toList() ?? [];
   }
+
+  @override
+  Future<Either<Failure, void>> updateRemoteStatus({required StatusType status, required String description}) async {
+    final now = DateTime.now();
+    if (now.difference(_lastStatusUpdate) < _minUpdateInterval) {
+      return const Left(RateLimitFailure(1));
+    }
+    try {
+      final currentUserId = _vrcApi.auth.currentUser?.id;
+      if (currentUserId == null) {
+        return const Left(ApiFailure("Local authenticated session not found"));
+      }
+
+      final UserStatus mappedStatus = _mapToUserStatus(status);
+
+      await _vrcApi.rawApi.getUsersApi().updateUser(
+        userId: currentUserId,
+        updateUserRequest: UpdateUserRequest(
+          status: mappedStatus,
+          statusDescription: description,
+        ),
+      );
+
+      _lastStatusUpdate = DateTime.now();
+
+      return Right(null);
+    } catch (e) {
+      if (e.toString().contains("429")) {
+        return const Left(RateLimitFailure(5));
+      }
+      return Left(ApiFailure("Failed to update status: $e"));
+    }
+  }
   
   InviteMessageType _mapInternalToVrcType(VrcMessageType type) {
     switch (type) {
@@ -156,6 +194,15 @@ class AutomationRepositoryImp implements IAutomationRepository {
       case VrcMessageType.response: return InviteMessageType.response;
       case VrcMessageType.request: return InviteMessageType.request;
       case VrcMessageType.requestResponse: return InviteMessageType.requestResponse;
+    }
+  }
+
+  UserStatus _mapToUserStatus(StatusType internal) {
+    switch (internal) {
+      case StatusType.active: return UserStatus.active;
+      case StatusType.joinMe: return UserStatus.joinMe;
+      case StatusType.askMe: return UserStatus.askMe;
+      case StatusType.busy: return UserStatus.busy;
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
@@ -14,6 +15,30 @@ import 'package:vrcma/core/di/network_provider.dart';
 
 //! Run: dart run build_runner build
 part 'auth_provider.g.dart';
+
+/// Keeps track of whether the application has performed its initial
+/// check for an existing active user session.
+@riverpod
+class InitialSessionChecked extends _$InitialSessionChecked {
+  @override
+  bool build() => false;
+
+  void setChecked() {
+    state = true;
+  }
+}
+
+/// Holds the state of whether the OTP form is currently being displayed.
+/// This prevents losing the view state when transitioning or switching apps.
+@riverpod
+class ShowOtpView extends _$ShowOtpView {
+  @override
+  bool build() => false;
+
+  void set(bool value) {
+    state = value;
+  }
+}
 
 /// Provider for the VRChat API client.
 /// It generates [vrcApiProvider].
@@ -63,6 +88,8 @@ class AuthState extends _$AuthState {
       }
     }catch (e) {
       return null;
+    } finally {
+      ref.read(initialSessionCheckedProvider.notifier).setChecked();
     }
     return null;
   }
@@ -101,6 +128,10 @@ class AuthState extends _$AuthState {
     state = const AsyncValue.loading();
     state = const AsyncValue.data(null);
   }
+
+  void reset() {
+    state = const AsyncValue.data(null);
+  }
 }
 
 @riverpod
@@ -129,67 +160,38 @@ Future<Map<String, String>> vrcImageHeaders(Ref ref, String imageUrl) async {
   };
 }
 
-class _ConcurrencyLock {
-  int _active = 0;
-  final int maxConcurrent;
-  final List<Completer<void>> _queue = [];
-  
-  _ConcurrencyLock(this.maxConcurrent);
-  
-  Future<void> acquire() async {
-    if (_active < maxConcurrent) {
-      _active++;
-      return;
-    }
-    final completer = Completer<void>();
-    _queue.add(completer);
-    return completer.future;
-  }
-  
-  void release() {
-    if (_queue.isNotEmpty) {
-      final next = _queue.removeAt(0);
-      next.complete();
-    } else {
-      _active--;
-    }
-  }
-}
-final _imageResolutionLock = _ConcurrencyLock(3);
+final _imageResolutionLock = Pool(3, timeout: const Duration(seconds: 15));
 @riverpod
 Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
   if (imageUrl.isEmpty) return '';
 
   ref.keepAlive();
   
-  await _imageResolutionLock.acquire();
+  return await _imageResolutionLock.withResource(() async {
+    final api = await ref.watch(vrcApiProvider.future);
 
-  final api = await ref.watch(vrcApiProvider.future);
+    try {
+      final response = await api.rawApi.dio.head(
+        imageUrl,
+        options: Options(
+          followRedirects: true,
+          validateStatus: (status) => true,
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      );
 
-  try {
-    final response = await api.rawApi.dio.get(
-      imageUrl,
-      options: Options(
-        followRedirects: true,
-        validateStatus: (status) => true,
-        responseType: ResponseType.bytes,
-        receiveTimeout: const Duration(seconds: 10),
-      ),
-    );
-    
-    if (response.statusCode == 404 || response.statusCode == 403 || response.statusCode == 429) {
-      return '';
+      if (response.statusCode == 404 || response.statusCode == 403 || response.statusCode == 429) {
+        return '';
+      }
+
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      return response.realUri.toString();
+    } catch (e) {
+      debugPrint("Error resolving image: $e");
+      return imageUrl;
     }
-    
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    return response.realUri.toString();
-  } catch (e) {
-    debugPrint("Error resolving image: $e");
-    return imageUrl;
-  } finally {
-    _imageResolutionLock.release();
-  }
+  });
 }
 
 

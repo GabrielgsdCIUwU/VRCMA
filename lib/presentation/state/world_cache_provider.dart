@@ -1,50 +1,31 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/data/repositories/social_repository_imp.dart';
-import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
 
 part 'world_cache_provider.g.dart';
 
-class _WorldConcurrencyLock {
-  int _active = 0;
-  final int maxConcurrent;
-  final List<Completer<void>> _queue = [];
+final _worldFetchLock = Pool(3, timeout: const Duration(seconds: 15));
 
-  _WorldConcurrencyLock(this.maxConcurrent);
-
-  Future<void> acquire() async {
-    if (_active < maxConcurrent) {
-      _active++;
-      return;
-    }
-    final completer = Completer<void>();
-    _queue.add(completer);
-    return completer.future;
-  }
-
-  void release() {
-    if (_queue.isNotEmpty) {
-      final next = _queue.removeAt(0);
-      next.complete();
-    } else {
-      _active--;
-    }
-  }
-}
-
-final _worldFetchLock = _WorldConcurrencyLock(3);
-
-@Riverpod(keepAlive: true)
+@riverpod
 Future<String> worldName(Ref ref, String worldId) async {
   if (worldId.isEmpty || !worldId.startsWith('wrld_')) return "Unknown World";
 
-  await _worldFetchLock.acquire();
+  final keepAliveLink = ref.keepAlive();
+  Timer? timer;
+  
+  ref.onDispose(() => timer?.cancel());
+  ref.onCancel(() {
+    timer = Timer(const Duration(minutes: 5), () => keepAliveLink.close());
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
 
-  try {
-    final api = await ref.watch(vrcApiProvider.future);
-    final repo = SocialRepositoryImp(api);
+  final repo = await ref.watch(socialRepositoryProvider.future);
+  return await _worldFetchLock.withResource(() async {
 
     final result = await repo.getWorldName(worldId);
 
@@ -57,7 +38,5 @@ Future<String> worldName(Ref ref, String worldId) async {
       },
           (name) => name,
     );
-  } finally {
-    _worldFetchLock.release();
-  }
+  });
 }
