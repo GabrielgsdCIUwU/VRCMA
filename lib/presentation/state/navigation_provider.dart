@@ -7,6 +7,6 @@ class NavigationStack extends _$NavigationStack {
   @override
   AppRoute build() => AppRoute.dashboard;
   
-  void setIndex(AppRoute route) => state = route;
+  void setRoute(AppRoute route) => state = route;
 }
 
