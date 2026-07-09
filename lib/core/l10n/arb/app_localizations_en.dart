@@ -708,4 +708,110 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get statusOverrideNotification =>
       'Automation paused. Your VRChat status was changed manually.';
+
+  @override
+  String get themeModeLabel => 'Theme Mode';
+
+  @override
+  String get themeModeSystem => 'System Default';
+
+  @override
+  String get themeModeLight => 'Light';
+
+  @override
+  String get themeModeDark => 'Dark';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get diagnosticTitle => 'Diagnostics & Data';
+
+  @override
+  String get clearCacheLabel => 'Clear Metadata Cache';
+
+  @override
+  String get clearCacheDesc =>
+      'Force refresh cached world names and avatar images.';
+
+  @override
+  String get toastCacheCleared => 'Metadata cache cleared successfully.';
+
+  @override
+  String get rolesManagementTitle => 'Manage Roles';
+
+  @override
+  String get rolesManagementDesc =>
+      'Create and manage custom categories for your friends.';
+
+  @override
+  String get automationManagementDesc =>
+      'Create automation rules based on friends, roles, or other conditions.';
+
+  @override
+  String get dashboardHeader => 'Control Room';
+
+  @override
+  String get dashboardSubheader =>
+      'Manage active filters and status automation profiles.';
+
+  @override
+  String get clearCachesBtn => 'Clear Cache';
+
+  @override
+  String get defaultMessageCustomOption => 'No Custom Message';
+
+  @override
+  String get defaultMessageCustomOptionDesc =>
+      'Use the default status message without applying a custom template.';
+
+  @override
+  String get themeLabel => 'Theme';
+
+  @override
+  String get toastLocaleChanged => 'Language changed successfully.';
+
+  @override
+  String get systemLogsTitle => 'System Logs';
+
+  @override
+  String get themeSeedColorLabel => 'Accent Color';
+
+  @override
+  String get noProfilesAdded => 'No filter profiles added yet.';
+
+  @override
+  String get nativeBackgroundRuntimeFail =>
+      'Native background runtime initialization failed.';
+
+  @override
+  String get automationTriggerNewFriend => 'On New Friend Added';
+
+  @override
+  String automationTriggerTag(String tag) {
+    return 'Matching Tag: $tag';
+  }
+
+  @override
+  String automationAssignsRoles(String roles) {
+    return 'Assigns: $roles';
+  }
+
+  @override
+  String get colorDeepPurple => 'Deep Purple';
+
+  @override
+  String get colorBlue => 'Blue';
+
+  @override
+  String get colorTeal => 'Teal';
+
+  @override
+  String get colorGreen => 'Green';
+
+  @override
+  String get colorOrange => 'Orange';
+
+  @override
+  String get colorRose => 'Rose';
 }

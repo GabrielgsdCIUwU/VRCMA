@@ -265,5 +265,55 @@
   "statusRuleComparisonHintTimeRange": "p. ej. 22:00-06:00",
   "statusRuleComparisonHintWorldList": "p. ej. wrld_abc, wrld_def",
 
-  "statusOverrideNotification": "Automatización pausada. Has cambiado tu estado de VRChat manualmente."
+  "statusOverrideNotification": "Automatización pausada. Has cambiado tu estado de VRChat manualmente.",
+
+  "themeModeLabel": "Modo del tema",
+  "themeModeSystem": "Predeterminado del sistema",
+  "themeModeLight": "Claro",
+  "themeModeDark": "Oscuro",
+
+  "languageLabel": "Idioma",
+
+  "diagnosticTitle": "Diagnóstico y datos",
+
+  "clearCacheLabel": "Borrar caché de metadatos",
+  "clearCacheDesc": "Vuelve a cargar los nombres de los mundos y las imágenes de los avatares.",
+
+  "toastCacheCleared": "La caché de metadatos se ha borrado correctamente.",
+
+  "rolesManagementTitle": "Gestionar roles",
+  "rolesManagementDesc": "Crea y administra categorías personalizadas para tus amigos.",
+
+  "automationManagementDesc": "Crea reglas de automatización basadas en amigos, roles u otras condiciones.",
+
+  "dashboardHeader": "Centro de control",
+  "dashboardSubheader": "Administra los filtros activos y los perfiles de automatización de estado.",
+
+  "clearCachesBtn": "Borrar caché",
+
+  "defaultMessageCustomOption": "Sin mensaje personalizado",
+  "defaultMessageCustomOptionDesc": "Usa el mensaje de estado predeterminado sin aplicar una plantilla personalizada.",
+
+  "themeLabel": "Tema",
+
+  "toastLocaleChanged": "El idioma se ha cambiado correctamente.",
+
+  "systemLogsTitle": "Registros del sistema",
+
+  
+  "themeSeedColorLabel": "Color de Acento",
+
+  "noProfilesAdded": "Aún no se han añadido perfiles de filtro.",
+  "nativeBackgroundRuntimeFail": "Error al inicializar el servicio de segundo plano nativo.",
+  
+  "automationTriggerNewFriend": "Al agregar nuevo amigo",
+  "automationTriggerTag": "Etiqueta coincidente: {tag}",
+  "automationAssignsRoles": "Asigna: {roles}",
+
+  "colorDeepPurple": "Púrpura Profundo",
+  "colorBlue": "Azul",
+  "colorTeal": "Turquesa",
+  "colorGreen": "Verde",
+  "colorOrange": "Naranja",
+  "colorRose": "Rosa"
 }

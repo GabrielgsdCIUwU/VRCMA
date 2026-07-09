@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vrcma/core/di/local_storage_provider.dart';
 
 part 'locale_provider.g.dart';
 
@@ -11,11 +11,7 @@ class AppLocale extends _$AppLocale {
   @override
   Locale build() {
     final systemLocale = PlatformDispatcher.instance.locale;
-    final savedCode = _getSavedLocaleCode();
-
-    if (savedCode != null) {
-      return Locale(savedCode);
-    }
+    _loadLocale();
 
     if (systemLocale.languageCode == 'es') {
       return const Locale('es');
@@ -23,13 +19,19 @@ class AppLocale extends _$AppLocale {
     return const Locale('en');
   }
 
-  String? _getSavedLocaleCode() {
-    return null;
+  Future<void> _loadLocale() async {
+    try {
+      final repo = await ref.watch(configurationRepositoryProvider.future);
+      final savedCode = await repo.getString(_prefKey);
+      if (savedCode != null) {
+        state = Locale(savedCode);
+      }
+    } catch (_) {}
   }
 
   Future<void> changeLocale(Locale locale) async {
     state = locale;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_prefKey, locale.languageCode);
+    final repo = await ref.read(configurationRepositoryProvider.future);
+    await repo.setString(_prefKey, locale.languageCode);
   }
 }
