@@ -7,12 +7,17 @@ class StatusTemplateResolver {
   String resolve(String template, StatusContext context) {
     if (template.isEmpty) return "";
 
+    final String friendsListText = context.presentFriendNames.isEmpty
+        ? ""
+        : context.presentFriendNames.join(", ");
+
     final Map<String, String> placeholders = {
       '{{world}}': context.worldName,
       '{{count}}': context.population.toString(),
       '{{battery}}': "${context.batteryLevel}%",
       '{{instance}}': context.instanceType.name,
       '{{time}}': _formatTime(context.timestamp),
+      '{{friends}}': friendsListText,
     };
 
     String result = template;
@@ -26,8 +31,8 @@ class StatusTemplateResolver {
   String _sanitize(String input) {
     final trimmed = input.trim();
     return trimmed.length > _vrcMaxStatusLength
-      ? "${trimmed.substring(0, _vrcMaxStatusLength - 3)}..."
-      : trimmed;
+        ? "${trimmed.substring(0, _vrcMaxStatusLength - 3)}..."
+        : trimmed;
   }
 
   String _formatTime(DateTime dt) {

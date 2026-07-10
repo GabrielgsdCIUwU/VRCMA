@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
+import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
 
 void main() {
   late Database db;
@@ -29,6 +32,29 @@ void main() {
                 PRIMARY KEY (vrc_user_id, role_id)
               )
             ''');
+          await db.execute('''
+              CREATE TABLE role_automations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                trigger_type TEXT NOT NULL,
+                target_value TEXT
+              )
+          ''');
+          await db.execute('''
+              CREATE TABLE automation_assigned_roles (
+                automation_id INTEGER NOT NULL,
+                role_id INTEGER NOT NULL,
+                PRIMARY KEY (automation_id, role_id)
+              )
+          ''');
+          await db.execute('''
+              CREATE TABLE vrc_users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL UNIQUE,
+                display_name TEXT NOT NULL,
+                avatar_url TEXT,
+                last_updated TEXT NOT NULL
+              )
+          ''');
         },
       ));
     repository = LocalSocialRepositoryImp(db);
@@ -105,6 +131,49 @@ void main() {
       expect(members.length, 3);
       expect(members, containsAll(newUsers));
       expect(members.contains('usr_old_1'), false);
+    });
+
+    test('saveRoleAutomation and getRoleAutomations should persist automation rules correctly', () async {
+      final roleId = await repository.createRole('VIP');
+      final role = Role(id: roleId, name: 'VIP');
+
+      final automation = RoleAutomation(
+        trigger: AutomationTrigger.hasTag,
+        targetValue: 'system_supporter',
+        roles: [role],
+      );
+
+      await repository.saveRoleAutomation(automation);
+
+      final automations = await repository.getRoleAutomations();
+      expect(automations.length, 1);
+      expect(automations.first.trigger, AutomationTrigger.hasTag);
+      expect(automations.first.targetValue, 'system_supporter');
+      expect(automations.first.roles.first.id, roleId);
+    });
+
+    test('saveKnownUsers should insert and perform conflict updates', () async {
+      final users = [
+        const VrcUser(id: 'usr_one', displayName: 'One', tags: [], avatarUrl: 'url1'),
+      ];
+
+      await repository.saveKnownUsers(users);
+
+      final knownIds = await repository.getKnownUserIds();
+      expect(knownIds, contains('usr_one'));
+    });
+
+    test('assignMultipleRoles should map associations efficiently', () async {
+      final roleId = await repository.createRole('Moderator');
+
+      final assigments = {
+        'usr_user1': {roleId},
+      };
+
+      await repository.assignMultipleRoles(assigments);
+
+      final userRoles = await repository.getRolesForUser('usr_user_1');
+      expect(userRoles.map((r) => r.id), contains(roleId));
     });
   });
 }
