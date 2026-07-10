@@ -6,6 +6,8 @@ import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/usecases/automation/status/matchers/status_condition_matcher.dart';
 
+import '../../../../../helpers/test_mocks.mocks.dart';
+
 class MockLocalSocialRepository extends Mock implements ILocalSocialRepository {}
 
 void main() {
@@ -285,6 +287,36 @@ void main() {
       expect(await matcher.matches(rule, contextLateNight), isTrue);
       expect(await matcher.matches(rule, contextEarlyMorning), isTrue);
       expect(await matcher.matches(rule, contextDuringDay), isFalse);
+    });
+  });
+
+  group('FriendRoleMatcher Tests', () {
+    test('should verify if target role member is present in context', () async {
+      final mockLocalSocial = MockILocalSocialRepository();
+      final matcher = FriendRoleMatcher(mockLocalSocial);
+
+      const rule = StatusRule(
+        priority: 5,
+        targetStatus: StatusType.joinMe,
+        conditionType: ConditionType.friendPresent,
+        operator: RuleOperator.equalTo,
+        conditionValue: '99',
+      );
+
+      final context = StatusContext(
+        worldName: 'World',
+        worldId: 'wrld_1',
+        population: 2,
+        instanceType: InstanceAccessType.public,
+        batteryLevel: 100,
+        isCharging: true,
+        timestamp: DateTime.now(),
+        presentFriendIds: const ['usr_friend'],
+      );
+
+      when(mockLocalSocial.getUserIdsByRole(99)).thenAnswer((_) async => ['usr_friend']);
+
+      expect(await matcher.matches(rule, context), isTrue);
     });
   });
 }
