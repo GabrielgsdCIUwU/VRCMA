@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:vrcma/core/database/database_service.dart';
 import 'package:vrcma/data/repositories/message_repository_imp.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
@@ -14,7 +13,6 @@ void main() {
   });
   
   setUp(() async {
-    final dbService = DatabaseService();
     db = await databaseFactory.openDatabase(inMemoryDatabasePath, options: OpenDatabaseOptions(
       version: 1,
       onCreate: (db, version) async {
