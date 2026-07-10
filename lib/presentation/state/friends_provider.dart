@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
@@ -18,8 +19,30 @@ part 'friends_provider.g.dart';
 
 @riverpod
 class FriendsList extends _$FriendsList {
+  Timer? _evictionTimer;
+
+  static const Duration _cacheEvictionDuration = Duration(minutes: 3);
+
   @override
   FutureOr<List<VrcUser>> build() async {
+    final link = ref.keepAlive();
+
+    ref.onCancel(() {
+      _evictionTimer?.cancel();
+      _evictionTimer = Timer(_cacheEvictionDuration, () {
+        link.close();
+      });
+    });
+
+    ref.onResume(() {
+      _evictionTimer?.cancel();
+      _evictionTimer = null;
+    });
+
+    ref.onDispose(() {
+      _evictionTimer?.cancel();
+    });
+    
     return _fetchFriendsProgressively();
   }
   
