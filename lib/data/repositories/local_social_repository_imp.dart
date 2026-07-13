@@ -1,4 +1,6 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:vrcma/data/mappers/role_automation_mapper.dart';
+import 'package:vrcma/data/mappers/role_mapper.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
@@ -12,10 +14,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   @override
   Future<List<Role>> getAllAvailableRoles() async {
     final List<Map<String, dynamic>> maps = await _db.query('roles');
-    return maps.map((m) => Role(
-      id: m['id'] as int,
-      name: m['name'] as String,
-    )).toList();
+    return maps.map((m) => RoleMapper().fromDatabaseMap(m)).toList();
   }
   
   @override
@@ -26,10 +25,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       WHERE fr.vrc_user_id = ?
     ''', [userId]);
     
-    return maps.map((m) => Role(
-      id: m['id'] as int,
-      name: m['name'] as String
-    )).toList();
+    return maps.map((m) => RoleMapper().fromDatabaseMap(m)).toList();
   }
   
   @override
@@ -138,38 +134,44 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       LEFT JOIN roles r ON ar.role_id = r.id
     ''');
 
-    final Map<int, RoleAutomation> automationMap = {};
+    final Map<int, List<Role>> tempAssignedRoles = {};
+    final Map<int, Map<String, dynamic>> tempAutomationData = {};
 
-    for (final row  in maps) {
+    for (final row in maps) {
       final id = row['id'] as int;
-      final trigger = row['trigger_type'] == 'newFriend' ? AutomationTrigger.newFriend : AutomationTrigger.hasTag;
-      final targetValue = row['target_value'] as String?;
-
-      automationMap.putIfAbsent(id, () => RoleAutomation(
-        id: id,
-        trigger: trigger,
-        targetValue: targetValue,
-        roles: [],
-      ));
+      tempAutomationData[id] = row;
 
       if (row['role_id'] != null) {
-        automationMap[id]!.roles.add(Role(
-          id: row['role_id'] as int,
-          name: row['role_name'] as String,
-        ));
+        tempAssignedRoles.putIfAbsent(id, () => []).add(
+          RoleMapper().fromDatabaseMap({
+            'id': row['role_id'],
+            'name': row['role_name'],
+          }),
+        );
       }
     }
-    return automationMap.values.toList();
+
+    return tempAutomationData.entries.map((entry) {
+      final row = entry.value;
+      final id = entry.key;
+      return RoleAutomationMapper.fromJoinRows(
+        id,
+        row['trigger_type'] as String,
+        row['target_value'] as String?,
+        tempAssignedRoles[id] ?? [],
+      );
+    }).toList();
   }
 
   @override
   Future<void> saveRoleAutomation(RoleAutomation automation) async {
     await _db.transaction((txn) async {
-      final id = await txn.insert('role_automations', {
-        if (automation.id != null) 'id': automation.id,
-        'trigger_type': automation.trigger.name,
-        'target_value': automation.targetValue,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      final automationData = RoleAutomationMapper.toDatabaseMap(automation);
+      final id = await txn.insert(
+        'role_automations',
+        automationData,
+        conflictAlgorithm: ConflictAlgorithm.replace
+      );
 
       final automationId = automation.id ?? id;
 

@@ -1,4 +1,5 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:vrcma/data/mappers/status_profile_mapper.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
 
@@ -22,32 +23,7 @@ class StatusRepositoryImp implements IStatusRepository {
         orderBy: 'priority ASC',
       );
 
-      final rules = rulesMaps.map((rMap) => StatusRule(
-        id: rMap['id'] as int?,
-        priority: rMap['priority'] as int,
-        targetStatus: StatusType.fromString(rMap['target_status'] as String),
-        messageTemplate: rMap['message_template'] as String?,
-        conditionType: ConditionType.values.firstWhere(
-          (e) => e.name == (rMap['condition_type'] as String)
-        ),
-        operator: RuleOperator.values.firstWhere(
-          (e) => e.name == (rMap['operator'] as String)
-        ),
-        conditionValue: rMap['condition_value'] as String? ?? '',
-      )).toList();
-
-      result.add(StatusProfile(
-        id: profileId,
-        name: pMap['name'] as String,
-        isActive: (pMap['is_active'] as int) == 1,
-        fallbackStatus: StatusType.fromString(pMap['fallback_status'] as String),
-        fallbackTemplate: pMap['fallback_template'] as String?,
-        lastAppliedStatus: pMap['last_applied_status'] != null 
-            ? StatusType.fromString(pMap['last_applied_status'] as String) 
-            : null,
-        lastAppliedMessage: pMap['last_applied_message'] as String?,
-        rules: rules,
-      ));
+     result.add(StatusProfileMapper.fromDatabaseMaps(pMap, rulesMaps));
     }
     return result;
   }
@@ -72,15 +48,8 @@ class StatusRepositoryImp implements IStatusRepository {
       await txn.delete('status_rules', where: 'profile_id = ?', whereArgs: [targetId]);
 
       for (var rule in profile.rules) {
-        await txn.insert('status_rules', {
-          'profile_id': targetId,
-          'priority': rule.priority,
-          'target_status': rule.targetStatus.apiValue,
-          'message_template': rule.messageTemplate,
-          'condition_type': rule.conditionType.name,
-          'operator': rule.operator.name,
-          'condition_value': rule.conditionValue,
-        });
+        final ruleData = StatusProfileMapper.ruleToDatabaseMap(targetId, rule);
+        await txn.insert('status_rules', ruleData);
       }
       return targetId;
     });
