@@ -131,11 +131,13 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   final favGroups = await ref.watch(favoriteFriendGroupsProvider.future);
   final query = ref.watch(friendsSearchQueryProvider).toLowerCase();
   
-  final uniqueWorldIds = friends
+  final uniqueWorldIds = await Isolate.run(() {
+    return friends
     .where((f) => !f.isTrulyOffline && f.status.toLowerCase() != "active")
     .map((f) => VrcInstance.parse(f.location).worldId)
     .whereType<String>()
     .toSet();
+  });
   
   final Map<String, String> resolvedWorldNames = {};
   for (final worldId in uniqueWorldIds) {
