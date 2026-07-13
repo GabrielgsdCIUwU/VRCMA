@@ -16,6 +16,9 @@ class VrcInstance extends Equatable {
     required this.accessType,
     this.region = 'US',
   });
+
+  static final Map<String, VrcInstance> _locationCache = {};
+  static const int _maxCacheSize = 250;
   
   bool get isOffline => locationString == 'offline' || locationString.isEmpty;
   bool get isPrivate => locationString == 'private';
@@ -23,6 +26,9 @@ class VrcInstance extends Equatable {
   bool get isResolvableWorld => worldId != null && worldId!.startsWith('wrld_');
   
   factory VrcInstance.parse(String location) {
+    final cached = _locationCache[location];
+    if (cached != null) return cached;
+
     if (location.isEmpty || location == 'offline' || location == 'private' || location == 'traveling') {
       return VrcInstance(locationString: location, accessType: InstanceAccessType.unknown);
     }
@@ -79,13 +85,24 @@ class VrcInstance extends Equatable {
       type = InstanceAccessType.invitePlus;
     }
     
-    return VrcInstance(
+    final parsedInstance = VrcInstance(
       locationString: location,
       worldId: worldId,
       instanceId: instanceId,
       accessType: type,
       region: region,
     );
+
+    _parseToLocationCache(location, parsedInstance);
+    return parsedInstance;
+  }
+
+  static void _parseToLocationCache(String key, VrcInstance value) {
+    if (_locationCache.length >= _maxCacheSize) {
+      //* Clear: Just to simplify, but can be improve with LRU (Least Recently Used)
+      _locationCache.clear();
+    }
+    _locationCache[key] = value;
   }
   
   String get accessTypeString {

@@ -49,15 +49,15 @@ class VrcUserModel extends VrcUser {
       ),
     );
   }
+
+  static final Map<String, VrcTag> _tagsLookupMap = {
+    for (final tag in VrcTag.allTags) tag.id: tag
+  };
   
   static List<String> _internTags(List<String> rawTags) {
     return rawTags.map((rawTag) {
-      final knownTag = VrcTag.allTags.firstWhere(
-          (t) => t.id == rawTag,
-        orElse: () => VrcTag(id: '', name: '', description: '', category: VrcTagCategory.system)
-      );
-      
-      return knownTag.id.isNotEmpty ? knownTag.id : rawTag;
+      final knownTag = _tagsLookupMap[rawTag];
+      return knownTag != null ? knownTag.id : rawTag;
     }).toList();
   }
 }
