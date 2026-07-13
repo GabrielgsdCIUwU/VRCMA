@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
@@ -18,8 +19,30 @@ part 'friends_provider.g.dart';
 
 @riverpod
 class FriendsList extends _$FriendsList {
+  Timer? _evictionTimer;
+
+  static const Duration _cacheEvictionDuration = Duration(minutes: 3);
+
   @override
   FutureOr<List<VrcUser>> build() async {
+    final link = ref.keepAlive();
+
+    ref.onCancel(() {
+      _evictionTimer?.cancel();
+      _evictionTimer = Timer(_cacheEvictionDuration, () {
+        link.close();
+      });
+    });
+
+    ref.onResume(() {
+      _evictionTimer?.cancel();
+      _evictionTimer = null;
+    });
+
+    ref.onDispose(() {
+      _evictionTimer?.cancel();
+    });
+    
     return _fetchFriendsProgressively();
   }
   
@@ -108,11 +131,13 @@ Future<List<FriendGroupCategory>> structuredFriendsList(Ref ref) async {
   final favGroups = await ref.watch(favoriteFriendGroupsProvider.future);
   final query = ref.watch(friendsSearchQueryProvider).toLowerCase();
   
-  final uniqueWorldIds = friends
+  final uniqueWorldIds = await Isolate.run(() {
+    return friends
     .where((f) => !f.isTrulyOffline && f.status.toLowerCase() != "active")
     .map((f) => VrcInstance.parse(f.location).worldId)
     .whereType<String>()
     .toSet();
+  });
   
   final Map<String, String> resolvedWorldNames = {};
   for (final worldId in uniqueWorldIds) {

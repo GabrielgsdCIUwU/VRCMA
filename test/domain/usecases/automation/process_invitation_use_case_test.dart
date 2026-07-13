@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
-import 'package:vrcma/domain/entities/automation/invitation_type.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
@@ -20,7 +20,7 @@ void main() {
     const roleBlocked = Role(id: 2, name: "Blocked");
     const roleFriend = Role(id: 3, name: "Friend");
     
-    final mockRequest = RequestInvite(
+    final mockRequest = RequestInviteEvent(
       id: "req_1",
       senderId: "user_1",
       senderName: "<><",

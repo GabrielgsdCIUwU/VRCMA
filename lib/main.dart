@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
+import 'package:vrcma/presentation/state/app_settings_provider.dart';
 import 'package:vrcma/presentation/state/locale_provider.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/app_theme_color_extension.dart';
 import 'core/services/background_service.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -37,6 +39,8 @@ class MyApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final appLocale = ref.watch(appLocaleProvider);
     final initialChecked = ref.watch(initialSessionCheckedProvider);
+    final themeMode = ref.watch(appThemeModeProvider);
+    final themeColor = ref.watch(appThemeColorStateProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -45,9 +49,36 @@ class MyApp extends ConsumerWidget {
       locale: appLocale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      themeMode: themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
+            seedColor: themeColor.getMaterialColor,
+          brightness: Brightness.light
+        ),
+        useMaterial3: true,
+        extensions: const [
+          VrcSemanticColors(
+            invite: Colors.blue,
+            request: Colors.orange,
+            response: Colors.green,
+            requestResponse: Colors.purple,
+            statusOnline: Colors.green,
+            statusJoinMe: Colors.blue,
+            statusAskMe: Colors.orange,
+            statusBusy: Colors.red,
+            statusOffline: Colors.grey,
+            success: Colors.green,
+            error: Colors.redAccent,
+          )
+        ],
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+          filled: true,
+        )
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: themeColor.getMaterialColor,
           brightness: Brightness.dark
         ),
         useMaterial3: true,

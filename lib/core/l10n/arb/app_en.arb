@@ -1199,5 +1199,165 @@
   "statusOverrideNotification": "Automation paused. Your VRChat status was changed manually.",
   "@statusOverrideNotification": {
     "description": "Notification shown when status automation is paused after the user manually changes their VRChat status outside the app."
+  },
+
+  "themeModeLabel": "Theme Mode",
+  "@themeModeLabel": {
+    "description": "Label for the application theme mode setting."
+  },
+
+  "themeModeSystem": "System Default",
+  "@themeModeSystem": {
+    "description": "Theme mode option that follows the operating system's appearance setting."
+  },
+
+  "themeModeLight": "Light",
+  "@themeModeLight": {
+    "description": "Theme mode option that always uses the light theme."
+  },
+
+  "themeModeDark": "Dark",
+  "@themeModeDark": {
+    "description": "Theme mode option that always uses the dark theme."
+  },
+
+  "languageLabel": "Language",
+  "@languageLabel": {
+    "description": "Label for the application language setting."
+  },
+
+  "diagnosticTitle": "Diagnostics & Data",
+  "@diagnosticTitle": {
+    "description": "Section title for diagnostics, logs, and cached application data."
+  },
+
+  "clearCacheLabel": "Clear Metadata Cache",
+  "@clearCacheLabel": {
+    "description": "Action label used to clear cached metadata such as world names and avatar images."
+  },
+
+  "clearCacheDesc": "Force refresh cached world names and avatar images.",
+  "@clearCacheDesc": {
+    "description": "Description explaining that cached VRChat metadata will be refreshed the next time it is needed."
+  },
+
+  "toastCacheCleared": "Metadata cache cleared successfully.",
+  "@toastCacheCleared": {
+    "description": "Toast notification displayed after cached metadata has been successfully cleared."
+  },
+
+  "rolesManagementTitle": "Manage Roles",
+  "@rolesManagementTitle": {
+    "description": "Title for the roles management section."
+  },
+
+  "rolesManagementDesc": "Create and manage custom categories for your friends.",
+  "@rolesManagementDesc": {
+    "description": "Description for the roles management section where users organize friends into custom roles."
+  },
+
+  "automationManagementDesc": "Create automation rules based on friends, roles, or other conditions.",
+  "@automationManagementDesc": {
+    "description": "Description for the automation management section."
+  },
+
+  "dashboardHeader": "Control Room",
+  "@dashboardHeader": {
+    "description": "Main heading displayed on the application's dashboard."
+  },
+
+  "dashboardSubheader": "Manage active filters and status automation profiles.",
+  "@dashboardSubheader": {
+    "description": "Subtitle displayed below the dashboard heading."
+  },
+
+  "clearCachesBtn": "Clear Cache",
+  "@clearCachesBtn": {
+    "description": "Button label used to clear cached metadata."
+  },
+
+  "defaultMessageCustomOption": "No Custom Message",
+  "@defaultMessageCustomOption": {
+    "description": "Option indicating that no custom automatic status message should be used."
+  },
+
+  "defaultMessageCustomOptionDesc": "Use the default status message without applying a custom template.",
+  "@defaultMessageCustomOptionDesc": {
+    "description": "Description for the option that disables custom status message templates."
+  },
+
+  "themeLabel": "Theme",
+  "@themeLabel": {
+    "description": "Section title for appearance and theme settings."
+  },
+
+  "toastLocaleChanged": "Language changed successfully.",
+  "@toastLocaleChanged": {
+    "description": "Toast notification displayed after changing the application language."
+  },
+
+  "systemLogsTitle": "System Logs",
+  "@systemLogsTitle": {
+    "description": "Title for the screen displaying application logs."
+  },
+
+  "themeSeedColorLabel": "Accent Color",
+  "@themeSeedColorLabel": {
+    "description": "Label for choosing the primary accent color of the app."
+  },
+  "noProfilesAdded": "No filter profiles added yet.",
+  "@noProfilesAdded": {
+    "description": "Text displayed in dashboard when no invitation filter profiles exist."
+  },
+
+  "nativeBackgroundRuntimeFail": "Native background runtime initialization failed.",
+  "@nativeBackgroundRuntimeFail": {
+    "description": "Error message shown when background execution service fails."
+  },
+  "automationTriggerNewFriend": "On New Friend Added",
+  "@automationTriggerNewFriend": {
+    "description": "Title displayed for new friend automation rule."
+  },
+  "automationTriggerTag": "Matching Tag: {tag}",
+  "@automationTriggerTag": {
+    "description": "Title displayed for tag-matched automation rule.",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "automationAssignsRoles": "Assigns: {roles}",
+  "@automationAssignsRoles": {
+    "description": "Subtitle displaying list of roles assigned by automation rule.",
+    "placeholders": {
+      "roles": {
+        "type": "String"
+      }
+    }
+  },
+  "colorDeepPurple": "Deep Purple",
+  "@colorDeepPurple": {
+    "description": "Name of deep purple theme accent color."
+  },
+  "colorBlue": "Blue",
+  "@colorBlue": {
+    "description": "Name of blue theme accent color."
+  },
+  "colorTeal": "Teal",
+  "@colorTeal": {
+    "description": "Name of teal theme accent color."
+  },
+  "colorGreen": "Green",
+  "@colorGreen": {
+    "description": "Name of green theme accent color."
+  },
+  "colorOrange": "Orange",
+  "@colorOrange": {
+    "description": "Name of orange theme accent color."
+  },
+  "colorRose": "Rose",
+  "@colorRose": {
+    "description": "Name of rose theme accent color."
   }
 }

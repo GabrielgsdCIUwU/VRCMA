@@ -1375,6 +1375,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automation paused. Your VRChat status was changed manually.'**
   String get statusOverrideNotification;
+
+  /// Label for the application theme mode setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Mode'**
+  String get themeModeLabel;
+
+  /// Theme mode option that follows the operating system's appearance setting.
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get themeModeSystem;
+
+  /// Theme mode option that always uses the light theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeModeLight;
+
+  /// Theme mode option that always uses the dark theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeModeDark;
+
+  /// Label for the application language setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// Section title for diagnostics, logs, and cached application data.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics & Data'**
+  String get diagnosticTitle;
+
+  /// Action label used to clear cached metadata such as world names and avatar images.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Metadata Cache'**
+  String get clearCacheLabel;
+
+  /// Description explaining that cached VRChat metadata will be refreshed the next time it is needed.
+  ///
+  /// In en, this message translates to:
+  /// **'Force refresh cached world names and avatar images.'**
+  String get clearCacheDesc;
+
+  /// Toast notification displayed after cached metadata has been successfully cleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata cache cleared successfully.'**
+  String get toastCacheCleared;
+
+  /// Title for the roles management section.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Roles'**
+  String get rolesManagementTitle;
+
+  /// Description for the roles management section where users organize friends into custom roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage custom categories for your friends.'**
+  String get rolesManagementDesc;
+
+  /// Description for the automation management section.
+  ///
+  /// In en, this message translates to:
+  /// **'Create automation rules based on friends, roles, or other conditions.'**
+  String get automationManagementDesc;
+
+  /// Main heading displayed on the application's dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Control Room'**
+  String get dashboardHeader;
+
+  /// Subtitle displayed below the dashboard heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage active filters and status automation profiles.'**
+  String get dashboardSubheader;
+
+  /// Button label used to clear cached metadata.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cache'**
+  String get clearCachesBtn;
+
+  /// Option indicating that no custom automatic status message should be used.
+  ///
+  /// In en, this message translates to:
+  /// **'No Custom Message'**
+  String get defaultMessageCustomOption;
+
+  /// Description for the option that disables custom status message templates.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the default status message without applying a custom template.'**
+  String get defaultMessageCustomOptionDesc;
+
+  /// Section title for appearance and theme settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get themeLabel;
+
+  /// Toast notification displayed after changing the application language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language changed successfully.'**
+  String get toastLocaleChanged;
+
+  /// Title for the screen displaying application logs.
+  ///
+  /// In en, this message translates to:
+  /// **'System Logs'**
+  String get systemLogsTitle;
+
+  /// Label for choosing the primary accent color of the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent Color'**
+  String get themeSeedColorLabel;
+
+  /// Text displayed in dashboard when no invitation filter profiles exist.
+  ///
+  /// In en, this message translates to:
+  /// **'No filter profiles added yet.'**
+  String get noProfilesAdded;
+
+  /// Error message shown when background execution service fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Native background runtime initialization failed.'**
+  String get nativeBackgroundRuntimeFail;
+
+  /// Title displayed for new friend automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'On New Friend Added'**
+  String get automationTriggerNewFriend;
+
+  /// Title displayed for tag-matched automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching Tag: {tag}'**
+  String automationTriggerTag(String tag);
+
+  /// Subtitle displaying list of roles assigned by automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigns: {roles}'**
+  String automationAssignsRoles(String roles);
+
+  /// Name of deep purple theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Purple'**
+  String get colorDeepPurple;
+
+  /// Name of blue theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get colorBlue;
+
+  /// Name of teal theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get colorTeal;
+
+  /// Name of green theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get colorGreen;
+
+  /// Name of orange theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get colorOrange;
+
+  /// Name of rose theme accent color.
+  ///
+  /// In en, this message translates to:
+  /// **'Rose'**
+  String get colorRose;
 }
 
 class _AppLocalizationsDelegate

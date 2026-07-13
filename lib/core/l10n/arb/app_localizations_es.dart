@@ -709,4 +709,111 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get statusOverrideNotification =>
       'Automatización pausada. Has cambiado tu estado de VRChat manualmente.';
+
+  @override
+  String get themeModeLabel => 'Modo del tema';
+
+  @override
+  String get themeModeSystem => 'Predeterminado del sistema';
+
+  @override
+  String get themeModeLight => 'Claro';
+
+  @override
+  String get themeModeDark => 'Oscuro';
+
+  @override
+  String get languageLabel => 'Idioma';
+
+  @override
+  String get diagnosticTitle => 'Diagnóstico y datos';
+
+  @override
+  String get clearCacheLabel => 'Borrar caché de metadatos';
+
+  @override
+  String get clearCacheDesc =>
+      'Vuelve a cargar los nombres de los mundos y las imágenes de los avatares.';
+
+  @override
+  String get toastCacheCleared =>
+      'La caché de metadatos se ha borrado correctamente.';
+
+  @override
+  String get rolesManagementTitle => 'Gestionar roles';
+
+  @override
+  String get rolesManagementDesc =>
+      'Crea y administra categorías personalizadas para tus amigos.';
+
+  @override
+  String get automationManagementDesc =>
+      'Crea reglas de automatización basadas en amigos, roles u otras condiciones.';
+
+  @override
+  String get dashboardHeader => 'Centro de control';
+
+  @override
+  String get dashboardSubheader =>
+      'Administra los filtros activos y los perfiles de automatización de estado.';
+
+  @override
+  String get clearCachesBtn => 'Borrar caché';
+
+  @override
+  String get defaultMessageCustomOption => 'Sin mensaje personalizado';
+
+  @override
+  String get defaultMessageCustomOptionDesc =>
+      'Usa el mensaje de estado predeterminado sin aplicar una plantilla personalizada.';
+
+  @override
+  String get themeLabel => 'Tema';
+
+  @override
+  String get toastLocaleChanged => 'El idioma se ha cambiado correctamente.';
+
+  @override
+  String get systemLogsTitle => 'Registros del sistema';
+
+  @override
+  String get themeSeedColorLabel => 'Color de Acento';
+
+  @override
+  String get noProfilesAdded => 'Aún no se han añadido perfiles de filtro.';
+
+  @override
+  String get nativeBackgroundRuntimeFail =>
+      'Error al inicializar el servicio de segundo plano nativo.';
+
+  @override
+  String get automationTriggerNewFriend => 'Al agregar nuevo amigo';
+
+  @override
+  String automationTriggerTag(String tag) {
+    return 'Etiqueta coincidente: $tag';
+  }
+
+  @override
+  String automationAssignsRoles(String roles) {
+    return 'Asigna: $roles';
+  }
+
+  @override
+  String get colorDeepPurple => 'Púrpura Profundo';
+
+  @override
+  String get colorBlue => 'Azul';
+
+  @override
+  String get colorTeal => 'Turquesa';
+
+  @override
+  String get colorGreen => 'Verde';
+
+  @override
+  String get colorOrange => 'Naranja';
+
+  @override
+  String get colorRose => 'Rosa';
 }

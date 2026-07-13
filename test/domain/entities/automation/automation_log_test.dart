@@ -12,9 +12,10 @@ void main() {
         senderId: "user_1",
         senderName: "<><",
         senderAvatarUrl: "https://c.tenor.com/tVdFKACn2PoAAAAd/smg4-mario.gif",
-        invitationType: "REQUEST",
-        action: "ACCEPTED",
-        appliedRule: "VIP Rule",
+        invitationType: LogEventType.request,
+        action: LogActionOutcome.accepted,
+        profileName: "Main Safe Profile",
+        matchedRoleName: "VIP",
       );
       
       final log2 = AutomationLog(
@@ -23,9 +24,10 @@ void main() {
         senderId: "user_1",
         senderName: "<><",
         senderAvatarUrl: "https://c.tenor.com/tVdFKACn2PoAAAAd/smg4-mario.gif",
-        invitationType: "REQUEST",
-        action: "ACCEPTED",
-        appliedRule: "VIP Rule",
+        invitationType: LogEventType.request,
+        action: LogActionOutcome.accepted,
+        profileName: "Main Safe Profile",
+        matchedRoleName: "VIP",
       );
       expect(log1, equals(log2));
       expect(log1.hashCode, equals(log2.hashCode));
@@ -38,9 +40,10 @@ void main() {
         senderId: "user_1",
         senderName: "<><",
         senderAvatarUrl: "https://c.tenor.com/tVdFKACn2PoAAAAd/smg4-mario.gif",
-        invitationType: "REQUEST",
-        action: "ACCEPTED",
-        appliedRule: "VIP Rule",
+        invitationType: LogEventType.request,
+        action: LogActionOutcome.accepted,
+        profileName: "Main Profile",
+        matchedRoleName: "VIP",
       );
 
       final log2 = AutomationLog(
@@ -49,9 +52,10 @@ void main() {
         senderId: "user_1",
         senderName: "<><",
         senderAvatarUrl: "https://c.tenor.com/tVdFKACn2PoAAAAd/smg4-mario.gif",
-        invitationType: "REQUEST",
-        action: "REJECTED",
-        appliedRule: "VIP Rule",
+        invitationType: LogEventType.request,
+        action: LogActionOutcome.rejected,
+        profileName: "Main Profile",
+        matchedRoleName: "VIP",
       );
       expect(log1, isNot(equals(log2)));
     });
@@ -62,9 +66,10 @@ void main() {
         senderId: "user_1",
         senderName: "Cookies For Fish :3",
         senderAvatarUrl: "https://preview.redd.it/el-mundo-resumido-en-una-imagen-v0-8wyqey53t04g1.png?width=1080&crop=smart&auto=webp&s=fb3a685bb3ac397ee7397a8ba0efed332e60616a",
-        invitationType: "INVITE",
-        action: "IGNORED",
-        appliedRule: "Default",
+        invitationType: LogEventType.invite,
+        action: LogActionOutcome.ignored,
+        profileName: "Main Profile",
+        matchedRoleName: "Default",
       );
       
       expect(log.id, isNull);
