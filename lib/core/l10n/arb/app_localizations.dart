@@ -437,13 +437,13 @@ abstract class AppLocalizations {
   /// Category label for invitations.
   ///
   /// In en, this message translates to:
-  /// **'INVITE'**
+  /// **'Invite'**
   String get tabInvite;
 
   /// Category label for requests.
   ///
   /// In en, this message translates to:
-  /// **'REQUEST'**
+  /// **'Request'**
   String get tabRequest;
 
   /// Noun representing an invitation notification type.
@@ -1639,6 +1639,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Profile'**
   String get contextMenuDelete;
+
+  /// Section header for management tools like Roles and Friend Automations on the dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Management Tools'**
+  String get dashboardManagementTools;
+
+  /// Title of the logout confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutDialogTitle;
+
+  /// Confirmation message warning the user about terminating their session.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out of your VRChat session?'**
+  String get logoutDialogContent;
+
+  /// Action label to confirm logging out.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutButtonLabel;
 }
 
 class _AppLocalizationsDelegate

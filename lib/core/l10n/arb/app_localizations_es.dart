@@ -853,4 +853,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contextMenuDelete => 'Eliminar Perfil';
+
+  @override
+  String get dashboardManagementTools => 'Herramientas de Gestión';
+
+  @override
+  String get logoutDialogTitle => 'Cerrar Sesión';
+
+  @override
+  String get logoutDialogContent =>
+      '¿Estás seguro de que deseas cerrar tu sesión de VRChat?';
+
+  @override
+  String get logoutButtonLabel => 'Salir';
 }

@@ -328,5 +328,11 @@
   "contextMenuActivate": "Activar Perfil",
   "contextMenuDeactivate": "Desactivar Perfil",
   "contextMenuEdit": "Editar Perfil",
-  "contextMenuDelete": "Eliminar Perfil"
+  "contextMenuDelete": "Eliminar Perfil",
+
+  "dashboardManagementTools": "Herramientas de Gestión",
+  
+  "logoutDialogTitle": "Cerrar Sesión",
+  "logoutDialogContent": "¿Estás seguro de que deseas cerrar tu sesión de VRChat?",
+  "logoutButtonLabel": "Salir"
 }

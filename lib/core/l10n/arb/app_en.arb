@@ -345,12 +345,12 @@
     "description": "Status badge label indicating an invite or join request was auto-declined."
   },
 
-  "tabInvite": "INVITE",
+  "tabInvite": "Invite",
   "@tabInvite": {
     "description": "Category label for invitations."
   },
 
-  "tabRequest": "REQUEST",
+  "tabRequest": "Request",
   "@tabRequest": {
     "description": "Category label for requests."
   },
@@ -1419,5 +1419,25 @@
   "contextMenuDelete": "Delete Profile",
   "@contextMenuDelete": {
     "description": "Context menu action that permanently deletes the selected automation profile."
+  },
+
+  "dashboardManagementTools": "Management Tools",
+  "@dashboardManagementTools": {
+    "description": "Section header for management tools like Roles and Friend Automations on the dashboard."
+  },
+
+  "logoutDialogTitle": "Logout",
+  "@logoutDialogTitle": {
+    "description": "Title of the logout confirmation dialog."
+  },
+
+  "logoutDialogContent": "Are you sure you want to log out of your VRChat session?",
+  "@logoutDialogContent": {
+    "description": "Confirmation message warning the user about terminating their session."
+  },
+
+  "logoutButtonLabel": "Logout",
+  "@logoutButtonLabel": {
+    "description": "Action label to confirm logging out."
   }
 }

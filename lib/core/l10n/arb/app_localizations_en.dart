@@ -201,10 +201,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionRejected => 'REJECTED';
 
   @override
-  String get tabInvite => 'INVITE';
+  String get tabInvite => 'Invite';
 
   @override
-  String get tabRequest => 'REQUEST';
+  String get tabRequest => 'Request';
 
   @override
   String get messageTypeInvite => 'Invite';
@@ -851,4 +851,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contextMenuDelete => 'Delete Profile';
+
+  @override
+  String get dashboardManagementTools => 'Management Tools';
+
+  @override
+  String get logoutDialogTitle => 'Logout';
+
+  @override
+  String get logoutDialogContent =>
+      'Are you sure you want to log out of your VRChat session?';
+
+  @override
+  String get logoutButtonLabel => 'Logout';
 }
