@@ -126,28 +126,6 @@ class SettingsPanel extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          _buildSectionHeader(context, context.l10n.sectionRoles),
-          _buildCard(
-            context,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.supervised_user_circle_outlined),
-                title: Text(context.l10n.sectionRoles),
-                subtitle: Text(context.l10n.rolesManagementDesc),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _openRoleManager(context, ref),
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.smart_toy_outlined),
-                title: Text(context.l10n.sectionFriendAutomations),
-                subtitle: Text(context.l10n.automationManagementDesc),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _openAutomationManager(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
           _buildSectionHeader(context, context.l10n.diagnosticTitle),
           _buildCard(
             context,
@@ -223,35 +201,6 @@ class SettingsPanel extends ConsumerWidget {
       case ThemeMode.dark:
         return context.l10n.themeModeDark;
     }
-  }
-
-  void _openRoleManager(BuildContext context, WidgetRef ref) {
-    ref.read(roleManagementProvider);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        maxChildSize: 0.95,
-        minChildSize: 0.5,
-        expand: false,
-        builder: (_, _) => const RoleManagerSubsheet(),
-      ),
-    );
-  }
-
-  void _openAutomationManager(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        maxChildSize: 0.95,
-        minChildSize: 0.5,
-        expand: false,
-        builder: (_, _) => const AutomationManagerSubsheet(),
-      )
-    );
   }
 
   void _handleClearCaches(BuildContext context, WidgetRef ref) {
