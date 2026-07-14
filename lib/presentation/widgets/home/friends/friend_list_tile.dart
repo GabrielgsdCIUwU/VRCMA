@@ -10,20 +10,11 @@ class FriendListTile extends StatelessWidget {
 
   const FriendListTile({super.key, required this.user});
 
-  Color _getStatusColor(BuildContext context) {
-    if (user.isTrulyOffline) return context.vrcColors.statusOffline;
-    switch (user.status.toLowerCase()) {
-      case 'active': return context.vrcColors.statusOnline;
-      case 'join me': return context.vrcColors.statusJoinMe;
-      case 'ask me': return context.vrcColors.statusAskMe;
-      case 'busy': return context.vrcColors.statusBusy;
-      default: return context.vrcColors.statusOffline;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor(context);
+    final statusColor = user.isTrulyOffline
+      ? context.vrcColors.statusOffline
+      : context.getStatusColor(user.status);
 
     return InkWell(
       onTap: () {
