@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
@@ -7,8 +6,15 @@ import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
+import 'package:vrcma/presentation/widgets/home/settings_panel.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/status_profile_editor_sheet.dart';
+
+enum DashboardContextAction {
+  toggle,
+  edit,
+  delete,
+}
 
 class DashboardPanel extends ConsumerWidget {
   const DashboardPanel({super.key});
@@ -41,10 +47,14 @@ class DashboardPanel extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
             ),
+            const SizedBox(height: 32),
+            _buildSectionTitle(context, context.l10n.diagnosticTitle),
+            const SizedBox(height: 12),
+            _buildManagementAssetsGrid(context, ref),
           ],
         ),
       ),
-    )    ;
+    );
   }
 
   Widget _buildWelcomeHeader(BuildContext context) {
@@ -99,20 +109,44 @@ class DashboardPanel extends ConsumerWidget {
           return _buildAddCard(context, () => _showAddFilterProfileDialog(context, ref));
         }
         final profile = profiles[i];
-        return _buildProfileCard(
-          context,
-          title: profile.name,
-          subtitle: context.l10n.profileRulesCount(profile.rules.length),
-          isActive: profile.isActive,
-          onTap: () {
-            ref.read(profileManagementProviderProvider.notifier).toggleProfileActive(profile);
+        return AdaptiveContextMenuWrapper<DashboardContextAction>(
+          menuItems: [
+            PopupMenuItem(
+              value: DashboardContextAction.toggle,
+              child: Text(profile.isActive ? context.l10n.contextMenuDeactivate : context.l10n.contextMenuActivate),
+            ),
+            PopupMenuItem(
+              value: DashboardContextAction.edit,
+              child: Text(context.l10n.contextMenuEdit),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: DashboardContextAction.delete,
+              child: Text(context.l10n.contextMenuDelete, style: TextStyle(color: context.colorScheme.error)),
+            )
+          ],
+          onSelected: (action) {
+            switch (action) {
+              case DashboardContextAction.toggle:
+                ref.read(profileManagementProviderProvider.notifier).toggleProfileActive(profile);
+              case DashboardContextAction.edit:
+                Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileEditorSheet(profile: profile)));
+              case DashboardContextAction.delete:
+                _showDeleteFilterProfileConfirmation(context, ref, profile);
+            }
           },
-          onEdit: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ProfileEditorSheet(profile: profile)),
-            );
-          }
+          child: _buildProfileCard(
+            context,
+            title: profile.name,
+            subtitle: context.l10n.profileRulesCount(profile.rules.length),
+            isActive: profile.isActive,
+            onTap: () {
+              ref.read(profileManagementProviderProvider.notifier).toggleProfileActive(profile);
+            },
+            onEdit: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileEditorSheet(profile: profile)));
+            }
+          ),
         );
       },
     );
@@ -140,22 +174,130 @@ class DashboardPanel extends ConsumerWidget {
           return _buildAddCard(context, () => _showAddStatusProfileDialog(context, ref));
         }
         final profile = profiles[i];
-        return _buildProfileCard(
-          context,
-          title: profile.name,
-          subtitle: context.l10n.statusProfileSubtitle(profile.rules.length, profile.fallbackStatus.name),
-          isActive: profile.isActive,
-          onTap: () {
-            ref.read(statusProfileManagementProvider.notifier).toggleProfileActive(profile);
+        return AdaptiveContextMenuWrapper<DashboardContextAction>(
+          menuItems: [
+            PopupMenuItem(
+              value: DashboardContextAction.toggle,
+              child: Text(profile.isActive ? context.l10n.contextMenuDeactivate : context.l10n.contextMenuActivate),
+            ),
+            PopupMenuItem(
+              value: DashboardContextAction.edit,
+              child: Text(context.l10n.contextMenuEdit),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: DashboardContextAction.delete,
+              child: Text(context.l10n.contextMenuDelete, style: TextStyle(color: context.colorScheme.error)),
+            ),
+          ],
+          onSelected: (action) {
+            switch (action) {
+              case DashboardContextAction.toggle:
+                ref.read(statusProfileManagementProvider.notifier).toggleProfileActive(profile);
+              case DashboardContextAction.edit:
+                Navigator.push(context, MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)));
+              case DashboardContextAction.delete:
+                _showDeleteStatusProfileConfirmation(context, ref, profile);
+            }
           },
-          onEdit: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)),
-            );
-          }
+          child: _buildProfileCard(
+            context,
+            title: profile.name,
+            subtitle: context.l10n.statusProfileSubtitle(profile.rules.length, profile.fallbackStatus.name),
+            isActive: profile.isActive,
+            onTap: () {
+              ref.read(statusProfileManagementProvider.notifier).toggleProfileActive(profile);
+            },
+            onEdit: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)),
+              );
+            }
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildManagementAssetsGrid(BuildContext context, WidgetRef ref) {
+    return GridView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 400,
+        mainAxisExtent: 80,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12
+      ),
+      children: [
+        _buildAssetLinkCard(
+          context,
+          icon: Icons.supervised_user_circle_outlined,
+          title: context.l10n.sectionRoles,
+          subtitle: context.l10n.rolesManagementDesc,
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const DraggableScrollableSheet(
+                initialChildSize: 0.8,
+                maxChildSize: 0.95,
+                minChildSize: 0.5,
+                expand: false,
+                builder: _buildRoleSheetScrollBody,
+              ),
+            );
+          }
+        ),
+        _buildAssetLinkCard(
+          context,
+          icon: Icons.smart_toy_outlined,
+          title: context.l10n.sectionFriendAutomations,
+          subtitle: context.l10n.automationManagementDesc,
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const DraggableScrollableSheet(
+                initialChildSize: 0.8,
+                maxChildSize: 0.95,
+                minChildSize: 0.5,
+                expand: false,
+                builder: _buildAutomationSheetScrollBody,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  static Widget _buildRoleSheetScrollBody(BuildContext _, ScrollController _) => const RoleManagerSubsheet();
+  static Widget _buildAutomationSheetScrollBody(BuildContext _, ScrollController _) => const AutomationManagerSubsheet();
+
+  Widget _buildAssetLinkCard(
+    BuildContext context, {
+      required IconData icon,
+      required String title,
+      required String subtitle,
+      required VoidCallback onTap,
+    }
+  ) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: context.colorScheme.primary),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+        subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11)),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+        onTap: onTap,
+      ),
     );
   }
 
@@ -328,6 +470,98 @@ class DashboardPanel extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteFilterProfileConfirmation(BuildContext context, WidgetRef ref, FilterProfile profile) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteProfileTitle),
+        content: Text(context.l10n.dialogDeleteProfileContent(profile.name)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+          TextButton(onPressed: () {
+            ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
+            Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteStatusProfileConfirmation(BuildContext context, WidgetRef ref, StatusProfile profile) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteStatusProfileTitle),
+        content: Text(context.l10n.dialogDeleteStatusProfileContent(profile.name)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+          TextButton(onPressed: () {
+            ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
+            Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AdaptiveContextMenuWrapper<T> extends StatefulWidget {
+  final Widget child;
+  final List<PopupMenuEntry<T>> menuItems;
+  final ValueChanged<T> onSelected;
+
+  const AdaptiveContextMenuWrapper({
+    super.key,
+    required this.child,
+    required this.menuItems,
+    required this.onSelected,
+  });
+
+  @override
+  State<AdaptiveContextMenuWrapper<T>> createState() => _AdaptiveContextMenuWrapperState<T>();
+}
+
+class _AdaptiveContextMenuWrapperState<T> extends State<AdaptiveContextMenuWrapper<T>> {
+  Offset _tapPosition = Offset.zero;
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+
+  void _showContextMenu(BuildContext context, Offset position) {
+    showMenu<T>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        position.dx + 1,
+        position.dy + 1,
+      ),
+      items: widget.menuItems,
+    ).then((value) {
+      if (value != null && mounted) {
+        widget.onSelected(value);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _storePosition,
+      onSecondaryTapDown:(details) {
+        _showContextMenu(context, _tapPosition);
+      },
+      child: widget.child,
     );
   }
 }

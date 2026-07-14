@@ -1359,5 +1359,65 @@
   "colorRose": "Rose",
   "@colorRose": {
     "description": "Name of rose theme accent color."
+  },
+
+  "statusVariablesHelperTitle": "Status Placeholders Guide",
+  "@statusVariablesHelperTitle": {
+    "description": "Title of a helper dialog that explains the available placeholders users can insert into their custom VRChat status message."
+  },
+
+  "statusVariablesHelperDesc": "Tap a placeholder to insert it at your cursor position:",
+  "@statusVariablesHelperDesc": {
+    "description": "Instruction shown above the list of available status placeholders. Tapping a placeholder inserts it into the currently edited custom VRChat status message at the current cursor position."
+  },
+
+  "statusVariableWorld": "Current World Name",
+  "@statusVariableWorld": {
+    "description": "Placeholder label representing the name of the VRChat world the user is currently in."
+  },
+
+  "statusVariableCount": "Player Count",
+  "@statusVariableCount": {
+    "description": "Placeholder label representing the current number of players in the user's VRChat instance."
+  },
+
+  "statusVariableBattery": "Battery Level",
+  "@statusVariableBattery": {
+    "description": "Placeholder label representing the device's current battery percentage."
+  },
+
+  "statusVariableInstance": "Access Type",
+  "@statusVariableInstance": {
+    "description": "Placeholder label representing the current VRChat instance access type, such as Public, Friends+, Friends, Invite+, or Invite."
+  },
+
+  "statusVariableTime": "Local Time",
+  "@statusVariableTime": {
+    "description": "Placeholder label representing the user's current local time based on their device."
+  },
+
+  "statusVariableFriends": "Friend Names",
+  "@statusVariableFriends": {
+    "description": "Placeholder label representing the names of friends currently in the same VRChat instance as the user."
+  },
+
+  "contextMenuActivate": "Activate Profile",
+  "@contextMenuActivate": {
+    "description": "Context menu action that enables the selected automation profile."
+  },
+
+  "contextMenuDeactivate": "Deactivate Profile",
+  "@contextMenuDeactivate": {
+    "description": "Context menu action that disables the selected automation profile."
+  },
+
+  "contextMenuEdit": "Edit Profile",
+  "@contextMenuEdit": {
+    "description": "Context menu action that opens the selected automation profile for editing."
+  },
+
+  "contextMenuDelete": "Delete Profile",
+  "@contextMenuDelete": {
+    "description": "Context menu action that permanently deletes the selected automation profile."
   }
 }

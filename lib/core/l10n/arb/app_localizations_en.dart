@@ -814,4 +814,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colorRose => 'Rose';
+
+  @override
+  String get statusVariablesHelperTitle => 'Status Placeholders Guide';
+
+  @override
+  String get statusVariablesHelperDesc =>
+      'Tap a placeholder to insert it at your cursor position:';
+
+  @override
+  String get statusVariableWorld => 'Current World Name';
+
+  @override
+  String get statusVariableCount => 'Player Count';
+
+  @override
+  String get statusVariableBattery => 'Battery Level';
+
+  @override
+  String get statusVariableInstance => 'Access Type';
+
+  @override
+  String get statusVariableTime => 'Local Time';
+
+  @override
+  String get statusVariableFriends => 'Friend Names';
+
+  @override
+  String get contextMenuActivate => 'Activate Profile';
+
+  @override
+  String get contextMenuDeactivate => 'Deactivate Profile';
+
+  @override
+  String get contextMenuEdit => 'Edit Profile';
+
+  @override
+  String get contextMenuDelete => 'Delete Profile';
 }

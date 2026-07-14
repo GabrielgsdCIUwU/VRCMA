@@ -1567,6 +1567,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rose'**
   String get colorRose;
+
+  /// Title of a helper dialog that explains the available placeholders users can insert into their custom VRChat status message.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Placeholders Guide'**
+  String get statusVariablesHelperTitle;
+
+  /// Instruction shown above the list of available status placeholders. Tapping a placeholder inserts it into the currently edited custom VRChat status message at the current cursor position.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a placeholder to insert it at your cursor position:'**
+  String get statusVariablesHelperDesc;
+
+  /// Placeholder label representing the name of the VRChat world the user is currently in.
+  ///
+  /// In en, this message translates to:
+  /// **'Current World Name'**
+  String get statusVariableWorld;
+
+  /// Placeholder label representing the current number of players in the user's VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Player Count'**
+  String get statusVariableCount;
+
+  /// Placeholder label representing the device's current battery percentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Level'**
+  String get statusVariableBattery;
+
+  /// Placeholder label representing the current VRChat instance access type, such as Public, Friends+, Friends, Invite+, or Invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Type'**
+  String get statusVariableInstance;
+
+  /// Placeholder label representing the user's current local time based on their device.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Time'**
+  String get statusVariableTime;
+
+  /// Placeholder label representing the names of friends currently in the same VRChat instance as the user.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend Names'**
+  String get statusVariableFriends;
+
+  /// Context menu action that enables the selected automation profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Profile'**
+  String get contextMenuActivate;
+
+  /// Context menu action that disables the selected automation profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Profile'**
+  String get contextMenuDeactivate;
+
+  /// Context menu action that opens the selected automation profile for editing.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get contextMenuEdit;
+
+  /// Context menu action that permanently deletes the selected automation profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Profile'**
+  String get contextMenuDelete;
 }
 
 class _AppLocalizationsDelegate

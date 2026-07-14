@@ -165,52 +165,13 @@ class _DesktopHomeView extends ConsumerWidget {
               ],
             ),
           ),
-          const VerticalDivider(width: 1),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: Row(
-                    mainAxisAlignment: collapsed ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (!collapsed) 
-                        Text(
-                          context.l10n.navFriends.toUpperCase(),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            letterSpacing: 1.2,
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      IconButton(
-                        icon: Icon(collapsed ? Icons.chevron_left : Icons.chevron_right),
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                if (!collapsed)
-                  const Expanded(child: FriendsPanel())
-                else
-                  Expanded(
-                    child: Center(
-                      child: IconButton(
-                        icon: const Icon(Icons.people_alt_outlined),
-                        onPressed: () {
-                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
-                        },
-                      ),
-                    ),
-                  )
-              ],
-            ),
-          )
+          if (!collapsed) ...[
+            const VerticalDivider(width: 1),
+            const SizedBox(
+              width: 320,
+              child: FriendsPanel(),
+            )
+          ]
         ],
       ),
     );

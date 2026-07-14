@@ -315,5 +315,18 @@
   "colorTeal": "Turquesa",
   "colorGreen": "Verde",
   "colorOrange": "Naranja",
-  "colorRose": "Rosa"
+  "colorRose": "Rosa",
+
+  "statusVariablesHelperTitle": "Guía de Plantillas de Estado",
+  "statusVariablesHelperDesc": "Toca una plantilla para insertarla en la posición actual del cursor.",
+  "statusVariableWorld": "Nombre del Mundo Actual",
+  "statusVariableCount": "Número de Jugadores",
+  "statusVariableBattery": "Nivel de Batería",
+  "statusVariableInstance": "Tipo de Acceso",
+  "statusVariableTime": "Hora Local",
+  "statusVariableFriends": "Nombres de Amigos",
+  "contextMenuActivate": "Activar Perfil",
+  "contextMenuDeactivate": "Desactivar Perfil",
+  "contextMenuEdit": "Editar Perfil",
+  "contextMenuDelete": "Eliminar Perfil"
 }

@@ -235,7 +235,7 @@ class SettingsPanel extends ConsumerWidget {
         maxChildSize: 0.95,
         minChildSize: 0.5,
         expand: false,
-        builder: (_, _) => const _RoleManagerSubsheet(),
+        builder: (_, _) => const RoleManagerSubsheet(),
       ),
     );
   }
@@ -249,7 +249,7 @@ class SettingsPanel extends ConsumerWidget {
         maxChildSize: 0.95,
         minChildSize: 0.5,
         expand: false,
-        builder: (_, _) => const _AutomationManagerSubsheet(),
+        builder: (_, _) => const AutomationManagerSubsheet(),
       )
     );
   }
@@ -264,8 +264,8 @@ class SettingsPanel extends ConsumerWidget {
   }
 }
 
-class _RoleManagerSubsheet extends ConsumerWidget {
-  const _RoleManagerSubsheet();
+class RoleManagerSubsheet extends ConsumerWidget {
+  const RoleManagerSubsheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -334,8 +334,8 @@ class _RoleManagerSubsheet extends ConsumerWidget {
   }
 }
 
-class _AutomationManagerSubsheet extends ConsumerWidget {
-  const _AutomationManagerSubsheet();
+class AutomationManagerSubsheet extends ConsumerWidget {
+  const AutomationManagerSubsheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

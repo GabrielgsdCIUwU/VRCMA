@@ -816,4 +816,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get colorRose => 'Rosa';
+
+  @override
+  String get statusVariablesHelperTitle => 'Guía de Plantillas de Estado';
+
+  @override
+  String get statusVariablesHelperDesc =>
+      'Toca una plantilla para insertarla en la posición actual del cursor.';
+
+  @override
+  String get statusVariableWorld => 'Nombre del Mundo Actual';
+
+  @override
+  String get statusVariableCount => 'Número de Jugadores';
+
+  @override
+  String get statusVariableBattery => 'Nivel de Batería';
+
+  @override
+  String get statusVariableInstance => 'Tipo de Acceso';
+
+  @override
+  String get statusVariableTime => 'Hora Local';
+
+  @override
+  String get statusVariableFriends => 'Nombres de Amigos';
+
+  @override
+  String get contextMenuActivate => 'Activar Perfil';
+
+  @override
+  String get contextMenuDeactivate => 'Desactivar Perfil';
+
+  @override
+  String get contextMenuEdit => 'Editar Perfil';
+
+  @override
+  String get contextMenuDelete => 'Eliminar Perfil';
 }
