@@ -7,6 +7,77 @@ import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/status_enums_localization_extension.dart';
 
+class StatusTemplateHelperWidget extends StatelessWidget {
+  final TextEditingController controller;
+
+  const StatusTemplateHelperWidget({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final variables = [
+      ('{{world}}', Icons.public, context.l10n.statusVariableWorld),
+      ('{{count}}', Icons.people_outline, context.l10n.statusVariableCount),
+      ('{{battery}}', Icons.battery_charging_full, context.l10n.statusVariableBattery),
+      ('{{instance}}', Icons.vpn_lock, context.l10n.statusVariableInstance),
+      ('{{time}}', Icons.access_time, context.l10n.statusVariableTime),
+      ('{{friends}}', Icons.person_pin_outlined, context.l10n.statusVariableFriends),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.statusVariablesHelperTitle,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          context.l10n.statusVariablesHelperDesc,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: variables.map((variable) {
+              final tag = variable.$1;
+              final icon = variable.$2;
+              final label = variable.$3;
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: InputChip(
+                  avatar: Icon(icon, size: 16),
+                  label: Text(tag),
+                  tooltip: label,
+                  onPressed: () {
+                    final text = controller.text;
+                    final selection = controller.selection;
+
+                    if (selection.isValid && selection.start >= 0) {
+                      final newText = text.replaceRange(selection.start, selection.end, tag);
+                      controller.text = newText;
+                      controller.selection = TextSelection.collapsed(
+                        offset: selection.start + tag.length,
+                      );
+                    } else {
+                      controller.text = text + tag;
+                    }
+                  },
+                ),
+              );
+            }).toList(),
+          ),
+        )
+      ],
+    );
+  }
+}
+
 class StatusProfileEditorSheet extends ConsumerStatefulWidget {
   final StatusProfile profile;
   const StatusProfileEditorSheet({super.key, required this.profile});
@@ -147,6 +218,8 @@ class _StatusProfileEditorSheetState
               _buildFallbackStatusSelector(currentProfile),
               const SizedBox(height: 24),
               _buildFallbackTemplateField(),
+              const SizedBox(height: 16),
+              StatusTemplateHelperWidget(controller: _fallbackTemplateController),
               const Spacer(),
               Icon(
                 Icons.info_outline,
@@ -204,7 +277,9 @@ class _StatusProfileEditorSheetState
         _buildFallbackStatusSelector(currentProfile),
         const SizedBox(height: 16),
         _buildFallbackTemplateField(),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
+        StatusTemplateHelperWidget(controller: _fallbackTemplateController),
+        const SizedBox(height: 16),
         Text(
           context.l10n.statusPriorityRulesCaption,
           style: TextStyle(
@@ -469,6 +544,8 @@ class _StatusProfileEditorSheetState
                         hintText: context.l10n.statusMessageTemplateHint,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    StatusTemplateHelperWidget(controller: templateController),
                   ],
                 ),
               ),
