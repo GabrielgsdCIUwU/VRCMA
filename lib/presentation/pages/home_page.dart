@@ -124,10 +124,6 @@ class _DesktopHomeView extends ConsumerWidget {
             extended: false,
             elevation: 1,
             backgroundColor: context.colorScheme.surfaceContainerLow,
-            leading: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Icon(Icons.lock_person, size: 36, color: context.colorScheme.primary),
-            ),
             selectedIndex: currentRoute.index,
             onDestinationSelected: (idx) {
               ref.read(navigationStackProvider.notifier).setRoute(AppRoute.values[idx]);
