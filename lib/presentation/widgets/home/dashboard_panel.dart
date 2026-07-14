@@ -558,8 +558,8 @@ class _AdaptiveContextMenuWrapperState<T> extends State<AdaptiveContextMenuWrapp
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: _storePosition,
-      onSecondaryTapDown:(details) {
-        _showContextMenu(context, _tapPosition);
+      onSecondaryTapDown: (details) {
+        _showContextMenu(context, details.globalPosition);
       },
       child: widget.child,
     );
