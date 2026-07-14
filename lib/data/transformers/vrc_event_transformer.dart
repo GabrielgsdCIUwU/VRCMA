@@ -124,3 +124,45 @@ class RequestReceivedTransformer implements VrcEventTransformer<RequestInviteEve
     );
   }
 }
+
+class UserProfileUpdatedTransformer implements VrcEventTransformer<UserProfileUpdatedEvent> {
+  @override
+  bool canHandle(VrcStreamingEvent event) {
+    return event is UserUpdateEvent;
+  }
+
+  @override
+  Future<UserProfileUpdatedEvent?> transform(
+      VrcStreamingEvent event,
+      Future<User?> Function(String userId) getEnrichedUser
+    ) async {
+      final updateEvent = event as UserUpdateEvent;
+      final user = updateEvent.user;
+
+      return UserProfileUpdatedEvent(
+        userId: user.id,
+        displayName: user.displayName,
+        status: user.status.value,
+        statusDescription: user.statusDescription,
+      );
+  }
+}
+
+class UserLocationTransformer implements VrcEventTransformer<UserLocationUpdatedEvent> {
+  @override
+  bool canHandle(VrcStreamingEvent event) {
+    return event is UserLocationEvent;    
+  }
+
+  @override
+  Future<UserLocationUpdatedEvent?> transform(
+    VrcStreamingEvent event, 
+    Future<User?> Function(String userId) getEnrichedUser
+    ) async {
+    final locationEvent = event as UserLocationEvent;
+    return UserLocationUpdatedEvent(
+      userId: locationEvent.userId,
+      location: locationEvent.location,
+    );
+  }
+}

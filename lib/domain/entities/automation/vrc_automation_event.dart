@@ -58,3 +58,35 @@ class FriendRequestReceivedEvent extends IncomingUserEvent {
     required super.avatarUrl,
   });
 }
+
+/// Emitted when a user profile (status, location, display name) is updated.
+class UserProfileUpdatedEvent extends VrcAutomationEvent {
+  final String userId;
+  final String displayName;
+  final String status;
+  final String statusDescription;
+
+  const UserProfileUpdatedEvent({
+    required this.userId,
+    required this.displayName,
+    required this.status,
+    required this.statusDescription,
+  });
+
+  @override
+  List<Object?> get props => [userId, displayName, status, statusDescription];
+}
+
+/// Emitted when a user transitions to a different world.
+class UserLocationUpdatedEvent extends VrcAutomationEvent {
+  final String userId;
+  final String location;
+
+  const UserLocationUpdatedEvent({
+    required this.userId,
+    required this.location,
+  });
+
+  @override
+  List<Object?> get props => [userId, location];
+}

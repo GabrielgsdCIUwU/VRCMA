@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
 import 'package:vrcma/data/repositories/auth_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_auth_repository.dart';
 import 'package:vrcma/core/di/network_provider.dart';
 
@@ -77,21 +79,63 @@ Future<IAuthRepository> authRepository(Ref ref) async {
 /// State notifier for the Authentication logic.
 @riverpod
 class AuthState extends _$AuthState {
+  StreamSubscription? _streamSubscription;
+
   @override
   FutureOr<VrcUser?> build() async {
     final api = await ref.watch(vrcApiProvider.future);
-    
+
+    ref.onDispose(() {
+      _streamSubscription?.cancel();
+    });
+
+    VrcUser? currentUser;
     try {
       final response = await api.rawApi.getAuthenticationApi().getCurrentUser();
       if (response.data != null) {
-        return VrcUserModel.fromCurrentUser(response.data!);
+        currentUser = VrcUserModel.fromCurrentUser(response.data!);
       }
     }catch (e) {
-      return null;
+      currentUser = null;
     } finally {
       ref.read(initialSessionCheckedProvider.notifier).setChecked();
     }
-    return null;
+    
+    if (currentUser != null) {
+      final automationRepo = await ref.watch(automationRepositoryProvider.future);
+
+      _streamSubscription = automationRepo.watchAutomationEvents().listen((event) {
+        final currentData = state.value;
+        if (currentData == null) return;
+
+        if (event is UserProfileUpdatedEvent && event.userId == currentData.id) {
+          final updatedUser = VrcUser(
+            id: currentData.id,
+            displayName: event.displayName.isNotEmpty
+              ? event.displayName
+              : currentData.displayName,
+            bio: event.statusDescription,
+            tags: currentData.tags,
+            location: currentData.location,
+            status: event.status,
+            avatarUrl: currentData.avatarUrl,
+          );
+          state = AsyncData(updatedUser);
+        } else if (event is UserLocationUpdatedEvent && event.userId == currentData.id) {
+          final updatedUser = VrcUser(
+            id: currentData.id,
+            displayName: currentData.displayName,
+            bio: currentData.bio,
+            tags: currentData.tags,
+            location: event.location,
+            status: currentData.status,
+            avatarUrl: currentData.avatarUrl,
+          );
+          state = AsyncData(updatedUser);
+        }
+      });
+    }
+    return currentUser;
   }
 
   Future<void> login(String username, String password) async {
@@ -130,6 +174,8 @@ class AuthState extends _$AuthState {
   }
 
   void reset() {
+    _streamSubscription?.cancel();
+    _streamSubscription = null;
     state = const AsyncValue.data(null);
   }
 }
