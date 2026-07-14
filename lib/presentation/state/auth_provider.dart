@@ -64,6 +64,9 @@ Future<VrchatDart> vrcApi(Ref ref) async {
       (interceptor) => interceptor.runtimeType.toString() == 'CookieManager'
   );
   
+  client.rawApi.dio.options.connectTimeout = const Duration(seconds: 15);
+  client.rawApi.dio.options.receiveTimeout = const Duration(seconds: 15);
+  
   client.rawApi.dio.interceptors.add(CookieManager(jar));
   return client;
 }
