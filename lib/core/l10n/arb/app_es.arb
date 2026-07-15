@@ -334,5 +334,16 @@
   
   "logoutDialogTitle": "Cerrar Sesión",
   "logoutDialogContent": "¿Estás seguro de que deseas cerrar tu sesión de VRChat?",
-  "logoutButtonLabel": "Salir"
+  "logoutButtonLabel": "Salir",
+
+  "errorWorldIdInvalid": "El ID del mundo no es válido. Debe comenzar por ''wrld_'' y tener al menos 10 caracteres.",
+  "errorMsgEmpty": "El mensaje personalizado no puede estar vacío.",
+  "errorMsgTooLong": "El mensaje tiene {actual} caracteres, pero el máximo permitido es {max}.",
+  "errorMsgInvalidSlot": "La ranura de mensaje {index} no existe.",
+  "errorRuleInviteMismatch": "Esta regla requiere un mensaje de invitación.",
+  "errorRuleRequestMismatch": "Esta regla requiere un mensaje de solicitud.",
+  "errorStatusInvalidOperator": "El operador ''{operator}'' no es compatible con la condición ''{condition}''.",
+  "errorStatusEmptyValue": "Debes indicar un valor para esta condición.",
+  "errorRoleAutoEmptyRoles": "Selecciona al menos un rol antes de guardar esta automatización.",
+  "errorRoleAutoMissingTag": "Debes indicar una etiqueta de destino para esta automatización basada en etiquetas."
 }

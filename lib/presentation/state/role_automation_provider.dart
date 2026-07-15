@@ -45,7 +45,7 @@ class RoleAutomationList extends _$RoleAutomationList {
 class RoleAutomationEditor extends _$RoleAutomationEditor {
   @override
   RoleAutomation build(RoleAutomation? initial) {
-    return initial ?? const RoleAutomation(
+    return initial ?? RoleAutomation(
       roles: [],
       trigger: AutomationTrigger.newFriend,
     );

@@ -866,4 +866,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'Salir';
+
+  @override
+  String get errorWorldIdInvalid =>
+      'El ID del mundo no es válido. Debe comenzar por \'wrld_\' y tener al menos 10 caracteres.';
+
+  @override
+  String get errorMsgEmpty => 'El mensaje personalizado no puede estar vacío.';
+
+  @override
+  String errorMsgTooLong(int actual, int max) {
+    return 'El mensaje tiene $actual caracteres, pero el máximo permitido es $max.';
+  }
+
+  @override
+  String errorMsgInvalidSlot(int index) {
+    return 'La ranura de mensaje $index no existe.';
+  }
+
+  @override
+  String get errorRuleInviteMismatch =>
+      'Esta regla requiere un mensaje de invitación.';
+
+  @override
+  String get errorRuleRequestMismatch =>
+      'Esta regla requiere un mensaje de solicitud.';
+
+  @override
+  String errorStatusInvalidOperator(String operator, String condition) {
+    return 'El operador \'$operator\' no es compatible con la condición \'$condition\'.';
+  }
+
+  @override
+  String get errorStatusEmptyValue =>
+      'Debes indicar un valor para esta condición.';
+
+  @override
+  String get errorRoleAutoEmptyRoles =>
+      'Selecciona al menos un rol antes de guardar esta automatización.';
+
+  @override
+  String get errorRoleAutoMissingTag =>
+      'Debes indicar una etiqueta de destino para esta automatización basada en etiquetas.';
 }

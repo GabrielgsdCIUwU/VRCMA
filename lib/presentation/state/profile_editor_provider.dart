@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
 
 part 'profile_editor_provider.g.dart';
@@ -48,8 +49,10 @@ class ProfileEditorNotifier extends _$ProfileEditorNotifier {
     final expectedType = context.getExpectedMessageType(action);
     
     if (message.type != expectedType) {
-      throw ArgumentError(
-        "Message must be of type '${expectedType.name}' for ${context.name} when action is ${action.name}."
+      throw ProfileRuleValidationException(
+        context == RuleMessageContext.inviteResponse
+        ? RuleInviteMessageMismatchError(actionName: action.name, messageTypeName: message.type.name)
+        : RuleRequestMessageMismatchError(actionName: action.name, messageTypeName: message.type.name),
       );
     }
   }

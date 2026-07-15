@@ -864,4 +864,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'Logout';
+
+  @override
+  String get errorWorldIdInvalid =>
+      'The world ID is invalid. It must start with wrld_ and contain at least 10 characters.';
+
+  @override
+  String get errorMsgEmpty => 'The custom message cannot be empty.';
+
+  @override
+  String errorMsgTooLong(int actual, int max) {
+    return 'The message is $actual characters long, but the maximum allowed is $max.';
+  }
+
+  @override
+  String errorMsgInvalidSlot(int index) {
+    return 'Message slot $index is out of range.';
+  }
+
+  @override
+  String get errorRuleInviteMismatch =>
+      'This rule action requires an invite message.';
+
+  @override
+  String get errorRuleRequestMismatch =>
+      'This rule action requires a request message.';
+
+  @override
+  String errorStatusInvalidOperator(String operator, String condition) {
+    return 'The operator \'$operator\' is not supported for the \'$condition\' condition.';
+  }
+
+  @override
+  String get errorStatusEmptyValue =>
+      'A comparison value is required for this condition.';
+
+  @override
+  String get errorRoleAutoEmptyRoles =>
+      'Select at least one role before saving this automation.';
+
+  @override
+  String get errorRoleAutoMissingTag =>
+      'A target tag is required for tag-based automation.';
 }
