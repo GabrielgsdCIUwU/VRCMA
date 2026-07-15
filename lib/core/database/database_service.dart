@@ -22,6 +22,8 @@ class DatabaseService {
       version: _dbVersion,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
+        await db.execute('PRAGMA journal_mode = WAL');
+        await db.execute('PRAGMA busy_timeout = 5000');
       },
       onCreate: (db, version) async {
         try {
@@ -189,7 +191,7 @@ class DatabaseService {
     });
     final vipInviteId = await db.insert('custom_messages', {
       'content': 'Thanks for the invite! Joining right now :D',
-      'type': 'request',
+      'type': 'invite',
       'last_updated': now,
     });
 
