@@ -48,12 +48,12 @@ class TimezoneSchedule extends Equatable {
 }
 
 /// Value object representing the logic configuration for recurrent intervals.
-class Recurrencepattern extends Equatable {
+class RecurrencePattern extends Equatable {
   final RecurrenceType type;
   final List<int> daysOfWeek;
   final List<int> daysOfMonth;
 
-  const Recurrencepattern({
+  const RecurrencePattern({
     required this.type,
     this.daysOfWeek = const [],
     this.daysOfMonth = const [],
