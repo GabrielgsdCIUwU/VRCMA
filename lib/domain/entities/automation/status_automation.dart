@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 
 /// Represents the VRChat status colors/types.
 enum StatusType {
@@ -87,7 +88,7 @@ class StatusRule extends Equatable {
   final RuleOperator operator;
   final String conditionValue;
 
-  const StatusRule({
+  StatusRule({
     this.id,
     required this.priority,
     required this.targetStatus,
@@ -95,7 +96,19 @@ class StatusRule extends Equatable {
     required this.conditionType,
     required this.operator,
     required this.conditionValue,
-  });
+  }) {
+    if (!conditionType.allowedOperators.contains(operator)) {
+      throw StatusRuleValidationException(
+        InvalidStatusOperatorError(operatorName: operator.name, conditionName: conditionType.name),
+      );
+    }
+
+    if (conditionValue.trim().isEmpty) {
+      throw StatusRuleValidationException(
+        const EmptyStatusConditionValueError()
+      );
+    }
+  }
 
   @override
   List<Object?> get props => [id, priority, targetStatus, messageTemplate, conditionType, operator, conditionType];

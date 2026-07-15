@@ -1663,6 +1663,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logoutButtonLabel;
+
+  /// Shown when a provided VRChat world ID is malformed or does not match the expected format.
+  ///
+  /// In en, this message translates to:
+  /// **'The world ID is invalid. It must start with \'wrld_\' and contain at least 10 characters.'**
+  String get errorWorldIdInvalid;
+
+  /// Shown when a custom message is required but no text was provided.
+  ///
+  /// In en, this message translates to:
+  /// **'The custom message cannot be empty.'**
+  String get errorMsgEmpty;
+
+  /// Shown when a custom message exceeds the maximum allowed length.
+  ///
+  /// In en, this message translates to:
+  /// **'The message is {actual} characters long, but the maximum allowed is {max}.'**
+  String errorMsgTooLong(int actual, int max);
+
+  /// Shown when attempting to access or modify a message slot that does not exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Message slot {index} is out of range.'**
+  String errorMsgInvalidSlot(int index);
+
+  /// Shown when a rule action expects an invite message but another message type was provided.
+  ///
+  /// In en, this message translates to:
+  /// **'This rule action requires an invite message.'**
+  String get errorRuleInviteMismatch;
+
+  /// Shown when a rule action expects a request message but another message type was provided.
+  ///
+  /// In en, this message translates to:
+  /// **'This rule action requires a request message.'**
+  String get errorRuleRequestMismatch;
+
+  /// Shown when an unsupported comparison operator is used for a specific status condition.
+  ///
+  /// In en, this message translates to:
+  /// **'The operator \'\'{operator}\'\' is not supported for the \'\'{condition}\'\' condition.'**
+  String errorStatusInvalidOperator(String operator, String condition);
+
+  /// Shown when a status condition requires a comparison value but none was provided.
+  ///
+  /// In en, this message translates to:
+  /// **'A comparison value is required for this condition.'**
+  String get errorStatusEmptyValue;
+
+  /// Shown when a role automation is saved without any associated roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one role before saving this automation.'**
+  String get errorRoleAutoEmptyRoles;
+
+  /// Shown when a tag-based automation is configured without specifying the target tag.
+  ///
+  /// In en, this message translates to:
+  /// **'A target tag is required for tag-based automation.'**
+  String get errorRoleAutoMissingTag;
 }
 
 class _AppLocalizationsDelegate

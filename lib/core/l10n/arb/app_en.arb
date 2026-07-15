@@ -1439,5 +1439,81 @@
   "logoutButtonLabel": "Logout",
   "@logoutButtonLabel": {
     "description": "Action label to confirm logging out."
+  },
+
+  "errorWorldIdInvalid": "The world ID is invalid. It must start with 'wrld_' and contain at least 10 characters.",
+  "@errorWorldIdInvalid": {
+    "description": "Shown when a provided VRChat world ID is malformed or does not match the expected format."
+  },
+
+  "errorMsgEmpty": "The custom message cannot be empty.",
+  "@errorMsgEmpty": {
+    "description": "Shown when a custom message is required but no text was provided."
+  },
+
+  "errorMsgTooLong": "The message is {actual} characters long, but the maximum allowed is {max}.",
+  "@errorMsgTooLong": {
+    "description": "Shown when a custom message exceeds the maximum allowed length.",
+    "placeholders": {
+      "actual": {
+        "type": "int",
+        "description": "Current message length."
+      },
+      "max": {
+        "type": "int",
+        "description": "Maximum allowed message length."
+      }
+    }
+  },
+
+  "errorMsgInvalidSlot": "Message slot {index} is out of range.",
+  "@errorMsgInvalidSlot": {
+    "description": "Shown when attempting to access or modify a message slot that does not exist.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "description": "Requested slot index."
+      }
+    }
+  },
+
+  "errorRuleInviteMismatch": "This rule action requires an invite message.",
+  "@errorRuleInviteMismatch": {
+    "description": "Shown when a rule action expects an invite message but another message type was provided."
+  },
+
+  "errorRuleRequestMismatch": "This rule action requires a request message.",
+  "@errorRuleRequestMismatch": {
+    "description": "Shown when a rule action expects a request message but another message type was provided."
+  },
+
+  "errorStatusInvalidOperator": "The operator ''{operator}'' is not supported for the ''{condition}'' condition.",
+  "@errorStatusInvalidOperator": {
+    "description": "Shown when an unsupported comparison operator is used for a specific status condition.",
+    "placeholders": {
+      "operator": {
+        "type": "String",
+        "description": "Unsupported comparison operator."
+      },
+      "condition": {
+        "type": "String",
+        "description": "Condition type."
+      }
+    }
+  },
+
+  "errorStatusEmptyValue": "A comparison value is required for this condition.",
+  "@errorStatusEmptyValue": {
+    "description": "Shown when a status condition requires a comparison value but none was provided."
+  },
+
+  "errorRoleAutoEmptyRoles": "Select at least one role before saving this automation.",
+  "@errorRoleAutoEmptyRoles": {
+    "description": "Shown when a role automation is saved without any associated roles."
+  },
+
+  "errorRoleAutoMissingTag": "A target tag is required for tag-based automation.",
+  "@errorRoleAutoMissingTag": {
+    "description": "Shown when a tag-based automation is configured without specifying the target tag."
   }
 }
