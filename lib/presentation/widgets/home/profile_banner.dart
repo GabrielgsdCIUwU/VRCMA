@@ -89,7 +89,7 @@ class ProfileBanner extends ConsumerWidget {
                 ref.read(friendsPanelCollapsedProvider.notifier).toggle();
               },
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 16),
           ],
           IconButton(
             icon: const Icon(Icons.logout),
