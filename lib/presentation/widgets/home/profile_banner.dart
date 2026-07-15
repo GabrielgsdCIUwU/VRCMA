@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrcma/presentation/state/app_settings_provider.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
 class ProfileBanner extends ConsumerWidget {
@@ -19,10 +17,7 @@ class ProfileBanner extends ConsumerWidget {
       data: (user) {
         if (user == null) return const SizedBox.shrink();
 
-        return ResponsiveLayout(
-          mobile: _buildBannerContent(context, ref, user, isDesktop: false),
-          desktop: _buildBannerContent(context, ref, user, isDesktop: true),
-        );
+        return _buildBannerContent(context, ref, user);
       },
       loading: () => const LinearProgressIndicator(),
       error: (_, _) => const SizedBox.shrink(),
@@ -32,12 +27,8 @@ class ProfileBanner extends ConsumerWidget {
   Widget _buildBannerContent(
     BuildContext context,
     WidgetRef ref,
-    VrcUser user, {
-      required bool isDesktop,
-    }
+    VrcUser user,
   ) {
-    final collapsed = ref.watch(friendsPanelCollapsedProvider);
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -81,16 +72,6 @@ class ProfileBanner extends ConsumerWidget {
               ],
             ),
           ),
-          if (isDesktop) ...[
-            IconButton(
-              icon: Icon(collapsed ? Icons.people_outline : Icons.people),
-              tooltip: context.l10n.navFriends,
-              onPressed: () {
-                ref.read(friendsPanelCollapsedProvider.notifier).toggle();
-              },
-            ),
-            const SizedBox(width: 16),
-          ],
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => ref.read(authStateProvider.notifier).logout(),

@@ -152,13 +152,28 @@ class _DesktopHomeView extends ConsumerWidget {
             ],
           ),
           const VerticalDivider(width: 1),
-          const Expanded(
-            child: Column(
-              children: [
-                ProfileBanner(),
-                Divider(height: 1),
-                Expanded(child: _ActiveWorkspace()),
-              ],
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                titleSpacing: 0,
+                title: const ProfileBanner(),
+                actions: [
+                  IconButton(
+                    icon: Icon(collapsed ? Icons.people_outline : Icons.people),
+                    tooltip: context.l10n.navFriends,
+                    onPressed: () {
+                      ref.read(friendsPanelCollapsedProvider.notifier).toggle();
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+              body: const Column(
+                children: [
+                  Divider(height: 1),
+                  Expanded(child: _ActiveWorkspace()),
+                ],
+              ),
             ),
           ),
           if (!collapsed) ...[
