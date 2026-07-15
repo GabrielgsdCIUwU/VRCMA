@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 
 class Role extends Equatable {
   final int id;
@@ -24,7 +25,7 @@ class ProfileRule extends Equatable {
   final CustomMessage? requestResponseMessage;
 
 
-  const ProfileRule({
+  ProfileRule({
     this.id,
     required this.role,
     required this.priority,
@@ -32,7 +33,28 @@ class ProfileRule extends Equatable {
     this.fallbackGroup,
     this.inviteResponseMessage,
     this.requestResponseMessage,
-  });
+  }) {
+    _validateInvariants();
+  }
+
+  void _validateInvariants() {
+    if (inviteResponseMessage != null) {
+      final expectedType = action == RuleAction.accept ? VrcMessageType.invite : VrcMessageType.response;
+      if (inviteResponseMessage!.type != expectedType) {
+        throw ProfileRuleValidationException(
+          RuleInviteMessageMismatchError(actionName: action.name, messageTypeName: inviteResponseMessage!.type.name),
+        );
+      }
+    }
+    if (requestResponseMessage != null) {
+      final expectedType = action == RuleAction.accept ? VrcMessageType.invite : VrcMessageType.requestResponse;
+      if (requestResponseMessage!.type != expectedType) {
+        throw ProfileRuleValidationException(
+          RuleRequestMessageMismatchError(actionName: action.name, messageTypeName: requestResponseMessage!.type.name),
+        );
+      }
+    }
+  }
   
   ProfileRule copyWith({
     int? id,
