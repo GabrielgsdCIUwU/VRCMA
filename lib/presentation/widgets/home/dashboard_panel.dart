@@ -48,7 +48,7 @@ class DashboardPanel extends ConsumerWidget {
               error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
             ),
             const SizedBox(height: 32),
-            _buildSectionTitle(context, context.l10n.diagnosticTitle),
+            _buildSectionTitle(context, context.l10n.dashboardManagementTools),
             const SizedBox(height: 12),
             _buildManagementAssetsGrid(context, ref),
           ],
@@ -531,11 +531,6 @@ class AdaptiveContextMenuWrapper<T> extends StatefulWidget {
 }
 
 class _AdaptiveContextMenuWrapperState<T> extends State<AdaptiveContextMenuWrapper<T>> {
-  Offset _tapPosition = Offset.zero;
-
-  void _storePosition(TapDownDetails details) {
-    _tapPosition = details.globalPosition;
-  }
 
   void _showContextMenu(BuildContext context, Offset position) {
     showMenu<T>(
@@ -557,7 +552,6 @@ class _AdaptiveContextMenuWrapperState<T> extends State<AdaptiveContextMenuWrapp
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: _storePosition,
       onSecondaryTapDown: (details) {
         _showContextMenu(context, details.globalPosition);
       },
