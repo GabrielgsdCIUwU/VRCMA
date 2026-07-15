@@ -12,30 +12,6 @@ abstract class DomainException implements Exception {
   String toString() => 'DomainException [$errorCode]: $defaultMessage';
 }
 
-/// Represents structural validation reasons for a VRChat world ID.
-sealed class WorldIdValidationError {
-  String get errorCode;
-  String get defaultMessage;
-  const WorldIdValidationError();
-}
-
-class WorldIdPatternValidationError extends WorldIdValidationError {
-  final String providedId;
-  const WorldIdPatternValidationError(this.providedId);
-
-  @override
-  String get errorCode => 'WORLD_ID_PATTERN_INVALID';
-
-  @override
-  String get defaultMessage => 'The world ID "$providedId" must start with "wrld_" and be at least 10 characters long.';
-}
-
-class WorldIdValidationException extends DomainException {
-  final WorldIdValidationError error;
-  WorldIdValidationException(this.error)
-      : super(errorCode: error.errorCode, defaultMessage: error.defaultMessage);
-}
-
 
 
 /// Represents structural validation reasons for custom messages.
