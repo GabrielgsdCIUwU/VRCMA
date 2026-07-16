@@ -1,3 +1,7 @@
+import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
+import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
+import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
+
 /// Interactions with VRChat groups calendar web API.
 abstract class IRemoteCalendarRepository {
   Future<bool> verifyCreationPermissions(String userId, String groupId);
@@ -9,10 +13,17 @@ abstract class IRemoteCalendarRepository {
     required DateTime startUtc,
     required DateTime endUtc,
     required String description,
-    required List<String> platforms,
+    required GroupEventCategory category,
+    required GroupEventAccessType accessType,
+    required List<CalendarEventPlatform> platforms,
     required List<String> languages,
     required List<String> tags,
-    String? location,
+    required bool sendCreationNotification,
+    List<String>? roleIds,
+    int? hostEarlyJoinMinutes,
+    int? guestEarlyJoinMinutes,
+    int? closeInstanceAfterEndMinutes,
+    bool? usesInstanceOverflow,
   });
 
   Future<void> deleteEvent(String groupId, String eventId);
