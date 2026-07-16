@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
+import 'package:vrcma/domain/error/calendar_domain_exception.dart';
 import 'package:vrcma/domain/error/domain_exception.dart';
 
 extension FailureLocalization on Failure {
