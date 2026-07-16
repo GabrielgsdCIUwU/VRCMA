@@ -469,13 +469,17 @@ class _LibraryTile extends ConsumerWidget {
 }
 
 void _showSlotPicker(BuildContext context, WidgetRef ref, CustomMessage message) {
-  showModalBottomSheet(
+  showDialog(
     context: context,
-    backgroundColor: Theme.of(context).colorScheme.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(20)),
+    builder: (context) => Dialog(
+      elevation: 8,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: SlotPickerContent(message: message, ref: ref),
+      ),
     ),
-    builder: (_) => SlotPickerContent(message: message, ref: ref),
   );
 }
 
