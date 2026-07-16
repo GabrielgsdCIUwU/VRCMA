@@ -491,16 +491,20 @@ class SlotPickerContent extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _Header(message: message),
-          const SizedBox(height: 16),
-          _SlotGrid(message: message, ref: ref),
-          const SizedBox(height: 20)
-        ],
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _Header(message: message),
+              const SizedBox(height: 16),
+              _SlotGrid(message: message, ref: ref),
+              const SizedBox(height: 20)
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -542,6 +546,7 @@ class _SlotGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         mainAxisSpacing: 10,
