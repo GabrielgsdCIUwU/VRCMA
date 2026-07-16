@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 import 'package:vrcma/presentation/widgets/home/window/user_details_sheet.dart';
@@ -17,13 +18,7 @@ class FriendListTile extends StatelessWidget {
       : context.getStatusColor(user.status);
 
     return InkWell(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          builder: (context) => UserDetailsSheet(user: user),
-        );
-      },
+      onTap: () => UserDetailsSheet.show(context, user),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: Row(
