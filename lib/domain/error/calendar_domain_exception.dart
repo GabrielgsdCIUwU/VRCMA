@@ -71,6 +71,34 @@ class WorldIdValidationException extends DomainException {
         );
 }
 
+class CalendarPublishException extends DomainException {
+  final String details;
+
+  CalendarPublishException(this.details)
+      : super(
+          errorCode: 'CAL_PUBLISH_FAILED',
+          defaultMessage: 'Failed to publish calendar event: $details',
+        );
+}
+
+class CalendarDeleteException extends DomainException {
+  final String details;
+
+  CalendarDeleteException(this.details)
+      : super(
+          errorCode: 'CAL_DELETE_FAILED',
+          defaultMessage: 'Failed to delete calendar event: $details',
+        );
+}
+
+class CalendarPermissionsException extends DomainException {
+  CalendarPermissionsException()
+      : super(
+          errorCode: 'CAL_PERMISSIONS_DENIED',
+          defaultMessage: 'Insufficient permissions to manage calendar events in this group.',
+        );
+}
+
 class CalendarDomainException extends DomainException {
   final CalendarValidationError error;
   CalendarDomainException(this.error)
