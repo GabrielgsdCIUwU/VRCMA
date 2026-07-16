@@ -51,6 +51,26 @@ class OutOfBoundsIncrementError extends CalendarValidationError {
   String get defaultMessage => 'The current increment value ($value) cannot be negative.';
 }
 
+class WorldIdPatternValidationError extends CalendarValidationError {
+  const WorldIdPatternValidationError();
+
+  @override
+  String get errorCode => 'WORLD_ID_PATTERN_INVALID';
+
+  @override
+  String get defaultMessage => 'The provided World ID pattern is invalid.';
+}
+
+class WorldIdValidationException extends DomainException {
+  final WorldIdPatternValidationError error;
+
+  WorldIdValidationException(this.error)
+      : super(
+          errorCode: error.errorCode,
+          defaultMessage: error.defaultMessage,
+        );
+}
+
 class CalendarDomainException extends DomainException {
   final CalendarValidationError error;
   CalendarDomainException(this.error)
