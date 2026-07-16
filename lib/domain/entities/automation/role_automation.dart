@@ -13,12 +13,14 @@ class RoleAutomation extends Equatable {
   final AutomationTrigger trigger;
   final String? targetValue;
 
-  RoleAutomation({
+  const RoleAutomation({
     this.id,
     required this.roles,
     required this.trigger,
     this.targetValue,
-  }) {
+  });
+
+  void validate() {
     if (roles.isEmpty) {
       throw RoleAutomationValidationException(
         const EmptyRoleAssignmentError(),
@@ -27,7 +29,7 @@ class RoleAutomation extends Equatable {
 
     if (trigger == AutomationTrigger.hasTag && (targetValue == null || targetValue!.trim().isEmpty)) {
       throw RoleAutomationValidationException(
-        const MissingTriggerTagError()
+        const MissingTriggerTagError(),
       );
     }
   }

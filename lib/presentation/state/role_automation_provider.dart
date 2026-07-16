@@ -18,6 +18,7 @@ class RoleAutomationList extends _$RoleAutomationList {
   }
 
   Future<void> save(RoleAutomation automation) async {
+    automation.validate();
     state = const AsyncLoading();
     final repo = await ref.read(localSocialRepositoryProvider.future);
     await repo.saveRoleAutomation(automation);
@@ -87,6 +88,7 @@ class RoleAutomationEditor extends _$RoleAutomationEditor {
 
   void saveAndClose() {
     if (!isValid) return;
+    state.validate();
     ref.read(roleAutomationListProvider.notifier).save(state);
   }
 }
