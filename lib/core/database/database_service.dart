@@ -167,6 +167,67 @@ class DatabaseService {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE calendar_automations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        group_id TEXT NOT NULL,
+        title_template TEXT NOT NULL,
+        description_template TEXT,
+        category TEXT NOT NULL,
+        access_type TEXT NOT NULL,
+        start_time_of_day TEXT NOT NULL,
+        duration_minutes INTEGER NOT NULL DEFAULT 60,
+        timezone TEXT NOT NULL,
+        recurrence_type TEXT NOT NULL,
+        recurrence_data TEXT,
+        is_incremental_enabled INTEGER NOT NULL DEFAULT 0,
+        incremental_start INTEGER NOT NULL DEFAULT 1,
+        incremental_step INTEGER NOT NULL DEFAULT 1,
+        current_increment INTEGER NOT NULL DEFAULT 1,
+        is_active INTEGER NOT NULL DEFAULT 0,
+        send_notification INTEGER NOT NULL DEFAULT 0,
+        creation_strategy TEXT NOT NULL DEFAULT 'LAZY',
+        max_visible_future_events INTEGER DEFAULT 1,
+        world_id TEXT,
+        instance_access_type TEXT,
+        instance_region TEXT,
+        allowed_vrc_role_ids TEXT,
+        platforms TEXT NOT NULL,
+        languages TEXT,
+        tags TEXT,
+        host_early_join_minutes INTEGER,
+        guest_early_join_minutes INTEGER,
+        close_instance_after_end_minutes INTEGER,
+        uses_instance_overflow INTEGER NOT NULL DEFAULT 0,
+        UNIQUE(group_id, name)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE calendar_automation_exceptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        automation_id INTEGER NOT NULL,
+        exception_date TEXT NOT NULL,
+        is_cancelled INTEGER NOT NULL DEFAULT 1,
+        rescheduled_time TEXT,
+        title_override TEXT,
+        FOREIGN KEY (automation_id) REFERENCES calendar_automations (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE calendar_automation_runs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        automation_id INTEGER NOT NULL,
+        calculated_occurrence_utc TEXT NOT NULL,
+        created_vrc_event_id TEXT NOT NULL,
+        published_at TEXT NOT NULL,
+        FOREIGN KEY (automation_id) REFERENCES calendar_automations (id) ON DELETE CASCADE,
+        UNIQUE(automation_id, calculated_occurrence_utc)
+      )
+    ''');
+
     await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');
@@ -175,6 +236,8 @@ class DatabaseService {
     await db.execute('CREATE INDEX IF NOT EXISTS idx_automation_assigned_roles_automation_id ON automation_assigned_roles (automation_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_status_rules_profile_priority ON status_rules (profile_id, priority)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
+     await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_exceptions_auto_id ON calendar_automation_exceptions (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_runs_auto_id ON calendar_automation_runs (automation_id)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
