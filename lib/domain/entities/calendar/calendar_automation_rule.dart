@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
+import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';

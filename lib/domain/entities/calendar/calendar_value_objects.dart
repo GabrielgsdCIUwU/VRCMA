@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrcma/domain/entities/calendar/enums/instance_region.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/error/calendar_domain_exception.dart';
