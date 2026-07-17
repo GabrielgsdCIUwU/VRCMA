@@ -33,6 +33,7 @@ Future<ISocialRepository> socialRepository(Ref ref) async {
   return SocialRepositoryImp(api);
 }
 
+@riverpod
 Future<IRemoteCalendarRepository> remoteCalendarRepository(Ref ref) async {
   final api = await ref.watch(vrcApiProvider.future);
   return RemoteCalendarRepositoryImp(api);
