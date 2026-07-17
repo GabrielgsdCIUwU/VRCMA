@@ -1,4 +1,5 @@
 import 'package:vrchat_dart/vrchat_dart.dart' as vrchat;
+import 'package:vrcma/data/mappers/remote_calendar_mapper.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/error/calendar_domain_exception.dart';
@@ -63,18 +64,14 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
     int? closeInstanceAfterEndMinutes,
     bool? usesInstanceOverflow,
   }) async {
-    final mappedAccess = _mapAccessType(accessType);
-    final mappedCategory = _mapCategory(category);
-    final mappedPlatforms = platforms.map(_mapPlatform).toList();
-
-    final request = vrchat.CreateCalendarEventRequest(
+    final request = RemoteCalendarMapper.mapToCreateRequest(
       title: title,
+      startUtc: startUtc,
+      endUtc: endUtc,
       description: description,
-      startsAt: startUtc,
-      endsAt: endUtc,
-      accessType: mappedAccess,
-      category: mappedCategory,
-      platforms: mappedPlatforms,
+      category: category,
+      accessType: accessType,
+      platforms: platforms,
       languages: languages,
       tags: tags,
       sendCreationNotification: sendCreationNotification,
@@ -83,9 +80,6 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
       guestEarlyJoinMinutes: guestEarlyJoinMinutes,
       closeInstanceAfterEndMinutes: closeInstanceAfterEndMinutes,
       usesInstanceOverflow: usesInstanceOverflow,
-      isDraft: false,
-      featured: false,
-      parentId: null,
     );
 
     try {
@@ -101,29 +95,6 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
     } catch (e) {
       throw CalendarPublishException(e.toString());
     }
-  }
-
-  vrchat.CalendarEventAccess _mapAccessType(GroupEventAccessType domainAccess) {
-    switch (domainAccess) {
-      case GroupEventAccessType.public:
-        return vrchat.CalendarEventAccess.public;
-      case GroupEventAccessType.group:
-        return vrchat.CalendarEventAccess.group;
-    }
-  }
-
-  vrchat.CalendarEventCategory _mapCategory(GroupEventCategory domainCategory) {
-    return vrchat.CalendarEventCategory.values.firstWhere(
-      (e) => e.name.toLowerCase() == domainCategory.name.toLowerCase(),
-      orElse: () => vrchat.CalendarEventCategory.other,
-    );
-  }
-
-  vrchat.CalendarEventPlatform _mapPlatform(domain.CalendarEventPlatform domainPlatform) {
-    return vrchat.CalendarEventPlatform.values.firstWhere(
-      (e) => e.name.toLowerCase() == domainPlatform.name.toLowerCase(),
-      orElse: () => vrchat.CalendarEventPlatform.standalonewindows,
-    );
   }
 
   @override
