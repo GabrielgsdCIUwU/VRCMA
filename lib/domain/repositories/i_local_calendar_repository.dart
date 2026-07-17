@@ -5,6 +5,7 @@ import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 abstract class ILocalCalendarRepository {
   /// Loads all rules flagged as active along with exceptions in a single step.
   Future<List<CalendarAutomationRule>> getActiveRules();
+  Future<List<CalendarAutomationRule>> getAllRules();
   Future<int> saveRule(CalendarAutomationRule rule);
   Future<void> deleteRule(int id);
 

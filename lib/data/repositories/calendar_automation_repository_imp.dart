@@ -46,6 +46,38 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
 
     return rules;
   }
+  
+  @override
+  Future<List<CalendarAutomationRule>> getAllRules() async {
+    final List<Map<String, dynamic>> ruleRows = await _db.query('calendar_automations');
+    
+    if (ruleRows.isEmpty) return const [];
+    
+    final rules = <CalendarAutomationRule>[];
+    for (final row in ruleRows) {
+      final automationId = row['id'] as int;
+      
+      final List<Map<String, dynamic>> exceptionRows = await _db.query(
+        'calendar_automation_exceptions',
+        where: 'automation_id = ?',
+        whereArgs: [automationId],
+      );
+      
+      final exceptions = exceptionRows.map((eRow) {
+        return CalendarException(
+          id: eRow['id'] as int?,
+          automationId: eRow['automation_id'] as int?,
+          exceptionDate: DateTime.parse(eRow['exception_date'] as String),
+          isCancelled: eRow['is_cancelled'] == 1,
+          rescheduledTime: eRow['rescheduled_time'] as String?,
+          titleOverride: eRow['title_override'] as String?,
+        );
+      }).toList();
+      
+      rules.add(CalendarAutomationMapper.fromDatabaseMaps(row, exceptions));
+    }
+    return rules;
+  }
 
   @override
   Future<int> saveRule(CalendarAutomationRule rule) async {
