@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 import 'package:vrcma/presentation/widgets/home/window/user_details_sheet.dart';
