@@ -1,5 +1,5 @@
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
-import 'package:vrcma/domain/entities/calendar/calendar_ocurrence_run.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 
 /// Contract defining persistence operations for calendar automations
 abstract class ILocalCalendarRepository {
@@ -9,6 +9,6 @@ abstract class ILocalCalendarRepository {
   Future<void> deleteRule(int id);
 
   /// Retrieves past published occurence logs for checking runs.
-  Future<List<CalendarOcurrenceRun>> getPastRuns(int automationId);
-  Future<void> saveOccurrenceRun(CalendarOcurrenceRun run);  
+  Future<List<CalendarOccurrenceRun>> getPastRuns(int automationId);
+  Future<void> saveOccurrenceRun(CalendarOccurrenceRun run);  
 }

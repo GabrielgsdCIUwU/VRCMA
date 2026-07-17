@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/data/mappers/calendar_automation_mapper.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
-import 'package:vrcma/domain/entities/calendar/calendar_ocurrence_run.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 
 class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
@@ -89,7 +89,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
   }
 
   @override
-  Future<List<CalendarOcurrenceRun>> getPastRuns(int automationId) async {
+  Future<List<CalendarOccurrenceRun>> getPastRuns(int automationId) async {
     final List<Map<String, dynamic>> maps = await _db.query(
       'calendar_automation_runs',
       where: 'automation_id = ?',
@@ -97,7 +97,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
     );
 
     return maps.map((row) {
-      return CalendarOcurrenceRun(
+      return CalendarOccurrenceRun(
         id: row['id'] as int?,
         automationId: row['automation_id'] as int?,
         calculatedOccurrenceUtc: DateTime.parse(row['calculated_occurrence_utc'] as String),
@@ -108,7 +108,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
   }
 
   @override
-  Future<void> saveOccurrenceRun(CalendarOcurrenceRun run) async {
+  Future<void> saveOccurrenceRun(CalendarOccurrenceRun run) async {
     await _db.insert(
       'calendar_automation_runs',
       {

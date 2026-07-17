@@ -1,6 +1,6 @@
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
-import 'package:vrcma/domain/entities/calendar/calendar_ocurrence_run.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
@@ -10,7 +10,7 @@ class OcurrenceCalculator {
   /// Calculates pending occurrences in UTC.
   List<DateTime> calculatePendingOccurrences(
     CalendarAutomationRule rule,
-    List<CalendarOcurrenceRun> pastRuns,
+    List<CalendarOccurrenceRun> pastRuns,
     int countLimit,
   ) {
     final nowUtc = DateTime.now().toUtc();
@@ -51,7 +51,7 @@ class OcurrenceCalculator {
     return pendingOccurrences;
   }
 
-  Set<DateTime> _extractPastRunUtcTimes(List<CalendarOcurrenceRun> pastRuns) {
+  Set<DateTime> _extractPastRunUtcTimes(List<CalendarOccurrenceRun> pastRuns) {
     return pastRuns
       .map((run) => run.calculatedOccurrenceUtc.toUtc()).toSet();
   }

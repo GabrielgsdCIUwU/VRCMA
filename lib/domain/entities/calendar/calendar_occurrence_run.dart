@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 /// Log entity recording successfully created VRChat API calendar instances.
-class CalendarOcurrenceRun extends Equatable {
+class CalendarOccurrenceRun extends Equatable {
   final int? id;
   final int? automationId;
   final DateTime calculatedOccurrenceUtc;
   final String createdVrcEventId;
   final DateTime publishedAt;
 
-  const CalendarOcurrenceRun({
+  const CalendarOccurrenceRun({
     this.id,
     this.automationId,
     required this.calculatedOccurrenceUtc,
