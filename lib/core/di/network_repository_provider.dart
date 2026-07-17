@@ -1,9 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/data/repositories/automation_repository_imp.dart';
+import 'package:vrcma/data/repositories/remote_calendar_repository_imp.dart';
 import 'package:vrcma/data/repositories/social_repository_imp.dart';
 import 'package:vrcma/data/transformers/vrc_event_transformer.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
+import 'package:vrcma/domain/repositories/i_remote_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_social_repository.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 
@@ -29,4 +31,9 @@ Future<IAutomationRepository> automationRepository(Ref ref) async {
 Future<ISocialRepository> socialRepository(Ref ref) async {
   final api = await ref.watch(vrcApiProvider.future);
   return SocialRepositoryImp(api);
+}
+
+Future<IRemoteCalendarRepository> remoteCalendarRepository(Ref ref) async {
+  final api = await ref.watch(vrcApiProvider.future);
+  return RemoteCalendarRepositoryImp(api);
 }
