@@ -1,13 +1,20 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
+import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/state/profile_management_provider.dart';
+import 'package:vrcma/presentation/state/role_automation_provider.dart';
+import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/settings_panel.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
+import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/status_profile_editor_sheet.dart';
 
 enum DashboardContextAction {
@@ -23,15 +30,17 @@ class DashboardPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profilesAsync = ref.watch(profileManagementProviderProvider);
     final statusProfilesAsync = ref.watch(statusProfileManagementProvider);
+    final rolesAsync = ref.watch(roleManagementProvider);
+    final automationAsync = ref.watch(roleAutomationListProvider);
 
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildWelcomeHeader(context),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             _buildSectionTitle(context, context.l10n.sectionProfiles),
             const SizedBox(height: 12),
             profilesAsync.when(
@@ -48,9 +57,21 @@ class DashboardPanel extends ConsumerWidget {
               error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
             ),
             const SizedBox(height: 32),
-            _buildSectionTitle(context, context.l10n.dashboardManagementTools),
+            _buildSectionTitle(context, context.l10n.sectionRoles),
             const SizedBox(height: 12),
-            _buildManagementAssetsGrid(context, ref),
+            rolesAsync.when(
+              data: (roles) => _buildRolesGrid(context, ref, roles),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
+            ),
+            const SizedBox(height: 32),
+            _buildSectionTitle(context, context.l10n.sectionFriendAutomations),
+            const SizedBox(height: 12),
+            automationAsync.when(
+              data: (automations) => _buildAutomationsGrid(context, ref, automations),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
+            ),
           ],
         ),
       ),
@@ -220,87 +241,195 @@ class DashboardPanel extends ConsumerWidget {
     );
   }
 
-  Widget _buildManagementAssetsGrid(BuildContext context, WidgetRef ref) {
-    return GridView(
+  Widget _buildRolesGrid(BuildContext context, WidgetRef ref, List<Role> roles) {
+    return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      itemCount: roles.length + 1,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 400,
-        mainAxisExtent: 80,
+        maxCrossAxisExtent: 280,
+        mainAxisExtent: 140,
         crossAxisSpacing: 12,
-        mainAxisSpacing: 12
+        mainAxisSpacing: 12,
       ),
-      children: [
-        _buildAssetLinkCard(
-          context,
-          icon: Icons.supervised_user_circle_outlined,
-          title: context.l10n.sectionRoles,
-          subtitle: context.l10n.rolesManagementDesc,
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const DraggableScrollableSheet(
-                initialChildSize: 0.8,
-                maxChildSize: 0.95,
-                minChildSize: 0.5,
-                expand: false,
-                builder: _buildRoleSheetScrollBody,
-              ),
-            );
-          }
-        ),
-        _buildAssetLinkCard(
-          context,
-          icon: Icons.smart_toy_outlined,
-          title: context.l10n.sectionFriendAutomations,
-          subtitle: context.l10n.automationManagementDesc,
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const DraggableScrollableSheet(
-                initialChildSize: 0.8,
-                maxChildSize: 0.95,
-                minChildSize: 0.5,
-                expand: false,
-                builder: _buildAutomationSheetScrollBody,
-              ),
-            );
+      itemBuilder: (context, i) {
+        if (i == roles.length) {
+          return _buildAddCard(context, () => _showAddRoleDialog(context, ref));
+        }
+        final role = roles[i];
+        final memberCountAsync = ref.watch(roleMemberCountProvider(role.id));
+        final memberCountText = memberCountAsync.maybeWhen(
+          data: (count) => context.l10n.roleMembersCount(count),
+          orElse: () => context.l10n.stateLoading,
+        );
+
+        return AdaptiveContextMenuWrapper<DashboardContextAction>(
+          menuItems: [
+            PopupMenuItem(
+              value: DashboardContextAction.edit,
+              child: Text(context.l10n.contextMenuEdit),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: DashboardContextAction.delete,
+              child: Text(context.l10n.btnDelete, style: TextStyle(color: context.colorScheme.error)),
+            )
+          ],
+          onSelected: (action) {
+            switch (action) {
+              case DashboardContextAction.edit:
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleEditorSheet(role: role)));
+              case DashboardContextAction.delete:
+                _showDeleteRoleConfirmation(context, ref, role);
+              default:
+                break;
+            }
           },
+          child: _buildDashboardBlockCard(
+              context,
+              title: role.name,
+              subtitle: memberCountText,
+              isActive: false,
+              icon: Icons.label_important_outline,
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleEditorSheet(role: role)));
+              },
+              onEdit: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleEditorSheet(role: role)));
+              }
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAutomationsGrid(BuildContext context, WidgetRef ref, List<RoleAutomation> automations) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: automations.length + 1,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 280,
+        mainAxisExtent: 140,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemBuilder: (context, i) {
+        if (i == automations.length) {
+          return _buildAddCard(context, () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const RoleAutomationEditorSheet()));
+          });
+        }
+        final auto = automations[i];
+        final String title = auto.trigger == AutomationTrigger.newFriend
+            ? context.l10n.triggerOnNewFriend
+            : context.l10n.triggerHasTag(VrcTag.allTags.firstWhereOrNull((t) => t.id == auto.targetValue)?.name ?? auto.targetValue ?? '');
+        final String assignedRoles = auto.roles.map((r) => r.name).join(", ");
+
+        return AdaptiveContextMenuWrapper<DashboardContextAction>(
+          menuItems: [
+            PopupMenuItem(
+              value: DashboardContextAction.edit,
+              child: Text(context.l10n.contextMenuEdit),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: DashboardContextAction.delete,
+              child: Text(context.l10n.btnDelete, style: TextStyle(color: context.colorScheme.error)),
+            )
+          ],
+          onSelected: (action) {
+            switch (action) {
+              case DashboardContextAction.edit:
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleAutomationEditorSheet(automation: auto)));
+              case DashboardContextAction.delete:
+                _showDeleteAutomationConfirmation(context, ref, auto);
+              default:
+                break;
+            }
+          },
+          child: _buildDashboardBlockCard(
+              context,
+              title: title,
+              subtitle: context.l10n.automationAssigns(assignedRoles),
+              isActive: false,
+              icon: Icons.smart_toy_outlined,
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleAutomationEditorSheet(automation: auto)));
+              },
+              onEdit: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RoleAutomationEditorSheet(automation: auto)));
+              }
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDashboardBlockCard(
+      BuildContext context, {
+        required String title,
+        required String subtitle,
+        required bool isActive,
+        required IconData icon,
+        required VoidCallback onTap,
+        required VoidCallback onEdit,
+      }
+      ) {
+    final activeBg = context.vrcColors.success.withValues(alpha: 0.08);
+    final activeBorder = context.vrcColors.success.withValues(alpha: 0.4);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isActive ? activeBg : context.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isActive ? activeBorder : context.colorScheme.outlineVariant,
+            width: isActive ? 2 : 1,
+          ),
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  color: isActive ? context.vrcColors.success : context.colorScheme.onSurfaceVariant,
+                  size: 20,
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.tune_outlined, size: 18),
+                  onPressed: onEdit,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+            const Spacer(),
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 11, color: context.colorScheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
     );
   }
-
-  static Widget _buildRoleSheetScrollBody(BuildContext _, ScrollController _) => const RoleManagerSubsheet();
-  static Widget _buildAutomationSheetScrollBody(BuildContext _, ScrollController _) => const AutomationManagerSubsheet();
-
-  Widget _buildAssetLinkCard(
-    BuildContext context, {
-      required IconData icon,
-      required String title,
-      required String subtitle,
-      required VoidCallback onTap,
-    }
-  ) {
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.colorScheme.outlineVariant),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: context.colorScheme.primary),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-        onTap: onTap,
-      ),
-    );
-  }
-
+  
   Widget _buildProfileCard(
     BuildContext context, {
       required String title,
@@ -505,6 +634,57 @@ class DashboardPanel extends ConsumerWidget {
             ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
             Navigator.pop(context);
             },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddRoleDialog(BuildContext context, WidgetRef ref) {
+    _showNameDialog(
+        context,
+        title: context.l10n.dialogNewRoleTitle,
+        label: context.l10n.dialogNewRoleLabel,
+        onConfirm: (name) {
+          ref.read(roleManagementProvider.notifier).createRole(name);
+        }
+    );
+  }
+
+  void _showDeleteRoleConfirmation(BuildContext context, WidgetRef ref, Role role) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteRoleTitle),
+        content: Text(context.l10n.dialogDeleteRoleContent(role.name)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+          TextButton(onPressed: () {
+            ref.read(roleManagementProvider.notifier).deleteRole(role.id);
+            Navigator.pop(context);
+          },
+            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            child: Text(context.l10n.btnDelete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteAutomationConfirmation(BuildContext context, WidgetRef ref, RoleAutomation automation) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.dialogDeleteAutomationTitle),
+        content: Text(context.l10n.dialogDeleteAutomationContent),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
+          TextButton(onPressed: () {
+            ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
+            Navigator.pop(context);
+          },
             style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
             child: Text(context.l10n.btnDelete),
           ),
