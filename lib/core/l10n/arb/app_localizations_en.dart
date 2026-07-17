@@ -906,4 +906,82 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorRoleAutoMissingTag =>
       'A target tag is required for tag-based automation.';
+
+  @override
+  String get calHeader => 'Calendar Automations';
+
+  @override
+  String get calSubheader =>
+      'Configure automated scheduling rules that create and manage VRChat Group events in the background.';
+
+  @override
+  String get calBtnCreate => 'Create Automation';
+
+  @override
+  String get calEditorTitleNew => 'New Calendar Rule';
+
+  @override
+  String get calEditorTitleEdit => 'Edit Calendar Rule';
+
+  @override
+  String get calFieldLabelName => 'Rule Name';
+
+  @override
+  String get calFieldLabelGroupId => 'VRChat Group ID';
+
+  @override
+  String get calFieldLabelTitle => 'Event Title Template';
+
+  @override
+  String get calFieldLabelDesc => 'Event Description Template';
+
+  @override
+  String get calFieldHintTitle => 'Supports the {{incremental}} placeholder.';
+
+  @override
+  String get calSectionSchedule => 'Schedule';
+
+  @override
+  String get calFieldLabelTime => 'Start Time (HH:mm)';
+
+  @override
+  String get calFieldLabelDuration => 'Duration (Minutes)';
+
+  @override
+  String get calFieldLabelTimezone => 'Time Zone (IANA)';
+
+  @override
+  String get calSectionRecurrence => 'Recurrence';
+
+  @override
+  String get calSectionIncremental => 'Incremental Counter';
+
+  @override
+  String get calSectionVrcMetadata => 'VRChat Event Settings';
+
+  @override
+  String get calFieldLabelHostEarly => 'Host Early Access (Minutes)';
+
+  @override
+  String get calFieldLabelGuestEarly => 'Member Early Access (Minutes)';
+
+  @override
+  String get calFieldLabelCloseDelay => 'Automatic Cleanup Delay (Minutes)';
+
+  @override
+  String get calFieldLabelOverflow => 'Enable Instance Overflow Protection';
+
+  @override
+  String get calToastSaved => 'Calendar rule saved successfully.';
+
+  @override
+  String get calConfirmDeleteTitle => 'Delete Automation Rule';
+
+  @override
+  String get calConfirmDeleteContent =>
+      'Are you sure you want to delete this automation rule? This action cannot be undone.';
+
+  @override
+  String get calMsgEmptyRules =>
+      'No calendar automation rules have been created yet.';
 }

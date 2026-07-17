@@ -908,4 +908,87 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get errorRoleAutoMissingTag =>
       'Debes indicar una etiqueta de destino para esta automatización basada en etiquetas.';
+
+  @override
+  String get calHeader => 'Automatizaciones del Calendario';
+
+  @override
+  String get calSubheader =>
+      'Configura reglas automáticas que crean y gestionan eventos de grupo de VRChat en segundo plano.';
+
+  @override
+  String get calBtnCreate => 'Crear automatización';
+
+  @override
+  String get calEditorTitleNew => 'Nueva regla de calendario';
+
+  @override
+  String get calEditorTitleEdit => 'Editar regla de calendario';
+
+  @override
+  String get calFieldLabelName => 'Nombre de la regla';
+
+  @override
+  String get calFieldLabelGroupId => 'ID del grupo de VRChat';
+
+  @override
+  String get calFieldLabelTitle => 'Plantilla del título del evento';
+
+  @override
+  String get calFieldLabelDesc => 'Plantilla de la descripción del evento';
+
+  @override
+  String get calFieldHintTitle => 'Admite el marcador {{incremental}}.';
+
+  @override
+  String get calSectionSchedule => 'Programación';
+
+  @override
+  String get calFieldLabelTime => 'Hora de inicio (HH:mm)';
+
+  @override
+  String get calFieldLabelDuration => 'Duración (minutos)';
+
+  @override
+  String get calFieldLabelTimezone => 'Zona horaria (IANA)';
+
+  @override
+  String get calSectionRecurrence => 'Recurrencia';
+
+  @override
+  String get calSectionIncremental => 'Contador incremental';
+
+  @override
+  String get calSectionVrcMetadata => 'Configuración del evento de VRChat';
+
+  @override
+  String get calFieldLabelHostEarly =>
+      'Acceso anticipado para el host (minutos)';
+
+  @override
+  String get calFieldLabelGuestEarly =>
+      'Acceso anticipado para miembros (minutos)';
+
+  @override
+  String get calFieldLabelCloseDelay =>
+      'Retraso de limpieza automática (minutos)';
+
+  @override
+  String get calFieldLabelOverflow =>
+      'Activar protección contra desbordamiento de instancias';
+
+  @override
+  String get calToastSaved =>
+      'La regla de calendario se ha guardado correctamente.';
+
+  @override
+  String get calConfirmDeleteTitle => 'Eliminar regla de automatización';
+
+  @override
+  String get calConfirmDeleteContent =>
+      '¿Seguro que quieres eliminar esta regla de automatización? Esta acción no se puede deshacer.';
+
+  @override
+  String get calMsgEmptyRules =>
+      'Todavía no se ha creado ninguna regla de automatización del calendario.';
 }

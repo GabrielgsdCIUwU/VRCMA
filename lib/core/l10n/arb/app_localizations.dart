@@ -1723,6 +1723,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A target tag is required for tag-based automation.'**
   String get errorRoleAutoMissingTag;
+
+  /// Title of the page used to manage calendar automation rules.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar Automations'**
+  String get calHeader;
+
+  /// Short description displayed below the page title explaining what calendar automations do.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure automated scheduling rules that create and manage VRChat Group events in the background.'**
+  String get calSubheader;
+
+  /// Button label that opens the dialog for creating a new calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Automation'**
+  String get calBtnCreate;
+
+  /// Dialog title shown when creating a new calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'New Calendar Rule'**
+  String get calEditorTitleNew;
+
+  /// Dialog title shown when editing an existing calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Calendar Rule'**
+  String get calEditorTitleEdit;
+
+  /// Label for the user-defined name of the automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Name'**
+  String get calFieldLabelName;
+
+  /// Label for the VRChat Group ID associated with this automation.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Group ID'**
+  String get calFieldLabelGroupId;
+
+  /// Label for the template used to generate the VRChat event title.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title Template'**
+  String get calFieldLabelTitle;
+
+  /// Label for the template used to generate the VRChat event description.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Description Template'**
+  String get calFieldLabelDesc;
+
+  /// Helper text indicating that the {{incremental}} placeholder can be used inside the title template.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports the \'{{incremental}}\' placeholder.'**
+  String get calFieldHintTitle;
+
+  /// Section heading containing the event time, duration and timezone settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get calSectionSchedule;
+
+  /// Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time (HH:mm)'**
+  String get calFieldLabelTime;
+
+  /// Label for the duration of the generated event, expressed in minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (Minutes)'**
+  String get calFieldLabelDuration;
+
+  /// Label for the IANA time zone identifier used when scheduling events.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Zone (IANA)'**
+  String get calFieldLabelTimezone;
+
+  /// Section heading containing the recurrence pattern configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurrence'**
+  String get calSectionRecurrence;
+
+  /// Section heading for configuring the automatic incremental counter used by the {{incremental}} placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Incremental Counter'**
+  String get calSectionIncremental;
+
+  /// Section containing VRChat-specific event configuration options.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Event Settings'**
+  String get calSectionVrcMetadata;
+
+  /// Label for the number of minutes before the event that hosts may join.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Early Access (Minutes)'**
+  String get calFieldLabelHostEarly;
+
+  /// Label for the number of minutes before the event that group members may join.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Early Access (Minutes)'**
+  String get calFieldLabelGuestEarly;
+
+  /// Label for the delay, in minutes, before automatically closing the event instance after it ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic Cleanup Delay (Minutes)'**
+  String get calFieldLabelCloseDelay;
+
+  /// Label for the option that enables VRChat instance overflow protection when creating events.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Instance Overflow Protection'**
+  String get calFieldLabelOverflow;
+
+  /// Toast notification shown after a calendar automation rule has been saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar rule saved successfully.'**
+  String get calToastSaved;
+
+  /// Title of the confirmation dialog displayed before deleting a calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Automation Rule'**
+  String get calConfirmDeleteTitle;
+
+  /// Confirmation message displayed before permanently deleting a calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this automation rule? This action cannot be undone.'**
+  String get calConfirmDeleteContent;
+
+  /// Message shown when there are no calendar automation rules to display.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar automation rules have been created yet.'**
+  String get calMsgEmptyRules;
 }
 
 class _AppLocalizationsDelegate

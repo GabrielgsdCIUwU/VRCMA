@@ -1515,5 +1515,130 @@
   "errorRoleAutoMissingTag": "A target tag is required for tag-based automation.",
   "@errorRoleAutoMissingTag": {
     "description": "Shown when a tag-based automation is configured without specifying the target tag."
+  },
+
+  "calHeader": "Calendar Automations",
+  "@calHeader": {
+    "description": "Title of the page used to manage calendar automation rules."
+  },
+
+  "calSubheader": "Configure automated scheduling rules that create and manage VRChat Group events in the background.",
+  "@calSubheader": {
+    "description": "Short description displayed below the page title explaining what calendar automations do."
+  },
+
+  "calBtnCreate": "Create Automation",
+  "@calBtnCreate": {
+    "description": "Button label that opens the dialog for creating a new calendar automation rule."
+  },
+
+  "calEditorTitleNew": "New Calendar Rule",
+  "@calEditorTitleNew": {
+    "description": "Dialog title shown when creating a new calendar automation rule."
+  },
+
+  "calEditorTitleEdit": "Edit Calendar Rule",
+  "@calEditorTitleEdit": {
+    "description": "Dialog title shown when editing an existing calendar automation rule."
+  },
+
+  "calFieldLabelName": "Rule Name",
+  "@calFieldLabelName": {
+    "description": "Label for the user-defined name of the automation rule."
+  },
+
+  "calFieldLabelGroupId": "VRChat Group ID",
+  "@calFieldLabelGroupId": {
+    "description": "Label for the VRChat Group ID associated with this automation."
+  },
+
+  "calFieldLabelTitle": "Event Title Template",
+  "@calFieldLabelTitle": {
+    "description": "Label for the template used to generate the VRChat event title."
+  },
+
+  "calFieldLabelDesc": "Event Description Template",
+  "@calFieldLabelDesc": {
+    "description": "Label for the template used to generate the VRChat event description."
+  },
+
+  "calFieldHintTitle": "Supports the '{{incremental}}' placeholder.",
+  "@calFieldHintTitle": {
+    "description": "Helper text indicating that the {{incremental}} placeholder can be used inside the title template."
+  },
+
+  "calSectionSchedule": "Schedule",
+  "@calSectionSchedule": {
+    "description": "Section heading containing the event time, duration and timezone settings."
+  },
+
+  "calFieldLabelTime": "Start Time (HH:mm)",
+  "@calFieldLabelTime": {
+    "description": "Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format."
+  },
+
+  "calFieldLabelDuration": "Duration (Minutes)",
+  "@calFieldLabelDuration": {
+    "description": "Label for the duration of the generated event, expressed in minutes."
+  },
+
+  "calFieldLabelTimezone": "Time Zone (IANA)",
+  "@calFieldLabelTimezone": {
+    "description": "Label for the IANA time zone identifier used when scheduling events."
+  },
+
+  "calSectionRecurrence": "Recurrence",
+  "@calSectionRecurrence": {
+    "description": "Section heading containing the recurrence pattern configuration."
+  },
+
+  "calSectionIncremental": "Incremental Counter",
+  "@calSectionIncremental": {
+    "description": "Section heading for configuring the automatic incremental counter used by the {{incremental}} placeholder."
+  },
+
+  "calSectionVrcMetadata": "VRChat Event Settings",
+  "@calSectionVrcMetadata": {
+    "description": "Section containing VRChat-specific event configuration options."
+  },
+
+  "calFieldLabelHostEarly": "Host Early Access (Minutes)",
+  "@calFieldLabelHostEarly": {
+    "description": "Label for the number of minutes before the event that hosts may join."
+  },
+
+  "calFieldLabelGuestEarly": "Member Early Access (Minutes)",
+  "@calFieldLabelGuestEarly": {
+    "description": "Label for the number of minutes before the event that group members may join."
+  },
+
+  "calFieldLabelCloseDelay": "Automatic Cleanup Delay (Minutes)",
+  "@calFieldLabelCloseDelay": {
+    "description": "Label for the delay, in minutes, before automatically closing the event instance after it ends."
+  },
+
+  "calFieldLabelOverflow": "Enable Instance Overflow Protection",
+  "@calFieldLabelOverflow": {
+    "description": "Label for the option that enables VRChat instance overflow protection when creating events."
+  },
+
+  "calToastSaved": "Calendar rule saved successfully.",
+  "@calToastSaved": {
+    "description": "Toast notification shown after a calendar automation rule has been saved."
+  },
+
+  "calConfirmDeleteTitle": "Delete Automation Rule",
+  "@calConfirmDeleteTitle": {
+    "description": "Title of the confirmation dialog displayed before deleting a calendar automation rule."
+  },
+
+  "calConfirmDeleteContent": "Are you sure you want to delete this automation rule? This action cannot be undone.",
+  "@calConfirmDeleteContent": {
+    "description": "Confirmation message displayed before permanently deleting a calendar automation rule."
+  },
+
+  "calMsgEmptyRules": "No calendar automation rules have been created yet.",
+  "@calMsgEmptyRules": {
+    "description": "Message shown when there are no calendar automation rules to display."
   }
 }
