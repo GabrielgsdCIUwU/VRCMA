@@ -6,7 +6,7 @@ import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 
 /// Evaluate rules and exceptions to generate upcoming event runs.
-class OcurrenceCalculator {
+class OccurrenceCalculator {
   /// Calculates pending occurrences in UTC.
   List<DateTime> calculatePendingOccurrences(
     CalendarAutomationRule rule,
