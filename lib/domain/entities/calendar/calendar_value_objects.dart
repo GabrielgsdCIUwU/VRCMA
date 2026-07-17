@@ -13,7 +13,7 @@ class WorldId extends Equatable {
   /// Validates and constructs a [WorldId]
   factory WorldId(String rawValue) {
     final trimmedValue = rawValue.trim();
-    if (!trimmedValue.startsWith('wrld_')) {
+    if (trimmedValue.isEmpty || !trimmedValue.startsWith('wrld_')) {
       throw CalendarDomainException(InvalidWorldIdError(trimmedValue));
     }
     return WorldId._(trimmedValue);
@@ -94,6 +94,10 @@ class IncrementalConfig extends Equatable {
   }) {
     if (currentValue < 0) {
       throw CalendarDomainException(OutOfBoundsIncrementError(currentValue));
+    }
+
+    if (stepValue <= 0) {
+      throw CalendarDomainException(InvalidDurationError(-1));
     }
   }
 
