@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
@@ -54,7 +55,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       schedule: TimezoneSchedule(
         startTimeOfDay: '20:00',
         durationMinutes: 60,
-        timezoneIana: 'Europe/Madrid',
+        timezoneIana: tz.local.name,
       ),
       recurrence: RecurrencePattern(
         type: RecurrenceType.weekly,
@@ -150,6 +151,15 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
   
   Future<void> saveAndClose() async {
     if (!isValid) return;
-    await ref.read(calendarAutomationListProvider.notifier).save(state);
+
+    final synchronizedRule = state.copyWith(
+      schedule: TimezoneSchedule(
+        startTimeOfDay: state.schedule.startTimeOfDay,
+        durationMinutes: state.schedule.durationMinutes,
+        timezoneIana: tz.local.name,
+      ),
+    );
+
+    await ref.read(calendarAutomationListProvider.notifier).save(synchronizedRule);
   }
 }
