@@ -11,7 +11,8 @@ import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
-import 'package:vrcma/presentation/widgets/home/settings_panel.dart';
+import 'package:vrcma/presentation/widgets/home/calendar_automation_panel.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_context_menu_wrapper.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
@@ -56,6 +57,10 @@ class DashboardPanel extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
             ),
+            const SizedBox(height: 32),
+            _buildSectionTitle(context, context.l10n.calHeader),
+            const SizedBox(height: 12),
+            const CalendarAutomationPanel(),
             const SizedBox(height: 32),
             _buildSectionTitle(context, context.l10n.sectionRoles),
             const SizedBox(height: 12),
@@ -690,52 +695,6 @@ class DashboardPanel extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class AdaptiveContextMenuWrapper<T> extends StatefulWidget {
-  final Widget child;
-  final List<PopupMenuEntry<T>> menuItems;
-  final ValueChanged<T> onSelected;
-
-  const AdaptiveContextMenuWrapper({
-    super.key,
-    required this.child,
-    required this.menuItems,
-    required this.onSelected,
-  });
-
-  @override
-  State<AdaptiveContextMenuWrapper<T>> createState() => _AdaptiveContextMenuWrapperState<T>();
-}
-
-class _AdaptiveContextMenuWrapperState<T> extends State<AdaptiveContextMenuWrapper<T>> {
-
-  void _showContextMenu(BuildContext context, Offset position) {
-    showMenu<T>(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        position.dx,
-        position.dy,
-        position.dx + 1,
-        position.dy + 1,
-      ),
-      items: widget.menuItems,
-    ).then((value) {
-      if (value != null && mounted) {
-        widget.onSelected(value);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onSecondaryTapDown: (details) {
-        _showContextMenu(context, details.globalPosition);
-      },
-      child: widget.child,
     );
   }
 }
