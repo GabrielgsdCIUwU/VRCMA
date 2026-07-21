@@ -1640,5 +1640,126 @@
   "calMsgEmptyRules": "No calendar automation rules have been created yet.",
   "@calMsgEmptyRules": {
     "description": "Message shown when there are no calendar automation rules to display."
+  },
+
+  "calRecurrenceOnce": "Once",
+  "@calRecurrenceOnce": {
+    "description": "Calendar recurrence option for an event that occurs only one time."
+  },
+
+  "calRecurrenceDaily": "Daily",
+  "@calRecurrenceDaily": {
+    "description": "Calendar recurrence option for an event that repeats every day."
+  },
+
+  "calRecurrenceWeekly": "Weekly",
+  "@calRecurrenceWeekly": {
+    "description": "Calendar recurrence option for an event that repeats every week."
+  },
+
+  "calRecurrenceMonthly": "Monthly",
+  "@calRecurrenceMonthly": {
+    "description": "Calendar recurrence option for an event that repeats every month."
+  },
+
+  "calCategoryArts": "Arts",
+  "@calCategoryArts": {
+    "description": "Event category for arts and creative activities."
+  },
+
+  "calCategoryAvatars": "Avatars",
+  "@calCategoryAvatars": {
+    "description": "Event category related to avatar creation, customization, or showcases."
+  },
+
+  "calCategoryDance": "Dance",
+  "@calCategoryDance": {
+    "description": "Event category for dance activities or performances."
+  },
+
+  "calCategoryEducation": "Education",
+  "@calCategoryEducation": {
+    "description": "Event category for educational activities, classes, or workshops."
+  },
+
+  "calCategoryExploration": "Exploration",
+  "@calCategoryExploration": {
+    "description": "Event category for world exploration, tours, or discovery activities."
+  },
+
+  "calCategoryFilmMedia": "Film & Media",
+  "@calCategoryFilmMedia": {
+    "description": "Event category for movies, filmmaking, streaming, photography, or media-related activities."
+  },
+
+  "calCategoryGaming": "Gaming",
+  "@calCategoryGaming": {
+    "description": "Event category for gaming sessions, tournaments, or game-related activities."
+  },
+
+  "calCategoryHangout": "Hangout",
+  "@calCategoryHangout": {
+    "description": "Event category for casual social gatherings where people meet and spend time together."
+  },
+
+  "calCategoryMusic": "Music",
+  "@calCategoryMusic": {
+    "description": "Event category for music performances, concerts, DJ sets, or listening sessions."
+  },
+
+  "calCategoryPerformance": "Performance",
+  "@calCategoryPerformance": {
+    "description": "Event category for live performances such as theater, comedy, or stage shows."
+  },
+
+  "calCategoryRoleplaying": "Roleplaying",
+  "@calCategoryRoleplaying": {
+    "description": "Event category for roleplaying activities and roleplay communities."
+  },
+
+  "calCategoryWellness": "Wellness",
+  "@calCategoryWellness": {
+    "description": "Event category for wellness, mindfulness, meditation, fitness, or self-care activities."
+  },
+
+  "calCategoryOther": "Other",
+  "@calCategoryOther": {
+    "description": "Fallback event category when no other category applies."
+  },
+
+  "calFieldLabelEndTime": "End Time",
+  "@calFieldLabelEndTime": {
+    "description": "Label for the field where the user selects the event end time."
+  },
+
+  "calFieldLabelDaysOfWeek": "Days of Week",
+  "@calFieldLabelDaysOfWeek": {
+    "description": "Label for selecting the weekdays on which a recurring event takes place."
+  },
+
+  "calDurationHoursMinutes": "{hours}h {minutes}m",
+  "@calDurationHoursMinutes": {
+    "description": "Formats a duration using hours and minutes.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "calDurationMinutesOnly": "{minutes}m",
+  "@calDurationMinutesOnly": {
+    "description": "Formats a duration using only minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
   }
 }

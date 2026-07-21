@@ -984,4 +984,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get calMsgEmptyRules =>
       'No calendar automation rules have been created yet.';
+
+  @override
+  String get calRecurrenceOnce => 'Once';
+
+  @override
+  String get calRecurrenceDaily => 'Daily';
+
+  @override
+  String get calRecurrenceWeekly => 'Weekly';
+
+  @override
+  String get calRecurrenceMonthly => 'Monthly';
+
+  @override
+  String get calCategoryArts => 'Arts';
+
+  @override
+  String get calCategoryAvatars => 'Avatars';
+
+  @override
+  String get calCategoryDance => 'Dance';
+
+  @override
+  String get calCategoryEducation => 'Education';
+
+  @override
+  String get calCategoryExploration => 'Exploration';
+
+  @override
+  String get calCategoryFilmMedia => 'Film & Media';
+
+  @override
+  String get calCategoryGaming => 'Gaming';
+
+  @override
+  String get calCategoryHangout => 'Hangout';
+
+  @override
+  String get calCategoryMusic => 'Music';
+
+  @override
+  String get calCategoryPerformance => 'Performance';
+
+  @override
+  String get calCategoryRoleplaying => 'Roleplaying';
+
+  @override
+  String get calCategoryWellness => 'Wellness';
+
+  @override
+  String get calCategoryOther => 'Other';
+
+  @override
+  String get calFieldLabelEndTime => 'End Time';
+
+  @override
+  String get calFieldLabelDaysOfWeek => 'Days of Week';
+
+  @override
+  String calDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String calDurationMinutesOnly(int minutes) {
+    return '${minutes}m';
+  }
 }

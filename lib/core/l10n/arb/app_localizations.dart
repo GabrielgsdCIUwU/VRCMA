@@ -1873,6 +1873,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No calendar automation rules have been created yet.'**
   String get calMsgEmptyRules;
+
+  /// Calendar recurrence option for an event that occurs only one time.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get calRecurrenceOnce;
+
+  /// Calendar recurrence option for an event that repeats every day.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get calRecurrenceDaily;
+
+  /// Calendar recurrence option for an event that repeats every week.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get calRecurrenceWeekly;
+
+  /// Calendar recurrence option for an event that repeats every month.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get calRecurrenceMonthly;
+
+  /// Event category for arts and creative activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Arts'**
+  String get calCategoryArts;
+
+  /// Event category related to avatar creation, customization, or showcases.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatars'**
+  String get calCategoryAvatars;
+
+  /// Event category for dance activities or performances.
+  ///
+  /// In en, this message translates to:
+  /// **'Dance'**
+  String get calCategoryDance;
+
+  /// Event category for educational activities, classes, or workshops.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get calCategoryEducation;
+
+  /// Event category for world exploration, tours, or discovery activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Exploration'**
+  String get calCategoryExploration;
+
+  /// Event category for movies, filmmaking, streaming, photography, or media-related activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Film & Media'**
+  String get calCategoryFilmMedia;
+
+  /// Event category for gaming sessions, tournaments, or game-related activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Gaming'**
+  String get calCategoryGaming;
+
+  /// Event category for casual social gatherings where people meet and spend time together.
+  ///
+  /// In en, this message translates to:
+  /// **'Hangout'**
+  String get calCategoryHangout;
+
+  /// Event category for music performances, concerts, DJ sets, or listening sessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get calCategoryMusic;
+
+  /// Event category for live performances such as theater, comedy, or stage shows.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance'**
+  String get calCategoryPerformance;
+
+  /// Event category for roleplaying activities and roleplay communities.
+  ///
+  /// In en, this message translates to:
+  /// **'Roleplaying'**
+  String get calCategoryRoleplaying;
+
+  /// Event category for wellness, mindfulness, meditation, fitness, or self-care activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellness'**
+  String get calCategoryWellness;
+
+  /// Fallback event category when no other category applies.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get calCategoryOther;
+
+  /// Label for the field where the user selects the event end time.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get calFieldLabelEndTime;
+
+  /// Label for selecting the weekdays on which a recurring event takes place.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Week'**
+  String get calFieldLabelDaysOfWeek;
+
+  /// Formats a duration using hours and minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String calDurationHoursMinutes(int hours, int minutes);
+
+  /// Formats a duration using only minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m'**
+  String calDurationMinutesOnly(int minutes);
 }
 
 class _AppLocalizationsDelegate
