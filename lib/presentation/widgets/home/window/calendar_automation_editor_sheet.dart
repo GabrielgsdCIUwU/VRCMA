@@ -7,9 +7,9 @@ import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/presentation/extensions/date_time_extensions.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/calendar_automation_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/localization_helpers.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 
 class CalendarAutomationEditorSheet extends ConsumerStatefulWidget {
@@ -290,7 +290,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
       children: List.generate(7, (index) {
         final dayNumber = index + 1;
         final isSelected = state.recurrence.daysOfWeek.contains(dayNumber);
-        final localizedDayLabel = LocalizationHelpers.getLocalizedWeekdayName(context, dayNumber);
+        final localizedDayLabel = dayNumber.toLocalizedWeekdayName(context);
 
         return GestureDetector(
           onTap: () {

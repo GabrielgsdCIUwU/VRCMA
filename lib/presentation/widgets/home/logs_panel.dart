@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
+import 'package:vrcma/presentation/extensions/date_time_extensions.dart';
 import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
-import 'package:intl/intl.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
 class LogsPanel extends ConsumerWidget {
@@ -75,17 +75,6 @@ class _LogTile extends StatelessWidget {
   final AutomationLog log;
   const _LogTile({required this.log});
   
-  String _getRelativeTime(BuildContext context, DateTime dateTime) {
-    final duration = DateTime.now().difference(dateTime);
-    if (duration.inMinutes < 1) return context.l10n.timeJustNow;
-    if (duration.inMinutes < 60) return context.l10n.timeMinutesAgo(duration.inMinutes);
-    if (duration.inHours < 24) return context.l10n.timeHoursAgo(duration.inHours);
-    if (duration.inDays < 7) return context.l10n.timeDaysAgo(duration.inDays);
-
-    final localization = Localizations.localeOf(context).toString();
-    return DateFormat.yMd(localization).format(dateTime);
-  }
-  
   @override
   Widget build(BuildContext context) {
     final isAccepted = log.action == LogActionOutcome.accepted;
@@ -141,7 +130,7 @@ class _LogTile extends StatelessWidget {
            ),
            const SizedBox(height: 4),
            Text(
-             _getRelativeTime(context, log.timestamp),
+             log.timestamp.toRelativeString(context),
              style: TextStyle(fontSize: 10, color: context.colorScheme.onSurface.withValues(alpha: 0.5)),
            ),
          ],
