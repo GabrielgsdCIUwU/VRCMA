@@ -4,6 +4,7 @@ import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/user_details_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';

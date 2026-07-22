@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
+import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:vrcma/presentation/widgets/home/common/automation_log_ui_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
 class LogsPanel extends ConsumerWidget {

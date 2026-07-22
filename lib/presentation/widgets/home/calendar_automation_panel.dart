@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/calendar_automation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/adaptive_context_menu_wrapper.dart';
-import 'package:vrcma/presentation/widgets/home/common/calendar_enums_localization_extension.dart';
 import 'package:vrcma/presentation/widgets/home/dashboard_panel.dart';
 import 'package:vrcma/presentation/widgets/home/window/calendar_automation_editor_sheet.dart';
 

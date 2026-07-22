@@ -12,8 +12,8 @@ import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/repositories/i_social_repository.dart';
 import 'package:vrcma/domain/usecases/automation/process_friend_automations_use_case.dart';
 import 'package:vrcma/domain/usecases/social/categorize_friends_use_case.dart';
+import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/world_cache_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 
 part 'friends_provider.g.dart';
 

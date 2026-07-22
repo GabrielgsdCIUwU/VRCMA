@@ -7,10 +7,10 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_tag_extension.dart';
 
 class RoleAutomationEditorSheet extends ConsumerWidget {
   final RoleAutomation? automation;

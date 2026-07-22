@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/status_profile_editor_provider.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
-import 'package:vrcma/presentation/widgets/home/common/status_enums_localization_extension.dart';
 
 class StatusTemplateHelperWidget extends StatelessWidget {
   final TextEditingController controller;

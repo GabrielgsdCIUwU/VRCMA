@@ -7,8 +7,8 @@ import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/calendar_automation_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/calendar_enums_localization_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/localization_helpers.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 

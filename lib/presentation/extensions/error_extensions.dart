@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/domain/error/calendar_domain_exception.dart';
@@ -29,8 +29,8 @@ extension DomainExceptionLocalization on DomainException {
 
     return switch (this) {
       WorldIdValidationException(error: final err) => switch (err) {
-          WorldIdPatternValidationError() => l10n.errorWorldIdInvalid,
-        },
+        WorldIdPatternValidationError() => l10n.errorWorldIdInvalid,
+      },
       MessageValidationException(error: final err) => switch (err) {
           MessageEmptyValidationError() => l10n.errorMsgEmpty,
           MessageTooLongValidationError(actualLength: final act, maxLength: final max) =>
