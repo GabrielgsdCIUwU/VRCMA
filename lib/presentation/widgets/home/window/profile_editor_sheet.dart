@@ -9,7 +9,7 @@ import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
-import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
+import 'package:vrcma/presentation/widgets/home/common/show_generic_search_sheet.dart';
 import 'package:vrcma/presentation/state/profile_editor_provider.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
