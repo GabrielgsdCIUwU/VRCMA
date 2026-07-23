@@ -8,8 +8,10 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/theme/app_theme_color.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/app_settings_provider.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/locale_provider.dart';
+import 'package:vrcma/presentation/state/world_cache_provider.dart';
 
 extension LocaleDisplayName on Locale {
   String get nativeDisplayName {
@@ -198,6 +200,9 @@ class SettingsPanel extends ConsumerWidget {
   }
 
   void _handleClearCaches(BuildContext context, WidgetRef ref) {
+    ref.invalidate(worldNameProvider);
+    ref.invalidate(vrcResolvedImageProvider);
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.l10n.toastCacheCleared),
