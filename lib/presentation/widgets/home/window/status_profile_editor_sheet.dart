@@ -1,11 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/status_profile_editor_provider.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
+import 'package:vrcma/presentation/widgets/home/common/show_generic_search_sheet.dart';
 
 class StatusTemplateHelperWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -387,6 +391,8 @@ class _StatusProfileEditorSheetState
   }
 
   Widget _buildRuleCard(int index, StatusRule rule) {
+    final rolesAsync = ref.watch(allAvailableRolesProvider);
+    final displayValue = _getConditionValueDisplay(rule, rolesAsync.value);
     return Card(
       key: ValueKey("status_rule${rule.priority}_${rule.conditionType.name}"),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -402,7 +408,7 @@ class _StatusProfileEditorSheetState
           child: const Icon(Icons.drag_handle),
         ),
         title: Text(
-          "${rule.conditionType.toLocalizedString(context)} ${rule.operator.toLocalizedString(context)} '${rule.conditionValue}'",
+          "${rule.conditionType.toLocalizedString(context)} ${rule.operator.toLocalizedString(context)} '$displayValue'",
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
         ),
         subtitle: Column(
@@ -502,8 +508,15 @@ class _StatusProfileEditorSheetState
                     const SizedBox(height: 12),
                     TextField(
                       controller: valueController,
+                      readOnly: conditionType == ConditionType.friendPresent,
+                      onTap: conditionType == ConditionType.friendPresent
+                          ? () => _selectFriendRole(context, ref, valueController, setDialogState)
+                          : null,
                       decoration: InputDecoration(
                         labelText: context.l10n.inputComparisonValue,
+                        suffixIcon: conditionType == ConditionType.friendPresent
+                            ? const Icon(Icons.search)
+                            : null,
                         hintText: conditionType == ConditionType.batteryLevel || conditionType == ConditionType.population
                               ? (ruleOperator == RuleOperator.between
                                   ? context.l10n.statusRuleComparisonHintRange
@@ -585,6 +598,44 @@ class _StatusProfileEditorSheetState
         );
       },
     );
+  }
+
+  void _selectFriendRole(
+    BuildContext context,
+    WidgetRef ref,
+    TextEditingController controller,
+    StateSetter setDialogState,
+  ) async {
+    final roles = await ref.read(allAvailableRolesProvider.future);
+    if (!context.mounted) return;
+
+    showGenericSearchSheet<Role>(
+      context: context,
+      items: roles,
+      searchHint: context.l10n.searchLocalRolesHint,
+      searchableText: (role) => role.name,
+      itemBuilder: (role) => ListTile(
+        leading: Icon(Icons.label_outline, color: Theme.of(context).colorScheme.primary),
+        title: Text(role.name),
+      ),
+      onSelected: (role) {
+        if (role != null) {
+          setDialogState(() {
+            controller.text = role.id.toString();
+          });
+          Navigator.pop(context);
+        }
+      },
+    );
+  }
+
+  String _getConditionValueDisplay(StatusRule rule, List<Role>? roles) {
+    if (rule.conditionType == ConditionType.friendPresent && roles != null) {
+      final roleId = int.tryParse(rule.conditionValue);
+      final role = roles.firstWhereOrNull((r) => r.id == roleId);
+      if (role != null) return role.name;
+    }
+    return rule.conditionValue;
   }
 }
 
