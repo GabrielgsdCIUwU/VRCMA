@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/app_settings_provider.dart';
@@ -17,6 +18,7 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<Scaffol
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   
   //! Support SQLite on Desktop else DATABASE DOESN'T LOAD
   if (Platform.isWindows || Platform.isLinux) {
