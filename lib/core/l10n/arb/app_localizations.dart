@@ -1999,6 +1999,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{minutes}m'**
   String calDurationMinutesOnly(int minutes);
+
+  /// Label for selecting the VRChat platforms where the event is available (e.g. PC, Android, iOS). Displayed in the event creation/edit form.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Platforms'**
+  String get calFieldLabelPlatform;
+
+  /// Label for the initial number used by the incremental event counter. For example, if set to 5, the first generated event title will use #5.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Value'**
+  String get calFieldLabelIncrementalStart;
+
+  /// Label for the increment applied between automatically generated sequence numbers. For example, a step of 2 produces #1, #3, #5.
+  ///
+  /// In en, this message translates to:
+  /// **'Step Value'**
+  String get calFieldLabelIncrementalStep;
+
+  /// Toggle that enables automatic numbering of recurring events using an incremental counter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Incremental Counter'**
+  String get calFieldLabelIncrementalEnable;
+
+  /// Helper text explaining that recurring events can automatically append incrementing numbers to their titles, such as 'Event #1' and 'Event #2'.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-increment sequence numbers (e.g. Event #1, Event #2)'**
+  String get calFieldLabelIncrementalDesc;
+
+  /// Section header for advanced timing settings that control when users can join or access a VRChat event instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Access Tolerances'**
+  String get calSectionTolerances;
+
+  /// Helper text for an option that prevents additional users from joining a VRChat instance once its configured capacity has been reached.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevent instance overflow when limits are reached'**
+  String get calFieldLabelOverflowDesc;
+
+  /// Short label for the number of minutes before the scheduled start time that event hosts are allowed to join the VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Access (min)'**
+  String get calFieldLabelHostEarlyShort;
+
+  /// Short label for the number of minutes before the scheduled start time that members or guests are allowed to join the VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Access (min)'**
+  String get calFieldLabelGuestEarlyShort;
+
+  /// Short label for the number of minutes after the scheduled end time before the VRChat instance is considered closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Delay (min)'**
+  String get calFieldLabelCloseDelayShort;
 }
 
 class _AppLocalizationsDelegate

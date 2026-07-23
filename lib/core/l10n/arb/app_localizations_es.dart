@@ -1058,4 +1058,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String calDurationMinutesOnly(int minutes) {
     return '${minutes}m';
   }
+
+  @override
+  String get calFieldLabelPlatform => 'Plataformas del evento';
+
+  @override
+  String get calFieldLabelIncrementalStart => 'Valor inicial';
+
+  @override
+  String get calFieldLabelIncrementalStep => 'Incremento';
+
+  @override
+  String get calFieldLabelIncrementalEnable => 'Activar contador incremental';
+
+  @override
+  String get calFieldLabelIncrementalDesc =>
+      'Incrementa automáticamente la numeración (p. ej. Evento #1, Evento #2)';
+
+  @override
+  String get calSectionTolerances => 'Tolerancias avanzadas de acceso';
+
+  @override
+  String get calFieldLabelOverflowDesc =>
+      'Evita que la instancia se desborde al alcanzar el límite';
+
+  @override
+  String get calFieldLabelHostEarlyShort => 'Acceso host (min)';
+
+  @override
+  String get calFieldLabelGuestEarlyShort => 'Acceso miembros (min)';
+
+  @override
+  String get calFieldLabelCloseDelayShort => 'Retraso de cierre (min)';
 }

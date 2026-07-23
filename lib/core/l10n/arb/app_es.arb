@@ -392,5 +392,15 @@
   "calFieldLabelEndTime": "Hora de finalización",
   "calFieldLabelDaysOfWeek": "Días de la semana",
   "calDurationHoursMinutes": "{hours}h {minutes}m",
-  "calDurationMinutesOnly": "{minutes}m"
+  "calDurationMinutesOnly": "{minutes}m",
+  "calFieldLabelPlatform": "Plataformas del evento",
+  "calFieldLabelIncrementalStart": "Valor inicial",
+  "calFieldLabelIncrementalStep": "Incremento",
+  "calFieldLabelIncrementalEnable": "Activar contador incremental",
+  "calFieldLabelIncrementalDesc": "Incrementa automáticamente la numeración (p. ej. Evento #1, Evento #2)",
+  "calSectionTolerances": "Tolerancias avanzadas de acceso",
+  "calFieldLabelOverflowDesc": "Evita que la instancia se desborde al alcanzar el límite",
+  "calFieldLabelHostEarlyShort": "Acceso host (min)",
+  "calFieldLabelGuestEarlyShort": "Acceso miembros (min)",
+  "calFieldLabelCloseDelayShort": "Retraso de cierre (min)"
 }

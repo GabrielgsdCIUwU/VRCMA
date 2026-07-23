@@ -1761,5 +1761,55 @@
         "example": "45"
       }
     }
+  },
+
+  "calFieldLabelPlatform": "Event Platforms",
+  "@calFieldLabelPlatform": {
+    "description": "Label for selecting the VRChat platforms where the event is available (e.g. PC, Android, iOS). Displayed in the event creation/edit form."
+  },
+
+  "calFieldLabelIncrementalStart": "Start Value",
+  "@calFieldLabelIncrementalStart": {
+    "description": "Label for the initial number used by the incremental event counter. For example, if set to 5, the first generated event title will use #5."
+  },
+
+  "calFieldLabelIncrementalStep": "Step Value",
+  "@calFieldLabelIncrementalStep": {
+    "description": "Label for the increment applied between automatically generated sequence numbers. For example, a step of 2 produces #1, #3, #5."
+  },
+
+  "calFieldLabelIncrementalEnable": "Enable Incremental Counter",
+  "@calFieldLabelIncrementalEnable": {
+    "description": "Toggle that enables automatic numbering of recurring events using an incremental counter."
+  },
+
+  "calFieldLabelIncrementalDesc": "Auto-increment sequence numbers (e.g. Event #1, Event #2)",
+  "@calFieldLabelIncrementalDesc": {
+    "description": "Helper text explaining that recurring events can automatically append incrementing numbers to their titles, such as 'Event #1' and 'Event #2'."
+  },
+
+  "calSectionTolerances": "Advanced Access Tolerances",
+  "@calSectionTolerances": {
+    "description": "Section header for advanced timing settings that control when users can join or access a VRChat event instance."
+  },
+
+  "calFieldLabelOverflowDesc": "Prevent instance overflow when limits are reached",
+  "@calFieldLabelOverflowDesc": {
+    "description": "Helper text for an option that prevents additional users from joining a VRChat instance once its configured capacity has been reached."
+  },
+
+  "calFieldLabelHostEarlyShort": "Host Access (min)",
+  "@calFieldLabelHostEarlyShort": {
+    "description": "Short label for the number of minutes before the scheduled start time that event hosts are allowed to join the VRChat instance."
+  },
+
+  "calFieldLabelGuestEarlyShort": "Member Access (min)",
+  "@calFieldLabelGuestEarlyShort": {
+    "description": "Short label for the number of minutes before the scheduled start time that members or guests are allowed to join the VRChat instance."
+  },
+
+  "calFieldLabelCloseDelayShort": "Close Delay (min)",
+  "@calFieldLabelCloseDelayShort": {
+    "description": "Short label for the number of minutes after the scheduled end time before the VRChat instance is considered closed."
   }
 }
