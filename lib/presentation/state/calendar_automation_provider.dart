@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
@@ -78,6 +81,20 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
   void updateName(String name) => state = state.copyWith(name: name);
   
   void updateGroupId(String groupId) => state = state.copyWith(groupId: groupId);
+  
+  Future<bool> validateAndSetGroup(String groupId) async {
+    final authUser = await ref.read(authStateProvider.future);
+    if (authUser == null) return false;
+    
+    final validateUseCase = await ref.read(validateGroupPermissionsUseCaseProvider.future);
+    final hasPermission = await validateUseCase.execute(userId: authUser.id, groupId: groupId);
+    
+    if (hasPermission) {
+      updateGroupId(groupId);
+      return true;
+    }
+    return false;
+  }
   
   void updateTitleTemplate(String title) => state = state.copyWith(titleTemplate: title);
   
@@ -171,26 +188,23 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
 }
 
 @riverpod
-Future<List<VrcGroup>> permittedGroups(Ref ref) async {
+Future<List<VrcGroup>> userGroups(Ref ref) async {
+  final keepAliveLink = ref.keepAlive();
+  Timer? timer;
+
+  ref.onDispose(() => timer?.cancel());
+  ref.onCancel(() {
+    timer = Timer(const Duration(minutes: 5), () => keepAliveLink.close());
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
+
   final authUser = await ref.watch(authStateProvider.future);
   if (authUser == null) return [];
   
   final socialRepo = await ref.watch(socialRepositoryProvider.future);
   final groupsResult = await socialRepo.getUserGroups(authUser.id);
   
-  final allGroups = groupsResult.fold((l) => <VrcGroup>[], (r) => r);
-  if (allGroups.isEmpty) return [];
-  
-  final validateUseCase = await ref.watch(validateGroupPermissionsUseCaseProvider.future);
-  final permittedGroups = <VrcGroup>[];
-  
-  final pool = Pool(3);
-  
-  await Future.wait(allGroups.map((group) => pool.withResource(() async {
-    final hasPermission = await validateUseCase.execute(userId: authUser.id, groupId: group.id);
-    if (hasPermission) {
-      permittedGroups.add(group);
-    }
-  })));
-  return permittedGroups;
+  return groupsResult.fold((l) => <VrcGroup>[], (r) => r);
 }
