@@ -29,7 +29,7 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
       for (final role in groupRoles) {
         if (memberRoleIds.contains(role.id)) {
           final permissions = role.permissions;
-          if (permissions == null || permissions.isEmpty) return false;
+          if (permissions == null || permissions.isEmpty) continue;
 
           final hasRequiredPermission = permissions.any((permission) =>
               permission == vrchat.GroupPermissions.group_calendar_manage ||
