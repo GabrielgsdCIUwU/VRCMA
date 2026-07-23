@@ -415,5 +415,7 @@
   "calToleranceMemberTitle": "Acceso de miembros",
   "calToleranceMemberDesc": "Define cuántos minutos antes del inicio podrán unirse los miembros del grupo.",
   "calToleranceCloseTitle": "Retraso de cierre",
-  "calToleranceCloseDesc": "Tiempo de espera tras la hora de finalización antes de cerrar la instancia."
+  "calToleranceCloseDesc": "Tiempo de espera tras la hora de finalización antes de cerrar la instancia.",
+  "calGroupSelectHint": "Selecciona un grupo de VRChat...",
+  "calGroupNoPerms": "No se encontraron grupos en los que tengas permisos para gestionar el calendario."
 }

@@ -2131,6 +2131,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keeps the world instance open for a short time after the scheduled end before it is closed.'**
   String get calToleranceCloseDesc;
+
+  /// Placeholder shown in the group selection dropdown before a VRChat group has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a VRChat Group...'**
+  String get calGroupSelectHint;
+
+  /// Message displayed when the current user does not belong to any VRChat group where they have permission to manage the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups with calendar management permissions were found.'**
+  String get calGroupNoPerms;
 }
 
 class _AppLocalizationsDelegate

@@ -1871,5 +1871,15 @@
   "calToleranceCloseDesc": "Keeps the world instance open for a short time after the scheduled end before it is closed.",
   "@calToleranceCloseDesc": {
     "description": "Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed."
+  },
+
+  "calGroupSelectHint": "Select a VRChat Group...",
+  "@calGroupSelectHint": {
+    "description": "Placeholder shown in the group selection dropdown before a VRChat group has been selected."
+  },
+
+  "calGroupNoPerms": "No groups with calendar management permissions were found.",
+  "@calGroupNoPerms": {
+    "description": "Message displayed when the current user does not belong to any VRChat group where they have permission to manage the group's calendar."
   }
 }

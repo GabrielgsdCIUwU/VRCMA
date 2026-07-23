@@ -1125,4 +1125,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get calToleranceCloseDesc =>
       'Keeps the world instance open for a short time after the scheduled end before it is closed.';
+
+  @override
+  String get calGroupSelectHint => 'Select a VRChat Group...';
+
+  @override
+  String get calGroupNoPerms =>
+      'No groups with calendar management permissions were found.';
 }
