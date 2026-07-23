@@ -123,6 +123,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
     } else {
       allStatePlatforms.add(platform);
     }
+    state = state.copyWith(platforms: allStatePlatforms);
   }
   
   void addLanguage(String lang) {
