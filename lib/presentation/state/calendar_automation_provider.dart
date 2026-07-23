@@ -76,7 +76,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
   
   void updateTitleTemplate(String title) => state = state.copyWith(titleTemplate: title);
   
-  void updateDescriptionTemplate(String? desc) => state.copyWith(descriptionTemplate: () => desc);
+  void updateDescriptionTemplate(String? desc) => state = state.copyWith(descriptionTemplate: () => desc);
   
   void updateCategory(GroupEventCategory cat) => state = state.copyWith(category: cat);
   
