@@ -1090,4 +1090,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calFieldLabelCloseDelayShort => 'Retraso de cierre (min)';
+
+  @override
+  String get calLiveCardPreview => 'Vista previa de la tarjeta en vivo';
+
+  @override
+  String get calNoTitleTemplate => 'Sin título';
+
+  @override
+  String get calNoDescriptionTemplate => 'Sin descripción';
+
+  @override
+  String get calPlatformDesc =>
+      'Determina qué plataformas de VRChat serán compatibles oficialmente con este evento.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Cualquier usuario de VRChat podrá ver y unirse a este evento.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Solo los miembros aprobados del grupo podrán ver y acceder a este evento.';
+
+  @override
+  String get calToleranceHostTitle => 'Acceso de anfitriones';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Permite que los anfitriones entren antes a la instancia del mundo para prepararla.';
+
+  @override
+  String get calToleranceMemberTitle => 'Acceso de miembros';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Define cuántos minutos antes del inicio podrán unirse los miembros del grupo.';
+
+  @override
+  String get calToleranceCloseTitle => 'Retraso de cierre';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Tiempo de espera tras la hora de finalización antes de cerrar la instancia.';
 }

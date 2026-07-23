@@ -1811,5 +1811,65 @@
   "calFieldLabelCloseDelayShort": "Close Delay (min)",
   "@calFieldLabelCloseDelayShort": {
     "description": "Short label for the number of minutes after the scheduled end time before the VRChat instance is considered closed."
+  },
+
+  "calLiveCardPreview": "Live Card Preview",
+  "@calLiveCardPreview": {
+    "description": "Title shown above the preview of the VRChat live event card while the user is configuring an event. This is only a preview and not the actual published card."
+  },
+
+  "calNoTitleTemplate": "Untitled Event",
+  "@calNoTitleTemplate": {
+    "description": "Placeholder displayed in the live card preview when the event title has not been entered yet."
+  },
+
+  "calNoDescriptionTemplate": "No description provided",
+  "@calNoDescriptionTemplate": {
+    "description": "Placeholder displayed in the live card preview when the event description is empty."
+  },
+
+  "calPlatformDesc": "Choose which VRChat platforms are officially supported for this event.",
+  "@calPlatformDesc": {
+    "description": "Help text below the platform selector. Refers to supported VRChat platforms such as Windows or Android."
+  },
+
+  "calAccessPublicDesc": "Anyone on VRChat can view and join this event.",
+  "@calAccessPublicDesc": {
+    "description": "Help text explaining the Public visibility option for a group event."
+  },
+
+  "calAccessGroupDesc": "Only approved group members can view and join this event.",
+  "@calAccessGroupDesc": {
+    "description": "Help text explaining the Group-only visibility option. The event is restricted to approved members of the VRChat group."
+  },
+
+  "calToleranceHostTitle": "Host Access",
+  "@calToleranceHostTitle": {
+    "description": "Section title for the setting that controls early access for event hosts."
+  },
+
+  "calToleranceHostDesc": "Allows hosts to join the world instance before the event starts so they can get everything ready.",
+  "@calToleranceHostDesc": {
+    "description": "Help text explaining that event hosts may enter the VRChat world instance early for setup before attendees can join."
+  },
+
+  "calToleranceMemberTitle": "Member Access",
+  "@calToleranceMemberTitle": {
+    "description": "Section title for the setting that controls early access for regular group members."
+  },
+
+  "calToleranceMemberDesc": "Choose how many minutes before the scheduled start group members can join the instance.",
+  "@calToleranceMemberDesc": {
+    "description": "Help text for the early join window available to regular group members before the event begins."
+  },
+
+  "calToleranceCloseTitle": "Instance Close Delay",
+  "@calToleranceCloseTitle": {
+    "description": "Section title for the setting that controls how long the world instance remains open after the event ends."
+  },
+
+  "calToleranceCloseDesc": "Keeps the world instance open for a short time after the scheduled end before it is closed.",
+  "@calToleranceCloseDesc": {
+    "description": "Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed."
   }
 }

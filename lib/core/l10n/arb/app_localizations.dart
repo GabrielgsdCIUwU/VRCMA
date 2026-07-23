@@ -2059,6 +2059,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close Delay (min)'**
   String get calFieldLabelCloseDelayShort;
+
+  /// Title shown above the preview of the VRChat live event card while the user is configuring an event. This is only a preview and not the actual published card.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Card Preview'**
+  String get calLiveCardPreview;
+
+  /// Placeholder displayed in the live card preview when the event title has not been entered yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Event'**
+  String get calNoTitleTemplate;
+
+  /// Placeholder displayed in the live card preview when the event description is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No description provided'**
+  String get calNoDescriptionTemplate;
+
+  /// Help text below the platform selector. Refers to supported VRChat platforms such as Windows or Android.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which VRChat platforms are officially supported for this event.'**
+  String get calPlatformDesc;
+
+  /// Help text explaining the Public visibility option for a group event.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on VRChat can view and join this event.'**
+  String get calAccessPublicDesc;
+
+  /// Help text explaining the Group-only visibility option. The event is restricted to approved members of the VRChat group.
+  ///
+  /// In en, this message translates to:
+  /// **'Only approved group members can view and join this event.'**
+  String get calAccessGroupDesc;
+
+  /// Section title for the setting that controls early access for event hosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Access'**
+  String get calToleranceHostTitle;
+
+  /// Help text explaining that event hosts may enter the VRChat world instance early for setup before attendees can join.
+  ///
+  /// In en, this message translates to:
+  /// **'Allows hosts to join the world instance before the event starts so they can get everything ready.'**
+  String get calToleranceHostDesc;
+
+  /// Section title for the setting that controls early access for regular group members.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Access'**
+  String get calToleranceMemberTitle;
+
+  /// Help text for the early join window available to regular group members before the event begins.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many minutes before the scheduled start group members can join the instance.'**
+  String get calToleranceMemberDesc;
+
+  /// Section title for the setting that controls how long the world instance remains open after the event ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance Close Delay'**
+  String get calToleranceCloseTitle;
+
+  /// Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the world instance open for a short time after the scheduled end before it is closed.'**
+  String get calToleranceCloseDesc;
 }
 
 class _AppLocalizationsDelegate

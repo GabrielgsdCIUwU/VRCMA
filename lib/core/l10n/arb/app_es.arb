@@ -402,5 +402,18 @@
   "calFieldLabelOverflowDesc": "Evita que la instancia se desborde al alcanzar el límite",
   "calFieldLabelHostEarlyShort": "Acceso host (min)",
   "calFieldLabelGuestEarlyShort": "Acceso miembros (min)",
-  "calFieldLabelCloseDelayShort": "Retraso de cierre (min)"
+  "calFieldLabelCloseDelayShort": "Retraso de cierre (min)",
+
+  "calLiveCardPreview": "Vista previa de la tarjeta en vivo",
+  "calNoTitleTemplate": "Sin título",
+  "calNoDescriptionTemplate": "Sin descripción",
+  "calPlatformDesc": "Determina qué plataformas de VRChat serán compatibles oficialmente con este evento.",
+  "calAccessPublicDesc": "Cualquier usuario de VRChat podrá ver y unirse a este evento.",
+  "calAccessGroupDesc": "Solo los miembros aprobados del grupo podrán ver y acceder a este evento.",
+  "calToleranceHostTitle": "Acceso de anfitriones",
+  "calToleranceHostDesc": "Permite que los anfitriones entren antes a la instancia del mundo para prepararla.",
+  "calToleranceMemberTitle": "Acceso de miembros",
+  "calToleranceMemberDesc": "Define cuántos minutos antes del inicio podrán unirse los miembros del grupo.",
+  "calToleranceCloseTitle": "Retraso de cierre",
+  "calToleranceCloseDesc": "Tiempo de espera tras la hora de finalización antes de cerrar la instancia."
 }

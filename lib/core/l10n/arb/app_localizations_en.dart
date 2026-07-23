@@ -1083,4 +1083,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calFieldLabelCloseDelayShort => 'Close Delay (min)';
+
+  @override
+  String get calLiveCardPreview => 'Live Card Preview';
+
+  @override
+  String get calNoTitleTemplate => 'Untitled Event';
+
+  @override
+  String get calNoDescriptionTemplate => 'No description provided';
+
+  @override
+  String get calPlatformDesc =>
+      'Choose which VRChat platforms are officially supported for this event.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Anyone on VRChat can view and join this event.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Only approved group members can view and join this event.';
+
+  @override
+  String get calToleranceHostTitle => 'Host Access';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Allows hosts to join the world instance before the event starts so they can get everything ready.';
+
+  @override
+  String get calToleranceMemberTitle => 'Member Access';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Choose how many minutes before the scheduled start group members can join the instance.';
+
+  @override
+  String get calToleranceCloseTitle => 'Instance Close Delay';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Keeps the world instance open for a short time after the scheduled end before it is closed.';
 }
