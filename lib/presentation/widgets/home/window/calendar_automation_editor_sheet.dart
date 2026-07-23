@@ -4,6 +4,7 @@ import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
+import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
@@ -187,10 +188,182 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
         const SizedBox(height: 16),
         _buildRecurrenceSelectorCard(state, notifier),
         const SizedBox(height: 24),
+        _buildSectionHeader(context.l10n.calSectionIncremental),
+        const SizedBox(height: 16),
+        _buildIncrementalConfigCard(state, notifier),
+        const SizedBox(height: 24),
+        _buildSectionHeader(context.l10n.calSectionTolerances),
+        const SizedBox(height: 16),
+        _buildTolerancesCard(state, notifier),
+        const SizedBox(height: 24),
         _buildSectionHeader(context.l10n.calSectionVrcMetadata),
         const SizedBox(height: 16),
         _buildVrcMetadataCard(state, notifier),
       ],
+    );
+  }
+
+  Widget _buildIncrementalConfigCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    final config = state.incrementalConfig;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(context.l10n.calFieldLabelIncrementalEnable, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              subtitle: Text(context.l10n.calFieldLabelIncrementalDesc, style: const TextStyle(fontSize: 11)),
+              value: config.isEnabled,
+              onChanged: (val) {
+                notifier.updateIncrementalConfig(IncrementalConfig(
+                  isEnabled: val,
+                  startValue: config.startValue,
+                  stepValue: config.stepValue,
+                  currentValue: config.currentValue,
+                ));
+              },
+            ),
+            if (config.isEnabled) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      initialValue: config.startValue.toString(),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.calFieldLabelIncrementalStart,
+                        isDense: true,
+                      ),
+                      onChanged: (val) {
+                        final parsed = int.tryParse(val) ?? 1;
+                        notifier.updateIncrementalConfig(IncrementalConfig(
+                          isEnabled: true,
+                          startValue: parsed,
+                          stepValue: config.stepValue,
+                          currentValue: config.currentValue,
+                        ));
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      initialValue: config.stepValue.toString(),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.calFieldLabelIncrementalStep,
+                        isDense: true,
+                      ),
+                      onChanged: (val) {
+                        final parsed = int.tryParse(val) ?? 1;
+                        notifier.updateIncrementalConfig(IncrementalConfig(
+                          isEnabled: true,
+                          startValue: config.startValue,
+                          stepValue: parsed,
+                          currentValue: config.currentValue,
+                        ));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTolerancesCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(context.l10n.calFieldLabelOverflow, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              subtitle: Text(context.l10n.calFieldLabelOverflowDesc, style: const TextStyle(fontSize: 11)),
+              value: state.usesInstanceOverflow,
+              onChanged: (_) => notifier.toggleInstanceOverflow(),
+            ),
+            const Divider(),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: state.hostEarlyJoinMinutes?.toString() ?? '',
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.calFieldLabelHostEarlyShort,
+                      isDense: true,
+                    ),
+                    onChanged: (val) {
+                      notifier.updateTolerances(
+                        hostMinutes: int.tryParse(val),
+                        guestMinutes: state.guestEarlyJoinMinutes,
+                        closeMinutes: state.closeInstanceAfterEndMinutes,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextFormField(
+                    initialValue: state.guestEarlyJoinMinutes?.toString() ?? '',
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.calFieldLabelGuestEarlyShort,
+                      isDense: true,
+                    ),
+                    onChanged: (val) {
+                      notifier.updateTolerances(
+                        hostMinutes: state.hostEarlyJoinMinutes,
+                        guestMinutes: int.tryParse(val),
+                        closeMinutes: state.closeInstanceAfterEndMinutes,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextFormField(
+                    initialValue: state.closeInstanceAfterEndMinutes?.toString() ?? '',
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.calFieldLabelCloseDelayShort,
+                      isDense: true,
+                    ),
+                    onChanged: (val) {
+                      notifier.updateTolerances(
+                        hostMinutes: state.hostEarlyJoinMinutes,
+                        guestMinutes: state.guestEarlyJoinMinutes,
+                        closeMinutes: int.tryParse(val),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -330,6 +503,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
         side: BorderSide(color: context.colorScheme.outlineVariant),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DropdownButtonFormField<GroupEventCategory>(
             initialValue: state.category,
@@ -357,7 +531,37 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             onChanged: (val) {
               if (val != null) notifier.updateAccessType(val);
             },
-          )
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.calFieldLabelPlatform.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurfaceVariant,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: CalendarEventPlatform.values.map((platform) {
+                    final isSelected = state.platforms.contains(platform);
+                    return FilterChip(
+                      label: Text(platform.name.toUpperCase(), style: const TextStyle(fontSize: 11)),
+                      selected: isSelected,
+                      onSelected: (_) => notifier.togglePlatform(platform),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
