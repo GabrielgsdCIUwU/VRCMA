@@ -89,39 +89,22 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ],
         ),
         body: ResponsiveLayout(
-          mobile: _buildFormContent(state, notifier),
-          desktop: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 5,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: _buildLeftPane(state, notifier),
-                ),
-              ),
-              const VerticalDivider(width: 1),
-              Expanded(
-                flex: 6,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: _buildRightPane(state, notifier),
-                ),
-              ),
-            ],
-          ),
+          mobile: _buildFormContentMobile(state, notifier),
+          desktop: _buildFormContentDesktop(state, notifier),
         ),
       ),
     );
   }
 
-  Widget _buildFormContent(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+  Widget _buildFormContentMobile(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildLeftPane(state, notifier),
+          const SizedBox(height: 16),
+          _LiveTemplatePreview(state: state),
           const Divider(height: 32),
           _buildRightPane(state, notifier),
         ],
@@ -129,7 +112,39 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     );
   }
 
+  Widget _buildFormContentDesktop(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 5,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLeftPane(state, notifier),
+                const SizedBox(height: 24),
+                _LiveTemplatePreview(state: state),
+              ],
+            ),
+          ),
+        ),
+        const VerticalDivider(width: 1),
+        Expanded(
+          flex: 6,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: _buildRightPane(state, notifier),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildLeftPane(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    final bool isIncrementalEnabled = state.incrementalConfig.isEnabled;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -162,6 +177,10 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ),
           onChanged: notifier.updateTitleTemplate,
         ),
+        if (isIncrementalEnabled) ...[
+          const SizedBox(height: 6),
+          _buildInsertPlaceholderChip(_titleController, notifier.updateTitleTemplate),
+        ],
         const SizedBox(height: 16),
         TextField(
           controller: _descriptionController,
@@ -171,8 +190,36 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             prefixIcon: const Icon(Icons.description_outlined),
           ),
           onChanged: (val) => notifier.updateDescriptionTemplate(val.isEmpty ? null : val),
-        )
+        ),
+        if (isIncrementalEnabled) ...[
+          const SizedBox(height: 6),
+          _buildInsertPlaceholderChip(_descriptionController, (val) => notifier.updateDescriptionTemplate(val.isEmpty ? null : val)),
+        ],
       ],
+    );
+  }
+
+  Widget _buildInsertPlaceholderChip(TextEditingController controller, ValueChanged<String> onChanged) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ActionChip(
+        avatar: const Icon(Icons.add, size: 14),
+        label: const Text("{{incremental}}", style: TextStyle(fontSize: 11, fontFamily: 'monospace')),
+        onPressed: () {
+          final text = controller.text;
+          final selection = controller.selection;
+          const tag = "{{incremental}}";
+
+          if (selection.isValid && selection.start >= 0) {
+            final newText = text.replaceRange(selection.start, selection.end, tag);
+            controller.text = newText;
+            controller.selection = TextSelection.collapsed(offset: selection.start + tag.length);
+          } else {
+            controller.text = text + tag;
+          }
+          onChanged(controller.text);
+        },
+      ),
     );
   }
 
@@ -249,7 +296,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
                           isEnabled: true,
                           startValue: parsed,
                           stepValue: config.stepValue,
-                          currentValue: config.currentValue,
+                          currentValue: parsed,
                         ));
                       },
                     ),
@@ -361,9 +408,48 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            _buildExplanationRow(
+                Icons.vpn_key_outlined,
+                context.l10n.calToleranceHostTitle,
+                context.l10n.calToleranceHostDesc
+            ),
+            const SizedBox(height: 6),
+            _buildExplanationRow(
+                Icons.people_outline,
+                context.l10n.calToleranceMemberTitle,
+                context.l10n.calToleranceMemberDesc
+            ),
+            const SizedBox(height: 6),
+            _buildExplanationRow(
+                Icons.hourglass_empty_outlined,
+                context.l10n.calToleranceCloseTitle,
+                context.l10n.calToleranceCloseDesc
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildExplanationRow(IconData icon, String title, String explanation) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 16, color: context.colorScheme.primary),
+        const SizedBox(width: 8),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+              children: [
+                TextSpan(text: "$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: explanation, style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -420,7 +506,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(12),
+        borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: context.colorScheme.outlineVariant),
       ),
       child: Padding(
@@ -496,6 +582,10 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
   }
 
   Widget _buildVrcMetadataCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    final accessIcon = state.accessType == GroupEventAccessType.public
+        ? Icons.lock_open_outlined
+        : Icons.lock_outlined;
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -520,8 +610,14 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ),
           const Divider(height: 1),
           DropdownButtonFormField<GroupEventAccessType>(
+            key: ValueKey("access_type_${state.accessType.name}"),
             initialValue: state.accessType,
-            decoration: const InputDecoration(prefixIcon: Icon(Icons.lock_open)),
+            decoration: InputDecoration(
+              prefixIcon: Icon(accessIcon, color: context.colorScheme.primary),
+              helperText: state.accessType == GroupEventAccessType.public
+                  ? context.l10n.calAccessPublicDesc
+                  : context.l10n.calAccessGroupDesc,
+            ),
             items: GroupEventAccessType.values.map((access) {
               return DropdownMenuItem(
                 value: access,
@@ -532,6 +628,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
               if (val != null) notifier.updateAccessType(val);
             },
           ),
+          const SizedBox(height: 12),
           const Divider(height: 1),
           Padding(
             padding: const EdgeInsets.all(16),
@@ -547,12 +644,17 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
                     letterSpacing: 1.0,
                   ),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  context.l10n.calPlatformDesc,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11, color: context.colorScheme.onSurfaceVariant),
+                ),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   children: CalendarEventPlatform.values.map((platform) {
                     final isSelected = state.platforms.contains(platform);
-                    return FilterChip(
+                    return ChoiceChip(
                       label: Text(platform.name.toUpperCase(), style: const TextStyle(fontSize: 11)),
                       selected: isSelected,
                       onSelected: (_) => notifier.togglePlatform(platform),
@@ -594,16 +696,14 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
       }
     }
   }
-  String _formatDuration(BuildContext context, int minutes) {
-    final hours = minutes ~/ 60;
-    final remainingMinutes = minutes % 60;
 
-    if (hours > 0 && remainingMinutes > 0) {
-      return context.l10n.calDurationHoursMinutes(hours, remainingMinutes);
-    } else if (hours > 0) {
-      return context.l10n.timeHoursAgo(hours).replaceAll(RegExp(r'[^0-9a-zA-Z\s]'), '');
+  String _formatDuration(BuildContext context, int totalMinutes) {
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    if (hours > 0) {
+      return context.l10n.calDurationHoursMinutes(hours, minutes);
     }
-    return context.l10n.calDurationMinutesOnly(remainingMinutes);
+    return context.l10n.calDurationMinutesOnly(minutes);
   }
 
   TimeOfDay _calculateEndTime(String startTimeStr, int durationMinutes) {
@@ -651,5 +751,120 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
       )
     );
     return result ?? false;
+  }
+}
+
+class _LiveTemplatePreview extends StatelessWidget {
+  final CalendarAutomationRule state;
+
+  const _LiveTemplatePreview({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isIncrementalActive = state.incrementalConfig.isEnabled;
+    final String stepValueStr = isIncrementalActive
+        ? state.incrementalConfig.currentValue.toString()
+        : '{{incremental}}';
+
+    final String previewTitle = state.titleTemplate.isEmpty
+        ? context.l10n.calNoTitleTemplate
+        : state.titleTemplate.replaceAll('{{incremental}}', stepValueStr);
+
+    final String previewDesc = state.descriptionTemplate == null || state.descriptionTemplate!.isEmpty
+        ? context.l10n.calNoDescriptionTemplate
+        : state.descriptionTemplate!.replaceAll('{{incremental}}', stepValueStr);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.calLiveCardPreview.toUpperCase(),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: context.colorScheme.secondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          elevation: 0,
+          color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: context.colorScheme.secondary.withValues(alpha: 0.3), width: 1.5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.secondary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        state.category.toLocalizedString(context).toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.secondary
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: state.accessType == GroupEventAccessType.public
+                            ? context.vrcColors.success.withValues(alpha: 0.1)
+                            : context.vrcColors.statusBusy.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        state.accessType.toLocalizedString(context).toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: state.accessType == GroupEventAccessType.public
+                              ? context.vrcColors.success
+                              : context.vrcColors.statusBusy,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  previewTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  previewDesc,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colorScheme.onSurfaceVariant),
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Divider(height: 24),
+                Row(
+                  children: [
+                    Icon(Icons.schedule, size: 14, color: context.colorScheme.outline),
+                    const SizedBox(width: 6),
+                    Text(
+                      "${state.schedule.startTimeOfDay} • ${state.recurrence.type.toLocalizedString(context)}",
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.colorScheme.outline),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
