@@ -2143,6 +2143,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No groups with calendar management permissions were found.'**
   String get calGroupNoPerms;
+
+  /// Status message displayed while verifying whether the current user has permission to manage the selected VRChat group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking permissions...'**
+  String get calGroupValidating;
+
+  /// Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to manage this group\'s calendar.'**
+  String get calGroupPermissionDenied;
 }
 
 class _AppLocalizationsDelegate

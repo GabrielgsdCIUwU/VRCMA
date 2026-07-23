@@ -1139,4 +1139,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get calGroupNoPerms =>
       'No se encontraron grupos en los que tengas permisos para gestionar el calendario.';
+
+  @override
+  String get calGroupValidating => 'Comprobando permisos...';
+
+  @override
+  String get calGroupPermissionDenied =>
+      'No tienes permisos para gestionar el calendario de este grupo.';
 }

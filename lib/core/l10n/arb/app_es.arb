@@ -417,5 +417,7 @@
   "calToleranceCloseTitle": "Retraso de cierre",
   "calToleranceCloseDesc": "Tiempo de espera tras la hora de finalización antes de cerrar la instancia.",
   "calGroupSelectHint": "Selecciona un grupo de VRChat...",
-  "calGroupNoPerms": "No se encontraron grupos en los que tengas permisos para gestionar el calendario."
+  "calGroupNoPerms": "No se encontraron grupos en los que tengas permisos para gestionar el calendario.",
+  "calGroupValidating": "Comprobando permisos...",
+  "calGroupPermissionDenied": "No tienes permisos para gestionar el calendario de este grupo."
 }
