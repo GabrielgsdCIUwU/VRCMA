@@ -1,6 +1,9 @@
+import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
@@ -8,6 +11,8 @@ import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/entities/social/vrc_group.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
 
 
 part 'calendar_automation_provider.g.dart';
@@ -163,4 +168,29 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
 
     await ref.read(calendarAutomationListProvider.notifier).save(synchronizedRule);
   }
+}
+
+@riverpod
+Future<List<VrcGroup>> permittedGroups(Ref ref) async {
+  final authUser = await ref.watch(authStateProvider.future);
+  if (authUser == null) return [];
+  
+  final socialRepo = await ref.watch(socialRepositoryProvider.future);
+  final groupsResult = await socialRepo.getUserGroups(authUser.id);
+  
+  final allGroups = groupsResult.fold((l) => <VrcGroup>[], (r) => r);
+  if (allGroups.isEmpty) return [];
+  
+  final validateUseCase = await ref.watch(validateGroupPermissionsUseCaseProvider.future);
+  final permittedGroups = <VrcGroup>[];
+  
+  final pool = Pool(3);
+  
+  await Future.wait(allGroups.map((group) => pool.withResource(() async {
+    final hasPermission = await validateUseCase.execute(userId: authUser.id, groupId: group.id);
+    if (hasPermission) {
+      permittedGroups.add(group);
+    }
+  })));
+  return permittedGroups;
 }
