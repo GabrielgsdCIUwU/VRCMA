@@ -944,7 +944,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calSectionSchedule => 'Programación';
 
   @override
-  String get calFieldLabelTime => 'Hora de inicio (HH:mm)';
+  String get calFieldLabelTime => 'Hora de inicio';
 
   @override
   String get calFieldLabelDuration => 'Duración (minutos)';

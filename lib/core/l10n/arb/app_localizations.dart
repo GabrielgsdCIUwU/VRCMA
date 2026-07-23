@@ -1793,7 +1793,7 @@ abstract class AppLocalizations {
   /// Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format.
   ///
   /// In en, this message translates to:
-  /// **'Start Time (HH:mm)'**
+  /// **'Start Time'**
   String get calFieldLabelTime;
 
   /// Label for the duration of the generated event, expressed in minutes.

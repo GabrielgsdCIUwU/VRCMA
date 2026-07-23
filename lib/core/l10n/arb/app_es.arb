@@ -358,7 +358,7 @@
   "calFieldLabelDesc": "Plantilla de la descripción del evento",
   "calFieldHintTitle": "Admite el marcador '{{incremental}}'.",
   "calSectionSchedule": "Programación",
-  "calFieldLabelTime": "Hora de inicio (HH:mm)",
+  "calFieldLabelTime": "Hora de inicio",
   "calFieldLabelDuration": "Duración (minutos)",
   "calFieldLabelTimezone": "Zona horaria (IANA)",
   "calSectionRecurrence": "Recurrencia",

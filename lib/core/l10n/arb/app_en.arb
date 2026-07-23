@@ -1572,7 +1572,7 @@
     "description": "Section heading containing the event time, duration and timezone settings."
   },
 
-  "calFieldLabelTime": "Start Time (HH:mm)",
+  "calFieldLabelTime": "Start Time",
   "@calFieldLabelTime": {
     "description": "Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format."
   },

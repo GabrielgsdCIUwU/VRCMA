@@ -942,7 +942,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calSectionSchedule => 'Schedule';
 
   @override
-  String get calFieldLabelTime => 'Start Time (HH:mm)';
+  String get calFieldLabelTime => 'Start Time';
 
   @override
   String get calFieldLabelDuration => 'Duration (Minutes)';
