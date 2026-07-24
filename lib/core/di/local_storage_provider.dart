@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/core/database/database_service.dart';
+import 'package:vrcma/data/repositories/calendar_automation_repository_imp.dart';
 import 'package:vrcma/data/repositories/configuration_repository_imp.dart';
 import 'package:vrcma/data/repositories/log_repository_imp.dart';
 import 'package:vrcma/data/repositories/message_repository_imp.dart';
@@ -8,6 +9,7 @@ import 'package:vrcma/data/repositories/profile_repository_imp.dart';
 import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
 import 'package:vrcma/data/repositories/status_repository_imp.dart';
 import 'package:vrcma/domain/repositories/i_configuration_repository.dart';
+import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
@@ -55,4 +57,10 @@ Future<IMessageRepository> messageRepository(Ref ref) async {
 Future<IStatusRepository> statusRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
   return StatusRepositoryImp(db);
+}
+
+@riverpod
+Future<ILocalCalendarRepository> localCalendarRepository(Ref ref) async {
+  final db = await ref.watch(databaseProvider.future);
+  return CalendarAutomationRepositoryImp(db);
 }

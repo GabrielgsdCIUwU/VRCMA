@@ -5,17 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
-import 'package:vrcma/domain/entities/automation/role_automation.dart';
-import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/domain/entities/theme/app_theme_color.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/app_settings_provider.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
 import 'package:vrcma/presentation/state/locale_provider.dart';
-import 'package:vrcma/presentation/state/role_automation_provider.dart';
-import 'package:vrcma/presentation/state/role_management_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/app_theme_color_extension.dart';
-import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
-import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
+import 'package:vrcma/presentation/state/world_cache_provider.dart';
 
 extension LocaleDisplayName on Locale {
   String get nativeDisplayName {
@@ -126,28 +122,6 @@ class SettingsPanel extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          _buildSectionHeader(context, context.l10n.sectionRoles),
-          _buildCard(
-            context,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.supervised_user_circle_outlined),
-                title: Text(context.l10n.sectionRoles),
-                subtitle: Text(context.l10n.rolesManagementDesc),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _openRoleManager(context, ref),
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.smart_toy_outlined),
-                title: Text(context.l10n.sectionFriendAutomations),
-                subtitle: Text(context.l10n.automationManagementDesc),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _openAutomationManager(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
           _buildSectionHeader(context, context.l10n.diagnosticTitle),
           _buildCard(
             context,
@@ -225,166 +199,14 @@ class SettingsPanel extends ConsumerWidget {
     }
   }
 
-  void _openRoleManager(BuildContext context, WidgetRef ref) {
-    ref.read(roleManagementProvider);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        maxChildSize: 0.95,
-        minChildSize: 0.5,
-        expand: false,
-        builder: (_, _) => const _RoleManagerSubsheet(),
-      ),
-    );
-  }
-
-  void _openAutomationManager(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        maxChildSize: 0.95,
-        minChildSize: 0.5,
-        expand: false,
-        builder: (_, _) => const _AutomationManagerSubsheet(),
-      )
-    );
-  }
-
   void _handleClearCaches(BuildContext context, WidgetRef ref) {
+    ref.invalidate(worldNameProvider);
+    ref.invalidate(vrcResolvedImageProvider);
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.l10n.toastCacheCleared),
         behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-}
-
-class _RoleManagerSubsheet extends ConsumerWidget {
-  const _RoleManagerSubsheet();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rolesAsync = ref.watch(roleManagementProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.sectionRoles),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _showAddRoleDialog(context, ref),
-          ),
-        ],
-      ),
-      body: rolesAsync.when(
-        data: (roles) => ListView.builder(
-          itemCount: roles.length,
-          itemBuilder: (context, i) {
-            final role = roles[i];
-            return ListTile(
-              leading: const Icon(Icons.label_outline),
-              title: Text(role.name),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => RoleEditorSheet(role: role)),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString()))),
-      ),
-    );
-  }
-
-  void _showAddRoleDialog(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogNewRoleTitle),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(labelText: context.l10n.dialogNewRoleLabel),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
-          ElevatedButton(
-            onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                ref.read(roleManagementProvider.notifier).createRole(controller.text.trim());
-                Navigator.pop(context);
-              }
-            },
-            child: Text(context.l10n.btnCreate),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AutomationManagerSubsheet extends ConsumerWidget {
-  const _AutomationManagerSubsheet();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final automationAsync = ref.watch(roleAutomationListProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.sectionFriendAutomations),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RoleAutomationEditorSheet()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: automationAsync.when(
-        data: (automations) => ListView.builder(
-          itemCount: automations.length,
-          itemBuilder: (context, i) {
-            final auto = automations[i];
-            final String title = auto.trigger == AutomationTrigger.newFriend
-              ? context.l10n.automationTriggerNewFriend
-              : context.l10n.automationTriggerTag(
-                VrcTag.allTags.where((t) => t.id == auto.targetValue).firstOrNull?.name ?? auto.targetValue ?? '',
-              );
-            final String assignedRoles = auto.roles.map((r) => r.name).join((", "));
-
-            return ListTile(
-              leading: Icon(auto.trigger == AutomationTrigger.newFriend ? Icons.person_add : Icons.tag),
-              title: Text(title),
-              subtitle: Text(context.l10n.automationAssignsRoles(assignedRoles)),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => RoleAutomationEditorSheet(automation: auto)),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(context.l10n.stateError(err.toString())))
       ),
     );
   }

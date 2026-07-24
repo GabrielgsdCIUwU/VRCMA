@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/app_settings_provider.dart';
 import 'package:vrcma/presentation/state/locale_provider.dart';
 import 'package:vrcma/presentation/pages/home_page.dart';
 import 'package:vrcma/presentation/pages/login_page.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/app_theme_color_extension.dart';
 import 'core/services/background_service.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();

@@ -124,10 +124,6 @@ class _DesktopHomeView extends ConsumerWidget {
             extended: false,
             elevation: 1,
             backgroundColor: context.colorScheme.surfaceContainerLow,
-            leading: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Icon(Icons.lock_person, size: 36, color: context.colorScheme.primary),
-            ),
             selectedIndex: currentRoute.index,
             onDestinationSelected: (idx) {
               ref.read(navigationStackProvider.notifier).setRoute(AppRoute.values[idx]);
@@ -156,61 +152,37 @@ class _DesktopHomeView extends ConsumerWidget {
             ],
           ),
           const VerticalDivider(width: 1),
-          const Expanded(
-            child: Column(
-              children: [
-                ProfileBanner(),
-                Divider(height: 1),
-                Expanded(child: _ActiveWorkspace()),
-              ],
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                titleSpacing: 0,
+                title: const ProfileBanner(),
+                actions: [
+                  IconButton(
+                    icon: Icon(collapsed ? Icons.people_outline : Icons.people),
+                    tooltip: context.l10n.navFriends,
+                    onPressed: () {
+                      ref.read(friendsPanelCollapsedProvider.notifier).toggle();
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+              body: const Column(
+                children: [
+                  Divider(height: 1),
+                  Expanded(child: _ActiveWorkspace()),
+                ],
+              ),
             ),
           ),
-          const VerticalDivider(width: 1),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: Row(
-                    mainAxisAlignment: collapsed ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (!collapsed) 
-                        Text(
-                          context.l10n.navFriends.toUpperCase(),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            letterSpacing: 1.2,
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      IconButton(
-                        icon: Icon(collapsed ? Icons.chevron_left : Icons.chevron_right),
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                if (!collapsed)
-                  const Expanded(child: FriendsPanel())
-                else
-                  Expanded(
-                    child: Center(
-                      child: IconButton(
-                        icon: const Icon(Icons.people_alt_outlined),
-                        onPressed: () {
-                          ref.read(friendsPanelCollapsedProvider.notifier).toggle();
-                        },
-                      ),
-                    ),
-                  )
-              ],
-            ),
-          )
+          if (!collapsed) ...[
+            const VerticalDivider(width: 1),
+            const SizedBox(
+              width: 320,
+              child: FriendsPanel(),
+            )
+          ]
         ],
       ),
     );

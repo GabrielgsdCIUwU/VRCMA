@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_user_ui_extension.dart';
 import 'package:vrcma/presentation/widgets/home/window/user_details_sheet.dart';
 
 class FriendListTile extends StatelessWidget {
@@ -10,29 +10,14 @@ class FriendListTile extends StatelessWidget {
 
   const FriendListTile({super.key, required this.user});
 
-  Color _getStatusColor(BuildContext context) {
-    if (user.isTrulyOffline) return context.vrcColors.statusOffline;
-    switch (user.status.toLowerCase()) {
-      case 'active': return context.vrcColors.statusOnline;
-      case 'join me': return context.vrcColors.statusJoinMe;
-      case 'ask me': return context.vrcColors.statusAskMe;
-      case 'busy': return context.vrcColors.statusBusy;
-      default: return context.vrcColors.statusOffline;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor(context);
+    final statusColor = user.isTrulyOffline
+      ? context.vrcColors.statusOffline
+      : context.getStatusColor(user.status);
 
     return InkWell(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          builder: (context) => UserDetailsSheet(user: user),
-        );
-      },
+      onTap: () => UserDetailsSheet.show(context, user),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: Row(

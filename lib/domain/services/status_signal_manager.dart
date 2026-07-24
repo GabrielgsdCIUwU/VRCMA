@@ -50,7 +50,7 @@ class StatusSignalManager {
       if (event is UserUpdateEvent) {
         _controller.add(const PassiveStreamingSignal('UserUpdateEvent'));
       } else if (event is UserLocationEvent) {
-        _controller.add(const PassiveStreamingSignal('UserLocationEvenet'));
+        _controller.add(const PassiveStreamingSignal('UserLocationEvent'));
       }
     }, onError: (err) {
       debugPrint("StatusSignalManager Streaming Error: $err");

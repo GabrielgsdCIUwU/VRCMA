@@ -6,13 +6,11 @@ import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/fallback_tag_action_extension.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
-import 'package:vrcma/presentation/widgets/home/common/rule_action_extension.dart';
-import 'package:vrcma/presentation/widgets/home/common/showGenericSearchSheet.dart';
+import 'package:vrcma/presentation/widgets/home/common/show_generic_search_sheet.dart';
 import 'package:vrcma/presentation/state/profile_editor_provider.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_tag_extension.dart';
 
 class ProfileEditorSheet extends ConsumerStatefulWidget {
   final FilterProfile profile;

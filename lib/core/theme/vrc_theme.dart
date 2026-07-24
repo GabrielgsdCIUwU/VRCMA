@@ -74,3 +74,24 @@ extension ThemeDataContext on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
   VrcSemanticColors get vrcColors => Theme.of(this).extension<VrcSemanticColors>()!;
 }
+
+extension VrcStatusColor on BuildContext {
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return vrcColors.statusOnline;
+      
+      case 'join me':
+        return vrcColors.statusJoinMe;
+      
+      case 'ask me':
+        return vrcColors.statusAskMe;
+      
+      case 'busy':
+        return vrcColors.statusBusy;
+      
+      default:
+        return vrcColors.statusOffline;
+    }
+  }
+}

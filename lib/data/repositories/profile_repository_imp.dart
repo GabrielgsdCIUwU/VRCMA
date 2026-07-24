@@ -1,11 +1,9 @@
 import 'dart:isolate';
 
-import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:vrcma/data/mappers/filter_profile_mapper.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
-import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
-import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 
 class ProfileRepositoryImp implements IProfileRepository {
   final Database _db;
@@ -27,20 +25,15 @@ class ProfileRepositoryImp implements IProfileRepository {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
+      final targetProfileId = profile.id ?? profileId;
+
       await txn.delete('profile_rules',
           where: 'profile_id = ?',
-          whereArgs: [profile.id ?? profileId]);
+          whereArgs: [targetProfileId]);
 
       for (var rule in profile.rules) {
-        await txn.insert('profile_rules', {
-          'profile_id': profile.id ?? profileId,
-          'role_id': rule.role.id,
-          'priority': rule.priority,
-          'action': rule.action == RuleAction.accept ? 'ACCEPT' : 'REJECT',
-          'fallback_group': rule.fallbackGroup,
-          'invite_message_id': rule.inviteResponseMessage?.id,
-          'request_message_id': rule.requestResponseMessage?.id,
-        });
+        final ruleData = FilterProfileMapper.ruleToDatabaseMap(targetProfileId, rule);
+        await txn.insert('profile_rules', ruleData);
       }
 
       return profileId;
@@ -73,58 +66,11 @@ class ProfileRepositoryImp implements IProfileRepository {
   static List<FilterProfile> _mapProfilesInIsolate(
       List<Map<String, dynamic>> profileMaps,
       List<Map<String, dynamic>> allRulesMaps) {
-
-    final List<FilterProfile> result = [];
-
-    for (var pMap in profileMaps) {
-      final profileId = pMap['id'] as int;
-
-      final profileRulesData = allRulesMaps.where((r) => r['profile_id'] == profileId);
-
-      final rules = profileRulesData.map((rMap) {
-        return ProfileRule(
-          id: rMap['id'],
-          priority: rMap['priority'],
-          fallbackGroup: rMap['fallback_group'],
-          action: rMap['action'] == 'ACCEPT' ? RuleAction.accept : RuleAction.reject,
-          role: Role(
-            id: rMap['role_id'],
-            name: rMap['role_name'],
-          ),
-          inviteResponseMessage: _extractMessage(rMap, 'inv'),
-          requestResponseMessage: _extractMessage(rMap, 'req'),
-        );
-      }).toList();
-
-      final targetLanguagesStr = pMap['target_languages'] as String?;
-      final fallbackTags = (targetLanguagesStr?.split(',') ?? [])
-          .where((e) => e.trim().isNotEmpty)
-          .map((id) => VrcTag.allTags.firstWhereOrNull((t) => t.id == id.trim()))
-          .nonNulls
-          .toList();
-
-      result.add(FilterProfile(
-        id: profileId,
-        name: pMap['name'],
-        isActive: pMap['is_active'] == 1,
-        rules: rules,
-        fallbackTags: fallbackTags,
-        fallbackTagsAction: FallbackTagAction.values[pMap['is_language_filter_enabled'] as int? ?? 0],
-      ));
-    }
-
-    return result;
-  }
-  
-  static CustomMessage? _extractMessage(Map<String, dynamic> row, String prefix) {
-    if (row['${prefix}_id'] == null) return null;
-    return CustomMessage(
-      id: row['${prefix}_id'],
-      content: row['${prefix}_content'],
-      type: VrcMessageType.fromString(row['${prefix}_type']),
-      slotIndex: row['${prefix}_slot'],
-      lastUpdated: DateTime.parse(row['${prefix}_date']),
-    );
+        return profileMaps.map((pMap) {
+          final profileId = pMap['id'] as int;
+          final associatedRules = allRulesMaps.where((r) => r['profile_id'] == profileId);
+          return FilterProfileMapper.fromDatabaseMaps(pMap, associatedRules);
+        }).toList();
   }
 
   @override

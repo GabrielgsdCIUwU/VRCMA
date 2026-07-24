@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 
 enum AutomationTrigger {
   newFriend,
@@ -18,6 +19,20 @@ class RoleAutomation extends Equatable {
     required this.trigger,
     this.targetValue,
   });
+
+  void validate() {
+    if (roles.isEmpty) {
+      throw RoleAutomationValidationException(
+        const EmptyRoleAssignmentError(),
+      );
+    }
+
+    if (trigger == AutomationTrigger.hasTag && (targetValue == null || targetValue!.trim().isEmpty)) {
+      throw RoleAutomationValidationException(
+        const MissingTriggerTagError(),
+      );
+    }
+  }
 
   RoleAutomation copyWith({
     int? id,

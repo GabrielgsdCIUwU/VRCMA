@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/slot_card.dart';
-import 'package:vrcma/presentation/widgets/home/common/vrc_message_type_extension.dart';
 
 class MessagesPanel extends ConsumerWidget {
   const MessagesPanel({super.key});
@@ -469,13 +469,17 @@ class _LibraryTile extends ConsumerWidget {
 }
 
 void _showSlotPicker(BuildContext context, WidgetRef ref, CustomMessage message) {
-  showModalBottomSheet(
+  showDialog(
     context: context,
-    backgroundColor: Theme.of(context).colorScheme.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(20)),
+    builder: (context) => Dialog(
+      elevation: 8,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: SlotPickerContent(message: message, ref: ref),
+      ),
     ),
-    builder: (_) => SlotPickerContent(message: message, ref: ref),
   );
 }
 
@@ -491,16 +495,20 @@ class SlotPickerContent extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _Header(message: message),
-          const SizedBox(height: 16),
-          _SlotGrid(message: message, ref: ref),
-          const SizedBox(height: 20)
-        ],
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _Header(message: message),
+              const SizedBox(height: 16),
+              _SlotGrid(message: message, ref: ref),
+              const SizedBox(height: 20)
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -542,6 +550,7 @@ class _SlotGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         mainAxisSpacing: 10,

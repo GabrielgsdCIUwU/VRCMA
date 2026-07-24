@@ -2,10 +2,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
+import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 import 'package:vrcma/domain/usecases/automation/automation_processor.dart';
 import 'package:vrcma/domain/usecases/automation/handlers/automation_handler.dart';
 import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
+import 'package:vrcma/domain/usecases/calendar/evaluate_and_generate_events_use_case.dart';
+import 'package:vrcma/domain/usecases/calendar/validate_group_permissions_use_case.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/domain/usecases/automation/status/evaluate_status_use_case.dart';
 import 'package:vrcma/domain/usecases/automation/status/coordinate_status_automation_use_case.dart';
@@ -90,5 +94,23 @@ Future<CoordinateStatusAutomationUseCase> coordinateStatusAutomationUseCase(Ref 
     statusRepository: statusRepo,
     automationRepository: automationRepo,
     evaluateStatusUseCase: evaluateUseCase,
+  );
+}
+
+@riverpod
+Future<ValidateGroupPermissionsUseCase> validateGroupPermissionsUseCase(Ref ref) async {
+  final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);
+  return ValidateGroupPermissionsUseCase(remoteRepo);
+}
+
+@riverpod
+Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref ref) async {
+  final localRepo = await ref.watch(localCalendarRepositoryProvider.future);
+  final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);
+  return EvaluateAndGenerateEventsUseCase(
+    localRepo: localRepo,
+    remoteRepo: remoteRepo,
+    calculator: OccurrenceCalculator(),
+    titleResolver: EventTitleResolver(),
   );
 }
