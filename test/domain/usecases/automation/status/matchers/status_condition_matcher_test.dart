@@ -15,7 +15,7 @@ void main() {
     final matcher = NumericConditionMatcher();
 
     test('should match population using greatherThan operator', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 1,
         targetStatus: StatusType.busy,
         conditionType: ConditionType.population,
@@ -48,7 +48,7 @@ void main() {
     });
 
     test('should match batteryLevel using between operator', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 1,
         targetStatus: StatusType.askMe,
         conditionType: ConditionType.batteryLevel,
@@ -81,7 +81,7 @@ void main() {
     });
 
     test('should handle malformed range values gracefully by returning false', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 1,
         targetStatus: StatusType.active,
         conditionType: ConditionType.batteryLevel,
@@ -107,7 +107,7 @@ void main() {
     final matcher = InstanceTypeMatcher();
 
     test('should match instance access types precisely', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 2,
         targetStatus: StatusType.joinMe,
         conditionType: ConditionType.instanceType,
@@ -143,7 +143,7 @@ void main() {
   group('WorldConditionMatcher Tests', () {
     final matcher = WorldConditionMatcher();
     test('should match world ID exact comparison', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 3,
         targetStatus: StatusType.busy,
         conditionType: ConditionType.world,
@@ -176,7 +176,7 @@ void main() {
     });
 
     test('should match world ID list contains condition', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 3,
         targetStatus: StatusType.busy,
         conditionType: ConditionType.world,
@@ -213,7 +213,7 @@ void main() {
     final matcher = TimeRangeConditionMatcher();
 
     test('should match simple time range within the same day', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 4,
         targetStatus: StatusType.active,
         conditionType: ConditionType.timeRange,
@@ -246,7 +246,7 @@ void main() {
     });
 
     test('should match overnight time range across midnight bounds', () async {
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 4,
         targetStatus: StatusType.active,
         conditionType: ConditionType.timeRange,
@@ -295,7 +295,7 @@ void main() {
       final mockLocalSocial = MockILocalSocialRepository();
       final matcher = FriendRoleMatcher(mockLocalSocial);
 
-      const rule = StatusRule(
+      final rule = StatusRule(
         priority: 5,
         targetStatus: StatusType.joinMe,
         conditionType: ConditionType.friendPresent,

@@ -44,7 +44,7 @@ void main() {
       final profile = FilterProfile(
         name: "Safe Profile",
         isActive: true,
-        rules: const [
+        rules: [
           ProfileRule(role: roleVIP, priority: 1, action: RuleAction.accept),
         ],
       );
@@ -63,7 +63,7 @@ void main() {
       final profile = FilterProfile(
         name: "Priority Test",
         isActive: true,
-        rules: const [
+        rules: [
           ProfileRule(role: roleVIP, priority: 1, action: RuleAction.accept),
           ProfileRule(role: roleBlocked, priority: 0, action: RuleAction.reject),
         ]
@@ -103,7 +103,7 @@ void main() {
       final profile = FilterProfile(
         name: "Strict Profile",
         isActive: true,
-        rules: const [
+        rules: [
           ProfileRule(role: roleFriend, priority: 1, action: RuleAction.reject),
           ProfileRule(role: roleVIP, priority: 2, action: RuleAction.accept),
         ],
@@ -144,17 +144,17 @@ void main() {
   group("RuleSorter - Internal Logic", () {
     test("Should sort rules by priority in ascending order", () {
       final sorter = RuleSorter();
-      const rule1 = ProfileRule(
+      final rule1 = ProfileRule(
         role: Role(id: 1, name: "A"),
         priority: 10,
         action: RuleAction.accept
       );
-      const rule2 = ProfileRule(
+      final rule2 = ProfileRule(
         role: Role(id: 2, name: "B"),
         priority: 1,
         action: RuleAction.accept
       );
-      const rule3 = ProfileRule(
+      final rule3 = ProfileRule(
         role: Role(id: 3, name: "C"),
         priority: 5,
         action: RuleAction.accept
