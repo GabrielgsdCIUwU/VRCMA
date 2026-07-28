@@ -1895,36 +1895,51 @@
 
   "calFieldLabelStartDate": "Start Date",
   "@calFieldLabelStartDate": {
-    "description": "Label for the start date field in the calendar editor."
+    "description": "Label for the date picker that defines when the VRChat calendar event or recurring schedule starts."
   },
 
   "calFieldLabelEndDate": "End Date",
   "@calFieldLabelEndDate": {
-    "description": "Label for the end date field in the calendar editor."
+    "description": "Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends."
   },
 
   "calSectionExceptions": "Exceptions",
   "@calSectionExceptions": {
-    "description": "Section header for the event exceptions list."
+    "description": "Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule."
   },
 
   "calExceptionAdd": "Add Exception",
   "@calExceptionAdd": {
-    "description": "Button to add a new calendar exception."
+    "description": "Button that adds a new exception to the recurring event schedule."
   },
 
   "calExceptionCancel": "Cancel event on this date",
   "@calExceptionCancel": {
-    "description": "Option to cancel the event on a specific date."
+    "description": "Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged."
   },
 
   "calExceptionsEmpty": "No exceptions configured",
   "@calExceptionsEmpty": {
-    "description": "Placeholder when there are no exceptions."
+    "description": "Placeholder displayed when the recurring event has no configured exceptions."
   },
 
   "calDaysOfMonth": "Days of Month",
   "@calDaysOfMonth": {
-    "description": "Label for selecting days of the month for monthly recurrence."
+    "description": "Label for selecting one or more days of the month on which the recurring event should occur."
+  },
+
+  "calOptionalDate": "Optional",
+  "@calOptionalDate": {
+    "description": "Placeholder shown in an optional date field when no date has been selected."
+  },
+
+  "calExceptionUntil": " until {date}",
+  "@calExceptionUntil": {
+    "description": "Text appended to an exception entry to indicate the date until which that exception remains active.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }

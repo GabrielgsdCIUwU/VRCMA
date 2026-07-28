@@ -1151,20 +1151,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calFieldLabelStartDate => 'Fecha de inicio';
 
   @override
-  String get calFieldLabelEndDate => 'Fecha de fin';
+  String get calFieldLabelEndDate => 'Fecha de finalización';
 
   @override
   String get calSectionExceptions => 'Excepciones';
 
   @override
-  String get calExceptionAdd => 'Añadir Excepción';
+  String get calExceptionAdd => 'Añadir excepción';
 
   @override
-  String get calExceptionCancel => 'Cancelar evento en esta fecha';
+  String get calExceptionCancel => 'Cancelar el evento en esta fecha';
 
   @override
   String get calExceptionsEmpty => 'No hay excepciones configuradas';
 
   @override
   String get calDaysOfMonth => 'Días del mes';
+
+  @override
+  String get calOptionalDate => 'Opcional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' hasta el $date';
+  }
 }

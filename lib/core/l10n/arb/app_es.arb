@@ -426,5 +426,14 @@
   "calExceptionAdd": "Añadir Excepción",
   "calExceptionCancel": "Cancelar evento en esta fecha",
   "calExceptionsEmpty": "No hay excepciones configuradas",
-  "calDaysOfMonth": "Días del mes"
+  "calDaysOfMonth": "Días del mes",
+  "calFieldLabelStartDate": "Fecha de inicio",
+  "calFieldLabelEndDate": "Fecha de finalización",
+  "calSectionExceptions": "Excepciones",
+  "calExceptionAdd": "Añadir excepción",
+  "calExceptionCancel": "Cancelar el evento en esta fecha",
+  "calExceptionsEmpty": "No hay excepciones configuradas",
+  "calDaysOfMonth": "Días del mes",
+  "calOptionalDate": "Opcional",
+  "calExceptionUntil": " hasta el {date}"
 }

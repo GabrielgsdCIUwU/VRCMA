@@ -1160,4 +1160,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calDaysOfMonth => 'Days of Month';
+
+  @override
+  String get calOptionalDate => 'Optional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' until $date';
+  }
 }
