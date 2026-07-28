@@ -35,8 +35,8 @@ class CalendarScheduler extends _$CalendarScheduler {
 
   void _startScheduler() {
     _stopScheduler();
-    _evaluateNow();
-    _evaluationTimer = Timer.periodic(_evaluationInterval, (_) => _evaluateNow());
+    evaluateNow();
+    _evaluationTimer = Timer.periodic(_evaluationInterval, (_) => evaluateNow());
   }
 
   void _stopScheduler() {
@@ -44,7 +44,7 @@ class CalendarScheduler extends _$CalendarScheduler {
     _evaluationTimer = null;
   }
 
-  void _evaluateNow() async {
+  void evaluateNow() async {
     final user = ref.read(authStateProvider).value;
     if (user == null) return;
 
