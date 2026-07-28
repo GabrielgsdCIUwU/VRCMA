@@ -46,7 +46,7 @@ class TimezoneSchedule extends Equatable {
       throw CalendarDomainException(InvalidDurationError(durationMinutes));
     }
     if (startDate != null && endDate != null && startDate!.isAfter(endDate!)) {
-      throw CalendarDomainException(InvalidDurationError(-1)); // O un error específico de rango de fechas
+      throw CalendarDomainException(InvalidDurationError(-1));
     }
   }
 

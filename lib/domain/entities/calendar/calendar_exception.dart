@@ -5,7 +5,7 @@ class CalendarException extends Equatable {
   final int? id;
   final int? automationId;
   final DateTime exceptionDate;
-  final DateTime? exceptionEndDate; // Permite excluir un rango de fechas
+  final DateTime? exceptionEndDate;
   final bool isCancelled;
   final String? rescheduledTime;
   final String? titleOverride;

@@ -4,7 +4,6 @@ import 'package:vrcma/domain/repositories/i_group_permission_cache_repository.da
 class GroupPermissionCacheRepositoryImp implements IGroupPermissionCacheRepository {
   final DatabaseService _dbService;
 
-  // Tiempo de expiración de la caché (48 horas)
   static const Duration _cacheExpiration = Duration(hours: 48);
 
   GroupPermissionCacheRepositoryImp(this._dbService);
@@ -32,7 +31,6 @@ class GroupPermissionCacheRepositoryImp implements IGroupPermissionCacheReposito
     final isValid = now.difference(validatedAt) <= _cacheExpiration;
 
     if (!isValid) {
-      // Limpiamos la caché si expiró
       await db.delete(
         'group_permissions_cache',
         where: 'group_id = ? AND user_id = ?',

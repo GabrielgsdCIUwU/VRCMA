@@ -1,8 +1,8 @@
-/// Interfaz para la gestión de caché local de permisos de grupos
+/// Interface for managing local caching of group permissions.
 abstract class IGroupPermissionCacheRepository {
-  /// Retorna [true] si el usuario tiene permisos cacheados y la caché sigue siendo válida.
+  /// Returns [true] if the user has cached permissions and the cache is still valid.
   Future<bool> hasValidCachedPermission(String userId, String groupId);
 
-  /// Guarda en la base de datos que el usuario tiene permisos para el grupo.
+  /// Saves in the database that the user has permissions for the group.
   Future<void> savePermissionCache(String userId, String groupId);
 }
