@@ -17,6 +17,7 @@ import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 import 'package:vrcma/domain/entities/social/vrc_group.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/presentation/state/calendar_scheduler_provider.dart';
 
 
 part 'calendar_automation_provider.g.dart';
@@ -46,6 +47,9 @@ class CalendarAutomationList extends _$CalendarAutomationList {
   Future<void> toggleActive(CalendarAutomationRule rule) async {
     final updateRule = rule.copyWith(isActive: !rule.isActive);
     await save(updateRule);
+    if (updateRule.isActive) {
+      ref.read(calendarSchedulerProvider.notifier).evaluateNow();
+    }
   }
 }
 
