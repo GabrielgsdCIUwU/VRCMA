@@ -1,12 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
+import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
@@ -45,7 +47,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     _nameController.dispose();
     _titleController.dispose();
     _descriptionController.dispose();
-    super.dispose();    
+    super.dispose();
   }
 
   void _saveAndExit() {
@@ -318,11 +320,47 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
         const SizedBox(height: 16),
         _buildRecurrenceSelectorCard(state, notifier),
         const SizedBox(height: 24),
+        _buildSectionHeader(context.l10n.calSectionStrategy),
+        const SizedBox(height: 16),
+        _buildStrategyCard(state, notifier),
+        const SizedBox(height: 24),
         _buildSectionHeader(context.l10n.calSectionIncremental),
         const SizedBox(height: 16),
         _buildIncrementalConfigCard(state, notifier),
         const SizedBox(height: 24),
-        _buildSectionHeader(context.l10n.calSectionExceptions),
+        _buildSectionHeader(
+          context.l10n.calSectionExceptions,
+          trailing: TextButton.icon(
+            onPressed: () async {
+              final initialDate = DateTime.now();
+              final maxDate = initialDate.add(const Duration(days: 365));
+
+              final dateRange = await showDateRangePicker(
+                context: context,
+                firstDate: initialDate,
+                lastDate: maxDate,
+                builder: (context, child) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
+                      child: child,
+                    ),
+                  );
+                },
+              );
+
+              if (dateRange != null) {
+                notifier.addException(CalendarException(
+                  exceptionDate: dateRange.start,
+                  exceptionEndDate: dateRange.end != dateRange.start ? dateRange.end : null,
+                  isCancelled: true,
+                ));
+              }
+            },
+            icon: const Icon(Icons.add, size: 16),
+            label: Text(context.l10n.calExceptionAdd),
+          ),
+        ),
         const SizedBox(height: 16),
         _buildExceptionsCard(state, notifier),
         const SizedBox(height: 24),
@@ -540,20 +578,30 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title.toUpperCase(),
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.2,
-        color: context.colorScheme.primary
-      ),
+  Widget _buildSectionHeader(String title, {Widget? trailing}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title.toUpperCase(),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+              color: context.colorScheme.primary
+          ),
+        ),
+        ?trailing,
+      ],
     );
   }
 
   Widget _buildSchedulerInteractiveCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
     final endTime = _calculateEndTime(state.schedule.startTimeOfDay, state.schedule.durationMinutes);
     final formattedEndTime = '${endTime.hour.toString().padLeft(2, '0')}:${endTime.minute.toString().padLeft(2, '0')}';
+
+    final locale = Localizations.localeOf(context).languageCode;
+    final now = DateTime.now();
+    final maxDate = now.add(const Duration(days: 365));
 
     return Card(
       elevation: 0,
@@ -576,17 +624,17 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             title: Text(context.l10n.calFieldLabelStartDate),
             subtitle: Text(
               state.schedule.startDate != null
-                  ? "${state.schedule.startDate!.year}-${state.schedule.startDate!.month.toString().padLeft(2, '0')}-${state.schedule.startDate!.day.toString().padLeft(2, '0')}"
-                  : "Opcional", // Esto puede mejorarse con l10n si se quiere un texto más claro
+                  ? DateFormat.yMd(locale).format(state.schedule.startDate!)
+                  : context.l10n.calOptionalDate,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: const Icon(Icons.edit_calendar_outlined, size: 20),
             onTap: () async {
               final date = await showDatePicker(
                 context: context,
-                initialDate: state.schedule.startDate ?? DateTime.now(),
-                firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                lastDate: DateTime(2030),
+                initialDate: state.schedule.startDate ?? now,
+                firstDate: now.subtract(const Duration(days: 1)),
+                lastDate: maxDate,
               );
               if (date != null) notifier.updateStartDate(date);
             },
@@ -598,17 +646,17 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             title: Text(context.l10n.calFieldLabelEndDate),
             subtitle: Text(
               state.schedule.endDate != null
-                  ? "${state.schedule.endDate!.year}-${state.schedule.endDate!.month.toString().padLeft(2, '0')}-${state.schedule.endDate!.day.toString().padLeft(2, '0')}"
-                  : "Opcional",
+                  ? DateFormat.yMd(locale).format(state.schedule.endDate!)
+                  : context.l10n.calOptionalDate,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: const Icon(Icons.edit_calendar_outlined, size: 20),
             onTap: () async {
               final date = await showDatePicker(
                 context: context,
-                initialDate: state.schedule.endDate ?? (state.schedule.startDate ?? DateTime.now()),
-                firstDate: state.schedule.startDate ?? DateTime.now().subtract(const Duration(days: 1)),
-                lastDate: DateTime(2030),
+                initialDate: state.schedule.endDate ?? (state.schedule.startDate ?? now),
+                firstDate: state.schedule.startDate ?? now.subtract(const Duration(days: 1)),
+                lastDate: maxDate,
               );
               if (date != null) notifier.updateEndDate(date);
             },
@@ -629,6 +677,56 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             subtitle: Text(_formatDuration(context, state.schedule.durationMinutes), style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildStrategyCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DropdownButtonFormField<CreationStrategy>(
+              initialValue: state.strategy,
+              decoration: InputDecoration(
+                labelText: context.l10n.calFieldLabelStrategy,
+                prefixIcon: const Icon(Icons.auto_awesome_motion),
+              ),
+              items: CreationStrategy.values.map((s) {
+                return DropdownMenuItem(
+                  value: s,
+                  child: Text(s.toLocalizedString(context)),
+                );
+              }).toList(),
+              onChanged: (val) {
+                if (val != null) notifier.updateStrategy(val);
+              },
+            ),
+            if (state.strategy == CreationStrategy.batch) ...[
+              const SizedBox(height: 16),
+              TextFormField(
+                initialValue: state.maxVisibleFutureEvents.toString(),
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: context.l10n.calFieldLabelMaxEvents,
+                  prefixIcon: const Icon(Icons.format_list_numbered),
+                  isDense: true,
+                ),
+                onChanged: (val) {
+                  final parsed = int.tryParse(val) ?? 1;
+                  notifier.updateMaxVisibleFutureEvents(parsed.clamp(1, 10));
+                },
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -723,68 +821,56 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
   }
 
   Widget _buildExceptionsCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    if (state.exceptions.isEmpty) {
+      return Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: context.colorScheme.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Center(
+            child: Text(
+              context.l10n.calExceptionsEmpty,
+              style: TextStyle(color: context.colorScheme.onSurfaceVariant),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final locale = Localizations.localeOf(context).languageCode;
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: context.colorScheme.outlineVariant),
       ),
-      child: Column(
-        children: [
-          if (state.exceptions.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Center(
-                child: Text(
-                  context.l10n.calExceptionsEmpty,
-                  style: TextStyle(color: context.colorScheme.onSurfaceVariant),
-                ),
-              ),
-            )
-          else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.exceptions.length,
-              itemBuilder: (context, index) {
-                final exception = state.exceptions[index];
-                final dateStr = "${exception.exceptionDate.year}-${exception.exceptionDate.month.toString().padLeft(2, '0')}-${exception.exceptionDate.day.toString().padLeft(2, '0')}";
-                final endDateStr = exception.exceptionEndDate != null 
-                    ? " hasta ${exception.exceptionEndDate!.year}-${exception.exceptionEndDate!.month.toString().padLeft(2, '0')}-${exception.exceptionEndDate!.day.toString().padLeft(2, '0')}"
-                    : "";
-                return ListTile(
-                  leading: Icon(Icons.event_busy, color: context.colorScheme.error),
-                  title: Text(context.l10n.calExceptionCancel),
-                  subtitle: Text("$dateStr$endDateStr"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () => notifier.removeException(exception),
-                  ),
-                );
-              },
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: state.exceptions.length,
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final exception = state.exceptions[index];
+          final dateStr = DateFormat.yMd(locale).format(exception.exceptionDate);
+
+          final endDateStr = exception.exceptionEndDate != null
+              ? context.l10n.calExceptionUntil(DateFormat.yMd(locale).format(exception.exceptionEndDate!))
+              : "";
+
+          return ListTile(
+            leading: Icon(Icons.event_busy, color: context.colorScheme.error),
+            title: Text(context.l10n.calExceptionCancel),
+            subtitle: Text("$dateStr$endDateStr"),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => notifier.removeException(exception),
             ),
-          const Divider(height: 1),
-          TextButton.icon(
-            onPressed: () async {
-              final initialDate = DateTime.now();
-              final dateRange = await showDateRangePicker(
-                context: context,
-                firstDate: initialDate,
-                lastDate: DateTime(2030),
-              );
-              if (dateRange != null) {
-                notifier.addException(CalendarException(
-                  exceptionDate: dateRange.start,
-                  exceptionEndDate: dateRange.end != dateRange.start ? dateRange.end : null,
-                  isCancelled: true,
-                ));
-              }
-            },
-            icon: const Icon(Icons.add),
-            label: Text(context.l10n.calExceptionAdd),
-          ),
-          const SizedBox(height: 8),
-        ],
+          );
+        },
       ),
     );
   }
