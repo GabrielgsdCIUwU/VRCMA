@@ -9,6 +9,7 @@ import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
@@ -16,6 +17,7 @@ import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 import 'package:vrcma/domain/entities/social/vrc_group.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/presentation/state/calendar_scheduler_provider.dart';
 
 
 part 'calendar_automation_provider.g.dart';
@@ -45,6 +47,9 @@ class CalendarAutomationList extends _$CalendarAutomationList {
   Future<void> toggleActive(CalendarAutomationRule rule) async {
     final updateRule = rule.copyWith(isActive: !rule.isActive);
     await save(updateRule);
+    if (updateRule.isActive) {
+      ref.read(calendarSchedulerProvider.notifier).evaluateNow();
+    }
   }
 }
 
@@ -109,6 +114,8 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: time,
       durationMinutes: state.schedule.durationMinutes,
       timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
@@ -117,6 +124,8 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: state.schedule.startTimeOfDay,
       durationMinutes: duration,
       timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
@@ -125,10 +134,42 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: state.schedule.startTimeOfDay,
       durationMinutes: state.schedule.durationMinutes,
       timezoneIana: tz,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
   void updateRecurrence(RecurrencePattern recurrence) => state = state.copyWith(recurrence: recurrence);
+
+  void updateStartDate(DateTime? date) => state = state.copyWith(
+    schedule: TimezoneSchedule(
+      startTimeOfDay: state.schedule.startTimeOfDay,
+      durationMinutes: state.schedule.durationMinutes,
+      timezoneIana: state.schedule.timezoneIana,
+      startDate: date,
+      endDate: state.schedule.endDate,
+    ),
+  );
+
+  void updateEndDate(DateTime? date) => state = state.copyWith(
+    schedule: TimezoneSchedule(
+      startTimeOfDay: state.schedule.startTimeOfDay,
+      durationMinutes: state.schedule.durationMinutes,
+      timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: date,
+    ),
+  );
+
+  void addException(CalendarException exception) {
+    state = state.copyWith(exceptions: [...state.exceptions, exception]);
+  }
+
+  void removeException(CalendarException exception) {
+    state = state.copyWith(
+      exceptions: state.exceptions.where((e) => e != exception).toList(),
+    );
+  }
   
   void updateIncrementalConfig(IncrementalConfig config) => state = state.copyWith(incrementalConfig: config);
   
@@ -180,6 +221,8 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
         startTimeOfDay: state.schedule.startTimeOfDay,
         durationMinutes: state.schedule.durationMinutes,
         timezoneIana: tz.local.name,
+        startDate: state.schedule.startDate,
+        endDate: state.schedule.endDate,
       ),
     );
 

@@ -6,6 +6,7 @@ import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
@@ -197,5 +198,15 @@ extension VrcTagCategoryUI on VrcTagCategory {
         break;
     }
     return Icon(icon, color: color, size: 24);
+  }
+}
+
+extension CreationStrategyL10n on CreationStrategy {
+  String toLocalizedString(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      CreationStrategy.lazy => l10n.calStrategyLazy,
+      CreationStrategy.batch => l10n.calStrategyBatch,
+    };
   }
 }

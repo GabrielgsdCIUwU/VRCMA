@@ -11,6 +11,7 @@ part 'calendar_scheduler_provider.g.dart';
 class CalendarScheduler extends _$CalendarScheduler {
   Timer? _evaluationTimer; 
   static const Duration _evaluationInterval = Duration(minutes: 30);
+  bool _isEvaluating = false;
 
   @override
   void build() {
@@ -35,8 +36,8 @@ class CalendarScheduler extends _$CalendarScheduler {
 
   void _startScheduler() {
     _stopScheduler();
-    _evaluateNow();
-    _evaluationTimer = Timer.periodic(_evaluationInterval, (_) => _evaluateNow());
+    evaluateNow();
+    _evaluationTimer = Timer.periodic(_evaluationInterval, (_) => evaluateNow());
   }
 
   void _stopScheduler() {
@@ -44,15 +45,20 @@ class CalendarScheduler extends _$CalendarScheduler {
     _evaluationTimer = null;
   }
 
-  void _evaluateNow() async {
+  void evaluateNow() async {
+    if (_isEvaluating) return;
+    
     final user = ref.read(authStateProvider).value;
     if (user == null) return;
 
+    _isEvaluating = true;
     try {
       final useCase = await ref.read(evaluateAndGenerateEventsUseCaseProvider.future);
       await useCase.execute(hostUser: user);
     } catch (e, stack) {
       debugPrint('Calendar evaluation cycle failed: $e\n$stack');
+    } finally {
+      _isEvaluating = false;
     }
   }
 }

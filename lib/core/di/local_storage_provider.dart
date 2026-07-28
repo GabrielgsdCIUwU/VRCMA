@@ -15,6 +15,8 @@ import 'package:vrcma/domain/repositories/i_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
+import 'package:vrcma/domain/repositories/i_group_permission_cache_repository.dart';
+import 'package:vrcma/data/repositories/group_permission_cache_repository_imp.dart';
 
 part 'local_storage_provider.g.dart';
 
@@ -63,4 +65,11 @@ Future<IStatusRepository> statusRepository(Ref ref) async {
 Future<ILocalCalendarRepository> localCalendarRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
   return CalendarAutomationRepositoryImp(db);
+}
+
+@riverpod
+Future<IGroupPermissionCacheRepository> groupPermissionCacheRepository(Ref ref) async {
+  // Aquí usamos DatabaseService en vez de Database db, porque el imp recibe DatabaseService
+  final dbService = DatabaseService();
+  return GroupPermissionCacheRepositoryImp(dbService);
 }

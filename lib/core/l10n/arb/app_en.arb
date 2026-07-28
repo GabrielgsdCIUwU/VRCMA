@@ -1891,5 +1891,80 @@
   "calGroupPermissionDenied": "You don't have permission to manage this group's calendar.",
   "@calGroupPermissionDenied": {
     "description": "Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar."
+  },
+
+  "calFieldLabelStartDate": "Start Date",
+  "@calFieldLabelStartDate": {
+    "description": "Label for the date picker that defines when the VRChat calendar event or recurring schedule starts."
+  },
+
+  "calFieldLabelEndDate": "End Date",
+  "@calFieldLabelEndDate": {
+    "description": "Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends."
+  },
+
+  "calSectionExceptions": "Exceptions",
+  "@calSectionExceptions": {
+    "description": "Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule."
+  },
+
+  "calExceptionAdd": "Add Exception",
+  "@calExceptionAdd": {
+    "description": "Button that adds a new exception to the recurring event schedule."
+  },
+
+  "calExceptionCancel": "Cancel event on this date",
+  "@calExceptionCancel": {
+    "description": "Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged."
+  },
+
+  "calExceptionsEmpty": "No exceptions configured",
+  "@calExceptionsEmpty": {
+    "description": "Placeholder displayed when the recurring event has no configured exceptions."
+  },
+
+  "calDaysOfMonth": "Days of Month",
+  "@calDaysOfMonth": {
+    "description": "Label for selecting one or more days of the month on which the recurring event should occur."
+  },
+
+  "calOptionalDate": "Optional",
+  "@calOptionalDate": {
+    "description": "Placeholder shown in an optional date field when no date has been selected."
+  },
+
+  "calExceptionUntil": " until {date}",
+  "@calExceptionUntil": {
+    "description": "Text appended to an exception entry to indicate the date until which that exception remains active.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "calSectionStrategy": "Generation Strategy",
+  "@calSectionStrategy": {
+    "description": "Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained."
+  },
+
+  "calFieldLabelStrategy": "Strategy",
+  "@calFieldLabelStrategy": {
+    "description": "Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events."
+  },
+
+  "calFieldLabelMaxEvents": "Max Upcoming Events",
+  "@calFieldLabelMaxEvents": {
+    "description": "Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar."
+  },
+
+  "calStrategyLazy": "Lazy (Maintains 1 Event)",
+  "@calStrategyLazy": {
+    "description": "Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar."
+  },
+
+  "calStrategyBatch": "Batch (Multiple Events)",
+  "@calStrategyBatch": {
+    "description": "Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar."
   }
 }

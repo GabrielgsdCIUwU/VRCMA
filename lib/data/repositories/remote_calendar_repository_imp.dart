@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' as vrchat;
 import 'package:vrcma/data/mappers/remote_calendar_mapper.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
@@ -15,6 +16,13 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
   @override
   Future<bool> verifyCreationPermissions(String userId, String groupId) async {
     try {
+      final groupResponse = await _vrcApi.rawApi.getGroupsApi().getGroup(groupId: groupId);
+      final group = groupResponse.data;
+      debugPrint('group: $group');
+      if (group != null && group.ownerId == userId) {
+        return true;
+      }
+      
       final memberResponse = await _vrcApi.rawApi.getGroupsApi().getGroupMember(groupId: groupId, userId: userId);
       final member = memberResponse.data;
       if (member == null) return false;
@@ -40,7 +48,8 @@ class RemoteCalendarRepositoryImp implements IRemoteCalendarRepository {
       }
 
       return false;
-    } catch (_) {
+    } catch (e, stackTrace) {
+      debugPrint("ERROR inside verifyCreationPermissions: $e\n$stackTrace");
       return false;
     }
   }

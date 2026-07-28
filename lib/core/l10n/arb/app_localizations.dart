@@ -2155,6 +2155,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You don\'t have permission to manage this group\'s calendar.'**
   String get calGroupPermissionDenied;
+
+  /// Label for the date picker that defines when the VRChat calendar event or recurring schedule starts.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get calFieldLabelStartDate;
+
+  /// Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get calFieldLabelEndDate;
+
+  /// Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptions'**
+  String get calSectionExceptions;
+
+  /// Button that adds a new exception to the recurring event schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Exception'**
+  String get calExceptionAdd;
+
+  /// Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel event on this date'**
+  String get calExceptionCancel;
+
+  /// Placeholder displayed when the recurring event has no configured exceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No exceptions configured'**
+  String get calExceptionsEmpty;
+
+  /// Label for selecting one or more days of the month on which the recurring event should occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Month'**
+  String get calDaysOfMonth;
+
+  /// Placeholder shown in an optional date field when no date has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get calOptionalDate;
+
+  /// Text appended to an exception entry to indicate the date until which that exception remains active.
+  ///
+  /// In en, this message translates to:
+  /// **' until {date}'**
+  String calExceptionUntil(String date);
+
+  /// Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained.
+  ///
+  /// In en, this message translates to:
+  /// **'Generation Strategy'**
+  String get calSectionStrategy;
+
+  /// Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy'**
+  String get calFieldLabelStrategy;
+
+  /// Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Upcoming Events'**
+  String get calFieldLabelMaxEvents;
+
+  /// Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lazy (Maintains 1 Event)'**
+  String get calStrategyLazy;
+
+  /// Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch (Multiple Events)'**
+  String get calStrategyBatch;
 }
 
 class _AppLocalizationsDelegate

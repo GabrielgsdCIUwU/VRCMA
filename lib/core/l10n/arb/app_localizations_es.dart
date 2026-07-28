@@ -1146,4 +1146,48 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get calGroupPermissionDenied =>
       'No tienes permisos para gestionar el calendario de este grupo.';
+
+  @override
+  String get calFieldLabelStartDate => 'Fecha de inicio';
+
+  @override
+  String get calFieldLabelEndDate => 'Fecha de finalización';
+
+  @override
+  String get calSectionExceptions => 'Excepciones';
+
+  @override
+  String get calExceptionAdd => 'Añadir excepción';
+
+  @override
+  String get calExceptionCancel => 'Cancelar el evento en esta fecha';
+
+  @override
+  String get calExceptionsEmpty => 'No hay excepciones configuradas';
+
+  @override
+  String get calDaysOfMonth => 'Días del mes';
+
+  @override
+  String get calOptionalDate => 'Opcional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' hasta el $date';
+  }
+
+  @override
+  String get calSectionStrategy => 'Estrategia de generación';
+
+  @override
+  String get calFieldLabelStrategy => 'Estrategia';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Máximo de eventos próximos';
+
+  @override
+  String get calStrategyLazy => 'Perezosa (mantiene 1 evento)';
+
+  @override
+  String get calStrategyBatch => 'Por lotes (múltiples eventos)';
 }
