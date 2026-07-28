@@ -1941,5 +1941,30 @@
         "type": "String"
       }
     }
+  },
+
+  "calSectionStrategy": "Generation Strategy",
+  "@calSectionStrategy": {
+    "description": "Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained."
+  },
+
+  "calFieldLabelStrategy": "Strategy",
+  "@calFieldLabelStrategy": {
+    "description": "Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events."
+  },
+
+  "calFieldLabelMaxEvents": "Max Upcoming Events",
+  "@calFieldLabelMaxEvents": {
+    "description": "Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar."
+  },
+
+  "calStrategyLazy": "Lazy (Maintains 1 Event)",
+  "@calStrategyLazy": {
+    "description": "Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar."
+  },
+
+  "calStrategyBatch": "Batch (Multiple Events)",
+  "@calStrategyBatch": {
+    "description": "Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar."
   }
 }

@@ -1175,4 +1175,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String calExceptionUntil(String date) {
     return ' hasta el $date';
   }
+
+  @override
+  String get calSectionStrategy => 'Estrategia de generación';
+
+  @override
+  String get calFieldLabelStrategy => 'Estrategia';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Máximo de eventos próximos';
+
+  @override
+  String get calStrategyLazy => 'Perezosa (mantiene 1 evento)';
+
+  @override
+  String get calStrategyBatch => 'Por lotes (múltiples eventos)';
 }

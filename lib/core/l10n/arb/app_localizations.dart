@@ -2209,6 +2209,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **' until {date}'**
   String calExceptionUntil(String date);
+
+  /// Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained.
+  ///
+  /// In en, this message translates to:
+  /// **'Generation Strategy'**
+  String get calSectionStrategy;
+
+  /// Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy'**
+  String get calFieldLabelStrategy;
+
+  /// Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Upcoming Events'**
+  String get calFieldLabelMaxEvents;
+
+  /// Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lazy (Maintains 1 Event)'**
+  String get calStrategyLazy;
+
+  /// Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch (Multiple Events)'**
+  String get calStrategyBatch;
 }
 
 class _AppLocalizationsDelegate

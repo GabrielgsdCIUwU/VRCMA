@@ -435,5 +435,10 @@
   "calExceptionsEmpty": "No hay excepciones configuradas",
   "calDaysOfMonth": "Días del mes",
   "calOptionalDate": "Opcional",
-  "calExceptionUntil": " hasta el {date}"
+  "calExceptionUntil": " hasta el {date}",
+  "calSectionStrategy": "Estrategia de generación",
+  "calFieldLabelStrategy": "Estrategia",
+  "calFieldLabelMaxEvents": "Máximo de eventos próximos",
+  "calStrategyLazy": "Perezosa (mantiene 1 evento)",
+  "calStrategyBatch": "Por lotes (múltiples eventos)"
 }
