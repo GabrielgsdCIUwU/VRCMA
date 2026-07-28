@@ -100,7 +100,8 @@ Future<CoordinateStatusAutomationUseCase> coordinateStatusAutomationUseCase(Ref 
 @riverpod
 Future<ValidateGroupPermissionsUseCase> validateGroupPermissionsUseCase(Ref ref) async {
   final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);
-  return ValidateGroupPermissionsUseCase(remoteRepo);
+  final cacheRepo = await ref.watch(groupPermissionCacheRepositoryProvider.future);
+  return ValidateGroupPermissionsUseCase(remoteRepo, cacheRepo);
 }
 
 @riverpod

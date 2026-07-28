@@ -1,17 +1,22 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/entities/social/vrc_group.dart';
 import 'package:vrcma/presentation/extensions/date_time_extensions.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
+import 'package:vrcma/presentation/services/snackbar_service.dart';
 import 'package:vrcma/presentation/state/calendar_automation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
+import 'package:vrcma/presentation/widgets/home/common/show_generic_search_sheet.dart';
 
 class CalendarAutomationEditorSheet extends ConsumerStatefulWidget {
   final CalendarAutomationRule? rule;
@@ -23,7 +28,6 @@ class CalendarAutomationEditorSheet extends ConsumerStatefulWidget {
 
 class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomationEditorSheet> {
   late TextEditingController _nameController;
-  late TextEditingController _groupIdController;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
 
@@ -32,7 +36,6 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     super.initState();
     final initialRule = ref.read(calendarAutomationEditorProvider(widget.rule));
     _nameController = TextEditingController(text: initialRule.name);
-    _groupIdController = TextEditingController(text: initialRule.groupId);
     _titleController = TextEditingController(text: initialRule.titleTemplate);
     _descriptionController = TextEditingController(text: initialRule.descriptionTemplate ?? '');
   }
@@ -40,7 +43,6 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
   @override
   void dispose() {
     _nameController.dispose();
-    _groupIdController.dispose();
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();    
@@ -159,14 +161,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           onChanged: notifier.updateName,
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: _groupIdController,
-          decoration: InputDecoration(
-            labelText: context.l10n.calFieldLabelGroupId,
-            prefixIcon: const Icon(Icons.group_outlined),
-          ),
-          onChanged: notifier.updateGroupId,
-        ),
+        _buildGroupSelector(state, notifier),
         const SizedBox(height: 16),
         TextField(
           controller: _titleController,
@@ -197,6 +192,94 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
         ],
       ],
     );
+  }
+
+  Widget _buildGroupSelector(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    final permittedGroupsAsync = ref.watch(userGroupsProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.l10n.calFieldLabelGroupId, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 8),
+        permittedGroupsAsync.when(
+          data: (groups) {
+            final selectedGroup = groups.firstWhereOrNull((g) => g.id == state.groupId);
+
+            return InkWell(
+              onTap: () => _showGroupSelectionDialog(groups, notifier),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: context.colorScheme.outlineVariant),
+                  borderRadius: BorderRadius.circular(12),
+                  color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.group_outlined, color: context.colorScheme.primary),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        selectedGroup != null
+                            ? "${selectedGroup.name} (${selectedGroup.shortCode})"
+                            : (state.groupId.isNotEmpty ? state.groupId : context.l10n.calGroupSelectHint),
+                        style: TextStyle(
+                          color: selectedGroup != null || state.groupId.isNotEmpty
+                              ? context.colorScheme.onSurface
+                              : context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.arrow_drop_down, color: context.colorScheme.onSurfaceVariant),
+                  ],
+                ),
+              ),
+            );
+          },
+          loading: () => const LinearProgressIndicator(),
+          error: (err, _) => Text(context.l10n.stateError(err.toString())),
+        ),
+      ],
+    );
+  }
+
+  void _showGroupSelectionDialog(List<VrcGroup> groups, CalendarAutomationEditor notifier) {
+    if (groups.isEmpty) {
+      ref.read(snackbarServiceProvider).show(context.l10n.calGroupNoPerms);
+      return;
+    }
+
+    showGenericSearchSheet<VrcGroup>(
+      context: context,
+      items: groups,
+      searchHint: context.l10n.calGroupSelectHint,
+      searchableText: (group) => "${group.name} ${group.shortCode} ${group.id}",
+      itemBuilder: (group) => ListTile(
+        leading: Icon(Icons.group, color: context.colorScheme.primary),
+        title: Text(group.name),
+        subtitle: Text(group.shortCode, style: const TextStyle(fontSize: 12)),
+      ),
+      onSelected: (group) => _handleGroupSelection(group, notifier),
+    );
+  }
+  
+  Future<void> _handleGroupSelection(VrcGroup? group, CalendarAutomationEditor notifier) async {
+    if (group == null) return;
+    
+    Navigator.pop(context);
+
+    ref.read(snackbarServiceProvider).show(context.l10n.calGroupValidating);
+    
+    final hasPermission = await notifier.validateAndSetGroup(group.id);
+    
+    if (!mounted) return;
+    
+    if (!hasPermission) {
+      ref.read(snackbarServiceProvider).show(context.l10n.calGroupPermissionDenied);
+    }
+    
   }
 
   Widget _buildInsertPlaceholderChip(TextEditingController controller, ValueChanged<String> onChanged) {
@@ -238,6 +321,10 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
         _buildSectionHeader(context.l10n.calSectionIncremental),
         const SizedBox(height: 16),
         _buildIncrementalConfigCard(state, notifier),
+        const SizedBox(height: 24),
+        _buildSectionHeader(context.l10n.calSectionExceptions),
+        const SizedBox(height: 16),
+        _buildExceptionsCard(state, notifier),
         const SizedBox(height: 24),
         _buildSectionHeader(context.l10n.calSectionTolerances),
         const SizedBox(height: 16),
@@ -485,6 +572,50 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ),
           const Divider(height: 1),
           ListTile(
+            leading: const Icon(Icons.calendar_today_outlined),
+            title: Text(context.l10n.calFieldLabelStartDate),
+            subtitle: Text(
+              state.schedule.startDate != null
+                  ? "${state.schedule.startDate!.year}-${state.schedule.startDate!.month.toString().padLeft(2, '0')}-${state.schedule.startDate!.day.toString().padLeft(2, '0')}"
+                  : "Opcional", // Esto puede mejorarse con l10n si se quiere un texto más claro
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: const Icon(Icons.edit_calendar_outlined, size: 20),
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: state.schedule.startDate ?? DateTime.now(),
+                firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                lastDate: DateTime(2030),
+              );
+              if (date != null) notifier.updateStartDate(date);
+            },
+            onLongPress: () => notifier.updateStartDate(null),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.event_busy_outlined),
+            title: Text(context.l10n.calFieldLabelEndDate),
+            subtitle: Text(
+              state.schedule.endDate != null
+                  ? "${state.schedule.endDate!.year}-${state.schedule.endDate!.month.toString().padLeft(2, '0')}-${state.schedule.endDate!.day.toString().padLeft(2, '0')}"
+                  : "Opcional",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: const Icon(Icons.edit_calendar_outlined, size: 20),
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: state.schedule.endDate ?? (state.schedule.startDate ?? DateTime.now()),
+                firstDate: state.schedule.startDate ?? DateTime.now().subtract(const Duration(days: 1)),
+                lastDate: DateTime(2030),
+              );
+              if (date != null) notifier.updateEndDate(date);
+            },
+            onLongPress: () => notifier.updateEndDate(null),
+          ),
+          const Divider(height: 1),
+          ListTile(
             leading: const Icon(Icons.stop_circle_outlined),
             title: Text(context.l10n.calFieldLabelEndTime),
             subtitle: Text(formattedEndTime, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -536,9 +667,124 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
             if (state.recurrence.type == RecurrenceType.weekly) ...[
               const SizedBox(height: 16),
               _buildDaysOfWeekSelector(state, notifier),
+            ] else if (state.recurrence.type == RecurrenceType.monthly) ...[
+              const SizedBox(height: 16),
+              _buildDaysOfMonthSelector(state, notifier),
             ]
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDaysOfMonthSelector(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.l10n.calDaysOfMonth, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: List.generate(31, (index) {
+            final dayNumber = index + 1;
+            final isSelected = state.recurrence.daysOfMonth.contains(dayNumber);
+            return GestureDetector(
+              onTap: () {
+                final List<int> updatedDays = List.from(state.recurrence.daysOfMonth);
+                if (isSelected) {
+                  if (updatedDays.length > 1) updatedDays.remove(dayNumber);
+                } else {
+                  updatedDays.add(dayNumber);
+                }
+                notifier.updateRecurrence(RecurrencePattern(
+                  type: state.recurrence.type,
+                  daysOfWeek: state.recurrence.daysOfWeek,
+                  daysOfMonth: updatedDays,
+                ));
+              },
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: isSelected ? context.colorScheme.primary : context.colorScheme.surfaceContainerHighest,
+                child: Text(
+                  dayNumber.toString(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? context.colorScheme.onPrimary : context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExceptionsCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colorScheme.outlineVariant),
+      ),
+      child: Column(
+        children: [
+          if (state.exceptions.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: Text(
+                  context.l10n.calExceptionsEmpty,
+                  style: TextStyle(color: context.colorScheme.onSurfaceVariant),
+                ),
+              ),
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.exceptions.length,
+              itemBuilder: (context, index) {
+                final exception = state.exceptions[index];
+                final dateStr = "${exception.exceptionDate.year}-${exception.exceptionDate.month.toString().padLeft(2, '0')}-${exception.exceptionDate.day.toString().padLeft(2, '0')}";
+                final endDateStr = exception.exceptionEndDate != null 
+                    ? " hasta ${exception.exceptionEndDate!.year}-${exception.exceptionEndDate!.month.toString().padLeft(2, '0')}-${exception.exceptionEndDate!.day.toString().padLeft(2, '0')}"
+                    : "";
+                return ListTile(
+                  leading: Icon(Icons.event_busy, color: context.colorScheme.error),
+                  title: Text(context.l10n.calExceptionCancel),
+                  subtitle: Text("$dateStr$endDateStr"),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => notifier.removeException(exception),
+                  ),
+                );
+              },
+            ),
+          const Divider(height: 1),
+          TextButton.icon(
+            onPressed: () async {
+              final initialDate = DateTime.now();
+              final dateRange = await showDateRangePicker(
+                context: context,
+                firstDate: initialDate,
+                lastDate: DateTime(2030),
+              );
+              if (dateRange != null) {
+                notifier.addException(CalendarException(
+                  exceptionDate: dateRange.start,
+                  exceptionEndDate: dateRange.end != dateRange.start ? dateRange.end : null,
+                  isCancelled: true,
+                ));
+              }
+            },
+            icon: const Icon(Icons.add),
+            label: Text(context.l10n.calExceptionAdd),
+          ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }

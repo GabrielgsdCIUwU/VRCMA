@@ -419,5 +419,12 @@
   "calGroupSelectHint": "Selecciona un grupo de VRChat...",
   "calGroupNoPerms": "No se encontraron grupos en los que tengas permisos para gestionar el calendario.",
   "calGroupValidating": "Comprobando permisos...",
-  "calGroupPermissionDenied": "No tienes permisos para gestionar el calendario de este grupo."
+  "calGroupPermissionDenied": "No tienes permisos para gestionar el calendario de este grupo.",
+  "calFieldLabelStartDate": "Fecha de inicio",
+  "calFieldLabelEndDate": "Fecha de fin",
+  "calSectionExceptions": "Excepciones",
+  "calExceptionAdd": "Añadir Excepción",
+  "calExceptionCancel": "Cancelar evento en esta fecha",
+  "calExceptionsEmpty": "No hay excepciones configuradas",
+  "calDaysOfMonth": "Días del mes"
 }

@@ -2155,6 +2155,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You don\'t have permission to manage this group\'s calendar.'**
   String get calGroupPermissionDenied;
+
+  /// Label for the start date field in the calendar editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get calFieldLabelStartDate;
+
+  /// Label for the end date field in the calendar editor.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get calFieldLabelEndDate;
+
+  /// Section header for the event exceptions list.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptions'**
+  String get calSectionExceptions;
+
+  /// Button to add a new calendar exception.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Exception'**
+  String get calExceptionAdd;
+
+  /// Option to cancel the event on a specific date.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel event on this date'**
+  String get calExceptionCancel;
+
+  /// Placeholder when there are no exceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No exceptions configured'**
+  String get calExceptionsEmpty;
+
+  /// Label for selecting days of the month for monthly recurrence.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Month'**
+  String get calDaysOfMonth;
 }
 
 class _AppLocalizationsDelegate

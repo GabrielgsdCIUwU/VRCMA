@@ -1891,5 +1891,40 @@
   "calGroupPermissionDenied": "You don't have permission to manage this group's calendar.",
   "@calGroupPermissionDenied": {
     "description": "Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar."
+  },
+
+  "calFieldLabelStartDate": "Start Date",
+  "@calFieldLabelStartDate": {
+    "description": "Label for the start date field in the calendar editor."
+  },
+
+  "calFieldLabelEndDate": "End Date",
+  "@calFieldLabelEndDate": {
+    "description": "Label for the end date field in the calendar editor."
+  },
+
+  "calSectionExceptions": "Exceptions",
+  "@calSectionExceptions": {
+    "description": "Section header for the event exceptions list."
+  },
+
+  "calExceptionAdd": "Add Exception",
+  "@calExceptionAdd": {
+    "description": "Button to add a new calendar exception."
+  },
+
+  "calExceptionCancel": "Cancel event on this date",
+  "@calExceptionCancel": {
+    "description": "Option to cancel the event on a specific date."
+  },
+
+  "calExceptionsEmpty": "No exceptions configured",
+  "@calExceptionsEmpty": {
+    "description": "Placeholder when there are no exceptions."
+  },
+
+  "calDaysOfMonth": "Days of Month",
+  "@calDaysOfMonth": {
+    "description": "Label for selecting days of the month for monthly recurrence."
   }
 }

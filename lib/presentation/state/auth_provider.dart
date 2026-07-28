@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +12,8 @@ import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/repositories/i_auth_repository.dart';
 import 'package:vrcma/core/di/network_provider.dart';
+import 'package:vrcma/core/network/sanitizer/rules/group_permission_sanitizer_rule.dart';
+import 'package:vrcma/core/network/vrc_enum_sanitizer_interceptor.dart';
 
 //! Run: dart run build_runner build
 part 'auth_provider.g.dart';
@@ -48,16 +48,12 @@ class ShowOtpView extends _$ShowOtpView {
 Future<VrchatDart> vrcApi(Ref ref) async {
   final jar = await ref.watch(cookieJarProvider.future);
   
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final String safeCookiePath = p.join(appDocDir.path, '.cookies');
-  
   final client = VrchatDart(
       userAgent: VrchatUserAgent(
           applicationName: 'VRCMA',
           version: '1.0.0',
           contactInfo: 'contacto.gabrielsuarezdominguez@gmail.com'
       ),
-    cookiePath: safeCookiePath
   );
   
   client.rawApi.dio.interceptors.removeWhere(
@@ -66,6 +62,11 @@ Future<VrchatDart> vrcApi(Ref ref) async {
   
   client.rawApi.dio.options.connectTimeout = const Duration(seconds: 15);
   client.rawApi.dio.options.receiveTimeout = const Duration(seconds: 15);
+  
+  // Añadimos el interceptor sanitizador para prevenir errores de enums desconocidos
+  client.rawApi.dio.interceptors.add(VrcEnumSanitizerInterceptor([
+    GroupPermissionSanitizerRule(),
+  ]));
   
   client.rawApi.dio.interceptors.add(CookieManager(jar));
   return client;

@@ -1146,4 +1146,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get calGroupPermissionDenied =>
       'No tienes permisos para gestionar el calendario de este grupo.';
+
+  @override
+  String get calFieldLabelStartDate => 'Fecha de inicio';
+
+  @override
+  String get calFieldLabelEndDate => 'Fecha de fin';
+
+  @override
+  String get calSectionExceptions => 'Excepciones';
+
+  @override
+  String get calExceptionAdd => 'Añadir Excepción';
+
+  @override
+  String get calExceptionCancel => 'Cancelar evento en esta fecha';
+
+  @override
+  String get calExceptionsEmpty => 'No hay excepciones configuradas';
+
+  @override
+  String get calDaysOfMonth => 'Días del mes';
 }
