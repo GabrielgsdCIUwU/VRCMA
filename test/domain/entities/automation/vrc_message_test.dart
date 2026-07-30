@@ -24,7 +24,7 @@ void main() {
       expect(
         () => CustomMessage(content: longContent, type: VrcMessageType.request, lastUpdated: now),
         throwsA(isA<MessageValidationException>().having(
-          (e) => e.error, 'error', isA<MessageEmptyValidationError>(),
+              (e) => e.error, 'error', isA<MessageTooLongValidationError>(),
         )),
       );
     });
