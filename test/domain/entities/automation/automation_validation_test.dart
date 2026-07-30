@@ -50,10 +50,10 @@ void main() {
           (e) => e.error, 'error', isA<InvalidStatusOperatorError>(),
         )),
       );
+    });
 
-      test('should throw if condition value is completely empty', () {
-        expect(
-          () => StatusRule(
+    test('should throw if condition value is completely empty', () {
+      expect( () => StatusRule(
             priority: 1,
             targetStatus: StatusType.joinMe,
             conditionType: ConditionType.population,
@@ -62,9 +62,8 @@ void main() {
           ),
           throwsA(isA<StatusRuleValidationException>().having(
             (e) => e.error, 'error', isA<EmptyStatusConditionValueError>(),
-          ))
-        );
-      });
+          )),
+      );
     });
   });
 }
