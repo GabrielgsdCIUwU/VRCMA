@@ -440,5 +440,9 @@
   "calFieldLabelStrategy": "Estrategia",
   "calFieldLabelMaxEvents": "Máximo de eventos próximos",
   "calStrategyLazy": "Perezosa (mantiene 1 evento)",
-  "calStrategyBatch": "Por lotes (múltiples eventos)"
+  "calStrategyBatch": "Por lotes (múltiples eventos)",
+
+  "statusRuleEditorTitleNew": "Nueva regla de estado",
+  "statusRuleEditorTitleEdit": "Editar regla de estado",
+  "statusVariablesHint": "Insertar variable:"
 }

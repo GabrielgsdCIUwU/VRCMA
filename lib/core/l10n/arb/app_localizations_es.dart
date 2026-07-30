@@ -1190,4 +1190,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calStrategyBatch => 'Por lotes (múltiples eventos)';
+
+  @override
+  String get statusRuleEditorTitleNew => 'Nueva regla de estado';
+
+  @override
+  String get statusRuleEditorTitleEdit => 'Editar regla de estado';
+
+  @override
+  String get statusVariablesHint => 'Insertar variable:';
 }

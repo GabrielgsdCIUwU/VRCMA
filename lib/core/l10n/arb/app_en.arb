@@ -1966,5 +1966,18 @@
   "calStrategyBatch": "Batch (Multiple Events)",
   "@calStrategyBatch": {
     "description": "Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar."
+  },
+
+  "statusRuleEditorTitleNew": "New Status Rule",
+  "@statusRuleEditorTitleNew": {
+    "description": "App bar title when creating a new status automation rule."
+  },
+  "statusRuleEditorTitleEdit": "Edit Status Rule",
+  "@statusRuleEditorTitleEdit": {
+    "description": "App bar title when editing an existing status automation rule."
+  },
+  "statusVariablesHint": "Insert variable:",
+  "@statusVariablesHint": {
+    "description": "Hint text for the inline variable insertion chips."
   }
 }

@@ -2239,6 +2239,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Batch (Multiple Events)'**
   String get calStrategyBatch;
+
+  /// App bar title when creating a new status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'New Status Rule'**
+  String get statusRuleEditorTitleNew;
+
+  /// App bar title when editing an existing status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Status Rule'**
+  String get statusRuleEditorTitleEdit;
+
+  /// Hint text for the inline variable insertion chips.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert variable:'**
+  String get statusVariablesHint;
 }
 
 class _AppLocalizationsDelegate
