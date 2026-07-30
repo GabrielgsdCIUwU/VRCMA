@@ -12,14 +12,11 @@ class ValidateGroupPermissionsUseCase {
     required String userId,
     required String groupId,
   }) async {
-    // Verificar primero en la caché
     final isCached = await _cacheRepo.hasValidCachedPermission(userId, groupId);
     if (isCached) return true;
 
-    // Si no está en caché, llamamos a la API
     final hasPermission = await _remoteCalendarRepo.verifyCreationPermissions(userId, groupId);
 
-    // Si tiene permisos, guardamos en caché
     if (hasPermission) {
       await _cacheRepo.savePermissionCache(userId, groupId);
     }

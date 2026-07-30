@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:vrcma/core/network/sanitizer/i_json_sanitizer_rule.dart';
 
-/// Regla para limpiar los permisos de grupos que la API de VRChat ha añadido
-/// recientemente pero que la librería vrchat_dart (built_value) aún no soporta,
-/// evitando así fallos de parseo.
+/// Rule to sanitize group permissions that the VRChat API has recently added
+/// but which the vrchat_dart library (built_value) does not yet support,
+/// thereby avoiding deserialization failures.
 class GroupPermissionSanitizerRule implements IJsonSanitizerRule {
   
-  // Lista de permisos conocidos y soportados por la versión actual de vrchat_dart
   static const Set<String> _knownPermissions = {
     '*',
     'group-announcement-manage',
@@ -38,7 +37,6 @@ class GroupPermissionSanitizerRule implements IJsonSanitizerRule {
 
   @override
   bool canHandle(RequestOptions options) {
-    // Aplica si el endpoint contiene '/groups/' y es método GET (ya que es cuando leemos)
     return options.path.contains('/groups/') && options.method.toUpperCase() == 'GET';
   }
 
@@ -46,11 +44,9 @@ class GroupPermissionSanitizerRule implements IJsonSanitizerRule {
   dynamic sanitize(dynamic data) {
     if (data == null) return data;
     
-    // Si la respuesta es un Map (ej: respuesta de getGroup)
     if (data is Map<String, dynamic>) {
       return _sanitizeMap(data);
     } 
-    // Si la respuesta es un List (ej: respuesta de getGroups o getGroupRoles)
     else if (data is List) {
       return data.map((item) {
         if (item is Map<String, dynamic>) {
@@ -68,7 +64,6 @@ class GroupPermissionSanitizerRule implements IJsonSanitizerRule {
 
     map.forEach((key, value) {
       if (key == 'permissions' && value is List) {
-        // Filtramos la lista para quedarnos solo con los permisos conocidos
         sanitized[key] = value.where((perm) {
           if (perm is String) {
             return _knownPermissions.contains(perm);

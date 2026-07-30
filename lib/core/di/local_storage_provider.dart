@@ -69,7 +69,6 @@ Future<ILocalCalendarRepository> localCalendarRepository(Ref ref) async {
 
 @riverpod
 Future<IGroupPermissionCacheRepository> groupPermissionCacheRepository(Ref ref) async {
-  // Aquí usamos DatabaseService en vez de Database db, porque el imp recibe DatabaseService
   final dbService = DatabaseService();
   return GroupPermissionCacheRepositoryImp(dbService);
 }

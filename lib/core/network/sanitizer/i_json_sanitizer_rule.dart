@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 
-/// Interfaz para reglas de sanitización de JSON, útil para evitar errores de deserialización
-/// al procesar respuestas inestables de APIs externas.
+/// Interface for JSON sanitization rules, useful for preventing deserialization errors
+/// when processing unstable responses from external APIs.
 abstract class IJsonSanitizerRule {
-  /// Determina si la regla debe aplicarse basándose en las opciones de la petición.
+  /// Determines whether the rule should be applied based on the request options.
   bool canHandle(RequestOptions options);
 
-  /// Ejecuta la sanitización sobre los datos (usualmente Map o List) antes del parseo.
+  /// Executes the sanitization on the payload (usually a Map or List) before parsing.
   dynamic sanitize(dynamic data);
 }
