@@ -41,22 +41,22 @@ void main() {
         () => TimezoneSchedule(startTimeOfDay: '12:00', durationMinutes: 60, timezoneIana: '  '),
         throwsA(isA<CalendarDomainException>().having((e) => e.error, 'error', isA<InvalidTimezoneError>())),
       );
+    });
 
-      test('IncrementalConfig next() should increment currentValue by stepValue if enabled', () {
-        final config = IncrementalConfig(isEnabled: true, startValue: 1, stepValue: 2, currentValue: 3);
-        final nextConfig = config.next();
+    test('IncrementalConfig next() should increment currentValue by stepValue if enabled', () {
+      final config = IncrementalConfig(isEnabled: true, startValue: 1, stepValue: 2, currentValue: 3);
+      final nextConfig = config.next();
 
-        expect(nextConfig.currentValue, 5);
-        expect(nextConfig.isEnabled, true);
-      });
+      expect(nextConfig.currentValue, 5);
+      expect(nextConfig.isEnabled, true);
+    });
 
-      test('IncrementalConfig next() should return identical instance if not enabled', () {
-        final config = IncrementalConfig(isEnabled: false, startValue: 1, stepValue: 1, currentValue: 1);
-        final nextConfig = config.next();
+    test('IncrementalConfig next() should return identical instance if not enabled', () {
+      final config = IncrementalConfig(isEnabled: false, startValue: 1, stepValue: 1, currentValue: 1);
+      final nextConfig = config.next();
 
-        expect(identical(config, nextConfig), false);
-        expect(config, nextConfig);
-      });
+      expect(identical(config, nextConfig), isTrue);
+      expect(config, equals(nextConfig));
     });
   });
 }
