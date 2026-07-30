@@ -49,7 +49,7 @@ void main() {
   final message = CustomMessage(
       id: 1,
       content: 'Welcome!',
-      type: VrcMessageType.request,
+      type: VrcMessageType.invite,
       lastUpdated: DateTime.now()
   );
 
@@ -178,7 +178,17 @@ void main() {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(requestEvent.senderId)).thenAnswer((_) async => []);
 
-      final rejectRule = rule.copyWith(action: RuleAction.reject);
+      final rejectMessage = CustomMessage(
+        id: 2,
+        content: 'Rejected',
+        type: VrcMessageType.requestResponse,
+        lastUpdated: DateTime.now(),
+      );
+
+      final rejectRule = rule.copyWith(
+        action: RuleAction.reject,
+        requestResponseMessage: () => rejectMessage,
+      );
       final result = ProcessInvitationResult(action: RuleAction.reject, rule: rejectRule);
 
       when(mockUseCase.execute(
@@ -187,7 +197,7 @@ void main() {
         userAssignedRoles: anyNamed('userAssignedRoles'),
       )).thenReturn(result);
 
-      when(mockSlotManager.prepareSlotForMessage(currentUserId, message))
+      when(mockSlotManager.prepareSlotForMessage(currentUserId, rejectMessage))
           .thenAnswer((_) async => 5);
 
       when(mockAutomationRepo.rejectNotificationWithMessage(requestEvent, 5))
@@ -195,7 +205,7 @@ void main() {
 
       await processor.process(requestEvent);
 
-      verify(mockSlotManager.prepareSlotForMessage(currentUserId, message));
+      verify(mockSlotManager.prepareSlotForMessage(currentUserId, rejectMessage));
       verify(mockAutomationRepo.rejectNotificationWithMessage(requestEvent, 5));
       verify(mockLogRepo.saveLog(
         vrcUserId: requestEvent.senderId,

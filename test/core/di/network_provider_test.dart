@@ -25,20 +25,15 @@ void main() {
   setUp(() {
     fakePathProvider = FakePathProvider();
     PathProviderPlatform.instance = fakePathProvider;
-
-    if (Platform.isWindows || Platform.isLinux) {
-      final exeDir = p.dirname(Platform.resolvedExecutable);
-      desktopUserdataDir = p.join(exeDir, 'userdata');
-      expectedCookiePath = p.join(desktopUserdataDir!, '.cookies');
-    } else {
-      expectedCookiePath = p.join('.documents', '.cookies');
-    }
+    expectedCookiePath = p.join('.support', '.cookies');
+    desktopUserdataDir = null;
   });
   
   tearDown(() {
     _deleteDirectoryIfExists(expectedCookiePath);
     _deleteDirectoryIfExists(desktopUserdataDir);
     _deleteDirectoryIfExists('.documents');
+    _deleteDirectoryIfExists('.support');
   });
   
   group('Network DI Core Tests', () {
