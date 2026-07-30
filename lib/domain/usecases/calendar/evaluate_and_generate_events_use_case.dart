@@ -100,6 +100,8 @@ class EvaluateAndGenerateEventsUseCase {
         );
         await _localRepo.saveRule(currentRuleState);
       }
+
+      await Future.delayed(const Duration(seconds: 3));
     }
   }
 

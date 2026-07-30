@@ -29,11 +29,15 @@ class TimezoneSchedule extends Equatable {
   final String startTimeOfDay; // Format "HH:MM"
   final int durationMinutes;
   final String timezoneIana; // e.g., "Europe/Madrid"
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   TimezoneSchedule({
     required this.startTimeOfDay,
     required this.durationMinutes,
     required this.timezoneIana,
+    this.startDate,
+    this.endDate,
   }) {
     if (timezoneIana.trim().isEmpty) {
       throw CalendarDomainException(InvalidTimezoneError(timezoneIana));
@@ -41,10 +45,13 @@ class TimezoneSchedule extends Equatable {
     if (durationMinutes <= 0) {
       throw CalendarDomainException(InvalidDurationError(durationMinutes));
     }
+    if (startDate != null && endDate != null && startDate!.isAfter(endDate!)) {
+      throw CalendarDomainException(InvalidDurationError(-1));
+    }
   }
 
   @override
-  List<Object?> get props => [startTimeOfDay, durationMinutes, timezoneIana];
+  List<Object?> get props => [startTimeOfDay, durationMinutes, timezoneIana, startDate, endDate];
 }
 
 /// Value object representing the logic configuration for recurrent intervals.

@@ -228,6 +228,16 @@ class DatabaseService {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE group_permissions_cache (
+        group_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        has_permission INTEGER NOT NULL,
+        validated_at TEXT NOT NULL,
+        PRIMARY KEY (group_id, user_id)
+      )
+    ''');
+
     await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');

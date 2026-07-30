@@ -944,7 +944,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calSectionSchedule => 'Programación';
 
   @override
-  String get calFieldLabelTime => 'Hora de inicio (HH:mm)';
+  String get calFieldLabelTime => 'Hora de inicio';
 
   @override
   String get calFieldLabelDuration => 'Duración (minutos)';
@@ -1090,4 +1090,104 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calFieldLabelCloseDelayShort => 'Retraso de cierre (min)';
+
+  @override
+  String get calLiveCardPreview => 'Vista previa de la tarjeta en vivo';
+
+  @override
+  String get calNoTitleTemplate => 'Sin título';
+
+  @override
+  String get calNoDescriptionTemplate => 'Sin descripción';
+
+  @override
+  String get calPlatformDesc =>
+      'Determina qué plataformas de VRChat serán compatibles oficialmente con este evento.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Cualquier usuario de VRChat podrá ver y unirse a este evento.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Solo los miembros aprobados del grupo podrán ver y acceder a este evento.';
+
+  @override
+  String get calToleranceHostTitle => 'Acceso de anfitriones';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Permite que los anfitriones entren antes a la instancia del mundo para prepararla.';
+
+  @override
+  String get calToleranceMemberTitle => 'Acceso de miembros';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Define cuántos minutos antes del inicio podrán unirse los miembros del grupo.';
+
+  @override
+  String get calToleranceCloseTitle => 'Retraso de cierre';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Tiempo de espera tras la hora de finalización antes de cerrar la instancia.';
+
+  @override
+  String get calGroupSelectHint => 'Selecciona un grupo de VRChat...';
+
+  @override
+  String get calGroupNoPerms =>
+      'No se encontraron grupos en los que tengas permisos para gestionar el calendario.';
+
+  @override
+  String get calGroupValidating => 'Comprobando permisos...';
+
+  @override
+  String get calGroupPermissionDenied =>
+      'No tienes permisos para gestionar el calendario de este grupo.';
+
+  @override
+  String get calFieldLabelStartDate => 'Fecha de inicio';
+
+  @override
+  String get calFieldLabelEndDate => 'Fecha de finalización';
+
+  @override
+  String get calSectionExceptions => 'Excepciones';
+
+  @override
+  String get calExceptionAdd => 'Añadir excepción';
+
+  @override
+  String get calExceptionCancel => 'Cancelar el evento en esta fecha';
+
+  @override
+  String get calExceptionsEmpty => 'No hay excepciones configuradas';
+
+  @override
+  String get calDaysOfMonth => 'Días del mes';
+
+  @override
+  String get calOptionalDate => 'Opcional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' hasta el $date';
+  }
+
+  @override
+  String get calSectionStrategy => 'Estrategia de generación';
+
+  @override
+  String get calFieldLabelStrategy => 'Estrategia';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Máximo de eventos próximos';
+
+  @override
+  String get calStrategyLazy => 'Perezosa (mantiene 1 evento)';
+
+  @override
+  String get calStrategyBatch => 'Por lotes (múltiples eventos)';
 }

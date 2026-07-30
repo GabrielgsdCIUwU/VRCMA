@@ -1,13 +1,21 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/entities/social/vrc_group.dart';
+import 'package:vrcma/presentation/state/auth_provider.dart';
+import 'package:vrcma/presentation/state/calendar_scheduler_provider.dart';
 
 
 part 'calendar_automation_provider.g.dart';
@@ -37,6 +45,9 @@ class CalendarAutomationList extends _$CalendarAutomationList {
   Future<void> toggleActive(CalendarAutomationRule rule) async {
     final updateRule = rule.copyWith(isActive: !rule.isActive);
     await save(updateRule);
+    if (updateRule.isActive) {
+      ref.read(calendarSchedulerProvider.notifier).evaluateNow();
+    }
   }
 }
 
@@ -74,9 +85,23 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
   
   void updateGroupId(String groupId) => state = state.copyWith(groupId: groupId);
   
+  Future<bool> validateAndSetGroup(String groupId) async {
+    final authUser = await ref.read(authStateProvider.future);
+    if (authUser == null) return false;
+    
+    final validateUseCase = await ref.read(validateGroupPermissionsUseCaseProvider.future);
+    final hasPermission = await validateUseCase.execute(userId: authUser.id, groupId: groupId);
+    
+    if (hasPermission) {
+      updateGroupId(groupId);
+      return true;
+    }
+    return false;
+  }
+  
   void updateTitleTemplate(String title) => state = state.copyWith(titleTemplate: title);
   
-  void updateDescriptionTemplate(String? desc) => state.copyWith(descriptionTemplate: () => desc);
+  void updateDescriptionTemplate(String? desc) => state = state.copyWith(descriptionTemplate: () => desc);
   
   void updateCategory(GroupEventCategory cat) => state = state.copyWith(category: cat);
   
@@ -87,6 +112,8 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: time,
       durationMinutes: state.schedule.durationMinutes,
       timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
@@ -95,6 +122,8 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: state.schedule.startTimeOfDay,
       durationMinutes: duration,
       timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
@@ -103,10 +132,42 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       startTimeOfDay: state.schedule.startTimeOfDay,
       durationMinutes: state.schedule.durationMinutes,
       timezoneIana: tz,
+      startDate: state.schedule.startDate,
+      endDate: state.schedule.endDate,
     ),
   );
   
   void updateRecurrence(RecurrencePattern recurrence) => state = state.copyWith(recurrence: recurrence);
+
+  void updateStartDate(DateTime? date) => state = state.copyWith(
+    schedule: TimezoneSchedule(
+      startTimeOfDay: state.schedule.startTimeOfDay,
+      durationMinutes: state.schedule.durationMinutes,
+      timezoneIana: state.schedule.timezoneIana,
+      startDate: date,
+      endDate: state.schedule.endDate,
+    ),
+  );
+
+  void updateEndDate(DateTime? date) => state = state.copyWith(
+    schedule: TimezoneSchedule(
+      startTimeOfDay: state.schedule.startTimeOfDay,
+      durationMinutes: state.schedule.durationMinutes,
+      timezoneIana: state.schedule.timezoneIana,
+      startDate: state.schedule.startDate,
+      endDate: date,
+    ),
+  );
+
+  void addException(CalendarException exception) {
+    state = state.copyWith(exceptions: [...state.exceptions, exception]);
+  }
+
+  void removeException(CalendarException exception) {
+    state = state.copyWith(
+      exceptions: state.exceptions.where((e) => e != exception).toList(),
+    );
+  }
   
   void updateIncrementalConfig(IncrementalConfig config) => state = state.copyWith(incrementalConfig: config);
   
@@ -123,6 +184,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
     } else {
       allStatePlatforms.add(platform);
     }
+    state = state.copyWith(platforms: allStatePlatforms);
   }
   
   void addLanguage(String lang) {
@@ -157,9 +219,33 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
         startTimeOfDay: state.schedule.startTimeOfDay,
         durationMinutes: state.schedule.durationMinutes,
         timezoneIana: tz.local.name,
+        startDate: state.schedule.startDate,
+        endDate: state.schedule.endDate,
       ),
     );
 
     await ref.read(calendarAutomationListProvider.notifier).save(synchronizedRule);
   }
+}
+
+@riverpod
+Future<List<VrcGroup>> userGroups(Ref ref) async {
+  final keepAliveLink = ref.keepAlive();
+  Timer? timer;
+
+  ref.onDispose(() => timer?.cancel());
+  ref.onCancel(() {
+    timer = Timer(const Duration(minutes: 5), () => keepAliveLink.close());
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
+
+  final authUser = await ref.watch(authStateProvider.future);
+  if (authUser == null) return [];
+  
+  final socialRepo = await ref.watch(socialRepositoryProvider.future);
+  final groupsResult = await socialRepo.getUserGroups(authUser.id);
+  
+  return groupsResult.fold((l) => <VrcGroup>[], (r) => r);
 }

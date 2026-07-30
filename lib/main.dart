@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:timezone/data/latest_all.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:vrcma/core/l10n/arb/app_localizations.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/app_settings_provider.dart';
@@ -17,6 +20,15 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<Scaffol
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz_data.initializeTimeZones();
+  
+  try {
+    final TimezoneInfo tzInfo = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(tzInfo.identifier));
+  } catch (e) {
+    debugPrint('Failed to get local timezone, defaulting to UTC: $e');
+    tz.setLocalLocation(tz.UTC);
+  }
   
   //! Support SQLite on Desktop else DATABASE DOESN'T LOAD
   if (Platform.isWindows || Platform.isLinux) {

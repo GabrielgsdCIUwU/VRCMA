@@ -1793,7 +1793,7 @@ abstract class AppLocalizations {
   /// Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format.
   ///
   /// In en, this message translates to:
-  /// **'Start Time (HH:mm)'**
+  /// **'Start Time'**
   String get calFieldLabelTime;
 
   /// Label for the duration of the generated event, expressed in minutes.
@@ -2059,6 +2059,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close Delay (min)'**
   String get calFieldLabelCloseDelayShort;
+
+  /// Title shown above the preview of the VRChat live event card while the user is configuring an event. This is only a preview and not the actual published card.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Card Preview'**
+  String get calLiveCardPreview;
+
+  /// Placeholder displayed in the live card preview when the event title has not been entered yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Event'**
+  String get calNoTitleTemplate;
+
+  /// Placeholder displayed in the live card preview when the event description is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No description provided'**
+  String get calNoDescriptionTemplate;
+
+  /// Help text below the platform selector. Refers to supported VRChat platforms such as Windows or Android.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which VRChat platforms are officially supported for this event.'**
+  String get calPlatformDesc;
+
+  /// Help text explaining the Public visibility option for a group event.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on VRChat can view and join this event.'**
+  String get calAccessPublicDesc;
+
+  /// Help text explaining the Group-only visibility option. The event is restricted to approved members of the VRChat group.
+  ///
+  /// In en, this message translates to:
+  /// **'Only approved group members can view and join this event.'**
+  String get calAccessGroupDesc;
+
+  /// Section title for the setting that controls early access for event hosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Access'**
+  String get calToleranceHostTitle;
+
+  /// Help text explaining that event hosts may enter the VRChat world instance early for setup before attendees can join.
+  ///
+  /// In en, this message translates to:
+  /// **'Allows hosts to join the world instance before the event starts so they can get everything ready.'**
+  String get calToleranceHostDesc;
+
+  /// Section title for the setting that controls early access for regular group members.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Access'**
+  String get calToleranceMemberTitle;
+
+  /// Help text for the early join window available to regular group members before the event begins.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many minutes before the scheduled start group members can join the instance.'**
+  String get calToleranceMemberDesc;
+
+  /// Section title for the setting that controls how long the world instance remains open after the event ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance Close Delay'**
+  String get calToleranceCloseTitle;
+
+  /// Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the world instance open for a short time after the scheduled end before it is closed.'**
+  String get calToleranceCloseDesc;
+
+  /// Placeholder shown in the group selection dropdown before a VRChat group has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a VRChat Group...'**
+  String get calGroupSelectHint;
+
+  /// Message displayed when the current user does not belong to any VRChat group where they have permission to manage the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups with calendar management permissions were found.'**
+  String get calGroupNoPerms;
+
+  /// Status message displayed while verifying whether the current user has permission to manage the selected VRChat group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking permissions...'**
+  String get calGroupValidating;
+
+  /// Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to manage this group\'s calendar.'**
+  String get calGroupPermissionDenied;
+
+  /// Label for the date picker that defines when the VRChat calendar event or recurring schedule starts.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get calFieldLabelStartDate;
+
+  /// Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get calFieldLabelEndDate;
+
+  /// Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptions'**
+  String get calSectionExceptions;
+
+  /// Button that adds a new exception to the recurring event schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Exception'**
+  String get calExceptionAdd;
+
+  /// Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel event on this date'**
+  String get calExceptionCancel;
+
+  /// Placeholder displayed when the recurring event has no configured exceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No exceptions configured'**
+  String get calExceptionsEmpty;
+
+  /// Label for selecting one or more days of the month on which the recurring event should occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Month'**
+  String get calDaysOfMonth;
+
+  /// Placeholder shown in an optional date field when no date has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get calOptionalDate;
+
+  /// Text appended to an exception entry to indicate the date until which that exception remains active.
+  ///
+  /// In en, this message translates to:
+  /// **' until {date}'**
+  String calExceptionUntil(String date);
+
+  /// Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained.
+  ///
+  /// In en, this message translates to:
+  /// **'Generation Strategy'**
+  String get calSectionStrategy;
+
+  /// Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy'**
+  String get calFieldLabelStrategy;
+
+  /// Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Upcoming Events'**
+  String get calFieldLabelMaxEvents;
+
+  /// Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lazy (Maintains 1 Event)'**
+  String get calStrategyLazy;
+
+  /// Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch (Multiple Events)'**
+  String get calStrategyBatch;
 }
 
 class _AppLocalizationsDelegate

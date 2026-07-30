@@ -8,6 +8,7 @@ import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/state/background_service_provider.dart';
+import 'package:vrcma/presentation/state/calendar_scheduler_provider.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
 import 'package:vrcma/presentation/state/status_automation_provider.dart';
@@ -31,6 +32,7 @@ class AutomationState extends _$AutomationState {
   
   Future<void> _init() async {
     ref.read(statusAutomationOrchestratorProvider);
+    ref.read(calendarSchedulerProvider);
     
     if (Platform.isAndroid || Platform.isIOS) {
       _bgSubscription = FlutterBackgroundService().on('update_ui').listen((event) {

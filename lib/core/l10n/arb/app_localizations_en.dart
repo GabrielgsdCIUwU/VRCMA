@@ -942,7 +942,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calSectionSchedule => 'Schedule';
 
   @override
-  String get calFieldLabelTime => 'Start Time (HH:mm)';
+  String get calFieldLabelTime => 'Start Time';
 
   @override
   String get calFieldLabelDuration => 'Duration (Minutes)';
@@ -1083,4 +1083,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calFieldLabelCloseDelayShort => 'Close Delay (min)';
+
+  @override
+  String get calLiveCardPreview => 'Live Card Preview';
+
+  @override
+  String get calNoTitleTemplate => 'Untitled Event';
+
+  @override
+  String get calNoDescriptionTemplate => 'No description provided';
+
+  @override
+  String get calPlatformDesc =>
+      'Choose which VRChat platforms are officially supported for this event.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Anyone on VRChat can view and join this event.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Only approved group members can view and join this event.';
+
+  @override
+  String get calToleranceHostTitle => 'Host Access';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Allows hosts to join the world instance before the event starts so they can get everything ready.';
+
+  @override
+  String get calToleranceMemberTitle => 'Member Access';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Choose how many minutes before the scheduled start group members can join the instance.';
+
+  @override
+  String get calToleranceCloseTitle => 'Instance Close Delay';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Keeps the world instance open for a short time after the scheduled end before it is closed.';
+
+  @override
+  String get calGroupSelectHint => 'Select a VRChat Group...';
+
+  @override
+  String get calGroupNoPerms =>
+      'No groups with calendar management permissions were found.';
+
+  @override
+  String get calGroupValidating => 'Checking permissions...';
+
+  @override
+  String get calGroupPermissionDenied =>
+      'You dont have permission to manage this groups calendar.';
+
+  @override
+  String get calFieldLabelStartDate => 'Start Date';
+
+  @override
+  String get calFieldLabelEndDate => 'End Date';
+
+  @override
+  String get calSectionExceptions => 'Exceptions';
+
+  @override
+  String get calExceptionAdd => 'Add Exception';
+
+  @override
+  String get calExceptionCancel => 'Cancel event on this date';
+
+  @override
+  String get calExceptionsEmpty => 'No exceptions configured';
+
+  @override
+  String get calDaysOfMonth => 'Days of Month';
+
+  @override
+  String get calOptionalDate => 'Optional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' until $date';
+  }
+
+  @override
+  String get calSectionStrategy => 'Generation Strategy';
+
+  @override
+  String get calFieldLabelStrategy => 'Strategy';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Max Upcoming Events';
+
+  @override
+  String get calStrategyLazy => 'Lazy (Maintains 1 Event)';
+
+  @override
+  String get calStrategyBatch => 'Batch (Multiple Events)';
 }

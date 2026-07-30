@@ -1572,7 +1572,7 @@
     "description": "Section heading containing the event time, duration and timezone settings."
   },
 
-  "calFieldLabelTime": "Start Time (HH:mm)",
+  "calFieldLabelTime": "Start Time",
   "@calFieldLabelTime": {
     "description": "Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format."
   },
@@ -1811,5 +1811,160 @@
   "calFieldLabelCloseDelayShort": "Close Delay (min)",
   "@calFieldLabelCloseDelayShort": {
     "description": "Short label for the number of minutes after the scheduled end time before the VRChat instance is considered closed."
+  },
+
+  "calLiveCardPreview": "Live Card Preview",
+  "@calLiveCardPreview": {
+    "description": "Title shown above the preview of the VRChat live event card while the user is configuring an event. This is only a preview and not the actual published card."
+  },
+
+  "calNoTitleTemplate": "Untitled Event",
+  "@calNoTitleTemplate": {
+    "description": "Placeholder displayed in the live card preview when the event title has not been entered yet."
+  },
+
+  "calNoDescriptionTemplate": "No description provided",
+  "@calNoDescriptionTemplate": {
+    "description": "Placeholder displayed in the live card preview when the event description is empty."
+  },
+
+  "calPlatformDesc": "Choose which VRChat platforms are officially supported for this event.",
+  "@calPlatformDesc": {
+    "description": "Help text below the platform selector. Refers to supported VRChat platforms such as Windows or Android."
+  },
+
+  "calAccessPublicDesc": "Anyone on VRChat can view and join this event.",
+  "@calAccessPublicDesc": {
+    "description": "Help text explaining the Public visibility option for a group event."
+  },
+
+  "calAccessGroupDesc": "Only approved group members can view and join this event.",
+  "@calAccessGroupDesc": {
+    "description": "Help text explaining the Group-only visibility option. The event is restricted to approved members of the VRChat group."
+  },
+
+  "calToleranceHostTitle": "Host Access",
+  "@calToleranceHostTitle": {
+    "description": "Section title for the setting that controls early access for event hosts."
+  },
+
+  "calToleranceHostDesc": "Allows hosts to join the world instance before the event starts so they can get everything ready.",
+  "@calToleranceHostDesc": {
+    "description": "Help text explaining that event hosts may enter the VRChat world instance early for setup before attendees can join."
+  },
+
+  "calToleranceMemberTitle": "Member Access",
+  "@calToleranceMemberTitle": {
+    "description": "Section title for the setting that controls early access for regular group members."
+  },
+
+  "calToleranceMemberDesc": "Choose how many minutes before the scheduled start group members can join the instance.",
+  "@calToleranceMemberDesc": {
+    "description": "Help text for the early join window available to regular group members before the event begins."
+  },
+
+  "calToleranceCloseTitle": "Instance Close Delay",
+  "@calToleranceCloseTitle": {
+    "description": "Section title for the setting that controls how long the world instance remains open after the event ends."
+  },
+
+  "calToleranceCloseDesc": "Keeps the world instance open for a short time after the scheduled end before it is closed.",
+  "@calToleranceCloseDesc": {
+    "description": "Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed."
+  },
+
+  "calGroupSelectHint": "Select a VRChat Group...",
+  "@calGroupSelectHint": {
+    "description": "Placeholder shown in the group selection dropdown before a VRChat group has been selected."
+  },
+
+  "calGroupNoPerms": "No groups with calendar management permissions were found.",
+  "@calGroupNoPerms": {
+    "description": "Message displayed when the current user does not belong to any VRChat group where they have permission to manage the group's calendar."
+  },
+
+  "calGroupValidating": "Checking permissions...",
+  "@calGroupValidating": {
+    "description": "Status message displayed while verifying whether the current user has permission to manage the selected VRChat group's calendar."
+  },
+
+  "calGroupPermissionDenied": "You don't have permission to manage this group's calendar.",
+  "@calGroupPermissionDenied": {
+    "description": "Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar."
+  },
+
+  "calFieldLabelStartDate": "Start Date",
+  "@calFieldLabelStartDate": {
+    "description": "Label for the date picker that defines when the VRChat calendar event or recurring schedule starts."
+  },
+
+  "calFieldLabelEndDate": "End Date",
+  "@calFieldLabelEndDate": {
+    "description": "Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends."
+  },
+
+  "calSectionExceptions": "Exceptions",
+  "@calSectionExceptions": {
+    "description": "Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule."
+  },
+
+  "calExceptionAdd": "Add Exception",
+  "@calExceptionAdd": {
+    "description": "Button that adds a new exception to the recurring event schedule."
+  },
+
+  "calExceptionCancel": "Cancel event on this date",
+  "@calExceptionCancel": {
+    "description": "Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged."
+  },
+
+  "calExceptionsEmpty": "No exceptions configured",
+  "@calExceptionsEmpty": {
+    "description": "Placeholder displayed when the recurring event has no configured exceptions."
+  },
+
+  "calDaysOfMonth": "Days of Month",
+  "@calDaysOfMonth": {
+    "description": "Label for selecting one or more days of the month on which the recurring event should occur."
+  },
+
+  "calOptionalDate": "Optional",
+  "@calOptionalDate": {
+    "description": "Placeholder shown in an optional date field when no date has been selected."
+  },
+
+  "calExceptionUntil": " until {date}",
+  "@calExceptionUntil": {
+    "description": "Text appended to an exception entry to indicate the date until which that exception remains active.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "calSectionStrategy": "Generation Strategy",
+  "@calSectionStrategy": {
+    "description": "Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained."
+  },
+
+  "calFieldLabelStrategy": "Strategy",
+  "@calFieldLabelStrategy": {
+    "description": "Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events."
+  },
+
+  "calFieldLabelMaxEvents": "Max Upcoming Events",
+  "@calFieldLabelMaxEvents": {
+    "description": "Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar."
+  },
+
+  "calStrategyLazy": "Lazy (Maintains 1 Event)",
+  "@calStrategyLazy": {
+    "description": "Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar."
+  },
+
+  "calStrategyBatch": "Batch (Multiple Events)",
+  "@calStrategyBatch": {
+    "description": "Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar."
   }
 }
