@@ -31,7 +31,7 @@ class CustomMessage extends Equatable {
     this.slotIndex,
     required this.lastUpdated,
   }) {
-    if (content.isEmpty) {
+    if (content.trim().isEmpty) {
       throw MessageValidationException(const MessageEmptyValidationError());
     }
 
