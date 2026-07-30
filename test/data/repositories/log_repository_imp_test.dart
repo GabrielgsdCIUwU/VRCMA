@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/data/repositories/log_repository_imp.dart';
+import 'package:vrcma/domain/entities/automation/automation_log.dart';
 
 void main() {
   late Database db;
@@ -115,7 +116,7 @@ void main() {
       
       expect(logs.length, 2);
       expect(logs[0].senderName, 'User2');
-      expect(logs[0].action, 'ACCEPTED');
+      expect(logs[0].action, LogActionOutcome.accepted);
       expect(logs[1].senderName, 'User1');
     });
     
