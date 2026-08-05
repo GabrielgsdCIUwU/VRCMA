@@ -31,7 +31,7 @@ Future<List<AutomationEventHandler>> automationHandlers(Ref ref) async {
   final authUser = await ref.watch(authStateProvider.future);
   final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
   final profileRepo = await ref.watch(profileRepositoryProvider.future);
-  final logRepo = await ref.watch(logRepositoryProvider.future);
+  final logRepo = await ref.watch(appLogRepositoryProvider.future);
 
   final invitationUseCase = ProcessInvitationUseCase(
     roleExtractor: UserRoleExtractor(),
