@@ -2323,6 +2323,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System Rule'**
   String get logFallbackRule;
+
+  /// Tooltip for the button that permanently deletes all stored automation and diagnostics log entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all logs'**
+  String get logsClearTooltip;
+
+  /// Title of the confirmation dialog shown before permanently deleting all automation and diagnostics logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Diagnostics'**
+  String get logsClearConfirmTitle;
+
+  /// Confirmation message displayed before permanently deleting every automation and diagnostics log entry. Warns that the action cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.'**
+  String get logsClearConfirmContent;
+
+  /// Filter option that displays log entries from every available category.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get logCategoryAll;
+
+  /// Filter option that displays log entries of every severity level.
+  ///
+  /// In en, this message translates to:
+  /// **'All Severities'**
+  String get logSeverityAll;
+
+  /// Severity level for informational log entries that do not indicate a problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get logSeverityInfo;
+
+  /// Severity level for log entries that indicate a potential issue or a non-critical problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get logSeverityWarning;
+
+  /// Severity level for log entries that indicate a failure or an unexpected error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get logSeverityError;
 }
 
 class _AppLocalizationsDelegate

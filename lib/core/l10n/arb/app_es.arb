@@ -448,5 +448,13 @@
   "logCalendarSuccess": "Evento publicado en el calendario: {title}",
   "logCalendarFailure": "No se pudo publicar el evento en el calendario: {title}",
   "logCalendarWarning": "Publicación del evento pospuesta: {title}",
-  "logSystemMessage": "Evento del sistema: {message}"
+  "logSystemMessage": "Evento del sistema: {message}",
+  "logsClearTooltip": "Borrar todos los registros",
+  "logsClearConfirmTitle": "Borrar diagnósticos",
+  "logsClearConfirmContent": "¿Seguro que quieres eliminar permanentemente todos los registros de automatizaciones y diagnósticos? Esta acción no se puede deshacer.",
+  "logCategoryAll": "Todas las categorías",
+  "logSeverityAll": "Todas las severidades",
+  "logSeverityInfo": "Información",
+  "logSeverityWarning": "Advertencia",
+  "logSeverityError": "Error"
 }

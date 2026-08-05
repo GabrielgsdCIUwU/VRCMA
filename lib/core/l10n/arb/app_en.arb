@@ -2073,5 +2073,45 @@
   "logFallbackRule": "System Rule",
   "@logFallbackRule": {
     "description": "Fallback name used when a system rule involved in the log entry has no available name."
+  },
+
+  "logsClearTooltip": "Clear all logs",
+  "@logsClearTooltip": {
+    "description": "Tooltip for the button that permanently deletes all stored automation and diagnostics log entries."
+  },
+
+  "logsClearConfirmTitle": "Clear Diagnostics",
+  "@logsClearConfirmTitle": {
+    "description": "Title of the confirmation dialog shown before permanently deleting all automation and diagnostics logs."
+  },
+
+  "logsClearConfirmContent": "Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.",
+  "@logsClearConfirmContent": {
+    "description": "Confirmation message displayed before permanently deleting every automation and diagnostics log entry. Warns that the action cannot be undone."
+  },
+
+  "logCategoryAll": "All Categories",
+  "@logCategoryAll": {
+    "description": "Filter option that displays log entries from every available category."
+  },
+
+  "logSeverityAll": "All Severities",
+  "@logSeverityAll": {
+    "description": "Filter option that displays log entries of every severity level."
+  },
+
+  "logSeverityInfo": "Info",
+  "@logSeverityInfo": {
+    "description": "Severity level for informational log entries that do not indicate a problem."
+  },
+
+  "logSeverityWarning": "Warning",
+  "@logSeverityWarning": {
+    "description": "Severity level for log entries that indicate a potential issue or a non-critical problem."
+  },
+
+  "logSeverityError": "Error",
+  "@logSeverityError": {
+    "description": "Severity level for log entries that indicate a failure or an unexpected error."
   }
 }

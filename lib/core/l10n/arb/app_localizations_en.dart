@@ -1237,4 +1237,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logFallbackRule => 'System Rule';
+
+  @override
+  String get logsClearTooltip => 'Clear all logs';
+
+  @override
+  String get logsClearConfirmTitle => 'Clear Diagnostics';
+
+  @override
+  String get logsClearConfirmContent =>
+      'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.';
+
+  @override
+  String get logCategoryAll => 'All Categories';
+
+  @override
+  String get logSeverityAll => 'All Severities';
+
+  @override
+  String get logSeverityInfo => 'Info';
+
+  @override
+  String get logSeverityWarning => 'Warning';
+
+  @override
+  String get logSeverityError => 'Error';
 }

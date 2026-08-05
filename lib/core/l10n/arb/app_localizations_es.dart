@@ -1244,4 +1244,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logFallbackRule => 'Regla del sistema';
+
+  @override
+  String get logsClearTooltip => 'Borrar todos los registros';
+
+  @override
+  String get logsClearConfirmTitle => 'Borrar diagnósticos';
+
+  @override
+  String get logsClearConfirmContent =>
+      '¿Seguro que quieres eliminar permanentemente todos los registros de automatizaciones y diagnósticos? Esta acción no se puede deshacer.';
+
+  @override
+  String get logCategoryAll => 'Todas las categorías';
+
+  @override
+  String get logSeverityAll => 'Todas las severidades';
+
+  @override
+  String get logSeverityInfo => 'Información';
+
+  @override
+  String get logSeverityWarning => 'Advertencia';
+
+  @override
+  String get logSeverityError => 'Error';
 }
