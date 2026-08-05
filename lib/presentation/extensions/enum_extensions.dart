@@ -10,6 +10,7 @@ import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/entities/theme/app_theme_color.dart';
 
 extension RecurrenceTypeL10n on RecurrenceType {
@@ -207,6 +208,29 @@ extension CreationStrategyL10n on CreationStrategy {
     return switch (this) {
       CreationStrategy.lazy => l10n.calStrategyLazy,
       CreationStrategy.batch => l10n.calStrategyBatch,
+    };
+  }
+}
+
+extension LogCategoryL10n on LogCategory {
+  String toLocalizedString(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      LogCategory.invitation => l10n.logCategoryInvitation,
+      LogCategory.status => l10n.logCategoryStatus,
+      LogCategory.calendar => l10n.logCategoryCalendar,
+      LogCategory.system => l10n.logCategorySystem,
+    };
+  }
+}
+
+extension LogSeverityL10n on LogSeverity {
+  String toLocalizedString(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      LogSeverity.info => l10n.logSeverityInfo,
+      LogSeverity.warning => l10n.logSeverityWarning,
+      LogSeverity.error => l10n.logSeverityError,
     };
   }
 }
