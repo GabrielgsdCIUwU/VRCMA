@@ -15,7 +15,7 @@ class AppLogMapper implements IDatabaseMapper<AppLog> {
     final rawMetadata = row['metadata'] as String?;
     if (rawMetadata != null && rawMetadata.isNotEmpty) {
       try {
-        metadataMap = jsonEncode(rawMetadata) as Map<String, dynamic>;
+        metadataMap = jsonDecode(rawMetadata) as Map<String, dynamic>;
       } catch (_) {}
     }
 
