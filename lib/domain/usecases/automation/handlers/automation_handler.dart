@@ -2,9 +2,10 @@ import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
-import 'package:vrcma/domain/repositories/i_log_repository.dart';
+import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
@@ -21,7 +22,7 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
   final IAutomationRepository automationRepository;
   final ILocalSocialRepository localSocialRepository;
   final IProfileRepository profileRepository;
-  final ILogRepository logRepository;
+  final IAppLogRepository logRepository;
   final ProcessInvitationUseCase useCase;
 
   BaseIncomingUserEventHandler({
@@ -51,14 +52,22 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
       ? "$profileName:$matchedRoleName"
       : profileName;
 
-    await logRepository.saveLog(
-      vrcUserId: event.senderId,
-      displayName: event.senderName,
-      avatarUrl: event.avatarUrl,
-      invitationType: eventType.dbValue,
-      action: action.dbValue,
-      appliedRule: appliedRuleMetadata,
+    final log = AppLog(
+      timestamp: DateTime.now(),
+      category: LogCategory.invitation,
+      severity: action == LogActionOutcome.rejected ? LogSeverity.warning : LogSeverity.info,
+      message: '',
+      metadata: InvitationLogMetadata(
+        senderId: event.senderId,
+        senderName: event.senderName,
+        senderAvatarUrl: event.avatarUrl,
+        action: action.dbValue,
+        invitationType: eventType.dbValue,
+        appliedRule: appliedRuleMetadata,
+      ),
     );
+
+    await logRepository.saveLog(log);
   }
 }
 
