@@ -1151,16 +1151,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calFieldLabelStartDate => 'Fecha de inicio';
 
   @override
-  String get calFieldLabelEndDate => 'Fecha de finalización';
+  String get calFieldLabelEndDate => 'Fecha de fin';
 
   @override
   String get calSectionExceptions => 'Excepciones';
 
   @override
-  String get calExceptionAdd => 'Añadir excepción';
+  String get calExceptionAdd => 'Añadir Excepción';
 
   @override
-  String get calExceptionCancel => 'Cancelar el evento en esta fecha';
+  String get calExceptionCancel => 'Cancelar evento en esta fecha';
 
   @override
   String get calExceptionsEmpty => 'No hay excepciones configuradas';
@@ -1190,4 +1190,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calStrategyBatch => 'Por lotes (múltiples eventos)';
+
+  @override
+  String get logFallbackUser => 'Usuario';
+
+  @override
+  String get logFilterAll => 'Todos';
+
+  @override
+  String get logCategoryInvitation => 'Invitaciones';
+
+  @override
+  String get logCategoryStatus => 'Cambios de estado';
+
+  @override
+  String get logCategoryCalendar => 'Automatizaciones del calendario';
+
+  @override
+  String get logCategorySystem => 'Diagnóstico del sistema';
+
+  @override
+  String get logActionIgnored => 'Ignorado';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Estado actualizado a $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'No se pudo actualizar el estado a $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Evento publicado en el calendario: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'No se pudo publicar el evento en el calendario: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Publicación del evento pospuesta: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'Evento del sistema: $message';
+  }
 }

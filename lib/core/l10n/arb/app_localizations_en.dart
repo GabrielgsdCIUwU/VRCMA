@@ -1183,4 +1183,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calStrategyBatch => 'Batch (Multiple Events)';
+
+  @override
+  String get logFallbackUser => 'User';
+
+  @override
+  String get logFilterAll => 'All';
+
+  @override
+  String get logCategoryInvitation => 'Invitations';
+
+  @override
+  String get logCategoryStatus => 'Status Changes';
+
+  @override
+  String get logCategoryCalendar => 'Calendar Automations';
+
+  @override
+  String get logCategorySystem => 'System Diagnostics';
+
+  @override
+  String get logActionIgnored => 'Ignored';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Status updated to $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'Failed to update status to $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Published calendar event: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'Failed to publish calendar event: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Calendar event postponed: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'System event: $message';
+  }
 }

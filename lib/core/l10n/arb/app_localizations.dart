@@ -2239,6 +2239,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Batch (Multiple Events)'**
   String get calStrategyBatch;
+
+  /// Fallback display name used when the sender's VRChat display name is unavailable or unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get logFallbackUser;
+
+  /// Filter option that displays every log entry regardless of category.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get logFilterAll;
+
+  /// Log category for VRChat invitation events, including sent, received, accepted, declined, or ignored invitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get logCategoryInvitation;
+
+  /// Log category for VRChat status changes such as Online, Join Me, Ask Me, Busy, or Offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Changes'**
+  String get logCategoryStatus;
+
+  /// Log category for automatic calendar publishing and scheduling related to VRChat events.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar Automations'**
+  String get logCategoryCalendar;
+
+  /// Log category for internal application events, diagnostics, errors, and debugging information.
+  ///
+  /// In en, this message translates to:
+  /// **'System Diagnostics'**
+  String get logCategorySystem;
+
+  /// Label indicating that an event or action was intentionally ignored and no further processing was performed.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored'**
+  String get logActionIgnored;
+
+  /// Log message shown when the user's VRChat status is successfully changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated to {status}'**
+  String logStatusSuccess(String status);
+
+  /// Log message shown when changing the user's VRChat status fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update status to {status}'**
+  String logStatusFailure(String status);
+
+  /// Log message shown when a VRChat event is successfully published to the user's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Published calendar event: {title}'**
+  String logCalendarSuccess(String title);
+
+  /// Log message shown when publishing a VRChat event to the user's calendar fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to publish calendar event: {title}'**
+  String logCalendarFailure(String title);
+
+  /// Log message shown when publishing a calendar event is postponed and will be retried later.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar event postponed: {title}'**
+  String logCalendarWarning(String title);
+
+  /// Generic log entry for internal system events that do not belong to another category.
+  ///
+  /// In en, this message translates to:
+  /// **'System event: {message}'**
+  String logSystemMessage(String message);
 }
 
 class _AppLocalizationsDelegate

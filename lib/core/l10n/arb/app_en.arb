@@ -1966,5 +1966,107 @@
   "calStrategyBatch": "Batch (Multiple Events)",
   "@calStrategyBatch": {
     "description": "Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar."
+  },
+
+
+  "logFallbackUser": "User",
+  "@logFallbackUser": {
+    "description": "Fallback display name used when the sender's VRChat display name is unavailable or unknown."
+  },
+
+  "logFilterAll": "All",
+  "@logFilterAll": {
+    "description": "Filter option that displays every log entry regardless of category."
+  },
+
+  "logCategoryInvitation": "Invitations",
+  "@logCategoryInvitation": {
+    "description": "Log category for VRChat invitation events, including sent, received, accepted, declined, or ignored invitations."
+  },
+
+  "logCategoryStatus": "Status Changes",
+  "@logCategoryStatus": {
+    "description": "Log category for VRChat status changes such as Online, Join Me, Ask Me, Busy, or Offline."
+  },
+
+  "logCategoryCalendar": "Calendar Automations",
+  "@logCategoryCalendar": {
+    "description": "Log category for automatic calendar publishing and scheduling related to VRChat events."
+  },
+
+  "logCategorySystem": "System Diagnostics",
+  "@logCategorySystem": {
+    "description": "Log category for internal application events, diagnostics, errors, and debugging information."
+  },
+
+  "logActionIgnored": "Ignored",
+  "@logActionIgnored": {
+    "description": "Label indicating that an event or action was intentionally ignored and no further processing was performed."
+  },
+
+  "logStatusSuccess": "Status updated to {status}",
+  "@logStatusSuccess": {
+    "description": "Log message shown when the user's VRChat status is successfully changed.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "The new VRChat status, for example Online, Join Me, Ask Me, Busy, or Offline."
+      }
+    }
+  },
+
+  "logStatusFailure": "Failed to update status to {status}",
+  "@logStatusFailure": {
+    "description": "Log message shown when changing the user's VRChat status fails.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "The status that the application attempted to set."
+      }
+    }
+  },
+
+  "logCalendarSuccess": "Published calendar event: {title}",
+  "@logCalendarSuccess": {
+    "description": "Log message shown when a VRChat event is successfully published to the user's calendar.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event."
+      }
+    }
+  },
+
+  "logCalendarFailure": "Failed to publish calendar event: {title}",
+  "@logCalendarFailure": {
+    "description": "Log message shown when publishing a VRChat event to the user's calendar fails.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event that could not be published."
+      }
+    }
+  },
+
+  "logCalendarWarning": "Calendar event postponed: {title}",
+  "@logCalendarWarning": {
+    "description": "Log message shown when publishing a calendar event is postponed and will be retried later.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event."
+      }
+    }
+  },
+
+  "logSystemMessage": "System event: {message}",
+  "@logSystemMessage": {
+    "description": "Generic log entry for internal system events that do not belong to another category.",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "description": "The system-generated message describing the event."
+      }
+    }
   }
 }
