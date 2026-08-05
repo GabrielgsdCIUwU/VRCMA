@@ -10,6 +10,7 @@ class AppLogMapper implements IDatabaseMapper<AppLog> {
   AppLog fromDatabaseMap(Map<String, dynamic> row) {
     final utcTimestamp = DateTime.parse(row['timestamp'] as String).toUtc();
     final localTimestamp = tz.TZDateTime.from(utcTimestamp, tz.local);
+    final category = LogCategory.fromString(row['category'] as String);
 
     Map<String, dynamic> metadataMap = const {};
     final rawMetadata = row['metadata'] as String?;
@@ -26,7 +27,7 @@ class AppLogMapper implements IDatabaseMapper<AppLog> {
       severity: LogSeverity.fromString(row['level'] as String),
       message: row['message'] as String,
       details: row['details'] as String?,
-      metadata: metadataMap,
+      metadata: LogMetadata.fromJson(category, metadataMap),
     );
   }
 
@@ -39,7 +40,7 @@ class AppLogMapper implements IDatabaseMapper<AppLog> {
       'level': entity.severity.name,
       'message': entity.message,
       'details': entity.details,
-      'metadata': jsonEncode(entity.metadata),
+      'metadata': jsonEncode(entity.metadata.toJson()),
     };
   }
 }
