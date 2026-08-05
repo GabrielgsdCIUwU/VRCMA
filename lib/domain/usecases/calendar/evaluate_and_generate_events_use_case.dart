@@ -3,6 +3,8 @@ import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
+import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_remote_calendar_repository.dart';
 import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
@@ -12,16 +14,19 @@ import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 class EvaluateAndGenerateEventsUseCase {
   final ILocalCalendarRepository _localRepo;
   final IRemoteCalendarRepository _remoteRepo;
+  final IAppLogRepository _logRepo;
   final OccurrenceCalculator _calculator;
   final EventTitleResolver _resolver;
 
   EvaluateAndGenerateEventsUseCase({
     required ILocalCalendarRepository localRepo,
     required IRemoteCalendarRepository remoteRepo,
+    required IAppLogRepository logRepo,
     required OccurrenceCalculator calculator,
     required EventTitleResolver titleResolver,
   }) : _localRepo = localRepo,
        _remoteRepo = remoteRepo,
+       _logRepo = logRepo,
        _calculator = calculator,
        _resolver = titleResolver;
   
@@ -38,6 +43,20 @@ class EvaluateAndGenerateEventsUseCase {
         await _processRule(rule, hostLanguages);
       } catch (e, stackTrace) {
         debugPrint('Error processing rule [${rule.name}]: $e\n$stackTrace');
+        await _logRepo.saveLog(
+          AppLog(
+            timestamp: DateTime.now(),
+            category: LogCategory.calendar,
+            severity: LogSeverity.error,
+            message: '',
+            details: stackTrace.toString(),
+            metadata: CalendarLogMetadata(
+              ruleId: rule.id,
+              ruleName: rule.name,
+              groupId: rule.groupId,
+            ),
+          ),
+        );
       }
     }
   }
@@ -93,6 +112,20 @@ class EvaluateAndGenerateEventsUseCase {
       );
 
       await _localRepo.saveOccurrenceRun(runRecord);
+
+      await _logRepo.saveLog(AppLog(
+        timestamp: DateTime.now(),
+        category: LogCategory.calendar,
+        severity: LogSeverity.info,
+        message: '',
+        metadata: CalendarLogMetadata(
+          ruleId: rule.id,
+          ruleName: rule.name,
+          eventId: createdEventId,
+          occurrenceUtc: startUtc,
+          groupId: rule.groupId,
+        ),
+      ));
 
       if (currentRuleState.incrementalConfig.isEnabled) {
         currentRuleState = currentRuleState.copyWith(
