@@ -247,7 +247,7 @@ class DatabaseService {
     await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
      await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_exceptions_auto_id ON calendar_automation_exceptions (automation_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_runs_auto_id ON calendar_automation_runs (automation_id)');
-    await db.execute('CREATE INDEX IF NOT EXISTS idx_app_logs_category_time ON app_logs (category, timestamp)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_app_logs_category_time ON app_logs (category, timestamp DESC)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
