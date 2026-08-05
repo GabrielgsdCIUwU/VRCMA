@@ -89,10 +89,12 @@ Future<CoordinateStatusAutomationUseCase> coordinateStatusAutomationUseCase(Ref 
   final statusRepo = await ref.watch(statusRepositoryProvider.future);
   final automationRepo = await ref.watch(automationRepositoryProvider.future);
   final evaluateUseCase = await ref.watch(evaluateStatusUseCaseProvider.future);
+  final logRepo = await ref.watch(appLogRepositoryProvider.future);
 
   return CoordinateStatusAutomationUseCase(
     statusRepository: statusRepo,
     automationRepository: automationRepo,
+    logRepository: logRepo,
     evaluateStatusUseCase: evaluateUseCase,
   );
 }
@@ -108,9 +110,12 @@ Future<ValidateGroupPermissionsUseCase> validateGroupPermissionsUseCase(Ref ref)
 Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref ref) async {
   final localRepo = await ref.watch(localCalendarRepositoryProvider.future);
   final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);
+  final logRepo = await ref.watch(appLogRepositoryProvider.future);
+
   return EvaluateAndGenerateEventsUseCase(
     localRepo: localRepo,
     remoteRepo: remoteRepo,
+    logRepo: logRepo,
     calculator: OccurrenceCalculator(),
     titleResolver: EventTitleResolver(),
   );
