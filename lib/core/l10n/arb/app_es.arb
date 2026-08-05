@@ -436,6 +436,7 @@
   "calStrategyBatch": "Por lotes (múltiples eventos)",
 
   "logFallbackUser": "Usuario",
+  "logFallbackRule": "Regla del sistema",
   "logFilterAll": "Todos",
   "logCategoryInvitation": "Invitaciones",
   "logCategoryStatus": "Cambios de estado",

@@ -1234,4 +1234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String logSystemMessage(String message) {
     return 'System event: $message';
   }
+
+  @override
+  String get logFallbackRule => 'System Rule';
 }

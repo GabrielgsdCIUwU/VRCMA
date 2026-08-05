@@ -2068,5 +2068,10 @@
         "description": "The system-generated message describing the event."
       }
     }
+  },
+
+  "logFallbackRule": "System Rule",
+  "@logFallbackRule": {
+    "description": "Fallback name used when a system rule involved in the log entry has no available name."
   }
 }

@@ -2317,6 +2317,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System event: {message}'**
   String logSystemMessage(String message);
+
+  /// Fallback name used when a system rule involved in the log entry has no available name.
+  ///
+  /// In en, this message translates to:
+  /// **'System Rule'**
+  String get logFallbackRule;
 }
 
 class _AppLocalizationsDelegate
