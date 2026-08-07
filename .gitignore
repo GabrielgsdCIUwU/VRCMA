@@ -120,6 +120,7 @@ app.*.symbols
 
 # Ignore build_runners...
 *.g.dart
+*.mocks.dart
 
 # Cookies not accepted here.
 .cookies
