@@ -37,7 +37,7 @@ class AutomationState extends _$AutomationState {
     if (Platform.isAndroid || Platform.isIOS) {
       _bgSubscription = FlutterBackgroundService().on('update_ui').listen((event) {
         debugPrint("UI: Refreshing data...");
-        ref.invalidate(automationLogsProvider);
+        ref.invalidate(appLogsProvider);
         ref.invalidate(friendsListProvider);
       });
       
@@ -57,7 +57,7 @@ class AutomationState extends _$AutomationState {
     _vrcSubscription = automationRepo.watchAutomationEvents().listen((invitation) async {
       try {
         await processor.process(invitation);  
-        ref.invalidate(automationLogsProvider);
+        ref.invalidate(appLogsProvider);
       } catch (e) {
         debugPrint("Error processing invitation on loop: $e");
       }
