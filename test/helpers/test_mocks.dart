@@ -9,7 +9,7 @@ import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
-import 'package:vrcma/domain/repositories/i_log_repository.dart';
+import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_remote_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_social_repository.dart';
 import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
@@ -27,7 +27,7 @@ import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dar
   IAutomationRepository,
   ILocalSocialRepository,
   IProfileRepository,
-  ILogRepository,
+  IAppLogRepository,
   ILocalCalendarRepository,
   IRemoteCalendarRepository,
   ProcessInvitationUseCase,
