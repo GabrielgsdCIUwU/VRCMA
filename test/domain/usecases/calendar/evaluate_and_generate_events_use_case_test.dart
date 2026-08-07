@@ -19,6 +19,7 @@ void main() {
   group('EvaluateAndGenerateEventsUseCase Orchestration', () {
     late MockILocalCalendarRepository mockLocalRepo;
     late MockIRemoteCalendarRepository mockRemoteRepo;
+    late MockIAppLogRepository mockLogRepo;
     late EvaluateAndGenerateEventsUseCase useCase;
 
     const dummyHost = VrcUser(id: '1', displayName: 'Host', tags: ['language_spa']);
@@ -26,10 +27,12 @@ void main() {
     setUp(() {
       mockLocalRepo = MockILocalCalendarRepository();
       mockRemoteRepo = MockIRemoteCalendarRepository();
+      mockLogRepo = MockIAppLogRepository();
 
       useCase = EvaluateAndGenerateEventsUseCase(
         localRepo: mockLocalRepo,
         remoteRepo: mockRemoteRepo,
+        logRepo: mockLogRepo,
         calculator: OccurrenceCalculator(),
         titleResolver: EventTitleResolver(),
       );
