@@ -6,28 +6,32 @@ import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_context.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
 import 'package:vrcma/domain/usecases/automation/status/coordinate_status_automation_use_case.dart';
 import 'package:vrcma/domain/usecases/automation/status/evaluate_status_use_case.dart';
 
-@GenerateMocks([IStatusRepository, IAutomationRepository, EvaluateStatusUseCase])
+@GenerateMocks([IStatusRepository, IAutomationRepository, EvaluateStatusUseCase, IAppLogRepository])
 import 'coordinate_status_automation_use_case_test.mocks.dart';
 
 void main() {
   late MockIStatusRepository mockStatusRepo;
   late MockIAutomationRepository mockAutomationRepo;
+  late MockIAppLogRepository mockLogRepo;
   late MockEvaluateStatusUseCase mockEvaluateUseCase;
   late CoordinateStatusAutomationUseCase useCase;
 
   setUp(() {
     mockStatusRepo = MockIStatusRepository();
     mockAutomationRepo = MockIAutomationRepository();
+    mockLogRepo = MockIAppLogRepository();
     mockEvaluateUseCase = MockEvaluateStatusUseCase();
 
     useCase = CoordinateStatusAutomationUseCase(
       statusRepository: mockStatusRepo,
       automationRepository: mockAutomationRepo,
+      logRepository: mockLogRepo,
       evaluateStatusUseCase: mockEvaluateUseCase,
     );
   });
@@ -63,6 +67,7 @@ void main() {
       expect(result.isRight(), isTrue);
       verifyNever(mockAutomationRepo.updateRemoteStatus(status: anyNamed('status'), description: anyNamed('description')));
       verifyNever(mockStatusRepo.updateLastAppliedStatus(any, any, any));
+      verifyNever(mockLogRepo.saveLog(any));
     });
 
     test('should update remote status and local database when evaluation yields new state', () async {
@@ -82,6 +87,7 @@ void main() {
       expect(result.isRight(), isTrue);
       verify(mockAutomationRepo.updateRemoteStatus(status: StatusType.joinMe, description: 'New Message')).called(1);
       verify(mockStatusRepo.updateLastAppliedStatus(1, StatusType.joinMe, 'New Message')).called(1);
+      verify(mockLogRepo.saveLog(any)).called(1);
     });
 
     test('should return Failure and halt local update when remote API update fails', () async {
@@ -99,6 +105,7 @@ void main() {
       expect(result.isLeft(), isTrue);
       verify(mockAutomationRepo.updateRemoteStatus(status: StatusType.busy, description: 'Do Not Disturb')).called(1);
       verifyNever(mockStatusRepo.updateLastAppliedStatus(any, any, any));
+      verify(mockLogRepo.saveLog(any)).called(1);
     });
   });
 }
