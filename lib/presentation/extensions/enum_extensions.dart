@@ -234,3 +234,31 @@ extension LogSeverityL10n on LogSeverity {
     };
   }
 }
+
+extension LogCategoryUI on LogCategory {
+  IconData getIconData() {
+    return switch (this) {
+      LogCategory.invitation => Icons.mail_outline,
+      LogCategory.status => Icons.portrait_outlined,
+      LogCategory.calendar => Icons.calendar_month_outlined,
+      LogCategory.system => Icons.settings_outlined,
+    };
+  }
+
+  Color getColor(BuildContext context) {
+    return switch (this) {
+      LogCategory.invitation => context.vrcColors.invite,
+      LogCategory.status => context.vrcColors.statusJoinMe,
+      LogCategory.calendar => context.colorScheme.primary,
+      LogCategory.system => context.colorScheme.outline,
+    };
+  }
+
+  Widget getIcon(BuildContext context, {double size = 24}) {
+    return Icon(
+      getIconData(),
+      color: getColor(context),
+      size: size,
+    );
+  }
+}
