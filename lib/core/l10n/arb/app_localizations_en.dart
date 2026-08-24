@@ -1262,4 +1262,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Authentication';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles assigned to $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Triggered by new friend detection';
+
+  @override
+  String get logSocialTriggerTagMatch => 'Triggered by matching profile tag';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Authentication: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Login Successful';
+
+  @override
+  String get logAuthEventLoginFailed => 'Login Failed';
+
+  @override
+  String get logAuthEventTwoFactorRequested => '2FA Challenge Required';
+
+  @override
+  String get logAuthEventLoggedOut => 'Logged Out';
+
+  @override
+  String get logAuthEventSessionExpired => 'Session Expired';
 }

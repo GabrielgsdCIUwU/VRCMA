@@ -2113,5 +2113,81 @@
   "logSeverityError": "Error",
   "@logSeverityError": {
     "description": "Severity level for log entries that indicate a failure or an unexpected error."
+  },
+
+
+  "logCategorySocial": "Social",
+  "@logCategorySocial": {
+    "description": "Category label used for log entries related to social interactions and VRChat social events."
+  },
+
+  "logCategoryAuth": "Authentication",
+  "@logCategoryAuth": {
+    "description": "Category label used for log entries related to user authentication, login, logout, and session state."
+  },
+
+  "logSocialRoleAssignmentMessage": "Roles assigned to {user}: {roles}",
+  "@logSocialRoleAssignmentMessage": {
+    "description": "Log message shown when one or more VRChat roles are assigned to a user. The user placeholder is the affected user's display name, and roles contains the assigned role names.",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "description": "Display name of the VRChat user receiving the roles."
+      },
+      "roles": {
+        "type": "String",
+        "description": "Comma-separated or otherwise formatted list of roles assigned to the user."
+      }
+    }
+  },
+
+  "logSocialTriggerNewFriend": "Triggered by new friend detection",
+  "@logSocialTriggerNewFriend": {
+    "description": "Describes the trigger that caused a social automation or event to run after detecting that a new VRChat friend was added."
+  },
+
+  "logSocialTriggerTagMatch": "Triggered by matching profile tag",
+  "@logSocialTriggerTagMatch": {
+    "description": "Describes the trigger that caused a social automation or event to run because a user's VRChat profile tag matched the configured condition."
+  },
+
+  "logAuthMessage": "Authentication: {displayName} ({event})",
+  "@logAuthMessage": {
+    "description": "Log message describing an authentication event for a user. The display name identifies the user and the event placeholder contains the specific authentication event label.",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "description": "Display name of the user associated with the authentication event."
+      },
+      "event": {
+        "type": "String",
+        "description": "Localized label describing the authentication event, such as a successful login, failed login, 2FA challenge, logout, or expired session."
+      }
+    }
+  },
+
+  "logAuthEventLoginSuccess": "Login Successful",
+  "@logAuthEventLoginSuccess": {
+    "description": "Authentication event label shown when the user successfully logs in."
+  },
+
+  "logAuthEventLoginFailed": "Login Failed",
+  "@logAuthEventLoginFailed": {
+    "description": "Authentication event label shown when a login attempt fails."
+  },
+
+  "logAuthEventTwoFactorRequested": "2FA Challenge Required",
+  "@logAuthEventTwoFactorRequested": {
+    "description": "Authentication event label shown when the user must complete a two-factor authentication challenge before authentication can continue."
+  },
+
+  "logAuthEventLoggedOut": "Logged Out",
+  "@logAuthEventLoggedOut": {
+    "description": "Authentication event label shown when the user successfully logs out."
+  },
+
+  "logAuthEventSessionExpired": "Session Expired",
+  "@logAuthEventSessionExpired": {
+    "description": "Authentication event label shown when the user's authentication session has expired."
   }
 }

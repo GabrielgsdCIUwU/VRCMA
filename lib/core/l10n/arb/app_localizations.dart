@@ -2371,6 +2371,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get logSeverityError;
+
+  /// Category label used for log entries related to social interactions and VRChat social events.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get logCategorySocial;
+
+  /// Category label used for log entries related to user authentication, login, logout, and session state.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get logCategoryAuth;
+
+  /// Log message shown when one or more VRChat roles are assigned to a user. The user placeholder is the affected user's display name, and roles contains the assigned role names.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles assigned to {user}: {roles}'**
+  String logSocialRoleAssignmentMessage(String user, String roles);
+
+  /// Describes the trigger that caused a social automation or event to run after detecting that a new VRChat friend was added.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by new friend detection'**
+  String get logSocialTriggerNewFriend;
+
+  /// Describes the trigger that caused a social automation or event to run because a user's VRChat profile tag matched the configured condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by matching profile tag'**
+  String get logSocialTriggerTagMatch;
+
+  /// Log message describing an authentication event for a user. The display name identifies the user and the event placeholder contains the specific authentication event label.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication: {displayName} ({event})'**
+  String logAuthMessage(String displayName, String event);
+
+  /// Authentication event label shown when the user successfully logs in.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Successful'**
+  String get logAuthEventLoginSuccess;
+
+  /// Authentication event label shown when a login attempt fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Failed'**
+  String get logAuthEventLoginFailed;
+
+  /// Authentication event label shown when the user must complete a two-factor authentication challenge before authentication can continue.
+  ///
+  /// In en, this message translates to:
+  /// **'2FA Challenge Required'**
+  String get logAuthEventTwoFactorRequested;
+
+  /// Authentication event label shown when the user successfully logs out.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged Out'**
+  String get logAuthEventLoggedOut;
+
+  /// Authentication event label shown when the user's authentication session has expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Expired'**
+  String get logAuthEventSessionExpired;
 }
 
 class _AppLocalizationsDelegate

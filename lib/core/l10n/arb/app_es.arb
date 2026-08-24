@@ -456,5 +456,21 @@
   "logSeverityAll": "Todas las severidades",
   "logSeverityInfo": "Información",
   "logSeverityWarning": "Advertencia",
-  "logSeverityError": "Error"
+  "logSeverityError": "Error",
+
+  "logCategorySocial": "Social",
+  "logCategoryAuth": "Autenticación",
+
+  "logSocialRoleAssignmentMessage": "Roles asignados a {user}: {roles}",
+
+  "logSocialTriggerNewFriend": "Activado al detectar un nuevo amigo",
+  "logSocialTriggerTagMatch": "Activado al coincidir una etiqueta del perfil",
+
+  "logAuthMessage": "Autenticación: {displayName} ({event})",
+
+  "logAuthEventLoginSuccess": "Inicio de sesión correcto",
+  "logAuthEventLoginFailed": "Error al iniciar sesión",
+  "logAuthEventTwoFactorRequested": "Se requiere verificación en dos pasos",
+  "logAuthEventLoggedOut": "Sesión cerrada",
+  "logAuthEventSessionExpired": "Sesión caducada"
 }

@@ -1269,4 +1269,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Autenticación';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles asignados a $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Activado al detectar un nuevo amigo';
+
+  @override
+  String get logSocialTriggerTagMatch =>
+      'Activado al coincidir una etiqueta del perfil';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Autenticación: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Inicio de sesión correcto';
+
+  @override
+  String get logAuthEventLoginFailed => 'Error al iniciar sesión';
+
+  @override
+  String get logAuthEventTwoFactorRequested =>
+      'Se requiere verificación en dos pasos';
+
+  @override
+  String get logAuthEventLoggedOut => 'Sesión cerrada';
+
+  @override
+  String get logAuthEventSessionExpired => 'Sesión caducada';
 }
