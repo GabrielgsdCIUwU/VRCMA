@@ -121,3 +121,49 @@ class IncrementalConfig extends Equatable {
   @override
   List<Object?> get props => [isEnabled, startValue, stepValue, currentValue];
 }
+
+/// Value object representing a 24hour clock time (HH:mm) without timezone ambiguity.
+class TimeOfDayValue extends Equatable implements Comparable<TimeOfDayValue> {
+  final int hour;
+  final int minute;
+
+  const TimeOfDayValue._({
+    required this.hour,
+    required this.minute,
+  });
+
+  factory TimeOfDayValue(int hour, int minute) {
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      throw CalendarDomainException(
+        InvalidTimeFormatError('$hour$minute'),
+      );
+    }
+    return TimeOfDayValue._(hour: hour, minute: minute);
+  }
+
+  factory TimeOfDayValue.parse(String formatted) {
+    final parts = formatted.split(':');
+    if (parts.length != 2) return const TimeOfDayValue._(hour: 0, minute: 0);
+    final hour = int.tryParse(parts[0]) ?? 0;
+    final minute = int.tryParse(parts[1]) ?? 0;
+    return TimeOfDayValue._(hour: hour.clamp(0, 23), minute: minute.clamp(0, 59));
+  }
+
+  int get totalMinutes => hour * 60 + minute;
+
+  String get formatted => '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+  TimeOfDayValue addMinutes(int minutesToAdd) {
+    final newTotal = (totalMinutes + minutesToAdd) % (24 * 60);
+    return TimeOfDayValue._(hour: newTotal ~/ 60, minute: newTotal % 60);
+  }
+
+  @override
+  int compareTo(TimeOfDayValue other) => totalMinutes.compareTo(other.totalMinutes);
+
+  @override
+  List<Object?> get props => [hour, minute];
+
+  @override
+  String toString() => formatted;
+}
