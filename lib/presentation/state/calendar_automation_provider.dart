@@ -64,7 +64,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
       category: GroupEventCategory.other,
       accessType: GroupEventAccessType.group,
       schedule: TimezoneSchedule(
-        startTimeOfDay: '20:00',
+        startTime: TimeOfDayValue(hour: 20),
         durationMinutes: 60,
         timezoneIana: tz.local.name,
       ),
@@ -107,56 +107,26 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
   
   void updateAccessType(GroupEventAccessType access) => state = state.copyWith(accessType: access);
   
-  void updateTime(String time) => state = state.copyWith(
-    schedule: TimezoneSchedule(
-      startTimeOfDay: time,
-      durationMinutes: state.schedule.durationMinutes,
-      timezoneIana: state.schedule.timezoneIana,
-      startDate: state.schedule.startDate,
-      endDate: state.schedule.endDate,
-    ),
+  void updateTime(TimeOfDayValue time) => state = state.copyWith(
+    schedule: state.schedule.copyWith(startTime: time)
   );
   
   void updateDuration(int duration) => state = state.copyWith(
-    schedule: TimezoneSchedule(
-      startTimeOfDay: state.schedule.startTimeOfDay,
-      durationMinutes: duration,
-      timezoneIana: state.schedule.timezoneIana,
-      startDate: state.schedule.startDate,
-      endDate: state.schedule.endDate,
-    ),
+    schedule: state.schedule.copyWith(durationMinutes: duration),
   );
   
   void updateTimezone(String tz) => state = state.copyWith(
-    schedule: TimezoneSchedule(
-      startTimeOfDay: state.schedule.startTimeOfDay,
-      durationMinutes: state.schedule.durationMinutes,
-      timezoneIana: tz,
-      startDate: state.schedule.startDate,
-      endDate: state.schedule.endDate,
-    ),
+    schedule: state.schedule.copyWith(timezoneIana: tz)
   );
   
   void updateRecurrence(RecurrencePattern recurrence) => state = state.copyWith(recurrence: recurrence);
 
   void updateStartDate(DateTime? date) => state = state.copyWith(
-    schedule: TimezoneSchedule(
-      startTimeOfDay: state.schedule.startTimeOfDay,
-      durationMinutes: state.schedule.durationMinutes,
-      timezoneIana: state.schedule.timezoneIana,
-      startDate: date,
-      endDate: state.schedule.endDate,
-    ),
+    schedule: state.schedule.copyWith(startDate: date)
   );
 
   void updateEndDate(DateTime? date) => state = state.copyWith(
-    schedule: TimezoneSchedule(
-      startTimeOfDay: state.schedule.startTimeOfDay,
-      durationMinutes: state.schedule.durationMinutes,
-      timezoneIana: state.schedule.timezoneIana,
-      startDate: state.schedule.startDate,
-      endDate: date,
-    ),
+    schedule: state.schedule.copyWith(endDate: date)
   );
 
   void addException(CalendarException exception) {
@@ -216,7 +186,7 @@ class CalendarAutomationEditor extends _$CalendarAutomationEditor {
 
     final synchronizedRule = state.copyWith(
       schedule: TimezoneSchedule(
-        startTimeOfDay: state.schedule.startTimeOfDay,
+        startTime: state.schedule.startTime,
         durationMinutes: state.schedule.durationMinutes,
         timezoneIana: tz.local.name,
         startDate: state.schedule.startDate,
