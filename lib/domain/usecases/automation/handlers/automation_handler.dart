@@ -1,12 +1,11 @@
-import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
-import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 
@@ -22,14 +21,14 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
   final IAutomationRepository automationRepository;
   final ILocalSocialRepository localSocialRepository;
   final IProfileRepository profileRepository;
-  final IAppLogRepository logRepository;
+  final AppLogger logger;
   final ProcessInvitationUseCase useCase;
 
   BaseIncomingUserEventHandler({
     required this.automationRepository,
     required this.localSocialRepository,
     required this.profileRepository,
-    required this.logRepository,
+    required this.logger,
     required this.useCase,
   });
 
@@ -43,31 +42,23 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
 
   Future<void> recordLog({
     required IncomingUserEvent event,
-    required LogActionOutcome action,
-    required LogEventType eventType,
+    required InvitationActionOutcome action,
+    required IncomingEventType eventType,
     required String profileName,
     String? matchedRoleName,
   }) async {
-    final appliedRuleMetadata = matchedRoleName != null
+    final appliedRule = matchedRoleName != null
       ? "$profileName:$matchedRoleName"
       : profileName;
 
-    final log = AppLog(
-      timestamp: DateTime.now(),
-      category: LogCategory.invitation,
-      severity: action == LogActionOutcome.rejected ? LogSeverity.warning : LogSeverity.info,
-      message: '',
-      metadata: InvitationLogMetadata(
-        senderId: event.senderId,
-        senderName: event.senderName,
-        senderAvatarUrl: event.avatarUrl,
-        action: action.dbValue,
-        invitationType: eventType.dbValue,
-        appliedRule: appliedRuleMetadata,
-      ),
+    return logger.logInvitation(
+      senderId: event.senderId,
+      senderName: event.senderName,
+      senderAvatarUrl: event.avatarUrl,
+      action: action,
+      eventType: eventType,
+      appliedRule: appliedRule
     );
-
-    await logRepository.saveLog(log);
   }
 }
 
@@ -79,7 +70,7 @@ class InvitationAutomationHandler extends BaseIncomingUserEventHandler<IncomingU
     required super.automationRepository,
     required super.localSocialRepository,
     required super.profileRepository,
-    required super.logRepository,
+    required super.logger,
     required super.useCase,
     required this.currentUserId,
     required this.slotManager,
@@ -102,14 +93,12 @@ class InvitationAutomationHandler extends BaseIncomingUserEventHandler<IncomingU
       userAssignedRoles: userRoles,
     );
 
-    final LogEventType eventType = event is RequestInviteEvent
-      ? LogEventType.request
-      : LogEventType.invite;
+      final eventType = event is RequestInviteEvent ? IncomingEventType.request : IncomingEventType.invite;
 
       if (decision == null) {
         await recordLog(
           event: event,
-          action: LogActionOutcome.ignored,
+          action: InvitationActionOutcome.ignored,
           eventType: eventType,
           profileName: profile.name,
         );
@@ -121,8 +110,8 @@ class InvitationAutomationHandler extends BaseIncomingUserEventHandler<IncomingU
       await recordLog(
         event: event,
         action: decision.action == RuleAction.accept
-          ? LogActionOutcome.accepted
-          : LogActionOutcome.rejected,
+          ? InvitationActionOutcome.accepted
+          : InvitationActionOutcome.rejected,
         eventType: eventType,
         profileName: profile.name,
         matchedRoleName: decision.rule.role.name,
@@ -170,7 +159,7 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
     required super.automationRepository,
     required super.localSocialRepository,
     required super.profileRepository,
-    required super.logRepository,
+    required super.logger,
     required super.useCase,
   });
 
@@ -191,12 +180,12 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
       userAssignedRoles: userRoles,
     );
 
-    const LogEventType eventType = LogEventType.friendRequest;
+    const eventType = IncomingEventType.friendRequest;
 
     if (decision == null) {
       await recordLog(
         event: event,
-        action: LogActionOutcome.ignored,
+        action: InvitationActionOutcome.ignored,
         eventType: eventType,
         profileName: profile.name
       );
@@ -212,8 +201,8 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
     await recordLog(
       event: event,
       action: decision.action == RuleAction.accept
-        ? LogActionOutcome.accepted
-        : LogActionOutcome.rejected,
+        ? InvitationActionOutcome.accepted
+        : InvitationActionOutcome.rejected,
         eventType: eventType,
         profileName: profile.name,
         matchedRoleName: decision.rule.role.name
