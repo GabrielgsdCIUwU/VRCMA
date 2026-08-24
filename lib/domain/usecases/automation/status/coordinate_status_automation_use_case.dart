@@ -3,25 +3,25 @@ import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/automation/status_context.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
-import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/usecases/automation/status/evaluate_status_use_case.dart';
 
 class CoordinateStatusAutomationUseCase {
   final IStatusRepository _statusRepository;
   final IAutomationRepository _automationRepository;
-  final IAppLogRepository _logRepository;
+  final AppLogger _logger;
   final EvaluateStatusUseCase _evaluateStatusUseCase;
 
   CoordinateStatusAutomationUseCase({
     required IStatusRepository statusRepository,
     required IAutomationRepository automationRepository,
-    required IAppLogRepository logRepository,
+    required AppLogger logger,
     required EvaluateStatusUseCase evaluateStatusUseCase,
   }) : _statusRepository = statusRepository,
       _automationRepository = automationRepository,
-      _logRepository = logRepository,
+      _logger = logger,
       _evaluateStatusUseCase = evaluateStatusUseCase;
   
   /// Runs the complete status automation lifecycle for the current active profile.
@@ -45,18 +45,13 @@ class CoordinateStatusAutomationUseCase {
 
     return await updateResult.fold(
       (failure) async {
-        await _logRepository.saveLog(AppLog(
-          timestamp: DateTime.now(),
-          category: LogCategory.status,
+        await _logger.logStatus(
+          profileId: activeProfile.id,
+          status: evaluation.status,
+          description: evaluation.message,
           severity: LogSeverity.error,
-          message: '',
           details: failure.message,
-          metadata: StatusLogMetadata(
-            profileId: activeProfile.id,
-            status: evaluation.status.apiValue,
-            description: evaluation.message,
-          ),
-        ));
+        );
         return Left(failure);
       },
       (_) async {
@@ -66,17 +61,12 @@ class CoordinateStatusAutomationUseCase {
           evaluation.message,
         );
 
-        await _logRepository.saveLog(AppLog(
-          timestamp: DateTime.now(),
-          category: LogCategory.status,
-          severity: LogSeverity.info,
-          message: '',
-          metadata: StatusLogMetadata(
-            profileId: activeProfile.id,
-            status: evaluation.status.apiValue,
-            description: evaluation.message,
-          ),
-        ));
+        await _logger.logStatus(
+          profileId: activeProfile.id,
+          status: evaluation.status,
+          description: evaluation.message,
+          severity: LogSeverity.info
+        );
         return const Right(null);
       },
     );

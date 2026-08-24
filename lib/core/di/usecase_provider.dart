@@ -32,7 +32,7 @@ Future<List<AutomationEventHandler>> automationHandlers(Ref ref) async {
   final authUser = await ref.watch(authStateProvider.future);
   final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
   final profileRepo = await ref.watch(profileRepositoryProvider.future);
-  final logRepo = await ref.watch(appLogRepositoryProvider.future);
+  final logger = await ref.watch(appLoggerProvider.future);
 
   final invitationUseCase = ProcessInvitationUseCase(
     roleExtractor: UserRoleExtractor(),
@@ -46,7 +46,7 @@ Future<List<AutomationEventHandler>> automationHandlers(Ref ref) async {
       automationRepository: automationRepo,
       localSocialRepository: localSocialRepo,
       profileRepository: profileRepo,
-      logRepository: logRepo,
+      logger: logger,
       useCase: invitationUseCase,
       slotManager: MessageSlotManager(
         messageRepository: await ref.watch(messageRepositoryProvider.future),
@@ -58,7 +58,7 @@ Future<List<AutomationEventHandler>> automationHandlers(Ref ref) async {
       automationRepository: automationRepo,
       localSocialRepository: localSocialRepo,
       profileRepository: profileRepo,
-      logRepository: logRepo,
+      logger: logger,
       useCase: invitationUseCase,
     ),
   ];
@@ -90,12 +90,12 @@ Future<CoordinateStatusAutomationUseCase> coordinateStatusAutomationUseCase(Ref 
   final statusRepo = await ref.watch(statusRepositoryProvider.future);
   final automationRepo = await ref.watch(automationRepositoryProvider.future);
   final evaluateUseCase = await ref.watch(evaluateStatusUseCaseProvider.future);
-  final logRepo = await ref.watch(appLogRepositoryProvider.future);
+  final logger = await ref.watch(appLoggerProvider.future);
 
   return CoordinateStatusAutomationUseCase(
     statusRepository: statusRepo,
     automationRepository: automationRepo,
-    logRepository: logRepo,
+    logger: logger,
     evaluateStatusUseCase: evaluateUseCase,
   );
 }
@@ -111,12 +111,12 @@ Future<ValidateGroupPermissionsUseCase> validateGroupPermissionsUseCase(Ref ref)
 Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref ref) async {
   final localRepo = await ref.watch(localCalendarRepositoryProvider.future);
   final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);
-  final logRepo = await ref.watch(appLogRepositoryProvider.future);
+  final logger = await ref.watch(appLoggerProvider.future);
 
   return EvaluateAndGenerateEventsUseCase(
     localRepo: localRepo,
     remoteRepo: remoteRepo,
-    logRepo: logRepo,
+    logger: logger,
     calculator: OccurrenceCalculator(),
     titleResolver: EventTitleResolver(),
   );
