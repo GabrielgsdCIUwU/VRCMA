@@ -23,7 +23,7 @@ extension VrcUserUiExtension on VrcUser {
     if (instance.isResolvableWorld) {
       return l10n.presenceInstanceDesc(
         _getLocalizedAccessType(context, instance.accessType),
-        instance.region,
+        instance.region.name,
       );
     }
     return location;
