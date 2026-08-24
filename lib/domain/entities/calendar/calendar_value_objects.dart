@@ -53,15 +53,15 @@ class TimezoneSchedule extends Equatable {
     TimeOfDayValue? startTime,
     int? durationMinutes,
     String? timezoneIana,
-    DateTime? Function()? startDate,
-    DateTime? Function()? endDate,
+    DateTime? startDate,
+    DateTime? endDate,
   }) {
     return TimezoneSchedule(
       startTime: startTime ?? this.startTime,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       timezoneIana: timezoneIana ?? this.timezoneIana,
-      startDate: startDate != null ? startDate() : this.startDate,
-      endDate: endDate != null ? endDate() : this.endDate,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
     );
   }
 
