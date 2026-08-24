@@ -129,7 +129,7 @@ class CalendarAutomationPanel extends ConsumerWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              '${rule.schedule.startTimeOfDay} (${rule.recurrence.type.toLocalizedString(context)})',
+              '${rule.schedule.startTime.formatted} (${rule.recurrence.type.toLocalizedString(context)})',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 11, color: context.colorScheme.onSurfaceVariant),

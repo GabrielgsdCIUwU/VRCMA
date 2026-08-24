@@ -1,5 +1,4 @@
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
-import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
@@ -19,11 +18,7 @@ class OccurrenceCalculator {
 
     final pastRunUtcTimes = _extractPastRunUtcTimes(pastRuns);
 
-    final timeParts = rule.schedule.startTimeOfDay.split(':');
-    if (timeParts.length != 2) return [];
-
-    final hour = int.tryParse(timeParts[0]) ?? 0;
-    final minute = int.tryParse(timeParts[1]) ?? 0;
+    final startTime = rule.schedule.startTime;
     final location = _resolveLocation(rule.schedule.timezoneIana);
 
     var dateCursor = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
@@ -33,8 +28,7 @@ class OccurrenceCalculator {
         final candidateUtc = _computeUtcOccurrence(
           date: dateCursor,
           location: location,
-          hour: hour,
-          minute: minute,
+          startTime: startTime,
           nowUtc: nowUtc,
           maxFuturelimitUtc: maxFutureLimitUtc,
           rule: rule,
@@ -84,13 +78,12 @@ class OccurrenceCalculator {
   DateTime? _computeUtcOccurrence({
     required DateTime date,
     required tz.Location location,
-    required int hour,
-    required int minute,
+    required TimeOfDayValue startTime,
     required DateTime nowUtc,
     required DateTime maxFuturelimitUtc,
     required CalendarAutomationRule rule,
   }) {
-    final scheduledLocal = tz.TZDateTime(location, date.year, date.month, date.day, hour, minute);
+    final scheduledLocal = tz.TZDateTime(location, date.year, date.month, date.day, startTime.hour, startTime.minute);
     final candidateUtc = scheduledLocal.toUtc();
 
     if (candidateUtc.isBefore(nowUtc) || candidateUtc.isAfter(maxFuturelimitUtc)) {
@@ -102,34 +95,11 @@ class OccurrenceCalculator {
       return null;
     }
 
-    if (dateToExclude == null || dateToExclude.rescheduledTime == null) {
-      return candidateUtc;
+    if (dateToExclude?.rescheduledTime != null) {
+      final resched = dateToExclude!.rescheduledTime!;
+      return tz.TZDateTime(location, date.year, date.month, date.day, resched.hour, resched.minute).toUtc();
     }
 
-    return _applyExceptionRescheduling(
-      exception: dateToExclude,
-      location: location,
-      date: date,
-      defaultHour: hour,
-      defaultMinute: minute,
-    );
-  }
-
-  DateTime _applyExceptionRescheduling({
-    required CalendarException exception,
-    required tz.Location location,
-    required DateTime date,
-    required int defaultHour,
-    required int defaultMinute,
-  }) {
-    final timeParts = exception.rescheduledTime!.split(':');
-    if (timeParts.length != 2) {
-      return tz.TZDateTime(location, date.year, date.month, date.day, defaultHour, defaultMinute).toUtc();
-    }
-
-    final reschedHour = int.tryParse(timeParts[0]) ?? defaultHour;
-    final reschedMinute = int.tryParse(timeParts[1]) ?? defaultMinute;
-
-    return tz.TZDateTime(location, date.year, date.month, date.day, reschedHour, reschedMinute).toUtc();
+    return candidateUtc;
   }
 }

@@ -40,6 +40,17 @@ class InvalidDurationError extends CalendarValidationError {
   String get defaultMessage => 'The duration must be a positive integer greater than zero. Provided: $duration.';
 }
 
+class InvalidTimeFormatError extends CalendarValidationError {
+  final String providedtime;
+  const InvalidTimeFormatError(this.providedtime);
+
+  @override
+  String get errorCode => 'CAL_TIME_FORMAT_INVALID';
+
+  @override
+  String get defaultMessage => 'The provided time "$providedtime" is invalid. Expected format is HH:mm.';
+}
+
 class OutOfBoundsIncrementError extends CalendarValidationError {
   final int value;
   const OutOfBoundsIncrementError(this.value);

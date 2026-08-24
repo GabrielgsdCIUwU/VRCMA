@@ -47,17 +47,14 @@ abstract class BaseIncomingUserEventHandler<T extends IncomingUserEvent> extends
     required String profileName,
     String? matchedRoleName,
   }) async {
-    final appliedRule = matchedRoleName != null
-      ? "$profileName:$matchedRoleName"
-      : profileName;
-
     return logger.logInvitation(
       senderId: event.senderId,
       senderName: event.senderName,
       senderAvatarUrl: event.avatarUrl,
       action: action,
       eventType: eventType,
-      appliedRule: appliedRule
+      profileName: profileName,
+      matchedRoleName: matchedRoleName
     );
   }
 }

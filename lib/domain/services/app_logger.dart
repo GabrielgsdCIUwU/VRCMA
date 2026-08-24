@@ -15,7 +15,8 @@ class AppLogger {
     required String senderAvatarUrl,
     required InvitationActionOutcome action,
     required IncomingEventType eventType,
-    String? appliedRule,
+    required String profileName,
+    String? matchedRoleName,
   }) {
     return _repository.saveLog(
       AppLog(
@@ -29,7 +30,8 @@ class AppLogger {
           senderAvatarUrl: senderAvatarUrl,
           action: action,
           eventType: eventType,
-          appliedRule: appliedRule
+          profileName: profileName,
+          matchedRoleName: matchedRoleName
         ),
       ),
     );

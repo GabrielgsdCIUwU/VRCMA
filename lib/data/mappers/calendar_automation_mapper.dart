@@ -66,7 +66,7 @@ class CalendarAutomationMapper {
       category: GroupEventCategory.fromString(row['category'] as String),
       accessType: GroupEventAccessType.fromString(row['access_type'] as String),
       schedule: TimezoneSchedule(
-        startTimeOfDay: row['start_time_of_day'] as String,
+        startTime: TimeOfDayValue.parse(row['start_time_of_day'] as String),
         durationMinutes: row['duration_minutes'] as int,
         timezoneIana: row['timezone'] as String,
       ),
@@ -112,7 +112,7 @@ class CalendarAutomationMapper {
       'description_template': rule.descriptionTemplate,
       'category': rule.category.apiValue,
       'access_type': rule.accessType.apiValue,
-      'start_time_of_day': rule.schedule.startTimeOfDay,
+      'start_time_of_day': rule.schedule.startTime.formatted,
       'duration_minutes': rule.schedule.durationMinutes,
       'timezone': rule.schedule.timezoneIana,
       'recurrence_type': rule.recurrence.type.apiValue,
