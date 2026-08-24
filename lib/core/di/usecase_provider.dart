@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
 import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 import 'package:vrcma/domain/usecases/automation/automation_processor.dart';
@@ -119,4 +120,10 @@ Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref re
     calculator: OccurrenceCalculator(),
     titleResolver: EventTitleResolver(),
   );
+}
+
+@riverpod
+Future<AppLogger> appLogger(Ref ref) async {
+  final logRepo = await ref.watch(appLogRepositoryProvider.future);
+  return AppLogger(logRepo);
 }
