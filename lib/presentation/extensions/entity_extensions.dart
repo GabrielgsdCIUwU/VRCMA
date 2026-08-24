@@ -4,6 +4,7 @@ import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 
 /// Presentation extensions for rendering localized domain entity values in the UI.
 extension VrcUserUiExtension on VrcUser {
@@ -74,45 +75,51 @@ extension AppLogUiExtension on AppLog {
     final meta = metadata;
 
     return switch (meta) {
-      InvitationLogMetadata() => () {
-        final sender = meta.senderName.isNotEmpty ? meta.senderName : l10n.logFallbackUser;
-        final actionStr = meta.action == 'ACCEPT'
-            ? l10n.actionAccepted
-            : meta.action == 'REJECT'
-                ? l10n.actionRejected
-                : l10n.logActionIgnored;
+      InvitationLogMetadata(:final senderName, :final action, :final eventType) => () {
+        final sender = senderName.isNotEmpty ? senderName : l10n.logFallbackUser;
+        final actionStr = switch (action) {
+          InvitationActionOutcome.accepted => l10n.actionAccepted,
+          InvitationActionOutcome.rejected => l10n.actionRejected,
+          InvitationActionOutcome.ignored => l10n.logActionIgnored,
+        };
         
-        if (meta.invitationType == 'FRIEND_REQUEST') return "${l10n.navFriends} $actionStr - $sender";
+        if (eventType == IncomingEventType.friendRequest) return "${l10n.navFriends} $actionStr - $sender";
 
-        final typeStr = meta.invitationType == 'INVITE' ? l10n.tabInvite : l10n.tabRequest;
+        final typeStr = eventType == IncomingEventType.invite ? l10n.tabInvite : l10n.tabRequest;
         return "$typeStr $actionStr - $sender"; 
       }(),
 
-      StatusLogMetadata() => () {
-        final localizedStatus = context.getLocalizedStatus(meta.status);
+      StatusLogMetadata(:final status) => () {
+        final localizedStatus = context.getLocalizedStatus(status.name);
         if (severity == LogSeverity.error) return l10n.logStatusFailure(localizedStatus);
         return l10n.logStatusSuccess(localizedStatus);
       }(),
       
-      CalendarLogMetadata() => () {
-        final titleStr = meta.ruleName.isNotEmpty ? meta.ruleName : l10n.logFallbackRule;
+      CalendarLogMetadata(:final ruleName) => () {
+        final titleStr = ruleName.isNotEmpty ? ruleName : l10n.logFallbackRule;
         if (severity == LogSeverity.error) return l10n.logCalendarFailure(titleStr);
         if (severity == LogSeverity.warning) return l10n.logCalendarWarning(titleStr);
         return l10n.logCalendarSuccess(titleStr);
       }(),
+
+      SocialLogMetadata(:final targetUserName, :final assignedRoleNames) =>
+        l10n.logSocialRoleAssignmentMessage(
+          targetUserName.isNotEmpty ? targetUserName : l10n.logFallbackUser,
+          assignedRoleNames.join(', '),
+        ),
+      
+      AuthLogMetadata(:final displayName, :final event) =>
+        l10n.logAuthMessage(
+          displayName.isNotEmpty ? displayName : l10n.logFallbackUser,
+          event.toLocalizedString(context)
+        ),
       
       SystemLogMetadata() => l10n.logSystemMessage(message),
     };
   }
 
   String getLocalizedCategory(BuildContext context) {
-    final l10n = context.l10n;
-    return switch (category) {
-      LogCategory.invitation => l10n.logCategoryInvitation,
-      LogCategory.status => l10n.logCategoryStatus,
-      LogCategory.calendar => l10n.logCategoryCalendar,
-      LogCategory.system => l10n.logCategorySystem,
-    };
+    return category.toLocalizedString(context);
   }
 
   String? getLocalizedDetails(BuildContext context) {
@@ -120,16 +127,24 @@ extension AppLogUiExtension on AppLog {
     final meta = metadata;
 
     return switch (meta) {
-      InvitationLogMetadata() => () {
-        final rule = meta.appliedRule;
+      InvitationLogMetadata(:final appliedRule) => () {
+        final rule = appliedRule;
         if (rule == null || rule.isEmpty) return l10n.logNoRuleMatched;
         final parts = rule.split(':');
         final ruleName = parts.length > 1 ? parts[1] : rule;
         return l10n.logRuleMatched(ruleName);
       }(),
       
-      StatusLogMetadata() => meta.description.isNotEmpty ? meta.description : null,
-      CalendarLogMetadata() => null,
+      StatusLogMetadata(:final description) => description.isNotEmpty ? description : null,
+      CalendarLogMetadata() => details,
+
+      SocialLogMetadata(:final trigger) => switch (trigger) {
+        SocialAssignmentTrigger.newFriend => l10n.logSocialTriggerNewFriend,
+        SocialAssignmentTrigger.tagMatch => l10n.logSocialTriggerTagMatch,
+      },
+
+      AuthLogMetadata() => details,
+      
       SystemLogMetadata() => details,
     };
   }

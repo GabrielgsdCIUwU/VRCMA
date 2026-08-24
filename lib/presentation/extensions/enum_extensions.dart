@@ -212,6 +212,19 @@ extension CreationStrategyL10n on CreationStrategy {
   }
 }
 
+extension AuthLogEventL10n on AuthLogEvent {
+  String toLocalizedString(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      AuthLogEvent.loginSuccess => l10n.logAuthEventLoginSuccess,
+      AuthLogEvent.loginFailed => l10n.logAuthEventLoginFailed,
+      AuthLogEvent.twoFactorRequested => l10n.logAuthEventTwoFactorRequested,
+      AuthLogEvent.loggedOut => l10n.logAuthEventLoggedOut,
+      AuthLogEvent.sessionExpired => l10n.logAuthEventSessionExpired,
+    };
+  }
+}
+
 extension LogCategoryL10n on LogCategory {
   String toLocalizedString(BuildContext context) {
     final l10n = context.l10n;
@@ -219,6 +232,8 @@ extension LogCategoryL10n on LogCategory {
       LogCategory.invitation => l10n.logCategoryInvitation,
       LogCategory.status => l10n.logCategoryStatus,
       LogCategory.calendar => l10n.logCategoryCalendar,
+      LogCategory.social => l10n.logCategorySocial,
+      LogCategory.auth => l10n.logCategoryAuth,
       LogCategory.system => l10n.logCategorySystem,
     };
   }
@@ -241,6 +256,8 @@ extension LogCategoryUI on LogCategory {
       LogCategory.invitation => Icons.mail_outline,
       LogCategory.status => Icons.portrait_outlined,
       LogCategory.calendar => Icons.calendar_month_outlined,
+      LogCategory.social => Icons.badge_outlined,
+      LogCategory.auth => Icons.lock_person_outlined,
       LogCategory.system => Icons.settings_outlined,
     };
   }
@@ -250,6 +267,8 @@ extension LogCategoryUI on LogCategory {
       LogCategory.invitation => context.vrcColors.invite,
       LogCategory.status => context.vrcColors.statusJoinMe,
       LogCategory.calendar => context.colorScheme.primary,
+      LogCategory.social => context.colorScheme.secondary,
+      LogCategory.auth => context.vrcColors.requestResponse,
       LogCategory.system => context.colorScheme.outline,
     };
   }
