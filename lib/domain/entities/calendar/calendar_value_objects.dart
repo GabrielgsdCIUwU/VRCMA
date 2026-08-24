@@ -187,6 +187,12 @@ class TimeOfDayValue extends Equatable implements Comparable<TimeOfDayValue> {
     return TimeOfDayValue._(hour: newTotal ~/ 60, minute: newTotal % 60);
   }
 
+  int minutesDifference(TimeOfDayValue other) {
+    var diff = other.totalMinutes - totalMinutes;
+    if (diff < 0) diff += 24 * 60;
+    return diff;
+  }
+
   @override
   int compareTo(TimeOfDayValue other) => totalMinutes.compareTo(other.totalMinutes);
 
