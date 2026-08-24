@@ -2,12 +2,15 @@ import 'dart:isolate';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 
 class ProcessFriendAutomationsUseCase {
   final ILocalSocialRepository _localSocialRepository;
+  final AppLogger? _logger;
 
-  ProcessFriendAutomationsUseCase(this._localSocialRepository);
+  ProcessFriendAutomationsUseCase(this._localSocialRepository, [this._logger]);
 
   Future<void> execute(List<VrcUser> apiFriends) async {
     final automations = await _localSocialRepository.getRoleAutomations();
@@ -16,6 +19,8 @@ class ProcessFriendAutomationsUseCase {
     }
 
     final knownUserSet = (await _localSocialRepository.getKnownUserIds()).toSet();
+    final allRoles = await _localSocialRepository.getAllAvailableRoles();
+    final roleNameMap = {for (final r in allRoles) r.id: r.name};
 
     final rolesToAssignMap = await Isolate.run(() => _computeRoles(
         apiFriends,
@@ -23,7 +28,27 @@ class ProcessFriendAutomationsUseCase {
         knownUserSet
     ));
 
-    await _localSocialRepository.assignMultipleRoles(rolesToAssignMap);
+    if (rolesToAssignMap.isNotEmpty) {
+      await _localSocialRepository.assignMultipleRoles(rolesToAssignMap);
+
+      if (_logger != null) {
+        for (final entry in rolesToAssignMap.entries) {
+          final friend = apiFriends.firstWhere((f) => f.id == entry.key);
+          final assignedNames = entry.value.map((id) => roleNameMap[id] ?? '').where((n) => n.isNotEmpty).toList();
+          final trigger = knownUserSet.contains(friend.id)
+            ? SocialAssignmentTrigger.tagMatch
+            : SocialAssignmentTrigger.newFriend;
+          
+          await _logger.logSocialRoleAssignment(
+            targetUserId: friend.id,
+            targetUserName: friend.displayName,
+            assignedRoleNames: assignedNames,
+            trigger: trigger,
+          );
+        }
+      }
+    }
+
     await _localSocialRepository.saveKnownUsers(apiFriends);
   }
 
