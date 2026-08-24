@@ -82,7 +82,7 @@ class InvitationLogMetadata extends LogMetadata {
   final String senderName;
   final String senderAvatarUrl;
   final InvitationActionOutcome action;
-  final IncomingEventType invitationType;
+  final IncomingEventType eventType;
   final String? appliedRule;
 
   const InvitationLogMetadata({
@@ -90,7 +90,7 @@ class InvitationLogMetadata extends LogMetadata {
     required this.senderName,
     required this.senderAvatarUrl,
     required this.action,
-    required this.invitationType,
+    required this.eventType,
     this.appliedRule,
   });
 
@@ -100,7 +100,7 @@ class InvitationLogMetadata extends LogMetadata {
     'senderName': senderName,
     'senderAvatarUrl': senderAvatarUrl,
     'action': action.name,
-    'invitationType': invitationType.name,
+    'eventType': eventType.name,
     if (appliedRule != null) 'appliedRule': appliedRule,
   };
 
@@ -110,13 +110,13 @@ class InvitationLogMetadata extends LogMetadata {
       senderName: json['senderName'] as String? ?? '',
       senderAvatarUrl: json['senderAvatarUrl'] as String? ?? '',
       action: InvitationActionOutcome.fromString(json['action'] as String? ?? ''),
-      invitationType: IncomingEventType.fromString(json['eventType'] as String? ?? json['invitationType'] as String? ?? '') ,
+      eventType: IncomingEventType.fromString(json['eventType'] as String? ?? json['invitationType'] as String? ?? '') ,
       appliedRule: json['appliedRule'] as String?,
     );
   }
 
   @override
-  List<Object?> get props => [senderId, senderName, senderAvatarUrl, action, invitationType, appliedRule];
+  List<Object?> get props => [senderId, senderName, senderAvatarUrl, action, eventType, appliedRule];
 }
 
 class StatusLogMetadata extends LogMetadata {
