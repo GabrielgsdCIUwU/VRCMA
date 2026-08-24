@@ -1,10 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 
 /// Categorizes the origin of the loggin record.
 enum LogCategory {
   invitation,
   status,
   calendar,
+  social,
+  auth,
   system;
 
   static LogCategory fromString(String value) {
@@ -29,6 +32,34 @@ enum LogSeverity {
   }
 }
 
+/// Supported action outcomes for invitation automations.
+enum InvitationActionOutcome {
+  accepted,
+  rejected,
+  ignored;
+
+  static InvitationActionOutcome fromString(String value) {
+    return InvitationActionOutcome.values.firstWhere(
+      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      orElse: () => InvitationActionOutcome.ignored
+    );
+  }
+}
+
+/// Types of user incoming invitation events.
+enum IncomingEventType {
+  invite,
+  request,
+  friendRequest;
+
+  static IncomingEventType fromString(String value) {
+    return IncomingEventType.values.firstWhere(
+      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      orElse: () => IncomingEventType.invite,
+    );
+  }
+}
+
 sealed class LogMetadata extends Equatable {
   const LogMetadata();
 
@@ -39,6 +70,8 @@ sealed class LogMetadata extends Equatable {
       LogCategory.invitation => InvitationLogMetadata.fromJson(json),
       LogCategory.status => StatusLogMetadata.fromJson(json),
       LogCategory.calendar => CalendarLogMetadata.fromJson(json),
+      LogCategory.social => SocialLogMetadata.fromJson(json),
+      LogCategory.auth => AuthLogMetadata.fromJson(json),
       LogCategory.system => SystemLogMetadata.fromJson(json),
     };
   }
@@ -48,8 +81,8 @@ class InvitationLogMetadata extends LogMetadata {
   final String senderId;
   final String senderName;
   final String senderAvatarUrl;
-  final String action; // 'ACCEPT' | 'REJECT' | 'IGNORED'
-  final String invitationType; // 'INVITE' | 'REQUEST' | 'FRIEND_REQUEST'
+  final InvitationActionOutcome action;
+  final IncomingEventType invitationType;
   final String? appliedRule;
 
   const InvitationLogMetadata({
@@ -66,8 +99,8 @@ class InvitationLogMetadata extends LogMetadata {
     'senderId': senderId,
     'senderName': senderName,
     'senderAvatarUrl': senderAvatarUrl,
-    'action': action,
-    'invitationType': invitationType,
+    'action': action.name,
+    'invitationType': invitationType.name,
     if (appliedRule != null) 'appliedRule': appliedRule,
   };
 
@@ -76,8 +109,8 @@ class InvitationLogMetadata extends LogMetadata {
       senderId: json['senderId'] as String? ?? '',
       senderName: json['senderName'] as String? ?? '',
       senderAvatarUrl: json['senderAvatarUrl'] as String? ?? '',
-      action: json['action'] as String? ?? 'IGNORED',
-      invitationType: json['invitationType'] as String? ?? 'INVITE',
+      action: InvitationActionOutcome.fromString(json['action'] as String? ?? ''),
+      invitationType: IncomingEventType.fromString(json['eventType'] as String? ?? json['invitationType'] as String? ?? '') ,
       appliedRule: json['appliedRule'] as String?,
     );
   }
@@ -88,7 +121,7 @@ class InvitationLogMetadata extends LogMetadata {
 
 class StatusLogMetadata extends LogMetadata {
   final int? profileId;
-  final String status;
+  final StatusType status;
   final String description;
 
   const StatusLogMetadata({
@@ -100,14 +133,14 @@ class StatusLogMetadata extends LogMetadata {
   @override
   Map<String, dynamic> toJson() => {
     if (profileId != null) 'profileId': profileId,
-    'status': status,
+    'status': status.apiValue,
     'description': description,
   };
 
   factory StatusLogMetadata.fromJson(Map<String, dynamic> json) {
     return StatusLogMetadata(
       profileId: json['profileId'] as int?,
-      status: json['status'] as String? ?? '',
+      status: StatusType.fromString(json['status'] as String? ?? ''),
       description: json['description'] as String? ?? '',
     );
   }
@@ -152,6 +185,70 @@ class CalendarLogMetadata extends LogMetadata {
 
   @override
   List<Object?> get props => [ruleId, ruleName, eventId, occurrenceUtc, groupId];
+}
+
+class SocialLogMetadata extends LogMetadata {
+  final String targetUserId;
+  final String targetUserName;
+  final List<String> assignedRoleNames;
+  final String triggerReason;
+
+  const SocialLogMetadata({
+    required this.targetUserId,
+    required this.targetUserName,
+    required this.assignedRoleNames,
+    required this.triggerReason,
+  });
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'targetUserId': targetUserId,
+    'targetUserName': targetUserName,
+    'assignedRoleNames': assignedRoleNames,
+    'triggerReason': triggerReason,  
+  };
+
+  factory SocialLogMetadata.fromJson(Map<String, dynamic> json) {
+    return SocialLogMetadata(
+      targetUserId: json['targetUserId'] as String? ?? '',
+      targetUserName: json['targetUserName'] as String? ?? '',
+      assignedRoleNames: List<String>.from(json['assignedRoleNames'] as List? ?? const []),
+      triggerReason: json['triggerReason'] as String? ?? '',
+    );
+  }
+
+  @override
+  List<Object?> get props => [targetUserId, targetUserName, assignedRoleNames, triggerReason];
+}
+
+class AuthLogMetadata extends LogMetadata {
+  final String userId;
+  final String displayName;
+  final String event;
+
+  const AuthLogMetadata({
+    required this.userId,
+    required this.displayName,
+    required this.event
+  });
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'userId': userId,
+    'displayName': displayName,
+    'event': event,
+  };
+
+  factory AuthLogMetadata.fromJson(Map<String, dynamic> json) {
+    return AuthLogMetadata(
+      userId: json['userId'] as String? ?? '',
+      displayName: json['displayName'] as String? ?? '',
+      event: json['event'] as String? ?? '',
+    );
+  }
+
+  @override
+  List<Object?> get props => [userId, displayName, event];
 }
 
 class SystemLogMetadata extends LogMetadata {
