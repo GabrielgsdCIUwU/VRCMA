@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrcma/domain/entities/automation/automation_log.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
@@ -42,16 +41,6 @@ extension VrcUserUiExtension on VrcUser {
       InstanceAccessType.groupPublic => l10n.accessGroupPublic,
       _ => l10n.accessUnknown,
     };
-  }
-}
-
-extension AutomationLogUiExtension on AutomationLog {
-  String getLocalizedAppliedRule(BuildContext context) {
-    final l10n = context.l10n;
-    if (matchedRoleName == null) {
-      return "$profileName (${l10n.logNoRuleMatched})";
-    }
-    return "$profileName (${l10n.logRuleMatched(matchedRoleName!)})";
   }
 }
 
