@@ -92,7 +92,7 @@ class AppLogger {
     required String targetUserId,
     required String targetUserName,
     required List<String> assignedRoleNames,
-    required String triggerReason,
+    required SocialAssignmentTrigger trigger,
   }) {
     return _repository.saveLog(
       AppLog(
@@ -104,7 +104,7 @@ class AppLogger {
           targetUserId: targetUserId,
           targetUserName: targetUserName,
           assignedRoleNames: assignedRoleNames,
-          triggerReason: triggerReason,
+          trigger: trigger,
         ),
       ),
     );
@@ -114,7 +114,7 @@ class AppLogger {
   Future<void> logAuth({
     required String userId,
     required String displayName,
-    required String event,
+    required AuthLogEvent event,
     LogSeverity severity = LogSeverity.info,
     String? details,
   }) {
@@ -123,7 +123,7 @@ class AppLogger {
         timestamp: DateTime.now(),
         category: LogCategory.auth,
         severity: severity,
-        message: event,
+        message: '',
         details: details,
         metadata: AuthLogMetadata(
           userId: userId,
