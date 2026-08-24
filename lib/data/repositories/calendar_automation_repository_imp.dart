@@ -3,6 +3,7 @@ import 'package:vrcma/data/mappers/calendar_automation_mapper.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 
 class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
@@ -36,7 +37,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
           automationId: eRow['automation_id'] as int?,
           exceptionDate: DateTime.parse(eRow['exception_date'] as String),
           isCancelled: eRow['is_cancelled'] == 1,
-          rescheduledTime: eRow['rescheduled_time'] as String?,
+          rescheduledTime: TimeOfDayValue.tryParse(eRow['rescheduled_time'] as String?),
           titleOverride: eRow['title_override'] as String?,
         );
       }).toList();
@@ -69,7 +70,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
           automationId: eRow['automation_id'] as int?,
           exceptionDate: DateTime.parse(eRow['exception_date'] as String),
           isCancelled: eRow['is_cancelled'] == 1,
-          rescheduledTime: eRow['rescheduled_time'] as String?,
+          rescheduledTime: TimeOfDayValue.tryParse(eRow['rescheduled_time'] as String?),
           titleOverride: eRow['title_override'] as String?,
         );
       }).toList();
@@ -102,7 +103,7 @@ class CalendarAutomationRepositoryImp implements ILocalCalendarRepository {
           'automation_id': targetRuleId,
           'exception_date': exception.exceptionDate.toIso8601String(),
           'is_cancelled': exception.isCancelled ? 1 : 0,
-          'rescheduled_time': exception.rescheduledTime,
+          'rescheduled_time': exception.rescheduledTime?.formatted,
           'title_override': exception.titleOverride,
         });
       }

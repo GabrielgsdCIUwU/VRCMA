@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 
 /// Entity representing exceptional modifications to a specific occurence date.
 class CalendarException extends Equatable {
@@ -7,7 +8,7 @@ class CalendarException extends Equatable {
   final DateTime exceptionDate;
   final DateTime? exceptionEndDate;
   final bool isCancelled;
-  final String? rescheduledTime;
+  final TimeOfDayValue? rescheduledTime;
   final String? titleOverride;
 
   const CalendarException({
