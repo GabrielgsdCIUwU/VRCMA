@@ -127,12 +127,11 @@ extension AppLogUiExtension on AppLog {
     final meta = metadata;
 
     return switch (meta) {
-      InvitationLogMetadata(:final appliedRule) => () {
-        final rule = appliedRule;
-        if (rule == null || rule.isEmpty) return l10n.logNoRuleMatched;
-        final parts = rule.split(':');
-        final ruleName = parts.length > 1 ? parts[1] : rule;
-        return l10n.logRuleMatched(ruleName);
+      InvitationLogMetadata(:final profileName, :final matchedRoleName) => () {
+        if (matchedRoleName == null) {
+          return profileName.isNotEmpty ? "$profileName (${l10n.logNoRuleMatched})" : l10n.logNoRuleMatched;
+        }
+        return "$profileName (${l10n.logRuleMatched(matchedRoleName)})";
       }(),
       
       StatusLogMetadata(:final description) => description.isNotEmpty ? description : null,

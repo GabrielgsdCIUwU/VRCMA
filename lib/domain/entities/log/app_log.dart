@@ -112,7 +112,8 @@ class InvitationLogMetadata extends LogMetadata {
   final String senderAvatarUrl;
   final InvitationActionOutcome action;
   final IncomingEventType eventType;
-  final String? appliedRule;
+  final String profileName;
+  final String? matchedRoleName;
 
   const InvitationLogMetadata({
     required this.senderId,
@@ -120,7 +121,8 @@ class InvitationLogMetadata extends LogMetadata {
     required this.senderAvatarUrl,
     required this.action,
     required this.eventType,
-    this.appliedRule,
+    required this.profileName,
+    this.matchedRoleName,
   });
 
   @override
@@ -130,7 +132,8 @@ class InvitationLogMetadata extends LogMetadata {
     'senderAvatarUrl': senderAvatarUrl,
     'action': action.name,
     'eventType': eventType.name,
-    if (appliedRule != null) 'appliedRule': appliedRule,
+    'profileName': profileName,
+    if (matchedRoleName != null) 'matchedRoleName': matchedRoleName,
   };
 
   factory InvitationLogMetadata.fromJson(Map<String, dynamic> json) {
@@ -139,13 +142,14 @@ class InvitationLogMetadata extends LogMetadata {
       senderName: json['senderName'] as String? ?? '',
       senderAvatarUrl: json['senderAvatarUrl'] as String? ?? '',
       action: InvitationActionOutcome.fromString(json['action'] as String? ?? ''),
-      eventType: IncomingEventType.fromString(json['eventType'] as String? ?? json['invitationType'] as String? ?? '') ,
-      appliedRule: json['appliedRule'] as String?,
+      eventType: IncomingEventType.fromString(json['eventType'] as String? ?? ''),
+      profileName: json['profileName'] as String? ?? json['appliedRule'] as String? ?? '',
+      matchedRoleName: json['matchedRoleName'] as String?,
     );
   }
 
   @override
-  List<Object?> get props => [senderId, senderName, senderAvatarUrl, action, eventType, appliedRule];
+  List<Object?> get props => [senderId, senderName, senderAvatarUrl, action, eventType, profileName, matchedRoleName];
 }
 
 class StatusLogMetadata extends LogMetadata {
