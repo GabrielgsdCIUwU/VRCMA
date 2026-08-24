@@ -25,15 +25,14 @@ class WorldId extends Equatable {
 
 /// Value object storing the schedule details associated with a timezone.
 class TimezoneSchedule extends Equatable {
-
-  final String startTimeOfDay; // Format "HH:MM"
+  final TimeOfDayValue startTime;
   final int durationMinutes;
   final String timezoneIana; // e.g., "Europe/Madrid"
   final DateTime? startDate;
   final DateTime? endDate;
 
   TimezoneSchedule({
-    required this.startTimeOfDay,
+    required this.startTime,
     required this.durationMinutes,
     required this.timezoneIana,
     this.startDate,
@@ -50,8 +49,25 @@ class TimezoneSchedule extends Equatable {
     }
   }
 
+  TimezoneSchedule copyWith({
+    TimeOfDayValue? startTime,
+    int? durationMinutes,
+    String? timezoneIana,
+    DateTime? Function()? startDate,
+    DateTime? Function()? endDate,
+  }) {
+    return TimezoneSchedule(
+      startTime: startTime ?? this.startTime,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      timezoneIana: timezoneIana ?? this.timezoneIana,
+      startDate: startDate != null ? startDate() : this.startDate,
+      endDate: endDate != null ? endDate() : this.endDate,
+    );
+  }
+
+
   @override
-  List<Object?> get props => [startTimeOfDay, durationMinutes, timezoneIana, startDate, endDate];
+  List<Object?> get props => [startTime, durationMinutes, timezoneIana, startDate, endDate];
 }
 
 /// Value object representing the logic configuration for recurrent intervals.
@@ -142,11 +158,24 @@ class TimeOfDayValue extends Equatable implements Comparable<TimeOfDayValue> {
   }
 
   factory TimeOfDayValue.parse(String formatted) {
+    final parsed = tryParse(formatted);
+    if (parsed == null) {
+      throw CalendarDomainException(InvalidTimeFormatError(formatted));
+    }
+    return parsed;
+  }
+
+  static TimeOfDayValue? tryParse(String? formatted) {
+    if (formatted == null || formatted.trim().isEmpty) return null;
+
     final parts = formatted.split(':');
     if (parts.length != 2) return const TimeOfDayValue._(hour: 0, minute: 0);
-    final hour = int.tryParse(parts[0]) ?? 0;
-    final minute = int.tryParse(parts[1]) ?? 0;
-    return TimeOfDayValue._(hour: hour.clamp(0, 23), minute: minute.clamp(0, 59));
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+     if (hour == null || minute == null || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return null;
+    }
+    return TimeOfDayValue._(hour: hour, minute: minute);
   }
 
   int get totalMinutes => hour * 60 + minute;
