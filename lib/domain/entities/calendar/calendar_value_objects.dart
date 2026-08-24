@@ -148,7 +148,7 @@ class TimeOfDayValue extends Equatable implements Comparable<TimeOfDayValue> {
     required this.minute,
   });
 
-  factory TimeOfDayValue(int hour, int minute) {
+  factory TimeOfDayValue({int hour = 0, int minute = 0}) {
     if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
       throw CalendarDomainException(
         InvalidTimeFormatError('$hour$minute'),
