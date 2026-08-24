@@ -60,6 +60,35 @@ enum IncomingEventType {
   }
 }
 
+/// Reasons triggering automatic role assignment.
+enum SocialAssignmentTrigger {
+  newFriend,
+  tagMatch;
+
+  static SocialAssignmentTrigger fromString(String value) {
+    return SocialAssignmentTrigger.values.firstWhere(
+      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      orElse: () => SocialAssignmentTrigger.newFriend,
+    );
+  }
+}
+
+/// Authentication events registered in the system.
+enum AuthLogEvent {
+  loginSuccess,
+  loginFailed,
+  twoFactorRequested,
+  loggedOut,
+  sessionExpired;
+
+  static AuthLogEvent fromString(String value) {
+    return AuthLogEvent.values.firstWhere(
+      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      orElse: () => AuthLogEvent.loginSuccess,
+    );
+  }
+}
+
 sealed class LogMetadata extends Equatable {
   const LogMetadata();
 
@@ -191,13 +220,13 @@ class SocialLogMetadata extends LogMetadata {
   final String targetUserId;
   final String targetUserName;
   final List<String> assignedRoleNames;
-  final String triggerReason;
+  final SocialAssignmentTrigger trigger;
 
   const SocialLogMetadata({
     required this.targetUserId,
     required this.targetUserName,
     required this.assignedRoleNames,
-    required this.triggerReason,
+    required this.trigger,
   });
 
   @override
@@ -205,7 +234,7 @@ class SocialLogMetadata extends LogMetadata {
     'targetUserId': targetUserId,
     'targetUserName': targetUserName,
     'assignedRoleNames': assignedRoleNames,
-    'triggerReason': triggerReason,  
+    'trigger': trigger.name,  
   };
 
   factory SocialLogMetadata.fromJson(Map<String, dynamic> json) {
@@ -213,18 +242,18 @@ class SocialLogMetadata extends LogMetadata {
       targetUserId: json['targetUserId'] as String? ?? '',
       targetUserName: json['targetUserName'] as String? ?? '',
       assignedRoleNames: List<String>.from(json['assignedRoleNames'] as List? ?? const []),
-      triggerReason: json['triggerReason'] as String? ?? '',
+      trigger: SocialAssignmentTrigger.fromString(json['trigger'] as String? ?? ''),
     );
   }
 
   @override
-  List<Object?> get props => [targetUserId, targetUserName, assignedRoleNames, triggerReason];
+  List<Object?> get props => [targetUserId, targetUserName, assignedRoleNames, trigger];
 }
 
 class AuthLogMetadata extends LogMetadata {
   final String userId;
   final String displayName;
-  final String event;
+  final AuthLogEvent event;
 
   const AuthLogMetadata({
     required this.userId,
@@ -236,14 +265,14 @@ class AuthLogMetadata extends LogMetadata {
   Map<String, dynamic> toJson() => {
     'userId': userId,
     'displayName': displayName,
-    'event': event,
+    'event': event.name,
   };
 
   factory AuthLogMetadata.fromJson(Map<String, dynamic> json) {
     return AuthLogMetadata(
       userId: json['userId'] as String? ?? '',
       displayName: json['displayName'] as String? ?? '',
-      event: json['event'] as String? ?? '',
+      event: AuthLogEvent.fromString(json['event'] as String? ?? ''),
     );
   }
 
