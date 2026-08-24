@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vrcma/domain/entities/calendar/enums/instance_region.dart';
 
 enum InstanceAccessType {public, inviteOnly, invitePlus, friends, friendsPlus, group, groupPlus, groupPublic, unknown }
 
@@ -7,14 +8,14 @@ class VrcInstance extends Equatable {
   final String? worldId;
   final String? instanceId;
   final InstanceAccessType accessType;
-  final String region;
+  final InstanceRegion region;
   
   const VrcInstance({
     required this.locationString,
     this.worldId,
     this.instanceId,
     required this.accessType,
-    this.region = 'US',
+    this.region = InstanceRegion.us,
   });
 
   static final Map<String, VrcInstance> _locationCache = {};
@@ -50,7 +51,7 @@ class VrcInstance extends Equatable {
     final instanceId = instanceParts[0];
     
     InstanceAccessType type = InstanceAccessType.public;
-    String region = 'US';
+    InstanceRegion region = InstanceRegion.us;
     
     for (int i = 1; i < instanceParts.length; i++) {
       final part = instanceParts[i];
@@ -64,7 +65,8 @@ class VrcInstance extends Equatable {
       } 
       
       else if (part.startsWith('region(')) {
-        region = part.substring(7, part.length -1).toUpperCase();
+        final rawRegion = part.substring(7, part.length - 1);
+        region = InstanceRegion.fromString(rawRegion);
       }
       
       else if(part.startsWith('group(')) {
