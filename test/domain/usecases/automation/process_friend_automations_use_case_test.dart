@@ -37,6 +37,9 @@ void main() {
       when(mockRepository.getKnownUserIds())
         .thenAnswer((_) async => ['usr_already_friend']);
       
+      when(mockRepository.getAllAvailableRoles())
+        .thenAnswer((_) async => [roleVip]);
+      
       when(mockRepository.assignMultipleRoles(any))
         .thenAnswer((_) async {});
       
@@ -75,6 +78,9 @@ void main() {
       
       when(mockRepository.getKnownUserIds())
           .thenAnswer((_) async => []);
+      
+      when(mockRepository.getAllAvailableRoles())
+        .thenAnswer((_) async => [roleStaff]);
       
       when(mockRepository.assignMultipleRoles(any))
           .thenAnswer((_) async => {});
