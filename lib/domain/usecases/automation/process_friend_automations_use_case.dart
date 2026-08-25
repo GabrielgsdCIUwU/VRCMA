@@ -8,57 +8,68 @@ import 'package:vrcma/domain/services/app_logger.dart';
 
 class ProcessFriendAutomationsUseCase {
   final ILocalSocialRepository _localSocialRepository;
-  final AppLogger? _logger;
+  final AppLogger _logger;
 
-  ProcessFriendAutomationsUseCase(this._localSocialRepository, [this._logger]);
+  ProcessFriendAutomationsUseCase({
+    required ILocalSocialRepository localSocialRepository,
+    required AppLogger logger,
+  }) : _localSocialRepository = localSocialRepository,
+       _logger = logger;
 
   Future<void> execute(List<VrcUser> apiFriends) async {
+    if (apiFriends.isEmpty) return;
+
     final automations = await _localSocialRepository.getRoleAutomations();
     if (automations.isEmpty) {
       return _localSocialRepository.saveKnownUsers(apiFriends);
     }
 
-    final knownUserSet = (await _localSocialRepository.getKnownUserIds()).toSet();
+    final knownUserSet = (await _localSocialRepository.getKnownUserIds())
+        .toSet();
     final allRoles = await _localSocialRepository.getAllAvailableRoles();
     final roleNameMap = {for (final r in allRoles) r.id: r.name};
 
-    final rolesToAssignMap = await Isolate.run(() => _computeRoles(
-        apiFriends,
-        automations,
-        knownUserSet
-    ));
+    final rolesToAssignMap = await Isolate.run(
+      () => _computeRoles(apiFriends, automations, knownUserSet),
+    );
+
+    await _localSocialRepository.saveKnownUsers(apiFriends);
 
     if (rolesToAssignMap.isNotEmpty) {
       await _localSocialRepository.assignMultipleRoles(rolesToAssignMap);
 
-      if (_logger != null) {
-        for (final entry in rolesToAssignMap.entries) {
-          final friend = apiFriends.firstWhere((f) => f.id == entry.key);
-          final assignedNames = entry.value.map((id) => roleNameMap[id] ?? '').where((n) => n.isNotEmpty).toList();
-          final trigger = knownUserSet.contains(friend.id)
+      for (final entry in rolesToAssignMap.entries) {
+        final friend = apiFriends.firstWhere((f) => f.id == entry.key);
+        final assignedNames = entry.value
+            .map((id) => roleNameMap[id] ?? '')
+            .where((n) => n.isNotEmpty)
+            .toList();
+
+        if (assignedNames.isEmpty) continue;
+
+        final trigger = knownUserSet.contains(friend.id)
             ? SocialAssignmentTrigger.tagMatch
             : SocialAssignmentTrigger.newFriend;
-          
-          await _logger.logSocialRoleAssignment(
-            targetUserId: friend.id,
-            targetUserName: friend.displayName,
-            assignedRoleNames: assignedNames,
-            trigger: trigger,
-          );
-        }
+
+        await _logger.logSocialRoleAssignment(
+          targetUserId: friend.id,
+          targetUserName: friend.displayName,
+          assignedRoleNames: assignedNames,
+          trigger: trigger,
+        );
       }
     }
-
-    await _localSocialRepository.saveKnownUsers(apiFriends);
   }
 
   static Map<String, Set<int>> _computeRoles(
-      List<VrcUser> friends,
-      List<RoleAutomation> automations,
-      Set<String> knownUsers) {
-
+    List<VrcUser> friends,
+    List<RoleAutomation> automations,
+    Set<String> knownUsers,
+  ) {
     final result = <String, Set<int>>{};
-    final tagLookup = {for (final tag in VrcTag.allTags) tag.id: tag.name.toLowerCase()};
+    final tagLookup = {
+      for (final tag in VrcTag.allTags) tag.id: tag.name.toLowerCase(),
+    };
 
     for (final friend in friends) {
       final isNewFriend = !knownUsers.contains(friend.id);

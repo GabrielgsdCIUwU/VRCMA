@@ -6,10 +6,13 @@ import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
+import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
 import 'package:vrcma/data/repositories/auth_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/repositories/i_auth_repository.dart';
 import 'package:vrcma/core/di/network_provider.dart';
 import 'package:vrcma/core/network/sanitizer/rules/group_permission_sanitizer_rule.dart';
@@ -47,40 +50,36 @@ class ShowOtpView extends _$ShowOtpView {
 @riverpod
 Future<VrchatDart> vrcApi(Ref ref) async {
   final jar = await ref.watch(cookieJarProvider.future);
-  
+
   final client = VrchatDart(
-      userAgent: VrchatUserAgent(
-          applicationName: 'VRCMA',
-          version: '1.0.0',
-          contactInfo: 'contacto.gabrielsuarezdominguez@gmail.com'
-      ),
+    userAgent: VrchatUserAgent(
+      applicationName: 'VRCMA',
+      version: '1.0.0',
+      contactInfo: 'contacto.gabrielsuarezdominguez@gmail.com',
+    ),
   );
-  
+
   client.rawApi.dio.interceptors.removeWhere(
-      (interceptor) => interceptor.runtimeType.toString() == 'CookieManager'
+    (interceptor) => interceptor.runtimeType.toString() == 'CookieManager',
   );
-  
+
   client.rawApi.dio.options.connectTimeout = const Duration(seconds: 15);
   client.rawApi.dio.options.receiveTimeout = const Duration(seconds: 15);
-  
-  // Añadimos el interceptor sanitizador para prevenir errores de enums desconocidos
-  client.rawApi.dio.interceptors.add(VrcEnumSanitizerInterceptor([
-    GroupPermissionSanitizerRule(),
-  ]));
-  
+
+  client.rawApi.dio.interceptors.add(
+    VrcEnumSanitizerInterceptor([GroupPermissionSanitizerRule()]),
+  );
+
   client.rawApi.dio.interceptors.add(CookieManager(jar));
   return client;
 }
 
-/// Provider for the Auth Repository.
-/// It generates [authRepositoryProvider].
 @riverpod
 Future<IAuthRepository> authRepository(Ref ref) async {
   final vrcApiClient = await ref.watch(vrcApiProvider.future);
   return AuthRepositoryImp(vrcApiClient);
 }
 
-/// State notifier for the Authentication logic.
 @riverpod
 class AuthState extends _$AuthState {
   StreamSubscription? _streamSubscription;
@@ -99,25 +98,30 @@ class AuthState extends _$AuthState {
       if (response.data != null) {
         currentUser = VrcUserModel.fromCurrentUser(response.data!);
       }
-    }catch (e) {
+    } catch (e) {
       currentUser = null;
     } finally {
       ref.read(initialSessionCheckedProvider.notifier).setChecked();
     }
-    
-    if (currentUser != null) {
-      final automationRepo = await ref.watch(automationRepositoryProvider.future);
 
-      _streamSubscription = automationRepo.watchAutomationEvents().listen((event) {
+    if (currentUser != null) {
+      final automationRepo = await ref.watch(
+        automationRepositoryProvider.future,
+      );
+
+      _streamSubscription = automationRepo.watchAutomationEvents().listen((
+        event,
+      ) {
         final currentData = state.value;
         if (currentData == null) return;
 
-        if (event is UserProfileUpdatedEvent && event.userId == currentData.id) {
+        if (event is UserProfileUpdatedEvent &&
+            event.userId == currentData.id) {
           final updatedUser = VrcUser(
             id: currentData.id,
             displayName: event.displayName.isNotEmpty
-              ? event.displayName
-              : currentData.displayName,
+                ? event.displayName
+                : currentData.displayName,
             bio: event.statusDescription,
             tags: currentData.tags,
             location: currentData.location,
@@ -125,7 +129,8 @@ class AuthState extends _$AuthState {
             avatarUrl: currentData.avatarUrl,
           );
           state = AsyncData(updatedUser);
-        } else if (event is UserLocationUpdatedEvent && event.userId == currentData.id) {
+        } else if (event is UserLocationUpdatedEvent &&
+            event.userId == currentData.id) {
           final updatedUser = VrcUser(
             id: currentData.id,
             displayName: currentData.displayName,
@@ -145,35 +150,86 @@ class AuthState extends _$AuthState {
   Future<void> login(String username, String password) async {
     state = const AsyncValue.loading();
     final repository = await ref.read(authRepositoryProvider.future);
+    final logger = await ref.read(appLoggerProvider.future);
 
     final result = await repository.login(username, password);
 
     result.fold(
-        (failure) => state = AsyncValue.error(failure, StackTrace.current),
-        (user) => state = AsyncValue.data(user),
+      (failure) async {
+        state = AsyncValue.error(failure, StackTrace.current);
+        if (failure is TwoFactorRequiredFailure) {
+          await logger.logAuth(
+            userId: username,
+            displayName: username,
+            event: AuthLogEvent.twoFactorRequested,
+          );
+        } else {
+          await logger.logAuth(
+            userId: username,
+            displayName: username,
+            event: AuthLogEvent.loginFailed,
+            severity: LogSeverity.warning,
+            details: failure.message,
+          );
+        }
+      },
+      (user) async {
+        state = AsyncValue.data(user);
+        await logger.logAuth(
+          userId: user.id,
+          displayName: user.displayName,
+          event: AuthLogEvent.loginSuccess,
+        );
+      },
     );
   }
 
   Future<void> verifyOtp(String code) async {
     state = const AsyncValue.loading();
     final repository = await ref.read(authRepositoryProvider.future);
+    final logger = await ref.read(appLoggerProvider.future);
 
     final result = await repository.verify2FA(code);
 
     result.fold(
-        (failure) => state = AsyncValue.error(failure, StackTrace.current),
-        (user) => state = AsyncValue.data(user),
+      (failure) async {
+        state = AsyncValue.error(failure, StackTrace.current);
+        await logger.logAuth(
+          userId: '',
+          displayName: '2FA',
+          event: AuthLogEvent.loginFailed,
+          severity: LogSeverity.warning,
+          details: failure.message,
+        );
+      },
+      (user) async {
+        state = AsyncValue.data(user);
+        await logger.logAuth(
+          userId: user.id,
+          displayName: user.displayName,
+          event: AuthLogEvent.loginSuccess,
+        );
+      },
     );
   }
 
   Future<void> logout() async {
+    final currentUser = state.value;
     final jar = await ref.read(cookieJarProvider.future);
     await jar.deleteAll();
     
     final repository = await ref.read(authRepositoryProvider.future);
-    repository.logout();
-    
-    state = const AsyncValue.loading();
+    await repository.logout();
+
+    if (currentUser != null) {
+      final logger = await ref.read(appLoggerProvider.future);
+      await logger.logAuth(
+        userId: currentUser.id,
+        displayName: currentUser.displayName,
+        event: AuthLogEvent.loggedOut,
+      );
+    }
+
     state = const AsyncValue.data(null);
   }
 
@@ -198,10 +254,7 @@ Future<Map<String, String>> vrcImageHeaders(Ref ref, String imageUrl) async {
     cookies.addAll(await jar.loadForRequest(generalUri));
   }
 
-
-  final cookieString = cookies
-      .map((c) => '${c.name}=${c.value}')
-      .join('; ');
+  final cookieString = cookies.map((c) => '${c.name}=${c.value}').join('; ');
   
   return {
     'User-Agent': 'VRCMA/1.0.0 contacto.gabrielsuarezdominguez@gmail.com',
@@ -230,7 +283,9 @@ Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
         ),
       );
 
-      if (response.statusCode == 404 || response.statusCode == 403 || response.statusCode == 429) {
+      if (response.statusCode == 404 ||
+          response.statusCode == 403 ||
+          response.statusCode == 429) {
         return '';
       }
 
@@ -243,5 +298,3 @@ Future<String> vrcResolvedImage(Ref ref, String imageUrl) async {
     }
   });
 }
-
-

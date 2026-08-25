@@ -8,6 +8,7 @@ import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 import 'package:vrcma/domain/usecases/automation/automation_processor.dart';
 import 'package:vrcma/domain/usecases/automation/handlers/automation_handler.dart';
 import 'package:vrcma/domain/usecases/automation/message_slot_manager.dart';
+import 'package:vrcma/domain/usecases/automation/process_friend_automations_use_case.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
 import 'package:vrcma/domain/usecases/calendar/evaluate_and_generate_events_use_case.dart';
 import 'package:vrcma/domain/usecases/calendar/validate_group_permissions_use_case.dart';
@@ -126,4 +127,14 @@ Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref re
 Future<AppLogger> appLogger(Ref ref) async {
   final logRepo = await ref.watch(appLogRepositoryProvider.future);
   return AppLogger(logRepo);
+}
+
+@riverpod
+Future<ProcessFriendAutomationsUseCase> processFriendAutomationsUseCase(Ref ref) async {
+  final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
+  final logger = await ref.watch(appLoggerProvider.future);
+  return ProcessFriendAutomationsUseCase(
+    localSocialRepository: localSocialRepo,
+    logger: logger,
+  );
 }
