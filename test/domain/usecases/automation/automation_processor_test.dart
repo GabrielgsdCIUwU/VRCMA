@@ -4,6 +4,7 @@ import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/usecases/automation/automation_processor.dart';
 import 'package:vrcma/domain/usecases/automation/handlers/automation_handler.dart';
 import 'package:vrcma/domain/usecases/automation/process_invitation_use_case.dart';
@@ -18,26 +19,26 @@ void main() {
   late MockIAppLogRepository mockLogRepo;
   late MockProcessInvitationUseCase mockUseCase;
   late MockMessageSlotManager mockSlotManager;
-  
+
   const currentUserId = 'usr_9876';
 
-  final requestEvent = RequestInviteEvent(
+  const requestEvent = RequestInviteEvent(
     id: 'not_123',
     senderId: 'usr_123',
     senderName: 'TestUser',
-    senderTags: const ['system_trust_veteran'],
+    senderTags: ['system_trust_veteran'],
     avatarUrl: 'http://avatar.url',
   );
 
-  final inviteEvent = InviteReceivedEvent(
+  const inviteEvent = InviteReceivedEvent(
     id: 'not_456',
     senderId: 'usr_456',
     senderName: 'TestUser2',
-    senderTags: const ['system_trust_basic'],
+    senderTags: ['system_trust_basic'],
     avatarUrl: 'http://avatar2.url',
   );
 
-  final friendRequestEvent = const FriendRequestReceivedEvent(
+  const friendRequestEvent = FriendRequestReceivedEvent(
     id: 'not_789',
     senderId: 'usr_789',
     senderName: 'EBoy',
@@ -45,13 +46,13 @@ void main() {
     avatarUrl: 'https://average.vrchat/player.png',
   );
 
-  final role = Role(id: 1, name: 'Trusted User');
+  const role = Role(id: 1, name: 'Trusted User');
 
   final message = CustomMessage(
-      id: 1,
-      content: 'Welcome!',
-      type: VrcMessageType.invite,
-      lastUpdated: DateTime.now()
+    id: 1,
+    content: 'Welcome!',
+    type: VrcMessageType.invite,
+    lastUpdated: DateTime.now(),
   );
 
   final rule = ProfileRule(
@@ -82,7 +83,7 @@ void main() {
         automationRepository: mockAutomationRepo,
         localSocialRepository: mockLocalSocialRepo,
         profileRepository: mockProfileRepo,
-        logRepository: mockLogRepo,
+        logger: AppLogger(mockLogRepo),
         useCase: mockUseCase,
         currentUserId: currentUserId,
         slotManager: mockSlotManager,
@@ -91,7 +92,7 @@ void main() {
         automationRepository: mockAutomationRepo,
         localSocialRepository: mockLocalSocialRepo,
         profileRepository: mockProfileRepo,
-        logRepository: mockLogRepo,
+        logger: AppLogger(mockLogRepo),
         useCase: mockUseCase,
       ),
     ];
@@ -102,7 +103,6 @@ void main() {
   });
 
   group('AutomationProcessor Pipeline & Handlers Integration', () {
-
     test('should abort execution if no active profile exists', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => []);
 
@@ -113,7 +113,7 @@ void main() {
       verifyNoMoreInteractions(mockUseCase);
     });
 
-    test('should log IGNORED and abort if no rule matches (useCase returns null)', () async {
+    test('should log IGNORED and abort if no rule matches', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(requestEvent.senderId)).thenAnswer((_) async => []);
 
@@ -128,9 +128,9 @@ void main() {
       final capturedLog = verify(mockLogRepo.saveLog(captureAny)).captured.single as AppLog;
       expect(capturedLog.category, LogCategory.invitation);
       expect(capturedLog.metadata, isA<InvitationLogMetadata>());
-      
+
       final meta = capturedLog.metadata as InvitationLogMetadata;
-      expect(meta.action, 'IGNORED');
+      expect(meta.action, InvitationActionOutcome.ignored);
       expect(meta.senderId, requestEvent.senderId);
 
       verifyNever(mockSlotManager.prepareSlotForMessage(any, any));
@@ -141,12 +141,12 @@ void main() {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(requestEvent.senderId)).thenAnswer((_) async => []);
 
-      final tResult = ProcessInvitationResult(action: RuleAction.accept, rule: rule);
+      final tDecision = MatchedRuleDecision(action: RuleAction.accept, rule: rule);
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(tResult);
+      )).thenReturn(tDecision);
 
       when(mockSlotManager.prepareSlotForMessage(currentUserId, message))
           .thenAnswer((_) async => 3);
@@ -162,13 +162,13 @@ void main() {
       final capturedLog = verify(mockLogRepo.saveLog(captureAny)).captured.single as AppLog;
       expect(capturedLog.category, LogCategory.invitation);
       expect(capturedLog.severity, LogSeverity.info);
-      
+
       final meta = capturedLog.metadata as InvitationLogMetadata;
-      expect(meta.action, 'ACCEPTED');
+      expect(meta.action, InvitationActionOutcome.accepted);
       expect(meta.senderId, requestEvent.senderId);
     });
 
-    test('should prepare slot and REJECT with message when decision is reject and has message', () async {
+    test('should prepare slot and REJECT with message when decision is reject and contains message', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(requestEvent.senderId)).thenAnswer((_) async => []);
 
@@ -183,13 +183,13 @@ void main() {
         action: RuleAction.reject,
         requestResponseMessage: () => rejectMessage,
       );
-      final result = ProcessInvitationResult(action: RuleAction.reject, rule: rejectRule);
+      final decision = MatchedRuleDecision(action: RuleAction.reject, rule: rejectRule);
 
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(result);
+      )).thenReturn(decision);
 
       when(mockSlotManager.prepareSlotForMessage(currentUserId, rejectMessage))
           .thenAnswer((_) async => 5);
@@ -205,27 +205,27 @@ void main() {
       final capturedLog = verify(mockLogRepo.saveLog(captureAny)).captured.single as AppLog;
       expect(capturedLog.category, LogCategory.invitation);
       expect(capturedLog.severity, LogSeverity.warning);
-      
+
       final meta = capturedLog.metadata as InvitationLogMetadata;
-      expect(meta.action, 'REJECTED');
+      expect(meta.action, InvitationActionOutcome.rejected);
       expect(meta.senderId, requestEvent.senderId);
     });
 
-    test('should dismiss notification without message when REJECT decision has NO message', () async {
+    test('should dismiss notification without message when REJECT decision has no message', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(requestEvent.senderId)).thenAnswer((_) async => []);
 
       final ruleNoMsg = rule.copyWith(
-          action: RuleAction.reject,
-          requestResponseMessage: () => null
+        action: RuleAction.reject,
+        requestResponseMessage: () => null,
       );
-      final result = ProcessInvitationResult(action: RuleAction.reject, rule: ruleNoMsg);
+      final decision = MatchedRuleDecision(action: RuleAction.reject, rule: ruleNoMsg);
 
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(result);
+      )).thenReturn(decision);
 
       when(mockAutomationRepo.dismissNotification(requestEvent)).thenAnswer((_) async {});
 
@@ -235,16 +235,16 @@ void main() {
       verify(mockAutomationRepo.dismissNotification(requestEvent));
     });
 
-    test('should ACCEPT InviteReceived (call acceptInvitation) when decision is accept', () async {
+    test('should ACCEPT InviteReceived when decision is accept', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(inviteEvent.senderId)).thenAnswer((_) async => []);
 
-      final result = ProcessInvitationResult(action: RuleAction.accept, rule: rule);
+      final decision = MatchedRuleDecision(action: RuleAction.accept, rule: rule);
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(result);
+      )).thenReturn(decision);
 
       when(mockAutomationRepo.acceptInvitation(inviteEvent)).thenAnswer((_) async {});
 
@@ -254,48 +254,48 @@ void main() {
 
       final capturedLog = verify(mockLogRepo.saveLog(captureAny)).captured.single as AppLog;
       expect(capturedLog.category, LogCategory.invitation);
-      
+
       final meta = capturedLog.metadata as InvitationLogMetadata;
-      expect(meta.action, 'ACCEPTED');
+      expect(meta.action, InvitationActionOutcome.accepted);
       expect(meta.senderId, inviteEvent.senderId);
     });
 
-    test('should dismiss friend requests directly when rule evaluate returns reject action', () async {
+    test('should dismiss friend requests directly when rule decision returns reject action', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(friendRequestEvent.senderId)).thenAnswer((_) async => []);
 
-      final result = ProcessInvitationResult(action: RuleAction.reject, rule: rule);
+      final decision = MatchedRuleDecision(action: RuleAction.reject, rule: rule);
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(result);
+      )).thenReturn(decision);
 
       when(mockAutomationRepo.dismissNotification(friendRequestEvent)).thenAnswer((_) async {});
 
       await processor.process(friendRequestEvent);
 
       verify(mockAutomationRepo.dismissNotification(friendRequestEvent)).called(1);
-      
+
       final capturedLog = verify(mockLogRepo.saveLog(captureAny)).captured.single as AppLog;
       expect(capturedLog.category, LogCategory.invitation);
       expect(capturedLog.severity, LogSeverity.warning);
-      
+
       final meta = capturedLog.metadata as InvitationLogMetadata;
-      expect(meta.action, 'REJECTED');
+      expect(meta.action, InvitationActionOutcome.rejected);
       expect(meta.senderId, friendRequestEvent.senderId);
     });
 
-    test('should dispatch acceptFriendRequest on FriendRequestReceivedEvent', () async {
+    test('should dispatch acceptFriendRequest on FriendRequestReceivedEvent when accepted', () async {
       when(mockProfileRepo.getProfiles()).thenAnswer((_) async => [profile]);
       when(mockLocalSocialRepo.getRolesForUser(friendRequestEvent.senderId)).thenAnswer((_) async => []);
 
-      final result = ProcessInvitationResult(action: RuleAction.accept, rule: rule);
+      final decision = MatchedRuleDecision(action: RuleAction.accept, rule: rule);
       when(mockUseCase.execute(
         request: anyNamed('request'),
         profile: anyNamed('profile'),
         userAssignedRoles: anyNamed('userAssignedRoles'),
-      )).thenReturn(result);
+      )).thenReturn(decision);
 
       when(mockAutomationRepo.acceptFriendRequest(friendRequestEvent)).thenAnswer((_) async {});
 

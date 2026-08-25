@@ -9,6 +9,7 @@ import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_automation_repository.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/usecases/automation/status/coordinate_status_automation_use_case.dart';
 import 'package:vrcma/domain/usecases/automation/status/evaluate_status_use_case.dart';
 
@@ -31,13 +32,15 @@ void main() {
     useCase = CoordinateStatusAutomationUseCase(
       statusRepository: mockStatusRepo,
       automationRepository: mockAutomationRepo,
-      logRepository: mockLogRepo,
+      logger: AppLogger(mockLogRepo),
       evaluateStatusUseCase: mockEvaluateUseCase,
     );
+
+    when(mockLogRepo.saveLog(any)).thenAnswer((_) async {});
   });
 
   group('CoordinateStatusAutomationUseCase', () {
-    final profile = StatusProfile(
+    final profile = const StatusProfile(
       id: 1,
       name: 'Dynamic Profile',
       fallbackStatus: StatusType.active,
@@ -61,7 +64,7 @@ void main() {
 
       when(mockEvaluateUseCase.execute(profile: profile, context: context))
         .thenAnswer((_) async => evaluation);
-      
+
       final result = await useCase.execute(activeProfile: profile, currentContext: context);
 
       expect(result.isRight(), isTrue);
@@ -92,14 +95,14 @@ void main() {
 
     test('should return Failure and halt local update when remote API update fails', () async {
       final evaluation = EvaluateStatusResult(status: StatusType.busy, message: 'Do Not Disturb');
-      final failure = ApiFailure('VRChat API Error');
+      const failure = ApiFailure('VRChat API Error');
 
       when(mockEvaluateUseCase.execute(profile: profile, context: context))
         .thenAnswer((_) async => evaluation);
       
       when(mockAutomationRepo.updateRemoteStatus(status: StatusType.busy, description: 'Do Not Disturb'))
-        .thenAnswer((_) async => Left(failure));
-      
+        .thenAnswer((_) async => const Left(failure));
+
       final result = await useCase.execute(activeProfile: profile, currentContext: context);
 
       expect(result.isLeft(), isTrue);
