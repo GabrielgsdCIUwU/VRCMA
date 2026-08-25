@@ -13,4 +13,7 @@ abstract interface class IAppLogRepository {
   });
 
   Future<void> clearAllLogs();
+  
+  /// Stream that emits whenever new logs are inserted or cleared
+  Stream<void> watchLogs();
 }

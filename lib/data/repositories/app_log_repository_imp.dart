@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/data/mappers/app_log_mapper.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
@@ -5,12 +7,17 @@ import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 
 class AppLogRepositoryImp implements IAppLogRepository {
   final Database _db;
+  final StreamController<void> _logUpdatesController = StreamController<void>.broadcast();
   AppLogRepositoryImp(this._db);
+  
+  @override
+  Stream<void> watchLogs() => _logUpdatesController.stream;
   
   @override
   Future<void> saveLog(AppLog log) async {
       final dbMap = AppLogMapper().toDatabaseMap(log);
       await _db.insert('app_logs', dbMap);
+      _logUpdatesController.add(null);
   }
   
   @override
@@ -34,9 +41,9 @@ class AppLogRepositoryImp implements IAppLogRepository {
       args.add(severity.name);
     }
 
-    if (search != null && search.isNotEmpty) {
+    if (search != null && search.trim().isNotEmpty) {
       conditions.add('(message LIKE ? OR details LIKE ? OR metadata LIKE ?)');
-      final searchPattern = '%$search%';
+      final searchPattern = '%${search.trim()}%';
       args.addAll([searchPattern, searchPattern, searchPattern]);
     }
 
@@ -56,5 +63,6 @@ class AppLogRepositoryImp implements IAppLogRepository {
   @override
   Future<void> clearAllLogs() async {
     await _db.delete('app_logs');
+    _logUpdatesController.add(null);
   }
 }
