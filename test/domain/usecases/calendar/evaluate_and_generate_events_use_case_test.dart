@@ -9,6 +9,7 @@ import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
 import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 import 'package:vrcma/domain/usecases/calendar/evaluate_and_generate_events_use_case.dart';
@@ -32,10 +33,12 @@ void main() {
       useCase = EvaluateAndGenerateEventsUseCase(
         localRepo: mockLocalRepo,
         remoteRepo: mockRemoteRepo,
-        logRepo: mockLogRepo,
+        logger: AppLogger(mockLogRepo),
         calculator: OccurrenceCalculator(),
         titleResolver: EventTitleResolver(),
       );
+
+      when(mockLogRepo.saveLog(any)).thenAnswer((_) async {});
     });
 
     test('should abort execution if there are no active rules', () async {
@@ -55,7 +58,11 @@ void main() {
         titleTemplate: 'Meetup #{{incremental}}',
         category: GroupEventCategory.other,
         accessType: GroupEventAccessType.public,
-        schedule: TimezoneSchedule(startTimeOfDay: '20:00', durationMinutes: 60, timezoneIana: 'UTC'),
+        schedule: TimezoneSchedule(
+            startTime: TimeOfDayValue(hour: 20), 
+            durationMinutes: 60, 
+            timezoneIana: 'UTC'
+        ),
         recurrence: const RecurrencePattern(type: RecurrenceType.daily),
         incrementalConfig: IncrementalConfig(isEnabled: true, currentValue: 5),
         strategy: CreationStrategy.lazy,
