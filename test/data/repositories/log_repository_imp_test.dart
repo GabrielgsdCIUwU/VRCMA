@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:timezone/data/latest_all.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/data/repositories/app_log_repository_imp.dart';
 import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
@@ -9,11 +11,15 @@ void main() {
   late AppLogRepositoryImp repository;
   
   setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    tz_data.initializeTimeZones();
+    tz.setLocalLocation(tz.UTC);
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   });
   
   setUp(() async {
+    tz.setLocalLocation(tz.UTC);
     db = await databaseFactory.openDatabase(inMemoryDatabasePath,
         options: OpenDatabaseOptions(
           version: 1,
