@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:vrcma/data/repositories/app_log_repository_imp.dart';
+import 'package:vrcma/domain/entities/automation/status_automation.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
 
 void main() {
@@ -50,9 +51,9 @@ void main() {
           senderId: 'usr_abc',
           senderName: 'Gabrielgsd',
           senderAvatarUrl: 'https://avatars.githubusercontent.com/u/104272301',
-          action: 'ACCEPT',
-          invitationType: 'INVITE',
-          appliedRule: 'Default Streamer Rule',
+          action: InvitationActionOutcome.accepted,
+          eventType: IncomingEventType.invite,
+          profileName: 'Default Streamer Rule',
         ),
       );
 
@@ -69,8 +70,8 @@ void main() {
       final metadata = firstLog.metadata as InvitationLogMetadata;
       expect(metadata.senderId, 'usr_abc');
       expect(metadata.senderName, 'Gabrielgsd');
-      expect(metadata.action, 'ACCEPT');
-      expect(metadata.appliedRule, 'Default Streamer Rule');
+      expect(metadata.action, InvitationActionOutcome.accepted);
+      expect(metadata.profileName, 'Default Streamer Rule');
     });
 
     test('saveLog should preserve timezone mappings converting local timestamps safely', () async {
@@ -100,8 +101,9 @@ void main() {
           senderId: '1',
           senderName: 'ª',
           senderAvatarUrl: '',
-          action: 'ACCEPT',
-          invitationType: 'INVITE'
+          action: InvitationActionOutcome.accepted,
+          eventType: IncomingEventType.invite,
+          profileName: 'Default',
         ),
       );
 
@@ -123,7 +125,7 @@ void main() {
       expect(filtered.first.metadata, isA<CalendarLogMetadata>());
     });
 
-    test('getLogs- should filter correctly by LogSeverity', () async {
+    test('getLogs should filter correctly by LogSeverity', () async {
       final infoLog = AppLog(
         timestamp: now,
         category: LogCategory.system,
@@ -157,7 +159,7 @@ void main() {
         severity: LogSeverity.info,
         message: '',
         details: 'Exception stack trace containing crash_report_identifier',
-        metadata: const StatusLogMetadata(status: 'join me', description: 'Template VRChatting'),
+        metadata: const StatusLogMetadata(status: StatusType.joinMe, description: 'Template VRChatting'),
       );
 
       await repository.saveLog(logWithSpecialDetails);
