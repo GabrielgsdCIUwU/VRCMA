@@ -1299,4 +1299,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logAuthEventSessionExpired => 'Session Expired';
+
+  @override
+  String get logDetailRule => 'Automation Rule';
+
+  @override
+  String get logDetailProfile => 'Filter Profile';
+
+  @override
+  String get logDetailStatusProfile => 'Status Profile';
+
+  @override
+  String get logDetailGroup => 'Target Group';
+
+  @override
+  String get logDetailScheduledFor => 'Scheduled Time';
+
+  @override
+  String get logDetailEventTitle => 'Event Title';
+
+  @override
+  String get logDetailEventId => 'VRChat Event ID';
+
+  @override
+  String get logDetailSender => 'Sender';
+
+  @override
+  String get logDetailTargetUser => 'Target User';
+
+  @override
+  String get logDetailMatchedRole => 'Matched Rule / Tag';
+
+  @override
+  String get logDetailTrigger => 'Trigger';
+
+  @override
+  String get logDetailStatus => 'Applied Status';
+
+  @override
+  String get logDetailStatusMessage => 'Status Message';
+
+  @override
+  String get logDetailAction => 'Action';
+
+  @override
+  String get logDetailEventType => 'Event Type';
+
+  @override
+  String get logDetailAuthEvent => 'Authentication Event';
+
+  @override
+  String get logDetailTechnicalDetails => 'Technical Error Details';
 }

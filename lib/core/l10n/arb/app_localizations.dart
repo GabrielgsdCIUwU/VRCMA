@@ -2437,6 +2437,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Session Expired'**
   String get logAuthEventSessionExpired;
+
+  /// Name of the automation rule associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Rule'**
+  String get logDetailRule;
+
+  /// Name of the filter profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Profile'**
+  String get logDetailProfile;
+
+  /// Name of the status automation profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Profile'**
+  String get logDetailStatusProfile;
+
+  /// VRChat Group associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Group'**
+  String get logDetailGroup;
+
+  /// Date and time when the scheduled action is set to occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Time'**
+  String get logDetailScheduledFor;
+
+  /// Title of the published VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title'**
+  String get logDetailEventTitle;
+
+  /// ID of the created VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Event ID'**
+  String get logDetailEventId;
+
+  /// User who sent the invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get logDetailSender;
+
+  /// User targeted by the action or invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Target User'**
+  String get logDetailTargetUser;
+
+  /// Rule or role that matched the user's data.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched Rule / Tag'**
+  String get logDetailMatchedRole;
+
+  /// Event or condition that triggered the action.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger'**
+  String get logDetailTrigger;
+
+  /// VRChat status applied by the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied Status'**
+  String get logDetailStatus;
+
+  /// Message describing the applied status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Message'**
+  String get logDetailStatusMessage;
+
+  /// Action performed as a result of the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get logDetailAction;
+
+  /// Type of event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Type'**
+  String get logDetailEventType;
+
+  /// Type of authentication event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Event'**
+  String get logDetailAuthEvent;
+
+  /// Stack trace and raw error information associated with the error.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical Error Details'**
+  String get logDetailTechnicalDetails;
 }
 
 class _AppLocalizationsDelegate

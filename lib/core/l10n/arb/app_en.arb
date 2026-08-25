@@ -2189,5 +2189,74 @@
   "logAuthEventSessionExpired": "Session Expired",
   "@logAuthEventSessionExpired": {
     "description": "Authentication event label shown when the user's authentication session has expired."
+  },
+
+  "logDetailRule": "Automation Rule",
+  "@logDetailRule": {
+    "description": "Name of the automation rule associated with the log entry."
+  },
+  "logDetailProfile": "Filter Profile",
+  "@logDetailProfile": {
+    "description": "Name of the filter profile associated with the log entry."
+  },
+  "logDetailStatusProfile": "Status Profile",
+  "@logDetailStatusProfile": {
+    "description": "Name of the status automation profile associated with the log entry."
+  },
+  "logDetailGroup": "Target Group",
+  "@logDetailGroup": {
+    "description": "VRChat Group associated with the log entry."
+  },
+  "logDetailScheduledFor": "Scheduled Time",
+  "@logDetailScheduledFor": {
+    "description": "Date and time when the scheduled action is set to occur."
+  },
+  "logDetailEventTitle": "Event Title",
+  "@logDetailEventTitle": {
+    "description": "Title of the published VRChat event."
+  },
+  "logDetailEventId": "VRChat Event ID",
+  "@logDetailEventId": {
+    "description": "ID of the created VRChat event."
+  },
+  "logDetailSender": "Sender",
+  "@logDetailSender": {
+    "description": "User who sent the invitation."
+  },
+  "logDetailTargetUser": "Target User",
+  "@logDetailTargetUser": {
+    "description": "User targeted by the action or invitation."
+  },
+  "logDetailMatchedRole": "Matched Rule / Tag",
+  "@logDetailMatchedRole": {
+    "description": "Rule or role that matched the user's data."
+  },
+  "logDetailTrigger": "Trigger",
+  "@logDetailTrigger": {
+    "description": "Event or condition that triggered the action."
+  },
+  "logDetailStatus": "Applied Status",
+  "@logDetailStatus": {
+    "description": "VRChat status applied by the automation."
+  },
+  "logDetailStatusMessage": "Status Message",
+  "@logDetailStatusMessage": {
+    "description": "Message describing the applied status."
+  },
+  "logDetailAction": "Action",
+  "@logDetailAction": {
+    "description": "Action performed as a result of the automation."
+  },
+  "logDetailEventType": "Event Type",
+  "@logDetailEventType": {
+    "description": "Type of event recorded in the log."
+  },
+  "logDetailAuthEvent": "Authentication Event",
+  "@logDetailAuthEvent": {
+    "description": "Type of authentication event recorded in the log."
+  },
+  "logDetailTechnicalDetails": "Technical Error Details",
+  "@logDetailTechnicalDetails": {
+    "description": "Stack trace and raw error information associated with the error."
   }
 }

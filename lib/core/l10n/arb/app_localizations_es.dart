@@ -1308,4 +1308,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logAuthEventSessionExpired => 'Sesión caducada';
+
+  @override
+  String get logDetailRule => 'Regla de automatización';
+
+  @override
+  String get logDetailProfile => 'Perfil de filtros';
+
+  @override
+  String get logDetailStatusProfile => 'Perfil de estado';
+
+  @override
+  String get logDetailGroup => 'Grupo de destino';
+
+  @override
+  String get logDetailScheduledFor => 'Ocurrencia programada';
+
+  @override
+  String get logDetailEventTitle => 'Título del evento';
+
+  @override
+  String get logDetailEventId => 'ID del evento de VRChat';
+
+  @override
+  String get logDetailSender => 'Remitente';
+
+  @override
+  String get logDetailTargetUser => 'Usuario de destino';
+
+  @override
+  String get logDetailMatchedRole => 'Regla / etiqueta coincidente';
+
+  @override
+  String get logDetailTrigger => 'Motivo del desencadenante';
+
+  @override
+  String get logDetailStatus => 'Estado aplicado';
+
+  @override
+  String get logDetailStatusMessage => 'Mensaje de estado';
+
+  @override
+  String get logDetailAction => 'Acción realizada';
+
+  @override
+  String get logDetailEventType => 'Tipo de evento';
+
+  @override
+  String get logDetailAuthEvent => 'Evento de autenticación';
+
+  @override
+  String get logDetailTechnicalDetails => 'Detalles técnicos del error';
 }

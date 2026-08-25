@@ -472,5 +472,23 @@
   "logAuthEventLoginFailed": "Error al iniciar sesión",
   "logAuthEventTwoFactorRequested": "Se requiere verificación en dos pasos",
   "logAuthEventLoggedOut": "Sesión cerrada",
-  "logAuthEventSessionExpired": "Sesión caducada"
+  "logAuthEventSessionExpired": "Sesión caducada",
+
+  "logDetailRule": "Regla de automatización",
+  "logDetailProfile": "Perfil de filtros",
+  "logDetailStatusProfile": "Perfil de estado",
+  "logDetailGroup": "Grupo de destino",
+  "logDetailScheduledFor": "Ocurrencia programada",
+  "logDetailEventTitle": "Título del evento",
+  "logDetailEventId": "ID del evento de VRChat",
+  "logDetailSender": "Remitente",
+  "logDetailTargetUser": "Usuario de destino",
+  "logDetailMatchedRole": "Regla / etiqueta coincidente",
+  "logDetailTrigger": "Motivo del desencadenante",
+  "logDetailStatus": "Estado aplicado",
+  "logDetailStatusMessage": "Mensaje de estado",
+  "logDetailAction": "Acción realizada",
+  "logDetailEventType": "Tipo de evento",
+  "logDetailAuthEvent": "Evento de autenticación",
+  "logDetailTechnicalDetails": "Detalles técnicos del error"
 }
