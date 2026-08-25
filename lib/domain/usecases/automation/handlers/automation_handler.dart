@@ -102,36 +102,37 @@ class InvitationAutomationHandler extends BaseIncomingUserEventHandler<IncomingU
         return;
       }
 
-      await _executeAction(event, decision.action, decision.rule);
+      final CustomMessage? messageToUse = switch (decision) {
+        MatchedRuleDecision(:final rule) => event is InviteReceivedEvent
+            ? rule.inviteResponseMessage
+            : rule.requestResponseMessage,
+        MatchedFallbackTagDecision() => null,
+      };
+
+      final matchedLabel = switch (decision) {
+        MatchedRuleDecision(:final rule) => rule.role.name,
+        MatchedFallbackTagDecision(:final tag) => tag.name,
+      };
+
+      final int? slotToUse = (messageToUse != null)
+          ? await slotManager.prepareSlotForMessage(currentUserId, messageToUse)
+          : null;
+
+      if (decision.action == RuleAction.accept) {
+        await _handleAccept(event, slotToUse);
+      } else {
+        await _handleReject(event, slotToUse);
+      }
 
       await recordLog(
         event: event,
         action: decision.action == RuleAction.accept
-          ? InvitationActionOutcome.accepted
-          : InvitationActionOutcome.rejected,
+            ? InvitationActionOutcome.accepted
+            : InvitationActionOutcome.rejected,
         eventType: eventType,
         profileName: profile.name,
-        matchedRoleName: decision.rule.role.name,
+        matchedRoleName: matchedLabel,
       );
-  }
-
-  Future<void> _executeAction(IncomingUserEvent event, RuleAction action, ProfileRule rule) async {
-    CustomMessage? messageToUse;
-    if (event is InviteReceivedEvent) {
-      messageToUse = rule.inviteResponseMessage;
-    } else if (event is RequestInviteEvent) {
-      messageToUse = rule.requestResponseMessage;
-    }
-
-    final int? slotToUse = (messageToUse != null)
-        ? await slotManager.prepareSlotForMessage(currentUserId, messageToUse)
-        : null;
-
-    if (action == RuleAction.accept) {
-      await _handleAccept(event, slotToUse);
-    } else {
-      await _handleReject(event, slotToUse);
-    }
   }
 
   Future<void> _handleAccept(IncomingUserEvent event, int? slot) async {
@@ -195,6 +196,11 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
       await automationRepository.dismissNotification(event);
     }
 
+    final matchedLabel = switch (decision) {
+      MatchedRuleDecision(:final rule) => rule.role.name,
+      MatchedFallbackTagDecision(:final tag) => tag.name,
+    };
+
     await recordLog(
       event: event,
       action: decision.action == RuleAction.accept
@@ -202,7 +208,7 @@ class FriendRequestAutomationHandler extends BaseIncomingUserEventHandler<Friend
         : InvitationActionOutcome.rejected,
         eventType: eventType,
         profileName: profile.name,
-        matchedRoleName: decision.rule.role.name
+        matchedRoleName: matchedLabel
     );
   }
 }

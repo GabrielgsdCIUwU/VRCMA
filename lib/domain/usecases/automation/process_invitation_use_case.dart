@@ -1,16 +1,41 @@
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
+import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 
-
-class ProcessInvitationResult {
+sealed class ProcessInvitationDecision extends Equatable {
   final RuleAction action;
+  const ProcessInvitationDecision(this.action);
+}
+
+class MatchedRuleDecision extends ProcessInvitationDecision {
   final ProfileRule rule;
-  ProcessInvitationResult({
-    required this.action,
+
+  const MatchedRuleDecision({
+    required RuleAction action,
     required this.rule,
-  });
+  }) : super(action);
+
+  CustomMessage? getResponseMessage({required bool isInvite}) {
+    return isInvite ? rule.inviteResponseMessage : rule.requestResponseMessage;
+  }
+
+  @override
+  List<Object?> get props => [action, rule];
+}
+
+class MatchedFallbackTagDecision extends ProcessInvitationDecision {
+  final VrcTag tag;
+
+  const MatchedFallbackTagDecision({
+    required RuleAction action,
+    required this.tag,
+  }) : super(action);
+
+  @override
+  List<Object?> get props => [action, tag];
 }
 
 class ProcessInvitationUseCase {
@@ -24,7 +49,7 @@ class ProcessInvitationUseCase {
     required this.ruleEvaluator,
   });
 
-  ProcessInvitationResult? execute({
+  ProcessInvitationDecision? execute({
     required IncomingUserEvent request,
     required FilterProfile profile,
     required List<Role> userAssignedRoles,
@@ -37,7 +62,7 @@ class ProcessInvitationUseCase {
     final matchedRule = ruleEvaluator.evaluate(sortedRules, userRoles);
 
     if (matchedRule != null) {
-      return ProcessInvitationResult(
+      return MatchedRuleDecision(
         action: matchedRule.action,
         rule: matchedRule
       );
@@ -54,13 +79,9 @@ class ProcessInvitationUseCase {
             ? RuleAction.accept
             : RuleAction.reject;
         
-        return ProcessInvitationResult(
+        return MatchedFallbackTagDecision(
           action: action,
-          rule: ProfileRule(
-            role: Role(id: -1, name: "Tag ${matchedTag.name}"),
-            priority: 999,
-            action: action
-          )
+          tag: matchedTag
         );
       }
     }
