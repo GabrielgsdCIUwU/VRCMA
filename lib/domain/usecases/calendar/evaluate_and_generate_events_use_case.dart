@@ -109,6 +109,7 @@ class EvaluateAndGenerateEventsUseCase {
       await _logger.logCalendar(
         ruleId: rule.id,
         ruleName: rule.name,
+        eventTitle: resolvedTexts.title,
         eventId: createdEventId,
         occurrenceUtc: startUtc,
         groupId: rule.groupId,

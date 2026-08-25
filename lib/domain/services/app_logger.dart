@@ -40,6 +40,7 @@ class AppLogger {
   /// Records an automated status synchronization change or error.
   Future<void> logStatus({
     int? profileId,
+    String? profileName,
     required StatusType status,
     required String description,
     LogSeverity severity = LogSeverity.info,
@@ -54,6 +55,7 @@ class AppLogger {
         details: details,
         metadata: StatusLogMetadata(
           profileId: profileId,
+          profileName: profileName,
           status: status,
           description: description,
         ),
@@ -65,6 +67,7 @@ class AppLogger {
   Future<void> logCalendar({
     int? ruleId,
     required String ruleName,
+    String? eventTitle,
     String? eventId,
     DateTime? occurrenceUtc,
     String? groupId,
@@ -81,6 +84,7 @@ class AppLogger {
         metadata: CalendarLogMetadata(
           ruleId: ruleId,
           ruleName: ruleName,
+          eventTitle: eventTitle,
           eventId: eventId,
           occurrenceUtc: occurrenceUtc,
           groupId: groupId,

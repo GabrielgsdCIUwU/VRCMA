@@ -154,11 +154,13 @@ class InvitationLogMetadata extends LogMetadata {
 
 class StatusLogMetadata extends LogMetadata {
   final int? profileId;
+  final String? profileName;
   final StatusType status;
   final String description;
 
   const StatusLogMetadata({
     this.profileId,
+    this.profileName,
     required this.status,
     required this.description,
   });
@@ -166,6 +168,7 @@ class StatusLogMetadata extends LogMetadata {
   @override
   Map<String, dynamic> toJson() => {
     if (profileId != null) 'profileId': profileId,
+    if (profileName != null) 'profileName': profileName,
     'status': status.apiValue,
     'description': description,
   };
@@ -173,18 +176,20 @@ class StatusLogMetadata extends LogMetadata {
   factory StatusLogMetadata.fromJson(Map<String, dynamic> json) {
     return StatusLogMetadata(
       profileId: json['profileId'] as int?,
+      profileName: json['profileName'] as String?,
       status: StatusType.fromString(json['status'] as String? ?? ''),
       description: json['description'] as String? ?? '',
     );
   }
 
   @override
-  List<Object?> get props => [profileId, status, description];
+  List<Object?> get props => [profileId, profileName, status, description];
 }
 
 class CalendarLogMetadata extends LogMetadata {
   final int? ruleId;
   final String ruleName;
+  final String? eventTitle;
   final String? eventId;
   final DateTime? occurrenceUtc;
   final String? groupId;
@@ -192,6 +197,7 @@ class CalendarLogMetadata extends LogMetadata {
   const CalendarLogMetadata({
     this.ruleId,
     required this.ruleName,
+    this.eventTitle,
     this.eventId,
     this.occurrenceUtc,
     this.groupId,
@@ -201,6 +207,7 @@ class CalendarLogMetadata extends LogMetadata {
   Map<String, dynamic> toJson() => {
     if (ruleId != null) 'ruleId': ruleId,
     'ruleName': ruleName,
+    if (eventTitle != null) 'eventTitle': eventTitle,
     if (eventId != null) 'eventId': eventId,
     if (occurrenceUtc != null) 'occurrenceUtc': occurrenceUtc!.toIso8601String(),
     if (groupId != null) 'groupId': groupId,
@@ -210,6 +217,7 @@ class CalendarLogMetadata extends LogMetadata {
     return CalendarLogMetadata(
       ruleId: json['ruleId'] as int?,
       ruleName: json['ruleName'] as String? ?? '',
+      eventTitle: json['eventTitle'] as String?,
       eventId: json['eventId'] as String?,
       occurrenceUtc: json['occurrenceUtc'] != null ? DateTime.tryParse(json['occurrenceUtc'] as String) : null,
       groupId: json['groupId'] as String?,
@@ -217,7 +225,7 @@ class CalendarLogMetadata extends LogMetadata {
   }
 
   @override
-  List<Object?> get props => [ruleId, ruleName, eventId, occurrenceUtc, groupId];
+  List<Object?> get props => [ruleId, ruleName, eventTitle, eventId, occurrenceUtc, groupId];
 }
 
 class SocialLogMetadata extends LogMetadata {

@@ -47,6 +47,7 @@ class CoordinateStatusAutomationUseCase {
       (failure) async {
         await _logger.logStatus(
           profileId: activeProfile.id,
+          profileName: activeProfile.name,
           status: evaluation.status,
           description: evaluation.message,
           severity: LogSeverity.error,
@@ -63,9 +64,10 @@ class CoordinateStatusAutomationUseCase {
 
         await _logger.logStatus(
           profileId: activeProfile.id,
+          profileName: activeProfile.name,
           status: evaluation.status,
           description: evaluation.message,
-          severity: LogSeverity.info
+          severity: LogSeverity.info,
         );
         return const Right(null);
       },
