@@ -14,7 +14,7 @@ class MessageSlotManager {
   
   Future<int?> prepareSlotForMessage(String userId, CustomMessage message) async {
     if (message.isActive && message.slotIndex != null) {
-      return message.slotIndex!;
+      return message.slotIndex;
     }
     
     final slotToUse = await _determineNextAvailableSlot(message.type);
@@ -33,7 +33,9 @@ class MessageSlotManager {
             return null;
           },
           (_) async {
-            await messageRepository.updateSlot(message.id!, slotToUse, message.type);
+            if (message.id != null) {
+              await messageRepository.updateSlot(message.id!, slotToUse, message.type);
+            }
             return slotToUse;
           }
       );
@@ -41,14 +43,16 @@ class MessageSlotManager {
   
   Future<int> _determineNextAvailableSlot(VrcMessageType inviteType) async {
     final activeMessages = await messageRepository.getActiveSlots(inviteType);
+    final Set<int> occupiedSlots = activeMessages.map((m) => m.slotIndex).whereType<int>().toSet();
     
-    for (int i = 0; i < 12; i++) {
-      if (!activeMessages.any((m) => m.slotIndex == i)) return i;
+    for (int i = 0; i < CustomMessage.maxCharacters; i++) {
+      if (!occupiedSlots.contains(i)) return i;
     }
     
     if (activeMessages.isNotEmpty) {
-      activeMessages.sort((a, b) => a.lastUpdated.compareTo(b.lastUpdated));
-      return activeMessages.first.slotIndex!;
+      final sortedByAge = List<CustomMessage>.from(activeMessages)
+        ..sort((a, b) => a.lastUpdated.compareTo(b.lastUpdated));
+      return sortedByAge.first.slotIndex ?? 0;
     }
     return 0;
   }
