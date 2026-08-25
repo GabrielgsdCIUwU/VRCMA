@@ -45,7 +45,7 @@ class MessageSlotManager {
     final activeMessages = await messageRepository.getActiveSlots(inviteType);
     final Set<int> occupiedSlots = activeMessages.map((m) => m.slotIndex).whereType<int>().toSet();
     
-    for (int i = 0; i < CustomMessage.maxCharacters; i++) {
+    for (int i = 0; i < CustomMessage.maxSlots; i++) {
       if (!occupiedSlots.contains(i)) return i;
     }
     
