@@ -84,11 +84,13 @@ extension AppLogUiExtension on AppLog {
         return l10n.logStatusSuccess(localizedStatus);
       }(),
       
-      CalendarLogMetadata(:final ruleName) => () {
-        final titleStr = ruleName.isNotEmpty ? ruleName : l10n.logFallbackRule;
-        if (severity == LogSeverity.error) return l10n.logCalendarFailure(titleStr);
-        if (severity == LogSeverity.warning) return l10n.logCalendarWarning(titleStr);
-        return l10n.logCalendarSuccess(titleStr);
+      CalendarLogMetadata(:final ruleName, :final eventTitle) => () {
+        final displayTitle = (eventTitle != null && eventTitle.isNotEmpty)
+          ? eventTitle
+          : (ruleName.isNotEmpty ? ruleName : l10n.logFallbackRule);
+        if (severity == LogSeverity.error) return l10n.logCalendarFailure(displayTitle);
+        if (severity == LogSeverity.warning) return l10n.logCalendarWarning(displayTitle);
+        return l10n.logCalendarSuccess(displayTitle);
       }(),
 
       SocialLogMetadata(:final targetUserName, :final assignedRoleNames) =>
