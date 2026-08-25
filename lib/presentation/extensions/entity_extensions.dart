@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrcma/domain/entities/automation/automation_log.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
+import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 
 /// Presentation extensions for rendering localized domain entity values in the UI.
 extension VrcUserUiExtension on VrcUser {
@@ -21,7 +22,7 @@ extension VrcUserUiExtension on VrcUser {
     if (instance.isResolvableWorld) {
       return l10n.presenceInstanceDesc(
         _getLocalizedAccessType(context, instance.accessType),
-        instance.region,
+        instance.region.name,
       );
     }
     return location;
@@ -43,16 +44,6 @@ extension VrcUserUiExtension on VrcUser {
   }
 }
 
-extension AutomationLogUiExtension on AutomationLog {
-  String getLocalizedAppliedRule(BuildContext context) {
-    final l10n = context.l10n;
-    if (matchedRoleName == null) {
-      return "$profileName (${l10n.logNoRuleMatched})";
-    }
-    return "$profileName (${l10n.logRuleMatched(matchedRoleName!)})";
-  }
-}
-
 extension LocalizedPresenceStatus on BuildContext {
   /// Translates raw VRChat presence status string to their localized equivalents.
   String getLocalizedStatus(String status) {
@@ -63,6 +54,88 @@ extension LocalizedPresenceStatus on BuildContext {
       'ask me' => l10n.statusTypeAskMe,
       'busy' => l10n.statusTypeBusy,
       _ => status,
+    };
+  }
+}
+
+extension AppLogUiExtension on AppLog {
+  String getLocalizedMessage(BuildContext context) {
+    final l10n = context.l10n;
+    final meta = metadata;
+
+    return switch (meta) {
+      InvitationLogMetadata(:final senderName, :final action, :final eventType) => () {
+        final sender = senderName.isNotEmpty ? senderName : l10n.logFallbackUser;
+        final actionStr = switch (action) {
+          InvitationActionOutcome.accepted => l10n.actionAccepted,
+          InvitationActionOutcome.rejected => l10n.actionRejected,
+          InvitationActionOutcome.ignored => l10n.logActionIgnored,
+        };
+        
+        if (eventType == IncomingEventType.friendRequest) return "${l10n.navFriends} $actionStr - $sender";
+
+        final typeStr = eventType == IncomingEventType.invite ? l10n.tabInvite : l10n.tabRequest;
+        return "$typeStr $actionStr - $sender"; 
+      }(),
+
+      StatusLogMetadata(:final status) => () {
+        final localizedStatus = context.getLocalizedStatus(status.name);
+        if (severity == LogSeverity.error) return l10n.logStatusFailure(localizedStatus);
+        return l10n.logStatusSuccess(localizedStatus);
+      }(),
+      
+      CalendarLogMetadata(:final ruleName, :final eventTitle) => () {
+        final displayTitle = (eventTitle != null && eventTitle.isNotEmpty)
+          ? eventTitle
+          : (ruleName.isNotEmpty ? ruleName : l10n.logFallbackRule);
+        if (severity == LogSeverity.error) return l10n.logCalendarFailure(displayTitle);
+        if (severity == LogSeverity.warning) return l10n.logCalendarWarning(displayTitle);
+        return l10n.logCalendarSuccess(displayTitle);
+      }(),
+
+      SocialLogMetadata(:final targetUserName, :final assignedRoleNames) =>
+        l10n.logSocialRoleAssignmentMessage(
+          targetUserName.isNotEmpty ? targetUserName : l10n.logFallbackUser,
+          assignedRoleNames.join(', '),
+        ),
+      
+      AuthLogMetadata(:final displayName, :final event) =>
+        l10n.logAuthMessage(
+          displayName.isNotEmpty ? displayName : l10n.logFallbackUser,
+          event.toLocalizedString(context)
+        ),
+      
+      SystemLogMetadata() => l10n.logSystemMessage(message),
+    };
+  }
+
+  String getLocalizedCategory(BuildContext context) {
+    return category.toLocalizedString(context);
+  }
+
+  String? getLocalizedDetails(BuildContext context) {
+    final l10n = context.l10n;
+    final meta = metadata;
+
+    return switch (meta) {
+      InvitationLogMetadata(:final profileName, :final matchedRoleName) => () {
+        if (matchedRoleName == null) {
+          return profileName.isNotEmpty ? "$profileName (${l10n.logNoRuleMatched})" : l10n.logNoRuleMatched;
+        }
+        return "$profileName (${l10n.logRuleMatched(matchedRoleName)})";
+      }(),
+      
+      StatusLogMetadata(:final description) => description.isNotEmpty ? description : null,
+      CalendarLogMetadata() => details,
+
+      SocialLogMetadata(:final trigger) => switch (trigger) {
+        SocialAssignmentTrigger.newFriend => l10n.logSocialTriggerNewFriend,
+        SocialAssignmentTrigger.tagMatch => l10n.logSocialTriggerTagMatch,
+      },
+
+      AuthLogMetadata() => details,
+      
+      SystemLogMetadata() => details,
     };
   }
 }

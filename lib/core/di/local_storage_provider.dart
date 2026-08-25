@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:vrcma/core/database/database_service.dart';
 import 'package:vrcma/data/repositories/calendar_automation_repository_imp.dart';
 import 'package:vrcma/data/repositories/configuration_repository_imp.dart';
-import 'package:vrcma/data/repositories/log_repository_imp.dart';
+import 'package:vrcma/data/repositories/app_log_repository_imp.dart';
 import 'package:vrcma/data/repositories/message_repository_imp.dart';
 import 'package:vrcma/data/repositories/profile_repository_imp.dart';
 import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
@@ -11,7 +11,7 @@ import 'package:vrcma/data/repositories/status_repository_imp.dart';
 import 'package:vrcma/domain/repositories/i_configuration_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
-import 'package:vrcma/domain/repositories/i_log_repository.dart';
+import 'package:vrcma/domain/repositories/i_app_log_repository.dart';
 import 'package:vrcma/domain/repositories/i_message_repository.dart';
 import 'package:vrcma/domain/repositories/i_profile_repository.dart';
 import 'package:vrcma/domain/repositories/i_status_repository.dart';
@@ -44,9 +44,9 @@ Future<ILocalSocialRepository> localSocialRepository(Ref ref) async {
 }
 
 @riverpod
-Future<ILogRepository> logRepository(Ref ref) async {
+Future<IAppLogRepository> appLogRepository(Ref ref) async {
   final db = await ref.watch(databaseProvider.future);
-  return LogRepositoryImp(db);
+  return AppLogRepositoryImp(db);
 }
 
 @riverpod

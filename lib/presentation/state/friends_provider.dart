@@ -3,8 +3,8 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
@@ -48,8 +48,7 @@ class FriendsList extends _$FriendsList {
   
   Future<List<VrcUser>> _fetchFriendsProgressively() async {
     final repo = await ref.watch(socialRepositoryProvider.future);
-    final localSocialRepo = await ref.watch(localSocialRepositoryProvider.future);
-    final useCase = ProcessFriendAutomationsUseCase(localSocialRepo);
+    final useCase = await ref.watch(processFriendAutomationsUseCaseProvider.future);
     
     final onlineResult = await repo.getFriends(offline: false);
     

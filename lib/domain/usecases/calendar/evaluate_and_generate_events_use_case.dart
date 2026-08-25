@@ -3,8 +3,10 @@ import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
 import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
+import 'package:vrcma/domain/entities/log/app_log.dart';
 import 'package:vrcma/domain/repositories/i_local_calendar_repository.dart';
 import 'package:vrcma/domain/repositories/i_remote_calendar_repository.dart';
+import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
 import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 
@@ -12,16 +14,19 @@ import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
 class EvaluateAndGenerateEventsUseCase {
   final ILocalCalendarRepository _localRepo;
   final IRemoteCalendarRepository _remoteRepo;
+  final AppLogger _logger;
   final OccurrenceCalculator _calculator;
   final EventTitleResolver _resolver;
 
   EvaluateAndGenerateEventsUseCase({
     required ILocalCalendarRepository localRepo,
     required IRemoteCalendarRepository remoteRepo,
+    required AppLogger logger,
     required OccurrenceCalculator calculator,
     required EventTitleResolver titleResolver,
   }) : _localRepo = localRepo,
        _remoteRepo = remoteRepo,
+       _logger = logger,
        _calculator = calculator,
        _resolver = titleResolver;
   
@@ -38,6 +43,13 @@ class EvaluateAndGenerateEventsUseCase {
         await _processRule(rule, hostLanguages);
       } catch (e, stackTrace) {
         debugPrint('Error processing rule [${rule.name}]: $e\n$stackTrace');
+        await _logger.logCalendar(
+          ruleId: rule.id,
+          ruleName: rule.name,
+          groupId: rule.groupId,
+          severity: LogSeverity.error,
+          details: '$e\n$stackTrace',
+        );
       }
     }
   }
@@ -93,6 +105,16 @@ class EvaluateAndGenerateEventsUseCase {
       );
 
       await _localRepo.saveOccurrenceRun(runRecord);
+
+      await _logger.logCalendar(
+        ruleId: rule.id,
+        ruleName: rule.name,
+        eventTitle: resolvedTexts.title,
+        eventId: createdEventId,
+        occurrenceUtc: startUtc,
+        groupId: rule.groupId,
+        severity: LogSeverity.info
+      );
 
       if (currentRuleState.incrementalConfig.isEnabled) {
         currentRuleState = currentRuleState.copyWith(

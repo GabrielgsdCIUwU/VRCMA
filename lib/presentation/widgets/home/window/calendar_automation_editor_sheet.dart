@@ -596,8 +596,8 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
   }
 
   Widget _buildSchedulerInteractiveCard(CalendarAutomationRule state, CalendarAutomationEditor notifier) {
-    final endTime = _calculateEndTime(state.schedule.startTimeOfDay, state.schedule.durationMinutes);
-    final formattedEndTime = '${endTime.hour.toString().padLeft(2, '0')}:${endTime.minute.toString().padLeft(2, '0')}';
+    final startTime = state.schedule.startTime;
+    final endTime = startTime.addMinutes(state.schedule.durationMinutes);
 
     final locale = Localizations.localeOf(context).languageCode;
     final now = DateTime.now();
@@ -614,7 +614,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ListTile(
             leading: const Icon(Icons.play_circle_outline),
             title: Text(context.l10n.calFieldLabelTime),
-            subtitle: Text(state.schedule.startTimeOfDay, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(startTime.formatted, style: const TextStyle(fontWeight: FontWeight.bold)),
             trailing: const Icon(Icons.edit_outlined, size: 20),
             onTap: () => _selectTime(state, notifier, isStartTime: true),
           ),
@@ -666,7 +666,7 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
           ListTile(
             leading: const Icon(Icons.stop_circle_outlined),
             title: Text(context.l10n.calFieldLabelEndTime),
-            subtitle: Text(formattedEndTime, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(endTime.formatted, style: const TextStyle(fontWeight: FontWeight.bold)),
             trailing: const Icon(Icons.edit_outlined, size: 20),
             onTap: () => _selectTime(state, notifier, isStartTime: false),
           ),
@@ -1001,17 +1001,18 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     );
   }
 
-  Future<void> _selectTime(CalendarAutomationRule state, CalendarAutomationEditor notifier, {required bool isStartTime}) async {
-    final TimeOfDay initialTime;
-
-    if (isStartTime) {
-      final rawTime = state.schedule.startTimeOfDay.split(':');
-      final hour = int.tryParse(rawTime[0]) ?? 20;
-      final minute = int.tryParse(rawTime[1]) ?? 0;
-      initialTime = TimeOfDay(hour: hour, minute: minute);
-    } else {
-      initialTime = _calculateEndTime(state.schedule.startTimeOfDay, state.schedule.durationMinutes);
-    }
+  Future<void> _selectTime(
+  CalendarAutomationRule state,
+  CalendarAutomationEditor notifier, {
+  required bool isStartTime,
+  }) async {
+    final currentStartTime = state.schedule.startTime;
+    final initialTime = isStartTime
+        ? TimeOfDay(hour: currentStartTime.hour, minute: currentStartTime.minute)
+        : () {
+            final end = currentStartTime.addMinutes(state.schedule.durationMinutes);
+            return TimeOfDay(hour: end.hour, minute: end.minute);
+          }();
 
     final selected = await showTimePicker(
       context: context,
@@ -1019,12 +1020,12 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
     );
 
     if (selected != null) {
+      final selectedTimeValue = TimeOfDayValue(hour: selected.hour, minute: selected.minute);
       if (isStartTime) {
-        final formatted = '${selected.hour.toString().padLeft(2, '0')}:${selected.minute.toString().padLeft(2, '0')}';
-        notifier.updateTime(formatted);
+        notifier.updateTime(selectedTimeValue);
       } else {
-        final newDuration = _calculateDuration(state.schedule.startTimeOfDay, selected);
-        notifier.updateDuration(newDuration);
+        final newDuration = currentStartTime.minutesDifference(selectedTimeValue);
+        notifier.updateDuration(newDuration > 0 ? newDuration : 60);
       }
     }
   }
@@ -1036,32 +1037,6 @@ class _CalendarAutomationEditorSheetState extends ConsumerState<CalendarAutomati
       return context.l10n.calDurationHoursMinutes(hours, minutes);
     }
     return context.l10n.calDurationMinutesOnly(minutes);
-  }
-
-  TimeOfDay _calculateEndTime(String startTimeStr, int durationMinutes) {
-    final parts = startTimeStr.split(':');
-    final hour = int.tryParse(parts[0]) ?? 20;
-    final minute = int.tryParse(parts[1]) ?? 0;
-    
-    final startDateTime = DateTime(2024, 1, 1, hour, minute);
-    final endDateTime = startDateTime.add(Duration(minutes: durationMinutes));
-    
-    return TimeOfDay(hour: endDateTime.hour, minute: endDateTime.minute);
-  }
-
-  int _calculateDuration(String startTimeStr, TimeOfDay endTime) {
-    final parts = startTimeStr.split(':');
-    final startHour = int.tryParse(parts[0]) ?? 20;
-    final startMinute = int.tryParse(parts[1]) ?? 0;
-    
-    final startDateTime = DateTime(2024, 1, 1, startHour, startMinute);
-    var endDateTime = DateTime(2024, 1, 1, endTime.hour, endTime.minute);
-    
-    if (endDateTime.isBefore(startDateTime)) {
-      endDateTime = endDateTime.add(const Duration(days: 1));
-    }
-    
-    return endDateTime.difference(startDateTime).inMinutes;
   }
 
   Future<bool> _showDiscardConfirmation() async {
@@ -1187,7 +1162,7 @@ class _LiveTemplatePreview extends StatelessWidget {
                     Icon(Icons.schedule, size: 14, color: context.colorScheme.outline),
                     const SizedBox(width: 6),
                     Text(
-                      "${state.schedule.startTimeOfDay} • ${state.recurrence.type.toLocalizedString(context)}",
+                      "${state.schedule.startTime.formatted} • ${state.recurrence.type.toLocalizedString(context)}",
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.colorScheme.outline),
                     ),
                   ],

@@ -18,7 +18,11 @@ void main() {
         descriptionTemplate: desc,
         category: GroupEventCategory.other,
         accessType: GroupEventAccessType.public,
-        schedule: TimezoneSchedule(startTimeOfDay: '12:00', durationMinutes: 60, timezoneIana: 'UTC'),
+        schedule: TimezoneSchedule(
+          startTime: TimeOfDayValue(hour: 12, minute: 0),
+          durationMinutes: 60,
+          timezoneIana: 'UTC'
+        ),
         recurrence: const RecurrencePattern(type: RecurrenceType.once),
         incrementalConfig: IncrementalConfig(isEnabled: true, currentValue: incrementValue)
       );

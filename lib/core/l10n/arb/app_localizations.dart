@@ -2257,6 +2257,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insert variable:'**
   String get statusVariablesHint;
+
+  /// Fallback display name used when the sender's VRChat display name is unavailable or unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get logFallbackUser;
+
+  /// Filter option that displays every log entry regardless of category.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get logFilterAll;
+
+  /// Log category for VRChat invitation events, including sent, received, accepted, declined, or ignored invitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get logCategoryInvitation;
+
+  /// Log category for VRChat status changes such as Online, Join Me, Ask Me, Busy, or Offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Changes'**
+  String get logCategoryStatus;
+
+  /// Log category for automatic calendar publishing and scheduling related to VRChat events.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar Automations'**
+  String get logCategoryCalendar;
+
+  /// Log category for internal application events, diagnostics, errors, and debugging information.
+  ///
+  /// In en, this message translates to:
+  /// **'System Diagnostics'**
+  String get logCategorySystem;
+
+  /// Label indicating that an event or action was intentionally ignored and no further processing was performed.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored'**
+  String get logActionIgnored;
+
+  /// Log message shown when the user's VRChat status is successfully changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated to {status}'**
+  String logStatusSuccess(String status);
+
+  /// Log message shown when changing the user's VRChat status fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update status to {status}'**
+  String logStatusFailure(String status);
+
+  /// Log message shown when a VRChat event is successfully published to the user's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Published calendar event: {title}'**
+  String logCalendarSuccess(String title);
+
+  /// Log message shown when publishing a VRChat event to the user's calendar fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to publish calendar event: {title}'**
+  String logCalendarFailure(String title);
+
+  /// Log message shown when publishing a calendar event is postponed and will be retried later.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar event postponed: {title}'**
+  String logCalendarWarning(String title);
+
+  /// Generic log entry for internal system events that do not belong to another category.
+  ///
+  /// In en, this message translates to:
+  /// **'System event: {message}'**
+  String logSystemMessage(String message);
+
+  /// Fallback name used when a system rule involved in the log entry has no available name.
+  ///
+  /// In en, this message translates to:
+  /// **'System Rule'**
+  String get logFallbackRule;
+
+  /// Tooltip for the button that permanently deletes all stored automation and diagnostics log entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all logs'**
+  String get logsClearTooltip;
+
+  /// Title of the confirmation dialog shown before permanently deleting all automation and diagnostics logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Diagnostics'**
+  String get logsClearConfirmTitle;
+
+  /// Confirmation message displayed before permanently deleting every automation and diagnostics log entry. Warns that the action cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.'**
+  String get logsClearConfirmContent;
+
+  /// Filter option that displays log entries from every available category.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get logCategoryAll;
+
+  /// Filter option that displays log entries of every severity level.
+  ///
+  /// In en, this message translates to:
+  /// **'All Severities'**
+  String get logSeverityAll;
+
+  /// Severity level for informational log entries that do not indicate a problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get logSeverityInfo;
+
+  /// Severity level for log entries that indicate a potential issue or a non-critical problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get logSeverityWarning;
+
+  /// Severity level for log entries that indicate a failure or an unexpected error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get logSeverityError;
+
+  /// Category label used for log entries related to social interactions and VRChat social events.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get logCategorySocial;
+
+  /// Category label used for log entries related to user authentication, login, logout, and session state.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get logCategoryAuth;
+
+  /// Log message shown when one or more VRChat roles are assigned to a user. The user placeholder is the affected user's display name, and roles contains the assigned role names.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles assigned to {user}: {roles}'**
+  String logSocialRoleAssignmentMessage(String user, String roles);
+
+  /// Describes the trigger that caused a social automation or event to run after detecting that a new VRChat friend was added.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by new friend detection'**
+  String get logSocialTriggerNewFriend;
+
+  /// Describes the trigger that caused a social automation or event to run because a user's VRChat profile tag matched the configured condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by matching profile tag'**
+  String get logSocialTriggerTagMatch;
+
+  /// Log message describing an authentication event for a user. The display name identifies the user and the event placeholder contains the specific authentication event label.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication: {displayName} ({event})'**
+  String logAuthMessage(String displayName, String event);
+
+  /// Authentication event label shown when the user successfully logs in.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Successful'**
+  String get logAuthEventLoginSuccess;
+
+  /// Authentication event label shown when a login attempt fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Failed'**
+  String get logAuthEventLoginFailed;
+
+  /// Authentication event label shown when the user must complete a two-factor authentication challenge before authentication can continue.
+  ///
+  /// In en, this message translates to:
+  /// **'2FA Challenge Required'**
+  String get logAuthEventTwoFactorRequested;
+
+  /// Authentication event label shown when the user successfully logs out.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged Out'**
+  String get logAuthEventLoggedOut;
+
+  /// Authentication event label shown when the user's authentication session has expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Expired'**
+  String get logAuthEventSessionExpired;
+
+  /// Name of the automation rule associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Rule'**
+  String get logDetailRule;
+
+  /// Name of the filter profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Profile'**
+  String get logDetailProfile;
+
+  /// Name of the status automation profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Profile'**
+  String get logDetailStatusProfile;
+
+  /// VRChat Group associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Group'**
+  String get logDetailGroup;
+
+  /// Date and time when the scheduled action is set to occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Time'**
+  String get logDetailScheduledFor;
+
+  /// Title of the published VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title'**
+  String get logDetailEventTitle;
+
+  /// ID of the created VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Event ID'**
+  String get logDetailEventId;
+
+  /// User who sent the invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get logDetailSender;
+
+  /// User targeted by the action or invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Target User'**
+  String get logDetailTargetUser;
+
+  /// Rule or role that matched the user's data.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched Rule / Tag'**
+  String get logDetailMatchedRole;
+
+  /// Event or condition that triggered the action.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger'**
+  String get logDetailTrigger;
+
+  /// VRChat status applied by the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied Status'**
+  String get logDetailStatus;
+
+  /// Message describing the applied status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Message'**
+  String get logDetailStatusMessage;
+
+  /// Action performed as a result of the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get logDetailAction;
+
+  /// Type of event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Type'**
+  String get logDetailEventType;
+
+  /// Type of authentication event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Event'**
+  String get logDetailAuthEvent;
+
+  /// Stack trace and raw error information associated with the error.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical Error Details'**
+  String get logDetailTechnicalDetails;
 }
 
 class _AppLocalizationsDelegate

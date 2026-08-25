@@ -1979,5 +1979,297 @@
   "statusVariablesHint": "Insert variable:",
   "@statusVariablesHint": {
     "description": "Hint text for the inline variable insertion chips."
+  },
+
+
+  "logFallbackUser": "User",
+  "@logFallbackUser": {
+    "description": "Fallback display name used when the sender's VRChat display name is unavailable or unknown."
+  },
+
+  "logFilterAll": "All",
+  "@logFilterAll": {
+    "description": "Filter option that displays every log entry regardless of category."
+  },
+
+  "logCategoryInvitation": "Invitations",
+  "@logCategoryInvitation": {
+    "description": "Log category for VRChat invitation events, including sent, received, accepted, declined, or ignored invitations."
+  },
+
+  "logCategoryStatus": "Status Changes",
+  "@logCategoryStatus": {
+    "description": "Log category for VRChat status changes such as Online, Join Me, Ask Me, Busy, or Offline."
+  },
+
+  "logCategoryCalendar": "Calendar Automations",
+  "@logCategoryCalendar": {
+    "description": "Log category for automatic calendar publishing and scheduling related to VRChat events."
+  },
+
+  "logCategorySystem": "System Diagnostics",
+  "@logCategorySystem": {
+    "description": "Log category for internal application events, diagnostics, errors, and debugging information."
+  },
+
+  "logActionIgnored": "Ignored",
+  "@logActionIgnored": {
+    "description": "Label indicating that an event or action was intentionally ignored and no further processing was performed."
+  },
+
+  "logStatusSuccess": "Status updated to {status}",
+  "@logStatusSuccess": {
+    "description": "Log message shown when the user's VRChat status is successfully changed.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "The new VRChat status, for example Online, Join Me, Ask Me, Busy, or Offline."
+      }
+    }
+  },
+
+  "logStatusFailure": "Failed to update status to {status}",
+  "@logStatusFailure": {
+    "description": "Log message shown when changing the user's VRChat status fails.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "The status that the application attempted to set."
+      }
+    }
+  },
+
+  "logCalendarSuccess": "Published calendar event: {title}",
+  "@logCalendarSuccess": {
+    "description": "Log message shown when a VRChat event is successfully published to the user's calendar.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event."
+      }
+    }
+  },
+
+  "logCalendarFailure": "Failed to publish calendar event: {title}",
+  "@logCalendarFailure": {
+    "description": "Log message shown when publishing a VRChat event to the user's calendar fails.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event that could not be published."
+      }
+    }
+  },
+
+  "logCalendarWarning": "Calendar event postponed: {title}",
+  "@logCalendarWarning": {
+    "description": "Log message shown when publishing a calendar event is postponed and will be retried later.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "The title of the calendar event."
+      }
+    }
+  },
+
+  "logSystemMessage": "System event: {message}",
+  "@logSystemMessage": {
+    "description": "Generic log entry for internal system events that do not belong to another category.",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "description": "The system-generated message describing the event."
+      }
+    }
+  },
+
+  "logFallbackRule": "System Rule",
+  "@logFallbackRule": {
+    "description": "Fallback name used when a system rule involved in the log entry has no available name."
+  },
+
+  "logsClearTooltip": "Clear all logs",
+  "@logsClearTooltip": {
+    "description": "Tooltip for the button that permanently deletes all stored automation and diagnostics log entries."
+  },
+
+  "logsClearConfirmTitle": "Clear Diagnostics",
+  "@logsClearConfirmTitle": {
+    "description": "Title of the confirmation dialog shown before permanently deleting all automation and diagnostics logs."
+  },
+
+  "logsClearConfirmContent": "Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.",
+  "@logsClearConfirmContent": {
+    "description": "Confirmation message displayed before permanently deleting every automation and diagnostics log entry. Warns that the action cannot be undone."
+  },
+
+  "logCategoryAll": "All Categories",
+  "@logCategoryAll": {
+    "description": "Filter option that displays log entries from every available category."
+  },
+
+  "logSeverityAll": "All Severities",
+  "@logSeverityAll": {
+    "description": "Filter option that displays log entries of every severity level."
+  },
+
+  "logSeverityInfo": "Info",
+  "@logSeverityInfo": {
+    "description": "Severity level for informational log entries that do not indicate a problem."
+  },
+
+  "logSeverityWarning": "Warning",
+  "@logSeverityWarning": {
+    "description": "Severity level for log entries that indicate a potential issue or a non-critical problem."
+  },
+
+  "logSeverityError": "Error",
+  "@logSeverityError": {
+    "description": "Severity level for log entries that indicate a failure or an unexpected error."
+  },
+
+
+  "logCategorySocial": "Social",
+  "@logCategorySocial": {
+    "description": "Category label used for log entries related to social interactions and VRChat social events."
+  },
+
+  "logCategoryAuth": "Authentication",
+  "@logCategoryAuth": {
+    "description": "Category label used for log entries related to user authentication, login, logout, and session state."
+  },
+
+  "logSocialRoleAssignmentMessage": "Roles assigned to {user}: {roles}",
+  "@logSocialRoleAssignmentMessage": {
+    "description": "Log message shown when one or more VRChat roles are assigned to a user. The user placeholder is the affected user's display name, and roles contains the assigned role names.",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "description": "Display name of the VRChat user receiving the roles."
+      },
+      "roles": {
+        "type": "String",
+        "description": "Comma-separated or otherwise formatted list of roles assigned to the user."
+      }
+    }
+  },
+
+  "logSocialTriggerNewFriend": "Triggered by new friend detection",
+  "@logSocialTriggerNewFriend": {
+    "description": "Describes the trigger that caused a social automation or event to run after detecting that a new VRChat friend was added."
+  },
+
+  "logSocialTriggerTagMatch": "Triggered by matching profile tag",
+  "@logSocialTriggerTagMatch": {
+    "description": "Describes the trigger that caused a social automation or event to run because a user's VRChat profile tag matched the configured condition."
+  },
+
+  "logAuthMessage": "Authentication: {displayName} ({event})",
+  "@logAuthMessage": {
+    "description": "Log message describing an authentication event for a user. The display name identifies the user and the event placeholder contains the specific authentication event label.",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "description": "Display name of the user associated with the authentication event."
+      },
+      "event": {
+        "type": "String",
+        "description": "Localized label describing the authentication event, such as a successful login, failed login, 2FA challenge, logout, or expired session."
+      }
+    }
+  },
+
+  "logAuthEventLoginSuccess": "Login Successful",
+  "@logAuthEventLoginSuccess": {
+    "description": "Authentication event label shown when the user successfully logs in."
+  },
+
+  "logAuthEventLoginFailed": "Login Failed",
+  "@logAuthEventLoginFailed": {
+    "description": "Authentication event label shown when a login attempt fails."
+  },
+
+  "logAuthEventTwoFactorRequested": "2FA Challenge Required",
+  "@logAuthEventTwoFactorRequested": {
+    "description": "Authentication event label shown when the user must complete a two-factor authentication challenge before authentication can continue."
+  },
+
+  "logAuthEventLoggedOut": "Logged Out",
+  "@logAuthEventLoggedOut": {
+    "description": "Authentication event label shown when the user successfully logs out."
+  },
+
+  "logAuthEventSessionExpired": "Session Expired",
+  "@logAuthEventSessionExpired": {
+    "description": "Authentication event label shown when the user's authentication session has expired."
+  },
+
+  "logDetailRule": "Automation Rule",
+  "@logDetailRule": {
+    "description": "Name of the automation rule associated with the log entry."
+  },
+  "logDetailProfile": "Filter Profile",
+  "@logDetailProfile": {
+    "description": "Name of the filter profile associated with the log entry."
+  },
+  "logDetailStatusProfile": "Status Profile",
+  "@logDetailStatusProfile": {
+    "description": "Name of the status automation profile associated with the log entry."
+  },
+  "logDetailGroup": "Target Group",
+  "@logDetailGroup": {
+    "description": "VRChat Group associated with the log entry."
+  },
+  "logDetailScheduledFor": "Scheduled Time",
+  "@logDetailScheduledFor": {
+    "description": "Date and time when the scheduled action is set to occur."
+  },
+  "logDetailEventTitle": "Event Title",
+  "@logDetailEventTitle": {
+    "description": "Title of the published VRChat event."
+  },
+  "logDetailEventId": "VRChat Event ID",
+  "@logDetailEventId": {
+    "description": "ID of the created VRChat event."
+  },
+  "logDetailSender": "Sender",
+  "@logDetailSender": {
+    "description": "User who sent the invitation."
+  },
+  "logDetailTargetUser": "Target User",
+  "@logDetailTargetUser": {
+    "description": "User targeted by the action or invitation."
+  },
+  "logDetailMatchedRole": "Matched Rule / Tag",
+  "@logDetailMatchedRole": {
+    "description": "Rule or role that matched the user's data."
+  },
+  "logDetailTrigger": "Trigger",
+  "@logDetailTrigger": {
+    "description": "Event or condition that triggered the action."
+  },
+  "logDetailStatus": "Applied Status",
+  "@logDetailStatus": {
+    "description": "VRChat status applied by the automation."
+  },
+  "logDetailStatusMessage": "Status Message",
+  "@logDetailStatusMessage": {
+    "description": "Message describing the applied status."
+  },
+  "logDetailAction": "Action",
+  "@logDetailAction": {
+    "description": "Action performed as a result of the automation."
+  },
+  "logDetailEventType": "Event Type",
+  "@logDetailEventType": {
+    "description": "Type of event recorded in the log."
+  },
+  "logDetailAuthEvent": "Authentication Event",
+  "@logDetailAuthEvent": {
+    "description": "Type of authentication event recorded in the log."
+  },
+  "logDetailTechnicalDetails": "Technical Error Details",
+  "@logDetailTechnicalDetails": {
+    "description": "Stack trace and raw error information associated with the error."
   }
 }

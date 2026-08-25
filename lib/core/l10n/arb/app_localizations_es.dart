@@ -1199,4 +1199,173 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get statusVariablesHint => 'Insertar variable:';
+
+  @override
+  String get logFallbackUser => 'Usuario';
+
+  @override
+  String get logFilterAll => 'Todos';
+
+  @override
+  String get logCategoryInvitation => 'Invitaciones';
+
+  @override
+  String get logCategoryStatus => 'Cambios de estado';
+
+  @override
+  String get logCategoryCalendar => 'Automatizaciones del calendario';
+
+  @override
+  String get logCategorySystem => 'Diagnóstico del sistema';
+
+  @override
+  String get logActionIgnored => 'Ignorado';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Estado actualizado a $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'No se pudo actualizar el estado a $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Evento publicado en el calendario: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'No se pudo publicar el evento en el calendario: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Publicación del evento pospuesta: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'Evento del sistema: $message';
+  }
+
+  @override
+  String get logFallbackRule => 'Regla del sistema';
+
+  @override
+  String get logsClearTooltip => 'Borrar todos los registros';
+
+  @override
+  String get logsClearConfirmTitle => 'Borrar diagnósticos';
+
+  @override
+  String get logsClearConfirmContent =>
+      '¿Seguro que quieres eliminar permanentemente todos los registros de automatizaciones y diagnósticos? Esta acción no se puede deshacer.';
+
+  @override
+  String get logCategoryAll => 'Todas las categorías';
+
+  @override
+  String get logSeverityAll => 'Todas las severidades';
+
+  @override
+  String get logSeverityInfo => 'Información';
+
+  @override
+  String get logSeverityWarning => 'Advertencia';
+
+  @override
+  String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Autenticación';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles asignados a $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Activado al detectar un nuevo amigo';
+
+  @override
+  String get logSocialTriggerTagMatch =>
+      'Activado al coincidir una etiqueta del perfil';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Autenticación: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Inicio de sesión correcto';
+
+  @override
+  String get logAuthEventLoginFailed => 'Error al iniciar sesión';
+
+  @override
+  String get logAuthEventTwoFactorRequested =>
+      'Se requiere verificación en dos pasos';
+
+  @override
+  String get logAuthEventLoggedOut => 'Sesión cerrada';
+
+  @override
+  String get logAuthEventSessionExpired => 'Sesión caducada';
+
+  @override
+  String get logDetailRule => 'Regla de automatización';
+
+  @override
+  String get logDetailProfile => 'Perfil de filtros';
+
+  @override
+  String get logDetailStatusProfile => 'Perfil de estado';
+
+  @override
+  String get logDetailGroup => 'Grupo de destino';
+
+  @override
+  String get logDetailScheduledFor => 'Ocurrencia programada';
+
+  @override
+  String get logDetailEventTitle => 'Título del evento';
+
+  @override
+  String get logDetailEventId => 'ID del evento de VRChat';
+
+  @override
+  String get logDetailSender => 'Remitente';
+
+  @override
+  String get logDetailTargetUser => 'Usuario de destino';
+
+  @override
+  String get logDetailMatchedRole => 'Regla / etiqueta coincidente';
+
+  @override
+  String get logDetailTrigger => 'Motivo del desencadenante';
+
+  @override
+  String get logDetailStatus => 'Estado aplicado';
+
+  @override
+  String get logDetailStatusMessage => 'Mensaje de estado';
+
+  @override
+  String get logDetailAction => 'Acción realizada';
+
+  @override
+  String get logDetailEventType => 'Tipo de evento';
+
+  @override
+  String get logDetailAuthEvent => 'Evento de autenticación';
+
+  @override
+  String get logDetailTechnicalDetails => 'Detalles técnicos del error';
 }

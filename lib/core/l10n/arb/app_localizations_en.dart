@@ -1192,4 +1192,171 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusVariablesHint => 'Insert variable:';
+
+  @override
+  String get logFallbackUser => 'User';
+
+  @override
+  String get logFilterAll => 'All';
+
+  @override
+  String get logCategoryInvitation => 'Invitations';
+
+  @override
+  String get logCategoryStatus => 'Status Changes';
+
+  @override
+  String get logCategoryCalendar => 'Calendar Automations';
+
+  @override
+  String get logCategorySystem => 'System Diagnostics';
+
+  @override
+  String get logActionIgnored => 'Ignored';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Status updated to $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'Failed to update status to $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Published calendar event: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'Failed to publish calendar event: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Calendar event postponed: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'System event: $message';
+  }
+
+  @override
+  String get logFallbackRule => 'System Rule';
+
+  @override
+  String get logsClearTooltip => 'Clear all logs';
+
+  @override
+  String get logsClearConfirmTitle => 'Clear Diagnostics';
+
+  @override
+  String get logsClearConfirmContent =>
+      'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.';
+
+  @override
+  String get logCategoryAll => 'All Categories';
+
+  @override
+  String get logSeverityAll => 'All Severities';
+
+  @override
+  String get logSeverityInfo => 'Info';
+
+  @override
+  String get logSeverityWarning => 'Warning';
+
+  @override
+  String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Authentication';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles assigned to $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Triggered by new friend detection';
+
+  @override
+  String get logSocialTriggerTagMatch => 'Triggered by matching profile tag';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Authentication: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Login Successful';
+
+  @override
+  String get logAuthEventLoginFailed => 'Login Failed';
+
+  @override
+  String get logAuthEventTwoFactorRequested => '2FA Challenge Required';
+
+  @override
+  String get logAuthEventLoggedOut => 'Logged Out';
+
+  @override
+  String get logAuthEventSessionExpired => 'Session Expired';
+
+  @override
+  String get logDetailRule => 'Automation Rule';
+
+  @override
+  String get logDetailProfile => 'Filter Profile';
+
+  @override
+  String get logDetailStatusProfile => 'Status Profile';
+
+  @override
+  String get logDetailGroup => 'Target Group';
+
+  @override
+  String get logDetailScheduledFor => 'Scheduled Time';
+
+  @override
+  String get logDetailEventTitle => 'Event Title';
+
+  @override
+  String get logDetailEventId => 'VRChat Event ID';
+
+  @override
+  String get logDetailSender => 'Sender';
+
+  @override
+  String get logDetailTargetUser => 'Target User';
+
+  @override
+  String get logDetailMatchedRole => 'Matched Rule / Tag';
+
+  @override
+  String get logDetailTrigger => 'Trigger';
+
+  @override
+  String get logDetailStatus => 'Applied Status';
+
+  @override
+  String get logDetailStatusMessage => 'Status Message';
+
+  @override
+  String get logDetailAction => 'Action';
+
+  @override
+  String get logDetailEventType => 'Event Type';
+
+  @override
+  String get logDetailAuthEvent => 'Authentication Event';
+
+  @override
+  String get logDetailTechnicalDetails => 'Technical Error Details';
 }

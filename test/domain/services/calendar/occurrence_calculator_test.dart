@@ -24,17 +24,21 @@ void main() {
         titleTemplate: 'Test Event',
         category: GroupEventCategory.other,
         accessType: GroupEventAccessType.public,
-        schedule: TimezoneSchedule(startTimeOfDay: '20:00', durationMinutes: 60, timezoneIana: 'UTC'),
+        schedule: TimezoneSchedule(
+          startTime: TimeOfDayValue(hour: 20, minute: 0),
+          durationMinutes: 60, 
+          timezoneIana: 'UTC'
+        ),
         recurrence: RecurrencePattern(type: type, daysOfWeek: daysOfWeek),
         incrementalConfig: IncrementalConfig(isEnabled: false),
         exceptions: exceptions,
       );
     }
 
-    test('should calculate daily occurrences correctly enforcing the limit', () {
-      final rule = createDummyRule(RecurrenceType.daily, [], []);
+    test('should calculate daily occurrences correctly enforcing count limit', () {
+      final rule = createDummyRule(RecurrenceType.daily, const [], const []);
 
-      final occurrences = calculator.calculatePendingOccurrences(rule, [], 3);
+      final occurrences = calculator.calculatePendingOccurrences(rule, const [], 3);
 
       expect(occurrences.length, 3);
 
@@ -45,10 +49,10 @@ void main() {
     });
 
     test('should calculate weekly occurrences strictly on the designated weekday', () {
-      final friday = 5;
-      final rule = createDummyRule(RecurrenceType.weekly, [friday], []);
-      
-      final occurrences = calculator.calculatePendingOccurrences(rule, [], 2);
+      const friday = 5;
+      final rule = createDummyRule(RecurrenceType.weekly, [friday], const []);
+
+      final occurrences = calculator.calculatePendingOccurrences(rule, const [], 2);
 
       expect(occurrences.length, 2);
       expect(occurrences[0].weekday, DateTime.friday);
@@ -56,15 +60,15 @@ void main() {
       expect(occurrences[1].difference(occurrences[0]).inDays, 7);
     });
 
-    test('should exclude occurences matching a cancellation exception', () {
-      final rule = createDummyRule(RecurrenceType.daily, [], [
+    test('should exclude occurrences matching a cancellation exception', () {
+      final rule = createDummyRule(RecurrenceType.daily, const [], [
         CalendarException(
           exceptionDate: DateTime.now().toUtc().add(const Duration(days: 1)),
           isCancelled: true,
-        )
+        ),
       ]);
 
-      final occurrences = calculator.calculatePendingOccurrences(rule, [], 3);
+      final occurrences = calculator.calculatePendingOccurrences(rule, const [], 3);
 
       expect(occurrences.length, 3);
       final diff1 = occurrences[1].difference(occurrences[0]).inDays;
@@ -72,11 +76,11 @@ void main() {
     });
 
     test('should ignore occurrences that were already published (pastRuns)', () {
-      final rule = createDummyRule(RecurrenceType.daily, [], []);
+      final rule = createDummyRule(RecurrenceType.daily, const [], const []);
 
-      final firstBatch = calculator.calculatePendingOccurrences(rule, [], 1);
+      final firstBatch = calculator.calculatePendingOccurrences(rule, const [], 1);
 
-      final mockPastRuns = firstBatch.map((dt) => 
+      final mockPastRuns = firstBatch.map((dt) =>
         CalendarOccurrenceRun(
           calculatedOccurrenceUtc: dt,
           createdVrcEventId: 'evt_dummy',

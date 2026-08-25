@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:vrcma/domain/entities/calendar/enums/instance_region.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
       expect(instance.worldId, 'wrld_12345-abcde');
       expect(instance.instanceId, '67890');
       expect(instance.accessType, InstanceAccessType.public);
-      expect(instance.region, 'US');
+      expect(instance.region, InstanceRegion.us);
       expect(instance.isResolvableWorld, isTrue);
     });
 
@@ -40,7 +41,7 @@ void main() {
       final instance = VrcInstance.parse('wrld_x:1~group(grp_123)~groupAccessType(plus)~region(eu)');
 
       expect(instance.accessType, InstanceAccessType.groupPlus);
-      expect(instance.region, 'EU');
+      expect(instance.region, InstanceRegion.eu);
     });
 
     test('should retieve values from the internal LRU cache for repeated locations', () {
@@ -50,7 +51,7 @@ void main() {
       final instance2 = VrcInstance.parse(location);
 
       expect(identical(instance1, instance2), isTrue);
-      expect(instance2.region, 'JP');
+      expect(instance2.region, InstanceRegion.jp);
     });
   });
 }

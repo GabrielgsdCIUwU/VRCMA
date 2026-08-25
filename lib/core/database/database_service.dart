@@ -85,14 +85,14 @@ class DatabaseService {
     ''');
     
     await db.execute('''
-      CREATE TABLE logs (
+      CREATE TABLE app_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT NOT NULL,
-        user_local_id INTEGER NOT NULL,
-        invitation_type TEXT NOT NULL, -- 'INVITE' or 'REQUEST'
-        action TEXT NOT NULL, -- 'ACCEPT' or 'REJECT'
-        applied_rule TEXT,
-        FOREIGN KEY (user_local_id) REFERENCES vrc_users (id) ON DELETE CASCADE
+        category TEXT NOT NULL,
+        level TEXT NOT NULL,
+        message TEXT NOT NULL,
+        details TEXT,
+        metadata TEXT
       )
     ''');
 
@@ -238,7 +238,6 @@ class DatabaseService {
       )
     ''');
 
-    await db.execute('CREATE INDEX IF NOT EXISTS idx_logs_user_local_id ON logs (user_local_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_profile_id ON profile_rules (profile_id)');
@@ -248,6 +247,7 @@ class DatabaseService {
     await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
      await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_exceptions_auto_id ON calendar_automation_exceptions (automation_id)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_runs_auto_id ON calendar_automation_runs (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_app_logs_category_time ON app_logs (category, timestamp DESC)');
   }
   
   Future<void> _createDummyData(Database db, int version) async {
