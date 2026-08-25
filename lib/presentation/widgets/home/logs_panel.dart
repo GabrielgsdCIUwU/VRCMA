@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
@@ -117,9 +118,11 @@ class LogsPanel extends ConsumerWidget {
             const SizedBox(height: 12),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
                   ChoiceChip(
+                    visualDensity: VisualDensity.compact,
                     label: Text(context.l10n.logCategoryAll),
                     selected: activeCategory == null,
                     onSelected: (_) => ref.read(logCategoryFilterProvider.notifier).setCategory(null),
@@ -129,6 +132,7 @@ class LogsPanel extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ChoiceChip(
+                        visualDensity: VisualDensity.compact,
                         label: Text(cat.toLocalizedString(context)),
                         selected: activeCategory == cat,
                         onSelected: (_) => ref.read(logCategoryFilterProvider.notifier).setCategory(cat),
@@ -141,9 +145,11 @@ class LogsPanel extends ConsumerWidget {
             const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
                   ChoiceChip(
+                    visualDensity: VisualDensity.compact,
                     label: Text(context.l10n.logSeverityAll),
                     selected: activeSeverity == null,
                     onSelected: (_) => ref.read(logSeverityFilterProvider.notifier).setSeverity(null),
@@ -154,6 +160,7 @@ class LogsPanel extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ChoiceChip(
+                        visualDensity: VisualDensity.compact,
                         label: Text(
                           sev.toLocalizedString(context).toUpperCase(), 
                           style: TextStyle(color: activeSeverity == sev ? color : null)
@@ -232,6 +239,7 @@ class _LogItemCard extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
             ),
+            const SizedBox(width: 8),
             _SeverityIndicatorBadge(severity: log.severity),
           ],
         ),
@@ -252,38 +260,10 @@ class _LogItemCard extends StatelessWidget {
           ),
         ),
         children: [
-          if (log.getLocalizedDetails(context) != null || log.details != null)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (log.getLocalizedDetails(context) != null) ...[
-                      Text(
-                        log.getLocalizedDetails(context)!,
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                    if (log.details != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surfaceContainerLow,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          log.details!,
-                          style: const TextStyle(fontSize: 10, fontFamily: 'monospace'),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: _LogMetadataDetailsView(log: log),
+          ),
         ],
       ),
     );
@@ -303,6 +283,168 @@ class _LogItemCard extends StatelessWidget {
       radius: 18,
       backgroundColor: log.category.getColor(context).withValues(alpha: 0.1),
       child: log.category.getIcon(context, size: 18),
+    );
+  }
+}
+
+class _LogMetadataDetailsView extends StatelessWidget {
+  final AppLog log;
+  const _LogMetadataDetailsView({required this.log});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final meta = log.metadata;
+
+    final List<Widget> detailRows = switch (meta) {
+      CalendarLogMetadata() => [
+        _DetailRow(label: l10n.logDetailRule, value: meta.ruleName),
+        if (meta.eventTitle != null && meta.eventTitle!.isNotEmpty)
+          _DetailRow(label: l10n.logDetailEventTitle, value: meta.eventTitle!),
+        if (meta.groupId != null && meta.groupId!.isNotEmpty)
+          _DetailRow(label: l10n.logDetailGroup, value: meta.groupId!, isMonospace: true),
+        if (meta.occurrenceUtc != null)
+          _DetailRow(
+            label: l10n.logDetailScheduledFor,
+            value: DateFormat.yMMMd(Localizations.localeOf(context).languageCode)
+                .add_jm()
+                .format(meta.occurrenceUtc!.toLocal()),
+          ),
+        if (meta.eventId != null && meta.eventId!.isNotEmpty)
+          _DetailRow(label: l10n.logDetailEventId, value: meta.eventId!, isMonospace: true),
+      ],
+
+      StatusLogMetadata() => [
+        if (meta.profileName != null && meta.profileName!.isNotEmpty)
+          _DetailRow(label: l10n.logDetailStatusProfile, value: meta.profileName!),
+        _DetailRow(label: l10n.logDetailStatus, value: context.getLocalizedStatus(meta.status.name)),
+        if (meta.description.isNotEmpty)
+          _DetailRow(label: l10n.logDetailStatusMessage, value: meta.description),
+      ],
+
+      InvitationLogMetadata() => [
+        if (meta.profileName.isNotEmpty)
+          _DetailRow(label: l10n.logDetailProfile, value: meta.profileName),
+        _DetailRow(label: l10n.logDetailSender, value: "${meta.senderName} (${meta.senderId})"),
+        _DetailRow(
+          label: l10n.logDetailMatchedRole,
+          value: meta.matchedRoleName ?? l10n.logNoRuleMatched,
+        ),
+      ],
+
+      SocialLogMetadata() => [
+        _DetailRow(label: l10n.logDetailTargetUser, value: "${meta.targetUserName} (${meta.targetUserId})"),
+        if (meta.assignedRoleNames.isNotEmpty)
+          _DetailRow(label: l10n.sectionRoles, value: meta.assignedRoleNames.join(', ')),
+        _DetailRow(
+          label: l10n.logDetailTrigger,
+          value: switch (meta.trigger) {
+            SocialAssignmentTrigger.newFriend => l10n.logSocialTriggerNewFriend,
+            SocialAssignmentTrigger.tagMatch => l10n.logSocialTriggerTagMatch,
+          },
+        ),
+      ],
+
+      AuthLogMetadata() => [
+        _DetailRow(label: l10n.logDetailTargetUser, value: "${meta.displayName} (${meta.userId})"),
+        _DetailRow(label: l10n.logDetailAuthEvent, value: meta.event.toLocalizedString(context)),
+      ],
+
+      SystemLogMetadata() => meta.data.entries
+          .map((e) => _DetailRow(label: e.key, value: e.value.toString()))
+          .toList(),
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: context.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: detailRows,
+          ),
+        ),
+        if (log.details != null && log.details!.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.logDetailTechnicalDetails.toUpperCase(),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: context.colorScheme.error,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: context.colorScheme.error.withValues(alpha: 0.3)),
+            ),
+            child: SelectableText(
+              log.details!,
+              style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isMonospace;
+
+  const _DetailRow({
+    required this.label,
+    required this.value,
+    this.isMonospace = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: SelectableText(
+              value,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                fontFamily: isMonospace ? 'monospace' : null,
+                color: context.colorScheme.onSurface,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
