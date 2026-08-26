@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
@@ -37,7 +37,7 @@ class EvaluateAndGenerateEventsUseCase {
       try {
         await _processRule(rule, hostLanguages);
       } catch (e, stackTrace) {
-        debugPrint('Error processing rule [${rule.name}]: $e\n$stackTrace');
+        debugPrint('Error processing calendar rule [${rule.name}]: $e\n$stackTrace');
       }
     }
   }
@@ -45,11 +45,11 @@ class EvaluateAndGenerateEventsUseCase {
   Future<void> _processRule(CalendarAutomationRule rule, List<String> hostLanguages) async {
     final pastRuns = await _localRepo.getPastRuns(rule.id!);
 
-    final targetLimit = rule.strategy == CreationStrategy.lazy
-      ? 1
-      : rule.maxVisibleFutureEvents;
-    
-    final pendingStartTimes = _calculator.calculatePendingOccurrences(rule, pastRuns, targetLimit);
+    final windowSize = rule.strategy == CreationStrategy.lazy
+        ? 1
+        : rule.maxVisibleFutureEvents;
+
+    final pendingStartTimes = _calculator.calculatePendingOccurrences(rule, pastRuns, windowSize);
 
     if (pendingStartTimes.isEmpty) return;
 
