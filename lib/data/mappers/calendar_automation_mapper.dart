@@ -21,6 +21,9 @@ class CalendarAutomationMapper {
 
     final daysOfWeek = List<int>.from(recurrenceData['days_of_week'] as List? ?? const []);
     final daysOfMonth = List<int>.from(recurrenceData['days_of_month'] as List? ?? const []);
+    
+    final startDateStr = recurrenceData['start_date'] as String?;
+    final endDateStr = recurrenceData['end_date'] as String?;
 
     final allowedVrcRoleIdsJson = row['allowed_vrc_role_ids'] as String?;
     final allowedVrcRoleIds = allowedVrcRoleIdsJson != null
@@ -69,6 +72,8 @@ class CalendarAutomationMapper {
         startTimeOfDay: row['start_time_of_day'] as String,
         durationMinutes: row['duration_minutes'] as int,
         timezoneIana: row['timezone'] as String,
+        startDate: startDateStr != null ? DateTime.parse(startDateStr) : null,
+        endDate: endDateStr != null ? DateTime.parse(endDateStr) : null,
       ),
       recurrence: RecurrencePattern(
         type: RecurrenceType.fromString(row['recurrence_type'] as String),
@@ -102,6 +107,8 @@ class CalendarAutomationMapper {
     final recurrenceData = {
       'days_of_week': rule.recurrence.daysOfWeek,
       'days_of_month': rule.recurrence.daysOfMonth,
+      'start_date': rule.schedule.startDate?.toIso8601String(),
+      'end_date': rule.schedule.endDate?.toIso8601String(),
     };
 
     return {
