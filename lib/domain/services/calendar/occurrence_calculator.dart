@@ -1,59 +1,86 @@
+import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_exception.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 
-/// Evaluate rules and exceptions to generate upcoming event runs.
 class OccurrenceCalculator {
-  /// Calculates pending occurrences in UTC.
   List<DateTime> calculatePendingOccurrences(
     CalendarAutomationRule rule,
     List<CalendarOccurrenceRun> pastRuns,
-    int countLimit,
+    int windowSize,
   ) {
+    if (windowSize <= 0) return const [];
+
     final nowUtc = DateTime.now().toUtc();
     final maxFutureLimitUtc = nowUtc.add(const Duration(days: 365));
-    final pendingOccurrences = <DateTime>[];
-
     final pastRunUtcTimes = _extractPastRunUtcTimes(pastRuns);
 
-    final timeParts = rule.schedule.startTimeOfDay.split(':');
-    if (timeParts.length != 2) return [];
-
-    final hour = int.tryParse(timeParts[0]) ?? 0;
-    final minute = int.tryParse(timeParts[1]) ?? 0;
     final location = _resolveLocation(rule.schedule.timezoneIana);
+    final (hour, minute) = _parseStartTime(rule.schedule.startTimeOfDay);
 
+    final upcomingHorizon = <DateTime>[];
     var dateCursor = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
 
-    while (dateCursor.isBefore(maxFutureLimitUtc) && pendingOccurrences.length < countLimit) {
-      if (_matchesRecurrence(rule.recurrence, dateCursor)) {
+    while (dateCursor.isBefore(maxFutureLimitUtc) && upcomingHorizon.length < windowSize) {
+      if (_isWithinScheduleRange(rule.schedule, dateCursor) && _matchesRecurrence(rule.recurrence, dateCursor)) {
         final candidateUtc = _computeUtcOccurrence(
           date: dateCursor,
           location: location,
           hour: hour,
           minute: minute,
           nowUtc: nowUtc,
-          maxFuturelimitUtc: maxFutureLimitUtc,
+          maxFutureLimitUtc: maxFutureLimitUtc,
           rule: rule,
         );
 
-        if (candidateUtc != null && !pastRunUtcTimes.contains(candidateUtc)) {
-          pendingOccurrences.add(candidateUtc);
+        if (candidateUtc != null) {
+          upcomingHorizon.add(candidateUtc);
         }
       }
 
       dateCursor = dateCursor.add(const Duration(days: 1));
     }
 
-    return pendingOccurrences;
+    return upcomingHorizon
+        .where((occurrenceUtc) => !pastRunUtcTimes.contains(occurrenceUtc))
+        .toList();
+  }
+
+  (int, int) _parseStartTime(String startTimeOfDay) {
+    final parts = startTimeOfDay.split(':');
+    if (parts.length != 2) return (0, 0);
+    return (int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
+  }
+
+  bool _isWithinScheduleRange(TimezoneSchedule schedule, DateTime date) {
+    if (schedule.startDate != null) {
+      final startUtc = DateTime.utc(
+        schedule.startDate!.year,
+        schedule.startDate!.month,
+        schedule.startDate!.day,
+      );
+      if (date.isBefore(startUtc)) return false;
+    }
+
+    if (schedule.endDate != null) {
+      final endUtc = DateTime.utc(
+        schedule.endDate!.year,
+        schedule.endDate!.month,
+        schedule.endDate!.day,
+        23, 59, 59,
+      );
+      if (date.isAfter(endUtc)) return false;
+    }
+
+    return true;
   }
 
   Set<DateTime> _extractPastRunUtcTimes(List<CalendarOccurrenceRun> pastRuns) {
     return pastRuns
-      .map((run) => run.calculatedOccurrenceUtc.toUtc()).toSet();
+        .map((run) => run.calculatedOccurrenceUtc.toUtc())
+        .toSet();
   }
 
   tz.Location _resolveLocation(String timezoneIana) {
@@ -87,27 +114,27 @@ class OccurrenceCalculator {
     required int hour,
     required int minute,
     required DateTime nowUtc,
-    required DateTime maxFuturelimitUtc,
+    required DateTime maxFutureLimitUtc,
     required CalendarAutomationRule rule,
   }) {
     final scheduledLocal = tz.TZDateTime(location, date.year, date.month, date.day, hour, minute);
     final candidateUtc = scheduledLocal.toUtc();
 
-    if (candidateUtc.isBefore(nowUtc) || candidateUtc.isAfter(maxFuturelimitUtc)) {
+    if (candidateUtc.isBefore(nowUtc) || candidateUtc.isAfter(maxFutureLimitUtc)) {
       return null;
     }
 
-    final dateToExclude = rule.getExceptionFor(date);
-    if (dateToExclude != null && dateToExclude.isCancelled) {
+    final exception = rule.getExceptionFor(date);
+    if (exception != null && exception.isCancelled) {
       return null;
     }
 
-    if (dateToExclude == null || dateToExclude.rescheduledTime == null) {
+    if (exception == null || exception.rescheduledTime == null) {
       return candidateUtc;
     }
 
     return _applyExceptionRescheduling(
-      exception: dateToExclude,
+      exception: exception,
       location: location,
       date: date,
       defaultHour: hour,
