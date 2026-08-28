@@ -69,6 +69,6 @@ Future<ILocalCalendarRepository> localCalendarRepository(Ref ref) async {
 
 @riverpod
 Future<IGroupPermissionCacheRepository> groupPermissionCacheRepository(Ref ref) async {
-  final dbService = DatabaseService();
-  return GroupPermissionCacheRepositoryImp(dbService);
+  final db = await ref.watch(databaseProvider.future);
+  return GroupPermissionCacheRepositoryImp(db);
 }
