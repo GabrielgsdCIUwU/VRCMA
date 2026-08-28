@@ -170,7 +170,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
     try {
       final currentUserId = _vrcApi.auth.currentUser?.id;
       if (currentUserId == null) {
-        return const Left(ApiFailure("Local authenticated session not found"));
+        return const Left(ApiFailure('Local authenticated session not found'));
       }
 
       final UserStatus mappedStatus = _mapToUserStatus(status);
@@ -184,13 +184,14 @@ class AutomationRepositoryImp implements IAutomationRepository {
       );
 
       _lastStatusUpdate = DateTime.now();
-
-      return Right(null);
-    } catch (e) {
-      if (e.toString().contains("429")) {
+      return const Right(null);
+    } on DioException catch (dioError) {
+      if (dioError.response?.statusCode == 429) {
         return const Left(RateLimitFailure(5));
       }
-      return Left(ApiFailure("Failed to update status: $e"));
+      return Left(ApiFailure(dioError.message ?? 'Failed to update status'));
+    } catch (e) {
+      return Left(ApiFailure('Failed to update status: $e'));
     }
   }
   
