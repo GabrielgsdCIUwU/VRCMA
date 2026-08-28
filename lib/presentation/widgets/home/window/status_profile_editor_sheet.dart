@@ -339,7 +339,7 @@ class _StatusProfileEditorSheetState
       items: StatusType.values.map((status) {
         return DropdownMenuItem(
           value: status,
-          child: Text(status.name.toUpperCase()),
+          child: Text(status.toLocalizedString(context).toUpperCase()),
         );
       }).toList(),
       onChanged: (val) {
