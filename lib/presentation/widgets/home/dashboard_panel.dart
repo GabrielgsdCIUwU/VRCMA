@@ -13,6 +13,7 @@ import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
 import 'package:vrcma/presentation/widgets/home/calendar_automation_panel.dart';
 import 'package:vrcma/presentation/widgets/home/common/adaptive_context_menu_wrapper.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
@@ -607,44 +608,26 @@ class DashboardPanel extends ConsumerWidget {
     );
   }
 
-  void _showDeleteFilterProfileConfirmation(BuildContext context, WidgetRef ref, FilterProfile profile) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteProfileTitle),
-        content: Text(context.l10n.dialogDeleteProfileContent(profile.name)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
-          TextButton(onPressed: () {
-            ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
-            Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+  Future<void> _showDeleteFilterProfileConfirmation(BuildContext context, WidgetRef ref, FilterProfile profile) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
+      context: context, 
+      title: context.l10n.dialogDeleteProfileTitle, 
+      content: context.l10n.dialogDeleteProfileContent(profile.name),
     );
+    if (confirmed && profile.id != null) {
+      ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
+    }
   }
 
-  void _showDeleteStatusProfileConfirmation(BuildContext context, WidgetRef ref, StatusProfile profile) {
-    showDialog(
+  Future<void> _showDeleteStatusProfileConfirmation(BuildContext context, WidgetRef ref, StatusProfile profile) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteStatusProfileTitle),
-        content: Text(context.l10n.dialogDeleteStatusProfileContent(profile.name)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
-          TextButton(onPressed: () {
-            ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
-            Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+      title: context.l10n.dialogDeleteStatusProfileTitle,
+      content: context.l10n.dialogDeleteStatusProfileContent(profile.name),
     );
+    if (confirmed && profile.id != null) {
+      ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
+    }
   }
 
   void _showAddRoleDialog(BuildContext context, WidgetRef ref) {
@@ -658,43 +641,25 @@ class DashboardPanel extends ConsumerWidget {
     );
   }
 
-  void _showDeleteRoleConfirmation(BuildContext context, WidgetRef ref, Role role) {
-    showDialog(
+  Future<void> _showDeleteRoleConfirmation(BuildContext context, WidgetRef ref, Role role) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteRoleTitle),
-        content: Text(context.l10n.dialogDeleteRoleContent(role.name)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
-          TextButton(onPressed: () {
-            ref.read(roleManagementProvider.notifier).deleteRole(role.id);
-            Navigator.pop(context);
-          },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+      title: context.l10n.dialogDeleteRoleTitle,
+      content: context.l10n.dialogDeleteRoleContent(role.name),
     );
+    if (confirmed) {
+      ref.read(roleManagementProvider.notifier).deleteRole(role.id);
+    }
   }
 
-  void _showDeleteAutomationConfirmation(BuildContext context, WidgetRef ref, RoleAutomation automation) {
-    showDialog(
+  Future<void> _showDeleteAutomationConfirmation(BuildContext context, WidgetRef ref, RoleAutomation automation) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteAutomationTitle),
-        content: Text(context.l10n.dialogDeleteAutomationContent),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.btnCancel)),
-          TextButton(onPressed: () {
-            ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
-            Navigator.pop(context);
-          },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+      title: context.l10n.dialogDeleteAutomationTitle,
+      content: context.l10n.dialogDeleteAutomationContent,
     );
+    if (confirmed && automation.id != null) {
+      ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
+    }
   }
 }

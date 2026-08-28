@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
-import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 
 class FavoritesStrategy implements IFriendCategorizationStrategy {
   @override
@@ -23,7 +21,7 @@ class FavoritesStrategy implements IFriendCategorizationStrategy {
         subCategories.add(FriendGroupCategory(
           id: 'fav_${group.id}',
           title: group.name,
-          icon: Icons.star,
+          iconType: CategoryIconType.favorites,
           friends: eligible,
         ));
       }
@@ -34,7 +32,7 @@ class FavoritesStrategy implements IFriendCategorizationStrategy {
     return FriendGroupCategory(
       id: 'favorites_parent',
       title: 'Favorites',
-      icon: Icons.star,
+      iconType: CategoryIconType.favorites,
       subCategories: subCategories
     );
   }

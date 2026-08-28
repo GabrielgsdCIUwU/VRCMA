@@ -6,6 +6,7 @@ import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/calendar_automation_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/adaptive_context_menu_wrapper.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 import 'package:vrcma/presentation/widgets/home/dashboard_panel.dart';
 import 'package:vrcma/presentation/widgets/home/window/calendar_automation_editor_sheet.dart';
 
@@ -204,27 +205,14 @@ class CalendarAutomationPanel extends ConsumerWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, WidgetRef ref, CalendarAutomationRule rule) {
-    showDialog(
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, CalendarAutomationRule rule) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.calConfirmDeleteTitle),
-        content: Text(context.l10n.calConfirmDeleteContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              ref.read(calendarAutomationListProvider.notifier).delete(rule.id!);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+      title: context.l10n.calConfirmDeleteTitle,
+      content: context.l10n.calConfirmDeleteContent,
     );
+    if (confirmed && rule.id != null) {
+      ref.read(calendarAutomationListProvider.notifier).delete(rule.id!);
+    }
   }
 }

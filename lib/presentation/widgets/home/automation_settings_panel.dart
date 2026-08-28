@@ -14,6 +14,7 @@ import 'package:vrcma/presentation/state/profile_management_provider.dart';
 import 'package:vrcma/presentation/state/role_automation_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/state/status_profile_management_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 import 'package:vrcma/presentation/widgets/home/window/profile_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_automation_editor_sheet.dart';
 import 'package:vrcma/presentation/widgets/home/window/role_editor_sheet.dart';
@@ -330,31 +331,15 @@ class _RoleTile extends ConsumerWidget {
     );
   }
   
-  void _showDeleteRoleConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog(
+  Future<void> _showDeleteRoleConfirmation(BuildContext context, WidgetRef ref) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteRoleTitle),
-        content: Text(
-          context.l10n.dialogDeleteRoleContent(role.name),
-          style: const TextStyle(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              ref.read(roleManagementProvider.notifier).deleteRole(role.id);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          )
-        ],
-      )
+      title: context.l10n.dialogDeleteRoleTitle,
+      content: context.l10n.dialogDeleteRoleContent(role.name),
     );
+    if (confirmed) {
+      ref.read(roleManagementProvider.notifier).deleteRole(role.id);
+    }
   }
 }
 
@@ -440,28 +425,15 @@ class _ProfileTile extends ConsumerWidget {
     );
   }
   
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog(
+  Future<void> _showDeleteConfirmation(BuildContext context, WidgetRef ref) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteProfileTitle),
-        content: Text(context.l10n.dialogDeleteProfileContent(profile.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          )
-        ],
-      )
+      title: context.l10n.dialogDeleteProfileTitle,
+      content: context.l10n.dialogDeleteProfileContent(profile.name),
     );
+    if (confirmed && profile.id != null) {
+      ref.read(profileManagementProviderProvider.notifier).deleteProfile(profile.id!);
+    }
   }
 }
 
@@ -619,28 +591,15 @@ class _StatusProfileTile extends ConsumerWidget {
     Navigator.push(context, MaterialPageRoute(builder: (_) => StatusProfileEditorSheet(profile: profile)));
   }
 
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog(
+  Future<void> _showDeleteConfirmation(BuildContext context, WidgetRef ref) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteStatusProfileTitle),
-        content: Text(context.l10n.dialogDeleteStatusProfileContent(profile.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          )
-        ],
-      )
+      title: context.l10n.dialogDeleteStatusProfileTitle,
+      content: context.l10n.dialogDeleteStatusProfileContent(profile.name),
     );
+    if (confirmed && profile.id != null) {
+      ref.read(statusProfileManagementProvider.notifier).deleteProfile(profile.id!);
+    }
   }
 }
 
@@ -714,27 +673,14 @@ class _RoleAutomationTile extends ConsumerWidget {
     );
   }
   
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog(
+  Future<void> _showDeleteConfirmation(BuildContext context, WidgetRef ref) async {
+    final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogDeleteAutomationTitle),
-        content: Text(context.l10n.dialogDeleteAutomationContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-            child: Text(context.l10n.btnDelete),
-          ),
-        ],
-      ),
+      title: context.l10n.dialogDeleteAutomationTitle,
+      content: context.l10n.dialogDeleteAutomationContent,
     );
+    if (confirmed && automation.id != null) {
+      ref.read(roleAutomationListProvider.notifier).delete(automation.id!);
+    }
   }
 }

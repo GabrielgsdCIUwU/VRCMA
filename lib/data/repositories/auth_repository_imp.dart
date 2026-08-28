@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
@@ -32,14 +33,17 @@ class AuthRepositoryImp implements IAuthRepository {
       }
 
       final currentUser = _vrcApi.auth.currentUser;
-      if(currentUser == null) {
-        return Left(ApiFailure('Unexpected error: currentUser is null'));
+      if (currentUser == null) {
+        return const Left(ApiFailure('Unexpected error: currentUser is null'));
       }
       return Right(VrcUserModel.fromCurrentUser(currentUser));
-    } catch (e) {
-      if (e.toString().contains("connection timeout")) {
-        return Left(ApiFailure('Connection timeout. Check your internet connection'));
+    } on DioException catch (dioError) {
+      if (dioError.type == DioExceptionType.connectionTimeout ||
+          dioError.type == DioExceptionType.receiveTimeout) {
+        return const Left(NetworkTimeoutFailure());
       }
+      return Left(ApiFailure(dioError.message ?? 'Unknown connection error'));
+    } catch (e) {
       return Left(ApiFailure('Unexpected connection error: $e'));
     }
   }
@@ -55,7 +59,7 @@ class AuthRepositoryImp implements IAuthRepository {
 
       final currentUser = _vrcApi.auth.currentUser;
       if (currentUser == null) {
-        return Left(ApiFailure('Error getting user after 2FA verification'));
+        return const Left(ApiFailure('Error getting user after 2FA verification'));
       }
       return Right(VrcUserModel.fromCurrentUser(currentUser));
     } catch (e) {

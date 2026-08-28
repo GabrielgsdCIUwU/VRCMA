@@ -8,6 +8,7 @@ import 'package:vrcma/domain/entities/automation/vrc_message.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/message_management_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/show_generic_search_sheet.dart';
 import 'package:vrcma/presentation/state/profile_editor_provider.dart';
@@ -39,32 +40,18 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     ref.read(profileEditorProvider(widget.profile).notifier).save();
     Navigator.of(context).pop();
   }
-  
-  Future<bool> _showExitConfirmation() async {
-    final hasChanges = ref.read(profileEditorProvider(widget.profile).notifier).hasChanges;
-    if (hasChanges) return true;
-    
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogUnsavedTitle),
-        content: Text(context.l10n.dialogUnsavedContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'discard'),
-            child: Text(context.l10n.btnDiscard, style: TextStyle(color: context.colorScheme.error)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'save'),
-            child: Text(context.l10n.btnSaveChanges),
-          ),
-        ],
-      ),
-    );
-    
-    if (result == 'discard') return true;
-    _saveAndExit();
-    return false;
+
+  Future<void> _handleExitPrompt(BuildContext context) async {
+    final action = await AdaptiveDialogs.showUnsavedChangesDialog(context);
+    if (!context.mounted || action == null) return;
+
+    switch (action) {
+      case UnsavedChangesAction.discard:
+        Navigator.of(context).pop();
+      
+      case UnsavedChangesAction.save:
+        _saveAndExit();
+    }
   }
   
   @override
@@ -74,13 +61,9 @@ class _ProfileEditorSheetState extends ConsumerState<ProfileEditorSheet> {
     
     return PopScope(
       canPop: !hasChanges,
-      onPopInvokedWithResult: (didPop, result) async {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        
-        final shouldPop = await _showExitConfirmation();
-        if (shouldPop && context.mounted) {
-          Navigator.of(context).pop();
-        }
+        _handleExitPrompt(context);
       },
       child: Scaffold(
         appBar: AppBar(

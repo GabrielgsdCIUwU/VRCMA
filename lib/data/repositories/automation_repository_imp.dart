@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
@@ -125,15 +126,20 @@ class AutomationRepositoryImp implements IAutomationRepository {
         userId: userId,
         messageType: vrcType,
         slot: slot,
-        updateInviteMessageRequest: UpdateInviteMessageRequest(
-            message: content),
+        updateInviteMessageRequest: UpdateInviteMessageRequest(message: content),
       );
       return const Right(null);
-    } catch (e) {
-      if (e.toString().contains("429")) {
-       return const Left(RateLimitFailure(60));
+    } on DioException catch (dioError) {
+      if (dioError.response?.statusCode == 429) {
+        final retrySeconds = int.tryParse(dioError.response?.headers.value('Retry-After') ?? '') ?? 60;
+        return Left(RateLimitFailure((retrySeconds / 60).ceil()));
       }
-      debugPrint("VRChat API Error (Update Slot): $e");
+      if (dioError.type == DioExceptionType.connectionTimeout ||
+          dioError.type == DioExceptionType.receiveTimeout) {
+        return const Left(NetworkTimeoutFailure());
+      }
+      return Left(ApiFailure(dioError.message ?? 'Unknown API network error'));
+    } catch (e) {
       return Left(ApiFailure(e.toString()));
     }
   }
@@ -164,7 +170,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
     try {
       final currentUserId = _vrcApi.auth.currentUser?.id;
       if (currentUserId == null) {
-        return const Left(ApiFailure("Local authenticated session not found"));
+        return const Left(ApiFailure('Local authenticated session not found'));
       }
 
       final UserStatus mappedStatus = _mapToUserStatus(status);
@@ -178,13 +184,14 @@ class AutomationRepositoryImp implements IAutomationRepository {
       );
 
       _lastStatusUpdate = DateTime.now();
-
-      return Right(null);
-    } catch (e) {
-      if (e.toString().contains("429")) {
+      return const Right(null);
+    } on DioException catch (dioError) {
+      if (dioError.response?.statusCode == 429) {
         return const Left(RateLimitFailure(5));
       }
-      return Left(ApiFailure("Failed to update status: $e"));
+      return Left(ApiFailure(dioError.message ?? 'Failed to update status'));
+    } catch (e) {
+      return Left(ApiFailure('Failed to update status: $e'));
     }
   }
   

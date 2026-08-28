@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
+import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 
 /// Presentation extensions for rendering localized domain entity values in the UI.
 extension VrcUserUiExtension on VrcUser {
-  bool get isTrulyOffline => location == 'offline' || status.toLowerCase() == 'offline';
-
   String getLocalizedFormattedLocation(BuildContext context) {
     final l10n = context.l10n;
     if (isTrulyOffline) return l10n.presenceOffline;
@@ -136,6 +135,22 @@ extension AppLogUiExtension on AppLog {
       AuthLogMetadata() => details,
       
       SystemLogMetadata() => details,
+    };
+  }
+}
+
+extension CategoryIconTypeUiExtension on CategoryIconType {
+  IconData get iconData {
+    return switch (this) {
+      CategoryIconType.favorites => Icons.star,
+      CategoryIconType.sameInstance => Icons.public,
+      CategoryIconType.joinMe => Icons.add_circle_outline,
+      CategoryIconType.online => Icons.videogame_asset,
+      CategoryIconType.askMe => Icons.question_mark_rounded,
+      CategoryIconType.busy => Icons.do_not_disturb_on_outlined,
+      CategoryIconType.activeWeb => Icons.language,
+      CategoryIconType.offline => Icons.videogame_asset_off_outlined,
+      CategoryIconType.custom => Icons.folder_outlined,
     };
   }
 }

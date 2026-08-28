@@ -572,7 +572,9 @@ class _SlotGrid extends StatelessWidget {
       Navigator.pop(context);
       await ref.read(messageManagementProvider.notifier).assignToVrcSlot(message, index);
     } catch (e) {
-      _showErrorSnackBar(context, e.toString());
+      if (context.mounted) {
+        _showErrorSnackBar(context, e.toString());
+      }
     }
   }
 }

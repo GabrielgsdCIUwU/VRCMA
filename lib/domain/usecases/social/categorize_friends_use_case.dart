@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
@@ -6,7 +5,6 @@ import 'package:vrcma/domain/usecases/social/categorization/favorites_strategy.d
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/same_instance_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/status_strategy.dart';
-import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 
 class CategorizeFriendsUseCase {
   final List<VrcUser> friends;
@@ -35,13 +33,13 @@ class CategorizeFriendsUseCase {
     final List<IFriendCategorizationStrategy> strategies = [
       FavoritesStrategy(),
       SameInstanceStrategy(),
-      StatusStrategy(id: 'online', title: 'Online', icon: Icons.videogame_asset,
+      StatusStrategy(id: 'online', title: 'Online', iconType: CategoryIconType.online,
         condition: (u) => !u.isTrulyOffline && u.status.isNotEmpty
       ),
-      StatusStrategy(id: 'active', title: 'Active (Website)', icon: Icons.language,
+      StatusStrategy(id: 'active', title: 'Active (Website)', iconType: CategoryIconType.activeWeb,
         condition: (u) => !u.isTrulyOffline && u.status.isEmpty
       ),
-      StatusStrategy(id: 'offline', title: 'Offline', icon: Icons.videogame_asset,
+      StatusStrategy(id: 'offline', title: 'Offline', iconType: CategoryIconType.offline,
         condition: (u) => u.isTrulyOffline
       ),
     ];

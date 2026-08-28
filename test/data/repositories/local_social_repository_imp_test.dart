@@ -4,6 +4,7 @@ import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 
 void main() {
   late Database db;
@@ -15,7 +16,8 @@ void main() {
   });
   
   setUp(() async {
-    db = await databaseFactory.openDatabase(inMemoryDatabasePath,
+    db = await databaseFactory.openDatabase(
+      inMemoryDatabasePath,
       options: OpenDatabaseOptions(
         version: 1,
         onCreate: (db, version) async {
@@ -56,7 +58,8 @@ void main() {
               )
           ''');
         },
-      ));
+      ),
+    );
     repository = LocalSocialRepositoryImp(db);
   });
   
@@ -80,7 +83,7 @@ void main() {
       
       expect(
         () async => await repository.createRole('Admin'),
-        throwsA(isA<String>().having((e) => e, 'message', contains('already exists'))),
+        throwsA(isA<DuplicateRoleException>().having((e) => e.roleName, 'roleName', 'Admin')),
       );
     });
     
