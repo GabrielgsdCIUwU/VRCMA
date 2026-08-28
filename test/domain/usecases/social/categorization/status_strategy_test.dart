@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/usecases/social/categorization/status_strategy.dart';
 
 void main() {
@@ -13,7 +13,7 @@ void main() {
       final strategy = StatusStrategy(
         id: 'online',
         title: 'Online Friends',
-        icon: Icons.videogame_asset,
+        iconType: CategoryIconType.online,
         condition: (u) => u.status == 'active',
       );
       
@@ -36,7 +36,7 @@ void main() {
       final strategy = StatusStrategy(
         id: 'join_me',
         title: 'Join Me',
-        icon: Icons.add,
+        iconType: CategoryIconType.joinMe,
         condition: (u) => u.status == 'join me',
       );
       
@@ -53,7 +53,7 @@ void main() {
       final strategy = StatusStrategy(
         id: 'busy',
         title: 'Busy',
-        icon: Icons.do_not_disturb,
+        iconType: CategoryIconType.busy,
         condition: (u) => u.status == 'busy',
       );
       

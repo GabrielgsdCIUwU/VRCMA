@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
@@ -21,7 +20,7 @@ class SameInstanceStrategy implements IFriendCategorizationStrategy {
     return FriendGroupCategory(
       id: 'instances_parent',
       title: 'Same Instance',
-      icon: Icons.public,
+      iconType: CategoryIconType.sameInstance,
       subCategories: subCategories,
     );
   }
@@ -73,7 +72,7 @@ class SameInstanceStrategy implements IFriendCategorizationStrategy {
       categories.add(FriendGroupCategory(
         id: 'inst_${entry.key}',
         title: title,
-        icon: Icons.map_outlined,
+        iconType: CategoryIconType.sameInstance,
         friends: users,
       ));
     }

@@ -18,18 +18,12 @@ class VrcInstance extends Equatable {
     this.region = InstanceRegion.us,
   });
 
-  static final Map<String, VrcInstance> _locationCache = {};
-  static const int _maxCacheSize = 250;
-  
   bool get isOffline => locationString == 'offline' || locationString.isEmpty;
   bool get isPrivate => locationString == 'private';
   bool get isTraveling => locationString == 'traveling';
   bool get isResolvableWorld => worldId != null && worldId!.startsWith('wrld_');
   
   factory VrcInstance.parse(String location) {
-    final cached = _locationCache[location];
-    if (cached != null) return cached;
-
     if (location.isEmpty || location == 'offline' || location == 'private' || location == 'traveling') {
       return VrcInstance(locationString: location, accessType: InstanceAccessType.unknown);
     }
@@ -43,36 +37,32 @@ class VrcInstance extends Equatable {
       return VrcInstance(
         locationString: location,
         worldId: worldId,
-        accessType: InstanceAccessType.public
+        accessType: InstanceAccessType.public,
       );
     }
-    
+
     final instanceParts = parts[1].split('~');
     final instanceId = instanceParts[0];
-    
-    InstanceAccessType type = InstanceAccessType.public;
-    InstanceRegion region = InstanceRegion.us;
-    
-    for (int i = 1; i < instanceParts.length; i++) {
+
+    var type = InstanceAccessType.public;
+    var region = InstanceRegion.us;
+
+    for (var i = 1; i < instanceParts.length; i++) {
       final part = instanceParts[i];
-      
+
       if (part.startsWith('private')) {
         type = InstanceAccessType.inviteOnly;
       } else if (part.startsWith('friends')) {
         type = InstanceAccessType.friends;
       } else if (part.startsWith('hidden')) {
         type = InstanceAccessType.friendsPlus;
-      } 
-      
-      else if (part.startsWith('region(')) {
+      } else if (part.startsWith('region(')) {
         final rawRegion = part.substring(7, part.length - 1);
         region = InstanceRegion.fromString(rawRegion);
-      }
-      
-      else if(part.startsWith('group(')) {
+      } else if (part.startsWith('group(')) {
         if (type == InstanceAccessType.public) type = InstanceAccessType.group;
       } else if (part.startsWith('groupAccessType(')) {
-        final access = part.substring(16, part.length -1);
+        final access = part.substring(16, part.length - 1);
         if (access == 'public') {
           type = InstanceAccessType.groupPublic;
         } else if (access == 'plus') {
@@ -82,45 +72,34 @@ class VrcInstance extends Equatable {
         }
       }
     }
-    
+
     if (type == InstanceAccessType.inviteOnly && location.contains('canRequestInvite')) {
       type = InstanceAccessType.invitePlus;
     }
-    
-    final parsedInstance = VrcInstance(
+
+    return VrcInstance(
       locationString: location,
       worldId: worldId,
       instanceId: instanceId,
       accessType: type,
       region: region,
     );
-
-    _parseToLocationCache(location, parsedInstance);
-    return parsedInstance;
-  }
-
-  static void _parseToLocationCache(String key, VrcInstance value) {
-    if (_locationCache.length >= _maxCacheSize) {
-      //* Clear: Just to simplify, but can be improve with LRU (Least Recently Used)
-      _locationCache.clear();
-    }
-    _locationCache[key] = value;
   }
   
   String get accessTypeString {
-    switch (accessType) {
-      case InstanceAccessType.public: return 'Public';
-      case InstanceAccessType.inviteOnly: return 'Invite Only';
-      case InstanceAccessType.invitePlus: return 'Invite+';
-      case InstanceAccessType.friends: return 'Friends';
-      case InstanceAccessType.friendsPlus: return 'Friends+';
-      case InstanceAccessType.group: return 'Group';
-      case InstanceAccessType.groupPlus: return 'Group+';
-      case InstanceAccessType.groupPublic: return 'Group Public';
-      default: return 'Unknown';
-    }
+    return switch (accessType) {
+      InstanceAccessType.public => 'Public',
+      InstanceAccessType.inviteOnly => 'Invite Only',
+      InstanceAccessType.invitePlus => 'Invite+',
+      InstanceAccessType.friends => 'Friends',
+      InstanceAccessType.friendsPlus => 'Friends+',
+      InstanceAccessType.group => 'Group',
+      InstanceAccessType.groupPlus => 'Group+',
+      InstanceAccessType.groupPublic => 'Group Public',
+      InstanceAccessType.unknown => 'Unknown',
+    };
   }
-  
+
   @override
   List<Object?> get props => [locationString, worldId, instanceId, accessType, region];
 }
