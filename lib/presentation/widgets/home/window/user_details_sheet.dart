@@ -4,6 +4,7 @@ import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
+import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/user_details_provider.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
@@ -43,8 +44,8 @@ class _UserDetailsSheetState extends ConsumerState<UserDetailsSheet> {
 
   Widget _buildDesktopLayout(
       BuildContext context,
-      AsyncValue<List<dynamic>> assignedRolesAsync,
-      AsyncValue<List<dynamic>> allRolesAsync,
+      AsyncValue<List<Role>> assignedRolesAsync,
+      AsyncValue<List<Role>> allRolesAsync,
       ) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 750, maxHeight: 500),
@@ -152,8 +153,8 @@ class _UserDetailsSheetState extends ConsumerState<UserDetailsSheet> {
 
   Widget _buildMobileLayout(
       BuildContext context,
-      AsyncValue<List<dynamic>> assignedRolesAsync,
-      AsyncValue<List<dynamic>> allRolesAsync,
+      AsyncValue<List<Role>> assignedRolesAsync,
+      AsyncValue<List<Role>> allRolesAsync,
       ) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 420),

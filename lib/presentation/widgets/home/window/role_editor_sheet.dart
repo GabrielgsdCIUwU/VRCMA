@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
+import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:collection/collection.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
@@ -167,7 +168,7 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     );
   }
   
-  Widget _buildFriendsList(AsyncValue<List<dynamic>> friendsAsync) {
+  Widget _buildFriendsList(AsyncValue<List<VrcUser>> friendsAsync) {
     return friendsAsync.when(
       data: (friends) {
         final filtered = friends.where((f) => f.displayName.toLowerCase().contains(_searchQuery)).toList();
