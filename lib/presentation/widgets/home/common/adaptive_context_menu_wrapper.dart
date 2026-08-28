@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// Wraps children to support platform-specific context triggers.
 /// Desktop users trigger through secondary tap (right-click),
