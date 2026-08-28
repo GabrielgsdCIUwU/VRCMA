@@ -4,6 +4,7 @@ import 'package:vrcma/data/mappers/role_mapper.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 
 class LocalSocialRepositoryImp implements ILocalSocialRepository {
@@ -76,7 +77,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       return await _db.insert('roles', {'name': name});
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {
-        throw 'A role with the name "$name" already exists.';
+        throw DuplicateRoleException(name);
       }
       rethrow;
     }
@@ -120,7 +121,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       );
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {
-        throw 'A role with the name "$newName" already exists.';
+        throw DuplicateRoleException(newName);
       }
       rethrow;
     }

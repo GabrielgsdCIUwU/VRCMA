@@ -27,6 +27,7 @@ void main() {
       
       expect(result, isNotNull);
       expect(result!.id, 'online');
+      expect(result.iconType, CategoryIconType.online);
       expect(result.friends.length, 1);
       expect(result.friends.first.id, '1');
       expect(accountedIds.contains('1'), true);

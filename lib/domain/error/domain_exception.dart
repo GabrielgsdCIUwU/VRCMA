@@ -166,3 +166,23 @@ class RoleAutomationValidationException extends DomainException {
   RoleAutomationValidationException(this.error)
       : super(errorCode: error.errorCode, defaultMessage: error.defaultMessage);
 }
+
+class DuplicateRoleException extends DomainException {
+  final String roleName;
+  
+  DuplicateRoleException(this.roleName)
+    : super(
+      errorCode: 'ROLE_DUPLICATE_NAME',
+      defaultMessage: 'A role with the name "$roleName" already exists.',
+    );
+}
+
+class RoleNotFoundException extends DomainException {
+  final int roleId;
+
+  RoleNotFoundException(this.roleId)
+    : super (
+      errorCode: 'ROLE_NOT_FOUND',
+      defaultMessage: 'Role with ID "$roleId" was not found.',
+    );
+}
