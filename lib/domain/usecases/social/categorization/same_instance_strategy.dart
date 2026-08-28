@@ -2,7 +2,6 @@ import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
-import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 
 class SameInstanceStrategy implements IFriendCategorizationStrategy {
   static const int _minimumUsersToFormGroup = 2;

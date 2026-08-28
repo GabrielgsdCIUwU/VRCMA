@@ -5,7 +5,6 @@ import 'package:vrcma/domain/usecases/social/categorization/favorites_strategy.d
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/same_instance_strategy.dart';
 import 'package:vrcma/domain/usecases/social/categorization/status_strategy.dart';
-import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 
 class CategorizeFriendsUseCase {
   final List<VrcUser> friends;

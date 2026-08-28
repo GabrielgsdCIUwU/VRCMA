@@ -8,8 +8,6 @@ import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 
 /// Presentation extensions for rendering localized domain entity values in the UI.
 extension VrcUserUiExtension on VrcUser {
-  bool get isTrulyOffline => location == 'offline' || status.toLowerCase() == 'offline';
-
   String getLocalizedFormattedLocation(BuildContext context) {
     final l10n = context.l10n;
     if (isTrulyOffline) return l10n.presenceOffline;
