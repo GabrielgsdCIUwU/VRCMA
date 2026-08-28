@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_occurrence_run.dart';
