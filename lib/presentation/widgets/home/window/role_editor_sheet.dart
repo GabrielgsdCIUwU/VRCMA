@@ -8,6 +8,7 @@ import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:collection/collection.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 
 class RoleEditorSheet extends ConsumerStatefulWidget {
   final Role role;
@@ -79,30 +80,17 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     );
   }
   
-  Future<bool> _showExitConfirmation() async {
-    if (!_hasChanges) return true;
-    
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.dialogUnsavedTitle),
-        content: Text(context.l10n.dialogUnsavedContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'discard'),
-            child: Text(context.l10n.btnDiscard, style: TextStyle(color: context.colorScheme.error)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'save'),
-            child: Text(context.l10n.btnSaveChanges),
-          )
-        ],
-      ),
-    );
-    
-    if (result == 'discard') return true;
-    _saveAndExit();
-    return false;
+  Future<void> _handleExitPrompt(BuildContext context) async {
+    final action = await AdaptiveDialogs.showUnsavedChangesDialog(context);
+    if (!context.mounted || action == null) return;
+
+    switch (action) {
+      case UnsavedChangesAction.discard:
+        Navigator.of(context).pop();
+      
+      case UnsavedChangesAction.save:
+        _saveAndExit();
+    }
   }
   
   @override
@@ -111,10 +99,9 @@ class _RoleEditorSheetState extends ConsumerState<RoleEditorSheet> {
     
     return PopScope(
       canPop: !_hasChanges,
-      onPopInvokedWithResult: (didPop, result) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        final shouldPop = await _showExitConfirmation();
-        if (shouldPop && context.mounted) Navigator.of(context).pop();
+        _handleExitPrompt(context);
       },
       child: Scaffold(
         appBar: AppBar(

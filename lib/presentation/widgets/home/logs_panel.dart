@@ -9,6 +9,7 @@ import 'package:vrcma/presentation/extensions/date_time_extensions.dart';
 import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/extensions/enum_extensions.dart';
 import 'package:vrcma/presentation/state/logs_provider.dart';
+import 'package:vrcma/presentation/widgets/home/common/adaptive_dialogs.dart';
 import 'package:vrcma/presentation/widgets/home/common/responsive_layout.dart';
 import 'package:vrcma/presentation/widgets/home/common/vrc_avatar.dart';
 
@@ -709,26 +710,13 @@ Color _getSeverityColor(BuildContext context, LogSeverity severity) {
   }
 }
 
-void _showClearConfirmation(BuildContext context, WidgetRef ref) {
-  showDialog(
+Future<void> _showClearConfirmation(BuildContext context, WidgetRef ref) async {
+  final confirmed = await AdaptiveDialogs.showDeleteConfirmation(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(context.l10n.logsClearConfirmTitle),
-      content: Text(context.l10n.logsClearConfirmContent),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(context.l10n.btnCancel),
-        ),
-        TextButton(
-          onPressed: () {
-            ref.read(appLogsProvider.notifier).clearLogs();
-            Navigator.pop(context);
-          },
-          style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
-          child: Text(context.l10n.btnDelete),
-        ),
-      ],
-    ),
+    title: context.l10n.logsClearConfirmTitle,
+    content: context.l10n.logsClearConfirmContent,
   );
+  if (confirmed) {
+    ref.read(appLogsProvider.notifier).clearLogs();
+  }
 }
