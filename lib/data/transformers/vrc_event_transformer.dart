@@ -1,168 +1,177 @@
+import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
 
+/// Callback signature used by transformers to enrich a notification sender profile.
+typedef EnrichedUserLoader = Future<UserResponse?> Function(String userId);
 
+/// Base contract for converting raw VRChat WebSocket payloads into domain events.
 abstract class VrcEventTransformer<T extends VrcAutomationEvent> {
-  /// Determines if this transformer can map the incoming streaming event.
-  bool canHandle(VrcStreamingEvent event);
+  /// Determines whether this transformer handles [event].
+  bool canHandle(Object event);
 
-  /// Converts the raw streaming event into a clean domain automation event.
+  /// Converts [event] into a domain automation event using [getEnrichedUser].
   Future<T?> transform(
-    VrcStreamingEvent event,
-    Future<User?> Function(String userId) getEnrichedUser,
-  );
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      );
 }
 
-class FriendRequestTransformer implements VrcEventTransformer<FriendRequestReceivedEvent> {
+/// Transforms incoming friend request notifications into [FriendRequestReceivedEvent].
+class FriendRequestTransformer
+    implements VrcEventTransformer<FriendRequestReceivedEvent> {
   @override
-  bool canHandle(VrcStreamingEvent event) {
-    return event is NotificationReceivedEvent &&
-      event.notification.type == NotificationType.friendRequest;    
+  bool canHandle(Object event) {
+    if (event is WebsocketNotificationUnknown) {
+      return event.type == 'friendRequest';
+    }
+    if (event is NotificationV2) {
+      return event.type.toString() == 'friendRequest';
+    }
+    return false;
   }
 
   @override
   Future<FriendRequestReceivedEvent?> transform(
-    VrcStreamingEvent event,
-    Future<User?> Function(String) getEnrichedUser,
-  ) async {
-    final notificationEvent = event as NotificationReceivedEvent;
-    final notification = notificationEvent.notification;
-    final String senderId = notification.senderUserId;
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      ) async {
+    final ids = _extractIds(event);
+    if (ids == null || ids.senderId.isEmpty) return null;
 
-    if (senderId.isEmpty) return null;
-
-    final userData = await getEnrichedUser(senderId);
-    final avatarUrl = userData == null
-      ? ''
-      : VrcImageMapper.mapAvatarUrl(
-        profilePic: userData.profilePicOverrideThumbnail,
-        thumbnail: userData.currentAvatarThumbnailImageUrl,
-        currentAvatar: userData.currentAvatarImageUrl,
-      );
-    
+    final sender = await _loadSenderInfo(ids.senderId, getEnrichedUser);
     return FriendRequestReceivedEvent(
-      id: notification.id,
-      senderId: senderId,
-      senderName: userData?.displayName ?? senderId,
-      senderTags: userData?.tags ?? const [],
-      avatarUrl: avatarUrl,
+      id: ids.notificationId,
+      senderId: ids.senderId,
+      senderName: sender.displayName,
+      senderTags: sender.tags,
+      avatarUrl: sender.avatarUrl,
     );
+  }
+
+  ({String notificationId, String senderId})? _extractIds(Object event) {
+    if (event is WebsocketNotificationUnknown) {
+      return (notificationId: event.id, senderId: event.senderUserId);
+    }
+    if (event is NotificationV2) {
+      return (notificationId: event.id, senderId: event.senderUserId);
+    }
+    return null;
   }
 }
 
-class InviteReceivedTransformer implements VrcEventTransformer<InviteReceivedEvent> {
+/// Transforms incoming invite notifications into [InviteReceivedEvent].
+class InviteReceivedTransformer
+    implements VrcEventTransformer<InviteReceivedEvent> {
   @override
-  bool canHandle(VrcStreamingEvent event) {
-    return event is NotificationReceivedEvent &&
-      event.notification.type == NotificationType.invite;    
-  }
+  bool canHandle(Object event) => event is WebsocketNotificationDetailInvite;
 
   @override
   Future<InviteReceivedEvent?> transform(
-    VrcStreamingEvent event,
-    Future<User?> Function(String) getEnrichedUser,
-  ) async {
-    final notificationEvent = event as NotificationReceivedEvent;
-    final notification = notificationEvent.notification;
-    final String senderId = notification.senderUserId;
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      ) async {
+    final invite = event as WebsocketNotificationDetailInvite;
+    if (invite.senderUserId.isEmpty) return null;
 
-    if (senderId.isEmpty) return null;
-
-    final userData = await getEnrichedUser(senderId);
-    final avatarUrl = userData == null
-      ? ''
-      : VrcImageMapper.mapAvatarUrl(
-        profilePic: userData.profilePicOverrideThumbnail,
-        thumbnail: userData.currentAvatarThumbnailImageUrl,
-        currentAvatar: userData.currentAvatarImageUrl,
-      );
-    
+    final sender = await _loadSenderInfo(invite.senderUserId, getEnrichedUser);
     return InviteReceivedEvent(
-      id: notification.id,
-      senderId: senderId,
-      senderName: userData?.displayName ?? senderId,
-      senderTags: userData?.tags ?? const [],
-      avatarUrl: avatarUrl,
+      id: invite.id,
+      senderId: invite.senderUserId,
+      senderName: sender.displayName,
+      senderTags: sender.tags,
+      avatarUrl: sender.avatarUrl,
     );
   }
 }
 
-class RequestReceivedTransformer implements VrcEventTransformer<RequestInviteEvent> {
+/// Transforms incoming request-invite notifications into [RequestInviteEvent].
+class RequestReceivedTransformer
+    implements VrcEventTransformer<RequestInviteEvent> {
   @override
-  bool canHandle(VrcStreamingEvent event) {
-    return event is NotificationReceivedEvent &&
-      event.notification.type == NotificationType.requestInvite;    
-  }
+  bool canHandle(Object event) =>
+      event is WebsocketNotificationDetailRequestInvite;
 
   @override
   Future<RequestInviteEvent?> transform(
-    VrcStreamingEvent event,
-    Future<User?> Function(String) getEnrichedUser,
-  ) async {
-    final notificationEvent = event as NotificationReceivedEvent;
-    final notification = notificationEvent.notification;
-    final String senderId = notification.senderUserId;
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      ) async {
+    final request = event as WebsocketNotificationDetailRequestInvite;
+    if (request.senderUserId.isEmpty) return null;
 
-    if (senderId.isEmpty) return null;
-
-    final userData = await getEnrichedUser(senderId);
-    final avatarUrl = userData == null
-      ? ''
-      : VrcImageMapper.mapAvatarUrl(
-        profilePic: userData.profilePicOverrideThumbnail,
-        thumbnail: userData.currentAvatarThumbnailImageUrl,
-        currentAvatar: userData.currentAvatarImageUrl,
-      );
-    
+    final sender = await _loadSenderInfo(request.senderUserId, getEnrichedUser);
     return RequestInviteEvent(
-      id: notification.id,
-      senderId: senderId,
-      senderName: userData?.displayName ?? senderId,
-      senderTags: userData?.tags ?? const [],
-      avatarUrl: avatarUrl,
+      id: request.id,
+      senderId: request.senderUserId,
+      senderName: sender.displayName,
+      senderTags: sender.tags,
+      avatarUrl: sender.avatarUrl,
     );
   }
 }
 
-class UserProfileUpdatedTransformer implements VrcEventTransformer<UserProfileUpdatedEvent> {
+/// Transforms current-user profile updates into [UserProfileUpdatedEvent].
+class UserProfileUpdatedTransformer
+    implements VrcEventTransformer<UserProfileUpdatedEvent> {
   @override
-  bool canHandle(VrcStreamingEvent event) {
-    return event is UserUpdateEvent;
-  }
+  bool canHandle(Object event) => event is WebsocketUserUpdate;
 
   @override
   Future<UserProfileUpdatedEvent?> transform(
-      VrcStreamingEvent event,
-      Future<User?> Function(String userId) getEnrichedUser
-    ) async {
-      final updateEvent = event as UserUpdateEvent;
-      final user = updateEvent.user;
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      ) async {
+    final update = event as WebsocketUserUpdate;
+    final user = update.user;
 
-      return UserProfileUpdatedEvent(
-        userId: user.id,
-        displayName: user.displayName,
-        status: user.status.value,
-        statusDescription: user.statusDescription,
-      );
+    return UserProfileUpdatedEvent(
+      userId: user.id,
+      displayName: user.displayName,
+      status: user.status.value,
+      statusDescription: user.statusDescription,
+    );
   }
 }
 
-class UserLocationTransformer implements VrcEventTransformer<UserLocationUpdatedEvent> {
+/// Transforms current-user location transitions into [UserLocationUpdatedEvent].
+class UserLocationTransformer
+    implements VrcEventTransformer<UserLocationUpdatedEvent> {
   @override
-  bool canHandle(VrcStreamingEvent event) {
-    return event is UserLocationEvent;    
-  }
+  bool canHandle(Object event) => event is WebsocketUserLocation;
 
   @override
   Future<UserLocationUpdatedEvent?> transform(
-    VrcStreamingEvent event, 
-    Future<User?> Function(String userId) getEnrichedUser
-    ) async {
-    final locationEvent = event as UserLocationEvent;
+      Object event,
+      EnrichedUserLoader getEnrichedUser,
+      ) async {
+    final locationEvent = event as WebsocketUserLocation;
     return UserLocationUpdatedEvent(
       userId: locationEvent.userId,
       location: locationEvent.location,
     );
   }
+}
+
+Future<({String displayName, List<String> tags, String avatarUrl})>
+_loadSenderInfo(
+    String senderId,
+    EnrichedUserLoader getEnrichedUser,
+    ) async {
+  final userData = await getEnrichedUser(senderId);
+  if (userData == null) {
+    return (displayName: senderId, tags: const <String>[], avatarUrl: '');
+  }
+
+  final avatarUrl = VrcImageMapper.mapAvatarUrl(
+    userIcon: userData.iconUrl,
+    thumbnail: userData.currentAvatarThumbnailImageUrl,
+    currentAvatar: userData.currentAvatarImageUrl,
+  );
+
+  return (
+  displayName: userData.displayName,
+  tags: userData.tags,
+  avatarUrl: avatarUrl,
+  );
 }

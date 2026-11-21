@@ -66,13 +66,22 @@ class CalendarAutomationRule extends Equatable {
     return getExceptionFor(date) != null;
   }
 
-  /// Retrieves the exception details if configured for a target date.
-  CalendarException? getExceptionFor(DateTime date) {
-    return exceptions.firstWhereOrNull(
-      (e) => e.exceptionDate.year == date.year
-        && e.exceptionDate.month == date.month
-        && e.exceptionDate.day == date.day,
-    );
+  /// Retrieves the matching exception if [localDate] falls within an exception range.
+  CalendarException? getExceptionFor(DateTime localDate) {
+    final targetDay = _toDateOnly(localDate);
+
+    return exceptions.firstWhereOrNull((exception) {
+      final startDay = _toDateOnly(exception.exceptionDate);
+      final endDay = exception.exceptionEndDate != null
+          ? _toDateOnly(exception.exceptionEndDate!)
+          : startDay;
+
+      return !targetDay.isBefore(startDay) && !targetDay.isAfter(endDay);
+    });
+  }
+
+  DateTime _toDateOnly(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
   }
 
   CalendarAutomationRule copyWith({

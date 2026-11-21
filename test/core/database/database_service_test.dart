@@ -27,13 +27,17 @@ void main() {
         'vrc_users',
         'custom_messages',
         'profiles',
-        'logs',
+        'app_logs',
         'friend_roles',
         'profile_rules',
         'role_automations',
         'automation_assigned_roles',
         'status_profiles',
         'status_rules',
+        'calendar_automations',
+        'calendar_automation_exceptions',
+        'calendar_automation_runs',
+        'group_permissions_cache',
       ];
       for (var table in expectedTables) {
         final result = await database.rawQuery(

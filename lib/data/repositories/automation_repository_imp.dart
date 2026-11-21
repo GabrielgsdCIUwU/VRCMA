@@ -14,7 +14,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
   final List<VrcEventTransformer> _transformers;
 
-  final Map<String, (User, DateTime)> _userCache = {};
+  final Map<String, (UserResponse, DateTime)> _userCache = {};
   static const Duration _cacheExpirationLimit = Duration(hours: 1);
 
   DateTime _lastStatusUpdate = DateTime.fromMillisecondsSinceEpoch(0);
@@ -22,13 +22,12 @@ class AutomationRepositoryImp implements IAutomationRepository {
   
   AutomationRepositoryImp(this._vrcApi, this._transformers);
 
-  Future<User?> _getEnrichedUser(String userId) async {
+  Future<UserResponse?> _getEnrichedUser(String userId) async {
     final now = DateTime.now();
-    if (_userCache.containsKey(userId)) {
-      final (cachedUser, cachedTime) = _userCache[userId]!;
-      if (now.difference(cachedTime) < _cacheExpirationLimit) {
-        return cachedUser;
-      }
+    final cachedEntry = _userCache[userId];
+    if (cachedEntry != null &&
+        now.difference(cachedEntry.$2) < _cacheExpirationLimit) {
+      return cachedEntry.$1;
     }
 
     try {

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:vrcma/core/errors/failure.dart';
@@ -22,15 +23,23 @@ void main() {
     const username = 'test_user';
     const password = 'amazing_password_bro';
 
-    test('should map internal connection timeout to specialized ApiFailure message', () async {
+    test('should map Dio connection timeout to NetworkTimeoutFailure', () async {
+      final timeoutException = DioException(
+        type: DioExceptionType.connectionTimeout,
+        requestOptions: RequestOptions(path: '/auth/user'),
+      );
+
       when(mockAuthApi.login(username: username, password: password))
-          .thenThrow(Exception('connection timeout occurred'));
+          .thenThrow(timeoutException);
       
       final result = await repository.login(username, password);
 
       expect(result.isLeft(), isTrue);
       result.fold(
-        (failure) => expect(failure.message, contains('Check your internet connection')),
+            (failure) {
+          expect(failure, isA<NetworkTimeoutFailure>());
+          expect(failure.message, contains('Check your internet connection'));
+        },
         (_) => fail('Should return failure'),
       );
     });
@@ -47,18 +56,6 @@ void main() {
           expect(failure, isA<ApiFailure>());
           expect(failure.message, contains('Invalid credentials'));
         },
-        (_) => fail('Should return failure'),
-      );
-    });
-
-    test('should map internal connection timeout to specialized ApiFailure message', () async {
-      when(mockAuthApi.login(username: username, password: password))
-        .thenThrow(Exception('connection timeout occurred'));
-
-      final result = await repository.login(username, password);
-
-      result.fold(
-        (failure) => expect(failure.message, contains('Check your internet connection')),
         (_) => fail('Should return failure'),
       );
     });

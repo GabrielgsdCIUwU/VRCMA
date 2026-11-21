@@ -12,6 +12,8 @@ void main() {
 
   setUp(() {
     mockAppLogRepository = MockIAppLogRepository();
+    when(mockAppLogRepository.watchLogs())
+        .thenAnswer((_) => const Stream<void>.empty());
   });
 
   ProviderContainer createContainer() {
@@ -33,64 +35,52 @@ void main() {
         severity: LogSeverity.info,
         message: '',
         metadata: const CalendarLogMetadata(ruleName: 'Weekly event'),
-      )
+      ),
     ];
 
     test('AppLogs should initially fetch log database with empty default filters', () async {
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
         severity: null,
       )).thenAnswer((_) async => dummyLogs);
 
       final container = createContainer();
-
       final state = await container.read(appLogsProvider.future);
 
       expect(state, equals(dummyLogs));
-      verify(mockAppLogRepository.getLogs(search: null, category: null, severity: null)).called(1);
+      verify(mockAppLogRepository.getLogs(category: null, severity: null)).called(1);
     });
 
-    test('Updating search query should trigger getLogs evaluation with updated string parameter', () async {
+    test('Updating search query should filter logs in memory using metadata and text', () async {
       when(mockAppLogRepository.getLogs(
-        search: 'crash',
-        category: null,
-        severity: null
-      )).thenAnswer((_) async => []);
-
-      when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
         severity: null,
       )).thenAnswer((_) async => dummyLogs);
 
       final container = createContainer();
-
       await container.read(appLogsProvider.future);
 
       container.read(logSearchQueryProvider.notifier).updateQuery('crash');
+      final nonMatchingState = await container.read(appLogsProvider.future);
+      expect(nonMatchingState, isEmpty);
 
-      final filteredState = await container.read(appLogsProvider.future);
-
-      expect(filteredState, equals([]));
-      verify(mockAppLogRepository.getLogs(search: 'crash', category: null, severity:  null)).called(1);
+      container.read(logSearchQueryProvider.notifier).updateQuery('weekly');
+      final matchingState = await container.read(appLogsProvider.future);
+      expect(matchingState, equals(dummyLogs));
     });
 
     test('Updating category filter should rebuild logs list requesting only that category', () async {
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: LogCategory.calendar,
         severity: null,
       )).thenAnswer((_) async => dummyLogs);
 
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
         severity: null,
       )).thenAnswer((_) async => []);
 
       final container = createContainer();
-      
       await container.read(appLogsProvider.future);
 
       container.read(logCategoryFilterProvider.notifier).setCategory(LogCategory.calendar);
@@ -98,24 +88,22 @@ void main() {
       final filteredState = await container.read(appLogsProvider.future);
 
       expect(filteredState, equals(dummyLogs));
-      verify(mockAppLogRepository.getLogs(search: null, category: LogCategory.calendar, severity: null)).called(1);
+      verify(mockAppLogRepository.getLogs(category: LogCategory.calendar, severity: null))
+          .called(1);
     });
 
     test('Updating severity filter should rebuild logs list requesting only that severity', () async {
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
         severity: LogSeverity.info,
       )).thenAnswer((_) async => dummyLogs);
 
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
-        severity: null
+        severity: null,
       )).thenAnswer((_) async => []);
 
       final container = createContainer();
-
       await container.read(appLogsProvider.future);
 
       container.read(logSeverityFilterProvider.notifier).setSeverity(LogSeverity.info);
@@ -123,19 +111,18 @@ void main() {
       final filteredState = await container.read(appLogsProvider.future);
 
       expect(filteredState, equals(dummyLogs));
-      verify(mockAppLogRepository.getLogs(search: null, category: null, severity: LogSeverity.info)).called(1);
+      verify(mockAppLogRepository.getLogs(category: null, severity: LogSeverity.info))
+          .called(1);
     });
 
     test('Calling clearLogs should execute physical purge and invalidate state providers', () async {
-      when(mockAppLogRepository.clearAllLogs()).thenAnswer((_) async => {});
+      when(mockAppLogRepository.clearAllLogs()).thenAnswer((_) async {});
       when(mockAppLogRepository.getLogs(
-        search: null,
         category: null,
         severity: null,
       )).thenAnswer((_) async => <AppLog>[]);
 
       final container = createContainer();
-
       await container.read(appLogsProvider.future);
 
       await container.read(appLogsProvider.notifier).clearLogs();

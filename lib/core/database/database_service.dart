@@ -209,6 +209,7 @@ class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         automation_id INTEGER NOT NULL,
         exception_date TEXT NOT NULL,
+        exception_end_date TEXT,
         is_cancelled INTEGER NOT NULL DEFAULT 1,
         rescheduled_time TEXT,
         title_override TEXT,

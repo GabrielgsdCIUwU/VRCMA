@@ -108,7 +108,7 @@ Future<ValidateGroupPermissionsUseCase> validateGroupPermissionsUseCase(Ref ref)
   return ValidateGroupPermissionsUseCase(remoteRepo, cacheRepo);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<EvaluateAndGenerateEventsUseCase> evaluateAndGenerateEventsUseCase(Ref ref) async {
   final localRepo = await ref.watch(localCalendarRepositoryProvider.future);
   final remoteRepo = await ref.watch(remoteCalendarRepositoryProvider.future);

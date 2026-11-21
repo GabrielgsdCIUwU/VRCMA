@@ -1359,4 +1359,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logDetailTechnicalDetails => 'Technical Error Details';
+
+  @override
+  String errorCalDuplicateRuleName(String ruleName) {
+    return 'A calendar rule named \'$ruleName\' already exists in this group.';
+  }
+
+  @override
+  String errorCalRateLimited(int minutes) {
+    return 'VRChat calendar rate limit reached. Automatic publishing paused for $minutes minutes.';
+  }
+
+  @override
+  String get calBtnSyncNow => 'Sync Now';
+
+  @override
+  String get calSectionSchedulePreview => 'Upcoming Schedule Preview';
+
+  @override
+  String get calPreviewEmpty =>
+      'No upcoming occurrences match the current schedule.';
+
+  @override
+  String get calPreviewStatusPending => 'Will publish';
+
+  @override
+  String get calPreviewStatusPublished => 'Already on VRChat';
+
+  @override
+  String get calPreviewStatusCancelled => 'Skipped (Exception)';
+
+  @override
+  String get calFieldLabelSendNotification => 'Notify Group Members';
+
+  @override
+  String get calFieldLabelSendNotificationDesc =>
+      'Send a VRChat notification to group members when each event is published';
+
+  @override
+  String get calDescFallbackNotice =>
+      'If left empty, the event title will be used as description because VRChat requires a non-empty description.';
 }

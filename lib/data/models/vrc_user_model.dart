@@ -1,9 +1,9 @@
+import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/mappers/vrc_image_mapper.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
-import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/domain/entities/automation/vrc_tag.dart';
-/// Data model that extends the domain entity to include JSON serialization
-/// or mapping from the specific VRChat API library.
+
+/// Data model adapting VRChat SDK user DTOs into the domain [VrcUser] entity.
 class VrcUserModel extends VrcUser {
   const VrcUserModel({
     required super.id,
@@ -12,48 +12,62 @@ class VrcUserModel extends VrcUser {
     required super.tags,
     super.location,
     super.status,
-    super.avatarUrl
+    super.avatarUrl,
   });
 
-  /// Factory to map the library's [LimitedUserFriend] to our domain model.
+  static final Map<String, VrcTag> _tagsLookupMap = {
+    for (final tag in VrcTag.allTags) tag.id: tag,
+  };
+
+  /// Maps a friend item returned by `/auth/user/friends`.
   factory VrcUserModel.fromLibrary(LimitedUserFriend user) {
     return VrcUserModel(
       id: user.id,
       displayName: user.displayName,
-      bio: user.bio,
       tags: _internTags(user.tags),
       location: user.location,
       status: user.status.value,
       avatarUrl: VrcImageMapper.mapAvatarUrl(
-        userIcon: user.userIcon,
-        profilePic: user.profilePicOverrideThumbnail,
-        thumbnail: user.currentAvatarThumbnailImageUrl,
+        userIcon: user.iconUrl,
         currentAvatar: user.currentAvatarImageUrl,
-        imageUrl: user.imageUrl
-      ),
-    );
-  }
-  factory VrcUserModel.fromCurrentUser(CurrentUser user) {
-    return VrcUserModel(
-      id: user.id,
-      displayName: user.displayName,
-      bio: user.bio,
-      tags: user.tags,
-      location: '',
-      status: user.status.value,
-      avatarUrl: VrcImageMapper.mapAvatarUrl(
-          userIcon: user.userIcon,
-          profilePic: user.profilePicOverrideThumbnail,
-          thumbnail: user.currentAvatarThumbnailImageUrl,
-          currentAvatar: user.currentAvatarImageUrl,
       ),
     );
   }
 
-  static final Map<String, VrcTag> _tagsLookupMap = {
-    for (final tag in VrcTag.allTags) tag.id: tag
-  };
-  
+  /// Maps a full [CurrentUser] model into [VrcUserModel].
+  factory VrcUserModel.fromCurrentUser(CurrentUser user) {
+    return VrcUserModel(
+      id: user.id,
+      displayName: user.displayName,
+      tags: _internTags(user.tags),
+      location: user.location ?? '',
+      status: user.status.value,
+      avatarUrl: VrcImageMapper.mapAvatarUrl(
+        userIcon: user.iconUrl,
+        thumbnail: user.currentAvatarThumbnailImageUrl,
+        currentAvatar: user.currentAvatarImageUrl,
+      ),
+    );
+  }
+
+  /// Maps the login response returned by `getCurrentUser()` in `vrchat_dart` 5.x.
+  factory VrcUserModel.fromCurrentUserLoginResponse(
+      CurrentUserLoginResponse user,
+      ) {
+    return VrcUserModel(
+      id: user.id ?? '',
+      displayName: user.displayName ?? '',
+      tags: _internTags(user.tags ?? const []),
+      location: user.location ?? '',
+      status: user.status?.value ?? '',
+      avatarUrl: VrcImageMapper.mapAvatarUrl(
+        userIcon: user.iconUrl,
+        thumbnail: user.currentAvatarThumbnailImageUrl,
+        currentAvatar: user.currentAvatarImageUrl,
+      ),
+    );
+  }
+
   static List<String> _internTags(List<String> rawTags) {
     return rawTags.map((rawTag) {
       final knownTag = _tagsLookupMap[rawTag];

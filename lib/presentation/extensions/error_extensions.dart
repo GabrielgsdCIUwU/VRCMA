@@ -28,29 +28,42 @@ extension DomainExceptionLocalization on DomainException {
     final l10n = context.l10n;
 
     return switch (this) {
+      CalendarRateLimitException(retryAfterMinutes: final minutes) =>
+          l10n.errorCalRateLimited(minutes),
+      CalendarDomainException(error: final err) => switch (err) {
+        DuplicateCalendarRuleNameError(ruleName: final name) =>
+            l10n.errorCalDuplicateRuleName(name),
+        _ => defaultMessage,
+      },
       WorldIdValidationException(error: final err) => switch (err) {
         WorldIdPatternValidationError() => l10n.errorWorldIdInvalid,
       },
       MessageValidationException(error: final err) => switch (err) {
-          MessageEmptyValidationError() => l10n.errorMsgEmpty,
-          MessageTooLongValidationError(actualLength: final act, maxLength: final max) =>
+        MessageEmptyValidationError() => l10n.errorMsgEmpty,
+        MessageTooLongValidationError(
+        actualLength: final act,
+        maxLength: final max,
+        ) =>
             l10n.errorMsgTooLong(act, max),
-          InvalidSlotIndexValidationError(providedIndex: final prov) =>
+        InvalidSlotIndexValidationError(providedIndex: final prov) =>
             l10n.errorMsgInvalidSlot(prov),
-        },
+      },
       ProfileRuleValidationException(error: final err) => switch (err) {
-          RuleInviteMessageMismatchError() => l10n.errorRuleInviteMismatch,
-          RuleRequestMessageMismatchError() => l10n.errorRuleRequestMismatch,
-        },
+        RuleInviteMessageMismatchError() => l10n.errorRuleInviteMismatch,
+        RuleRequestMessageMismatchError() => l10n.errorRuleRequestMismatch,
+      },
       StatusRuleValidationException(error: final err) => switch (err) {
-          InvalidStatusOperatorError(operatorName: final op, conditionName: final cond) =>
+        InvalidStatusOperatorError(
+        operatorName: final op,
+        conditionName: final cond,
+        ) =>
             l10n.errorStatusInvalidOperator(op, cond),
-          EmptyStatusConditionValueError() => l10n.errorStatusEmptyValue,
-        },
+        EmptyStatusConditionValueError() => l10n.errorStatusEmptyValue,
+      },
       RoleAutomationValidationException(error: final err) => switch (err) {
-          EmptyRoleAssignmentError() => l10n.errorRoleAutoEmptyRoles,
-          MissingTriggerTagError() => l10n.errorRoleAutoMissingTag,
-        },
+        EmptyRoleAssignmentError() => l10n.errorRoleAutoEmptyRoles,
+        MissingTriggerTagError() => l10n.errorRoleAutoMissingTag,
+      },
       _ => defaultMessage,
     };
   }

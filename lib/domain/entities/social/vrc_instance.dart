@@ -1,9 +1,25 @@
+import 'dart:collection';
 import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/calendar/enums/instance_region.dart';
 
-enum InstanceAccessType {public, inviteOnly, invitePlus, friends, friendsPlus, group, groupPlus, groupPublic, unknown }
+enum InstanceAccessType {
+  public,
+  inviteOnly,
+  invitePlus,
+  friends,
+  friendsPlus,
+  group,
+  groupPlus,
+  groupPublic,
+  unknown,
+}
 
+/// Parses and caches VRChat instance location strings into structured domain objects.
 class VrcInstance extends Equatable {
+  static const int _maxCacheEntries = 200;
+  static final LinkedHashMap<String, VrcInstance> _cache =
+  LinkedHashMap<String, VrcInstance>();
+
   final String locationString;
   final String? worldId;
   final String? instanceId;
@@ -23,16 +39,42 @@ class VrcInstance extends Equatable {
   bool get isTraveling => locationString == 'traveling';
   bool get isResolvableWorld => worldId != null && worldId!.startsWith('wrld_');
   
+  /// Parses [location] using an internal LRU cache to avoid redundant allocations.
   factory VrcInstance.parse(String location) {
-    if (location.isEmpty || location == 'offline' || location == 'private' || location == 'traveling') {
-      return VrcInstance(locationString: location, accessType: InstanceAccessType.unknown);
-    }
+    final cached = _getFromCache(location);
+    if (cached != null) return cached;
+
+    final parsed = _parseUncached(location);
+    _putInCache(location, parsed);
+    return parsed;
+  }
     
-    // vrchat instance format: wrld_xx:12345~hidden(usr_xx)~region(us)
-    // vrchat instance group format: wrld_xx:12345~group(grp_xx)~groupAccessType(plus)~region(us)
+  static VrcInstance? _getFromCache(String location) {
+    final existing = _cache.remove(location);
+    if (existing != null) {
+      // Re-insert to mark as most recently used.
+      _cache[location] = existing;
+    }
+    return existing;
+  }
+
+  static void _putInCache(String location, VrcInstance instance) {
+    if (_cache.length >= _maxCacheEntries) {
+      _cache.remove(_cache.keys.first);
+    }
+    _cache[location] = instance;
+  }
+
+  static VrcInstance _parseUncached(String location) {
+    if (_isNonWorldState(location)) {
+      return VrcInstance(
+        locationString: location,
+        accessType: InstanceAccessType.unknown,
+      );
+    }
+
     final parts = location.split(':');
     final worldId = parts[0];
-    
     if (parts.length < 2) {
       return VrcInstance(
         locationString: location,
@@ -42,38 +84,33 @@ class VrcInstance extends Equatable {
     }
 
     final instanceParts = parts[1].split('~');
-    final instanceId = instanceParts[0];
+    return _buildInstanceFromTokens(location, worldId, instanceParts);
+  }
 
+  static bool _isNonWorldState(String location) {
+    return location.isEmpty ||
+        location == 'offline' ||
+        location == 'private' ||
+        location == 'traveling';
+  }
+
+  static VrcInstance _buildInstanceFromTokens(
+      String location,
+      String worldId,
+      List<String> instanceParts,
+      ) {
+    final instanceId = instanceParts[0];
     var type = InstanceAccessType.public;
     var region = InstanceRegion.us;
 
     for (var i = 1; i < instanceParts.length; i++) {
-      final part = instanceParts[i];
-
-      if (part.startsWith('private')) {
-        type = InstanceAccessType.inviteOnly;
-      } else if (part.startsWith('friends')) {
-        type = InstanceAccessType.friends;
-      } else if (part.startsWith('hidden')) {
-        type = InstanceAccessType.friendsPlus;
-      } else if (part.startsWith('region(')) {
-        final rawRegion = part.substring(7, part.length - 1);
-        region = InstanceRegion.fromString(rawRegion);
-      } else if (part.startsWith('group(')) {
-        if (type == InstanceAccessType.public) type = InstanceAccessType.group;
-      } else if (part.startsWith('groupAccessType(')) {
-        final access = part.substring(16, part.length - 1);
-        if (access == 'public') {
-          type = InstanceAccessType.groupPublic;
-        } else if (access == 'plus') {
-          type = InstanceAccessType.groupPlus;
-        } else if (access == 'members') {
-          type = InstanceAccessType.group;
-        }
-      }
+      final token = instanceParts[i];
+      type = _resolveAccessType(token, type);
+      region = _resolveRegion(token, region);
     }
 
-    if (type == InstanceAccessType.inviteOnly && location.contains('canRequestInvite')) {
+    if (type == InstanceAccessType.inviteOnly &&
+        location.contains('canRequestInvite')) {
       type = InstanceAccessType.invitePlus;
     }
 
@@ -85,7 +122,42 @@ class VrcInstance extends Equatable {
       region: region,
     );
   }
-  
+
+  static InstanceAccessType _resolveAccessType(
+      String token,
+      InstanceAccessType current,
+      ) {
+    if (token.startsWith('private')) return InstanceAccessType.inviteOnly;
+    if (token.startsWith('friends')) return InstanceAccessType.friends;
+    if (token.startsWith('hidden')) return InstanceAccessType.friendsPlus;
+    if (token.startsWith('group(')) {
+      return current == InstanceAccessType.public
+          ? InstanceAccessType.group
+          : current;
+    }
+    if (token.startsWith('groupAccessType(')) {
+      return _parseGroupAccessToken(token, current);
+    }
+    return current;
+  }
+
+  static InstanceAccessType _parseGroupAccessToken(
+      String token,
+      InstanceAccessType fallback,
+      ) {
+    final access = token.substring(16, token.length - 1);
+    if (access == 'public') return InstanceAccessType.groupPublic;
+    if (access == 'plus') return InstanceAccessType.groupPlus;
+    if (access == 'members') return InstanceAccessType.group;
+    return fallback;
+  }
+
+  static InstanceRegion _resolveRegion(String token, InstanceRegion current) {
+    if (!token.startsWith('region(')) return current;
+    final rawRegion = token.substring(7, token.length - 1);
+    return InstanceRegion.fromString(rawRegion);
+  }
+
   String get accessTypeString {
     return switch (accessType) {
       InstanceAccessType.public => 'Public',

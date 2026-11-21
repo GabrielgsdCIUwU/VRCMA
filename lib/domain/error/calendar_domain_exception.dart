@@ -118,3 +118,29 @@ class CalendarDomainException extends DomainException {
       defaultMessage: error.defaultMessage
     );
 }
+
+/// Error raised when a calendar rule name collides within the same VRChat group.
+class DuplicateCalendarRuleNameError extends CalendarValidationError {
+  final String ruleName;
+
+  const DuplicateCalendarRuleNameError(this.ruleName);
+
+  @override
+  String get errorCode => 'CAL_RULE_DUPLICATE_NAME';
+
+  @override
+  String get defaultMessage =>
+      'A calendar rule named "$ruleName" already exists for this group.';
+}
+
+/// Exception thrown when VRChat rejects calendar requests due to rate limiting (HTTP 429).
+class CalendarRateLimitException extends DomainException {
+  final int retryAfterMinutes;
+
+  CalendarRateLimitException(this.retryAfterMinutes)
+      : super(
+    errorCode: 'CAL_RATE_LIMITED',
+    defaultMessage:
+    'VRChat calendar rate limit reached. Retry after $retryAfterMinutes minutes.',
+  );
+}

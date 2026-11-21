@@ -46,13 +46,14 @@ class StatusSignalManager {
       ) || profile.fallbackTemplate?.contains('{{battery}}') == true 
         || profile.fallbackTemplate?.contains('{{time}}') == true;
     
-    _streamSubscription = _vrcApi.streaming.vrcEventStream.listen((event) {
-      if (event is UserUpdateEvent) {
-        _controller.add(const PassiveStreamingSignal('UserUpdateEvent'));
-      } else if (event is UserLocationEvent) {
-        _controller.add(const PassiveStreamingSignal('UserLocationEvent'));
-      }
-    }, onError: (err) {
+    _streamSubscription = _vrcApi.streaming.vrcEventStream.listen(
+            (event) {
+          if (event is WebsocketUserUpdate) {
+            _controller.add(const PassiveStreamingSignal('UserUpdateEvent'));
+          } else if (event is WebsocketUserLocation) {
+            _controller.add(const PassiveStreamingSignal('UserLocationEvent'));
+          }
+        }, onError: (err) {
       debugPrint("StatusSignalManager Streaming Error: $err");
     });
 

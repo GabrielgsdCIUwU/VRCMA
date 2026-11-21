@@ -502,5 +502,16 @@
   "logDetailAction": "Acción realizada",
   "logDetailEventType": "Tipo de evento",
   "logDetailAuthEvent": "Evento de autenticación",
-  "logDetailTechnicalDetails": "Detalles técnicos del error"
+  "logDetailTechnicalDetails": "Detalles técnicos del error",
+  "errorCalDuplicateRuleName": "Ya existe una regla de calendario llamada ''{ruleName}'' en este grupo.",
+  "errorCalRateLimited": "Límite de peticiones de calendario de VRChat alcanzado. Publicación pausada durante {minutes} minutos.",
+  "calBtnSyncNow": "Sincronizar ahora",
+  "calSectionSchedulePreview": "Vista previa de próximas ejecuciones",
+  "calPreviewEmpty": "No hay fechas próximas que coincidan con la programación actual.",
+  "calPreviewStatusPending": "Se publicará",
+  "calPreviewStatusPublished": "Ya existe en VRChat",
+  "calPreviewStatusCancelled": "Omitido (Excepción)",
+  "calFieldLabelSendNotification": "Notificar a los miembros del grupo",
+  "calFieldLabelSendNotificationDesc": "Envía una notificación de VRChat a los miembros al publicar cada evento",
+  "calDescFallbackNotice": "Si se deja vacío, se usará el título del evento como descripción porque VRChat no permite descripciones vacías."
 }

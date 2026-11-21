@@ -8,6 +8,7 @@ import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/di/network_repository_provider.dart';
 import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/core/errors/failure.dart';
+import 'package:vrcma/core/network/sanitizer/rules/current_user_sanitizer_rule.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
 import 'package:vrcma/data/repositories/auth_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
@@ -67,7 +68,10 @@ Future<VrchatDart> vrcApi(Ref ref) async {
   client.rawApi.dio.options.receiveTimeout = const Duration(seconds: 15);
 
   client.rawApi.dio.interceptors.add(
-    VrcEnumSanitizerInterceptor([GroupPermissionSanitizerRule()]),
+    VrcEnumSanitizerInterceptor([
+      GroupPermissionSanitizerRule(),
+      CurrentUserSanitizerRule()
+    ]),
   );
 
   client.rawApi.dio.interceptors.add(CookieManager(jar));
@@ -95,8 +99,9 @@ class AuthState extends _$AuthState {
     VrcUser? currentUser;
     try {
       final response = await api.rawApi.getAuthenticationApi().getCurrentUser();
-      if (response.data != null) {
-        currentUser = VrcUserModel.fromCurrentUser(response.data!);
+      final payload = response.data;
+      if (payload != null && payload.id != null) {
+        currentUser = VrcUserModel.fromCurrentUserLoginResponse(payload);
       }
     } catch (e) {
       currentUser = null;

@@ -69,9 +69,8 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     });
 
     _overrideSubscription = api.streaming.vrcEventStream.listen((event) async {
-      if (event is UserUpdateEvent) {
-        final currentUser = event.user;
-        await _handleManualOverrideProtection(currentUser, activeProfile);
+      if (event is WebsocketUserUpdate) {
+        await _handleManualOverrideProtection(event.user, activeProfile);
       }
     });
   }
@@ -85,7 +84,7 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     _signalManager = null;
   }
 
-  Future<void> _handleManualOverrideProtection(StreamedCurrentUser remoteUser, StatusProfile activeProfile) async {
+  Future<void> _handleManualOverrideProtection(User remoteUser, StatusProfile activeProfile) async {
     final statusRepo = await ref.read(statusRepositoryProvider.future);
     
     final String currentStatus = remoteUser.status.value;
@@ -157,7 +156,7 @@ class StatusAutomationOrchestrator extends _$StatusAutomationOrchestrator {
     );
   }
 
-  Future<StatusContext> _buildStatusContext(CurrentUser user) async {
+  Future<StatusContext> _buildStatusContext(CurrentUserLoginResponse user) async {
     final batteryService = BatteryService();
     final batteryLevel = await batteryService.getBatteryLevel();
     final charging = await batteryService.isCharging();

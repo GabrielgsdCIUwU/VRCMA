@@ -3,28 +3,46 @@ import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/data/transformers/vrc_event_transformer.dart';
 import 'package:vrcma/domain/entities/automation/vrc_automation_event.dart';
 
+class _FakeInviteDetails extends Fake implements NotificationDetailInvite {}
+
+class _FakeRequestInviteDetails extends Fake
+    implements NotificationDetailRequestInvite {}
+
 void main() {
   group('VrcEventTransformers Payload Extraction', () {
-    final mockUser = User(
+    final mockUser = UserResponse(
       id: 'usr_123',
       displayName: 'EnrichedUser',
       tags: ['system_trust_veteran'],
-      profilePicOverrideThumbnail: 'https://cdn.vrchat.com/pic.png',
-      currentAvatarThumbnailImageUrl: '', currentAvatarImageUrl: '', developerType: DeveloperType.none, lastPlatform: '', profilePicOverride: '', allowAvatarCopying: false, bio: '', bioLinks: [], dateJoined: DateTime.now(), friendKey: '', isFriend: false, lastActivity: '', lastLogin: DateTime.now().toIso8601String(), state: UserState.active, status: UserStatus.active, statusDescription: '', ageVerificationStatus: AgeVerificationStatus.verified, ageVerified: true, currentAvatarTags: [], pronouns: '', userIcon: '',
+      currentAvatarThumbnailImageUrl: 'https://cdn.vrchat.com/pic.png',
+      currentAvatarImageUrl: '',
+      developerType: DeveloperType.none,
+      lastPlatform: '',
+      dateJoined: DateTime.now(),
+      friendKey: '',
+      isFriend: false,
+      lastLogin: DateTime.now().toIso8601String(),
+      state: UserState.active,
+      status: UserStatus.active,
+      statusDescription: '',
+      ageVerificationStatus: AgeVerificationStatus.verified,
+      ageVerified: true,
+      allowAvatarCopying: false,
+      pronouns: '',
     );
 
-    Future<User?> mockGetEnrichedUser(String id) async => id == 'usr_123' ? mockUser : null;
+    Future<UserResponse?> mockGetEnrichedUser(String id) async =>
+        id == 'usr_123' ? mockUser : null;
 
-    test('FriendRequestTransformer should correctly map NotificationReceivedEvent', () async {
+    test('FriendRequestTransformer should map WebsocketNotificationUnknown friendRequest', () async {
       final transformer = FriendRequestTransformer();
-      final notification = Notification(
+      final event = WebsocketNotificationUnknown(
         id: 'not_001',
         senderUserId: 'usr_123',
-        type: NotificationType.friendRequest,
-        createdAt: DateTime.now(), details: '', message: '', receiverUserId: '', senderUsername: '',
+        type: 'friendRequest',
+        createdAt: DateTime.now(),
+        message: '',
       );
-
-      final event = NotificationReceivedEvent(notification: notification);
 
       expect(transformer.canHandle(event), isTrue);
 
@@ -37,16 +55,16 @@ void main() {
       expect(result?.senderTags, contains('system_trust_veteran'));
     });
 
-    test('InviteReceivedTransformer should safely fallback if user enrichment fails', () async {
+    test('InviteReceivedTransformer should fallback safely if user enrichment fails', () async {
       final transformer = InviteReceivedTransformer();
-      final notification = Notification(
+      final event = WebsocketNotificationDetailInvite(
         id: 'not_002',
         senderUserId: 'usr_unknown',
-        type: NotificationType.invite,
-        createdAt: DateTime.now(), details: '', message: '', receiverUserId: '', senderUsername: '',
+        type: WebsocketNotificationDetailInviteTypeEnum.invite,
+        createdAt: DateTime.now(),
+        message: '',
+        details: _FakeInviteDetails(),
       );
-
-      final event = NotificationReceivedEvent(notification: notification);
 
       expect(transformer.canHandle(event), isTrue);
 
@@ -58,21 +76,27 @@ void main() {
       expect(result?.senderTags, isEmpty);
     });
 
-    test('Transformers should reject handling unrelated events', () {
+    test('RequestReceivedTransformer should handle only request-invite payloads', () {
       final transformer = RequestReceivedTransformer();
-      final notification = Notification(
+      final inviteEvent = WebsocketNotificationDetailInvite(
         id: 'not_err',
         senderUserId: 'usr_1',
-        type: NotificationType.invite,
+        type: WebsocketNotificationDetailInviteTypeEnum.invite,
         createdAt: DateTime.now(),
-        details: '',
         message: '',
-        receiverUserId: '',
-        senderUsername: '',
+        details: _FakeInviteDetails(),
       );
-      final event = NotificationReceivedEvent(notification: notification);
+      final requestEvent = WebsocketNotificationDetailRequestInvite(
+        id: 'not_ok',
+        senderUserId: 'usr_1',
+        type: WebsocketNotificationDetailRequestInviteTypeEnum.requestInvite,
+        createdAt: DateTime.now(),
+        message: '',
+        details: _FakeRequestInviteDetails(),
+      );
 
-      expect(transformer.canHandle(event), isFalse);
+      expect(transformer.canHandle(inviteEvent), isFalse);
+      expect(transformer.canHandle(requestEvent), isTrue);
     });
   });
 }

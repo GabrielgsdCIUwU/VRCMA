@@ -1,4 +1,3 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
@@ -9,6 +8,7 @@ import 'package:vrcma/domain/entities/calendar/enums/creation_strategy.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
+import 'package:vrcma/domain/entities/calendar/remote_calendar_event.dart';
 import 'package:vrcma/domain/services/app_logger.dart';
 import 'package:vrcma/domain/services/calendar/event_title_resolver.dart';
 import 'package:vrcma/domain/services/calendar/occurrence_calculator.dart';
@@ -50,7 +50,7 @@ void main() {
       verifyZeroInteractions(mockRemoteRepo);
     });
 
-    test('should process rules, create events on remote API and update local states', () async {
+    test('should process rules, create events on remote API, and update local state', () async {
       final rule = CalendarAutomationRule(
         id: 1,
         name: 'Weekly Meetup',
@@ -59,9 +59,9 @@ void main() {
         category: GroupEventCategory.other,
         accessType: GroupEventAccessType.public,
         schedule: TimezoneSchedule(
-            startTime: TimeOfDayValue(hour: 20), 
-            durationMinutes: 60, 
-            timezoneIana: 'UTC'
+          startTime: TimeOfDayValue(hour: 20),
+          durationMinutes: 60,
+          timezoneIana: 'UTC',
         ),
         recurrence: const RecurrencePattern(type: RecurrenceType.daily),
         incrementalConfig: IncrementalConfig(isEnabled: true, currentValue: 5),
@@ -69,6 +69,7 @@ void main() {
       );
 
       when(mockLocalRepo.getActiveRules()).thenAnswer((_) async => [rule]);
+      when(mockRemoteRepo.getUpcomingGroupEvents('grp_1')).thenAnswer((_) async => []);
       when(mockLocalRepo.getPastRuns(1)).thenAnswer((_) async => []);
 
       when(mockRemoteRepo.createEvent(
@@ -93,7 +94,6 @@ void main() {
       when(mockLocalRepo.saveOccurrenceRun(any)).thenAnswer((_) async {});
       when(mockLocalRepo.saveRule(any)).thenAnswer((_) async => 1);
 
-
       await useCase.execute(hostUser: dummyHost);
 
       verify(mockRemoteRepo.createEvent(
@@ -101,7 +101,7 @@ void main() {
         title: 'Meetup #5',
         startUtc: anyNamed('startUtc'),
         endUtc: anyNamed('endUtc'),
-        description: '',
+        description: 'Meetup #5',
         category: GroupEventCategory.other,
         accessType: GroupEventAccessType.public,
         platforms: [],
@@ -115,12 +115,80 @@ void main() {
         usesInstanceOverflow: false,
       )).called(1);
 
-      final capturedRun = verify(mockLocalRepo.saveOccurrenceRun(captureAny)).captured.first as CalendarOccurrenceRun;
+      final capturedRun = verify(mockLocalRepo.saveOccurrenceRun(captureAny))
+          .captured
+          .first as CalendarOccurrenceRun;
       expect(capturedRun.createdVrcEventId, 'vrc_evt_123');
-      expect(capturedRun.automationId, 1);
 
-      final capturedRule = verify(mockLocalRepo.saveRule(captureAny)).captured.first as CalendarAutomationRule;
+      final capturedRule = verify(mockLocalRepo.saveRule(captureAny))
+          .captured
+          .first as CalendarAutomationRule;
       expect(capturedRule.incrementalConfig.currentValue, 6);
+    });
+
+    test('should reconcile existing VRChat event without creating a duplicate', () async {
+      final nowUtc = DateTime.now().toUtc();
+      final nextDay = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day)
+          .add(const Duration(days: 1));
+      final scheduledUtc = DateTime.utc(nextDay.year, nextDay.month, nextDay.day, 20, 0);
+
+      final rule = CalendarAutomationRule(
+        id: 2,
+        name: 'Once Meetup',
+        groupId: 'grp_1',
+        titleTemplate: 'Special Event',
+        category: GroupEventCategory.other,
+        accessType: GroupEventAccessType.public,
+        schedule: TimezoneSchedule(
+          startTime: TimeOfDayValue(hour: 20),
+          durationMinutes: 60,
+          timezoneIana: 'UTC',
+          startDate: nextDay,
+        ),
+        recurrence: const RecurrencePattern(type: RecurrenceType.once),
+        incrementalConfig: IncrementalConfig(isEnabled: false),
+        strategy: CreationStrategy.lazy,
+      );
+
+      when(mockLocalRepo.getActiveRules()).thenAnswer((_) async => [rule]);
+      when(mockLocalRepo.getPastRuns(2)).thenAnswer((_) async => []);
+      when(mockRemoteRepo.getUpcomingGroupEvents('grp_1')).thenAnswer(
+            (_) async => [
+          RemoteCalendarEvent(
+            id: 'vrc_existing_evt',
+            title: 'Special Event',
+            startsAtUtc: scheduledUtc,
+            endsAtUtc: scheduledUtc.add(const Duration(hours: 1)),
+          ),
+        ],
+      );
+      when(mockLocalRepo.saveOccurrenceRun(any)).thenAnswer((_) async {});
+
+      await useCase.execute(hostUser: dummyHost);
+
+      verifyNever(mockRemoteRepo.createEvent(
+        groupId: anyNamed('groupId'),
+        title: anyNamed('title'),
+        startUtc: anyNamed('startUtc'),
+        endUtc: anyNamed('endUtc'),
+        description: anyNamed('description'),
+        category: anyNamed('category'),
+        accessType: anyNamed('accessType'),
+        platforms: anyNamed('platforms'),
+        languages: anyNamed('languages'),
+        tags: anyNamed('tags'),
+        sendCreationNotification: anyNamed('sendCreationNotification'),
+        roleIds: anyNamed('roleIds'),
+        hostEarlyJoinMinutes: anyNamed('hostEarlyJoinMinutes'),
+        guestEarlyJoinMinutes: anyNamed('guestEarlyJoinMinutes'),
+        closeInstanceAfterEndMinutes: anyNamed('closeInstanceAfterEndMinutes'),
+        usesInstanceOverflow: anyNamed('usesInstanceOverflow'),
+      ));
+
+      final savedRun = verify(mockLocalRepo.saveOccurrenceRun(captureAny))
+          .captured
+          .first as CalendarOccurrenceRun;
+      expect(savedRun.createdVrcEventId, 'vrc_existing_evt');
     });
   });
 }

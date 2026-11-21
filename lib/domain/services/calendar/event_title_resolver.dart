@@ -1,30 +1,31 @@
 import 'package:vrcma/domain/entities/calendar/calendar_automation_rule.dart';
 
-/// service dedicated to template placeholder resolution.
+/// Service dedicated to resolving template placeholders in calendar event text.
 class EventTitleResolver {
   static const String _incrementalPlaceholder = '{{incremental}}';
 
-  ResolvedEventTexts resolve(CalendarAutomationRule rule) {
-    final int value = rule.incrementalConfig.currentValue;
+  /// Resolves title and description templates for [rule], applying [titleOverride] if provided.
+  ResolvedEventTexts resolve(
+      CalendarAutomationRule rule, {
+        String? titleOverride,
+      }) {
+    final incrementStr = rule.incrementalConfig.currentValue.toString();
+    final rawTitle = (titleOverride != null && titleOverride.trim().isNotEmpty)
+        ? titleOverride
+        : rule.titleTemplate;
 
-    final String resolvedTitle = rule.titleTemplate.replaceAll(
-      _incrementalPlaceholder,
-      value.toString(),
+    final resolvedTitle = rawTitle.replaceAll(_incrementalPlaceholder, incrementStr);
+    final resolvedDescription = rule.descriptionTemplate
+        ?.replaceAll(_incrementalPlaceholder, incrementStr);
+
+    return ResolvedEventTexts(
+      title: resolvedTitle,
+      description: resolvedDescription,
     );
-
-    String? resolvedDescription;
-    if (rule.descriptionTemplate != null) {
-      resolvedDescription = rule.descriptionTemplate!.replaceAll(
-        _incrementalPlaceholder,
-        value.toString(),
-      );
-    }
-
-    return ResolvedEventTexts(title: resolvedTitle, description: resolvedDescription);
   }
 }
 
-/// Helper container representing pure resolved text entities.
+/// Immutable container holding resolved event title and optional description.
 class ResolvedEventTexts {
   final String title;
   final String? description;

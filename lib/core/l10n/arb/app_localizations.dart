@@ -2557,6 +2557,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Technical Error Details'**
   String get logDetailTechnicalDetails;
+
+  /// Error shown when trying to save two calendar automation rules with the same name in the same VRChat group.
+  ///
+  /// In en, this message translates to:
+  /// **'A calendar rule named \'\'{ruleName}\'\' already exists in this group.'**
+  String errorCalDuplicateRuleName(String ruleName);
+
+  /// Error shown when VRChat returns HTTP 429 while fetching or creating group calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat calendar rate limit reached. Automatic publishing paused for {minutes} minutes.'**
+  String errorCalRateLimited(int minutes);
+
+  /// Action button to manually trigger calendar evaluation and synchronization with VRChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Now'**
+  String get calBtnSyncNow;
+
+  /// Section title showing a live dry-run preview of upcoming event dates and their status.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Schedule Preview'**
+  String get calSectionSchedulePreview;
+
+  /// Placeholder shown when the dry-run preview finds no upcoming dates.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming occurrences match the current schedule.'**
+  String get calPreviewEmpty;
+
+  /// Badge indicating the calculated occurrence will be published automatically by VRCMA.
+  ///
+  /// In en, this message translates to:
+  /// **'Will publish'**
+  String get calPreviewStatusPending;
+
+  /// Badge indicating this occurrence already exists on VRChat or was already published.
+  ///
+  /// In en, this message translates to:
+  /// **'Already on VRChat'**
+  String get calPreviewStatusPublished;
+
+  /// Badge indicating this occurrence will be skipped due to a cancellation exception.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped (Exception)'**
+  String get calPreviewStatusCancelled;
+
+  /// Switch label enabling VRChat push notifications when publishing a new group event.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify Group Members'**
+  String get calFieldLabelSendNotification;
+
+  /// Helper text explaining what the group notification switch does.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a VRChat notification to group members when each event is published'**
+  String get calFieldLabelSendNotificationDesc;
+
+  /// Helper text explaining that VRChat requires at least 1 character in the event description.
+  ///
+  /// In en, this message translates to:
+  /// **'If left empty, the event title will be used as description because VRChat requires a non-empty description.'**
+  String get calDescFallbackNotice;
 }
 
 class _AppLocalizationsDelegate

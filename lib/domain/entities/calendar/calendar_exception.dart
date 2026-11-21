@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:vrcma/domain/entities/calendar/calendar_value_objects.dart';
 
-/// Entity representing exceptional modifications to a specific occurence date.
+/// Entity representing exceptional modifications to a specific occurrence date or date range.
 class CalendarException extends Equatable {
   final int? id;
   final int? automationId;
@@ -21,6 +21,38 @@ class CalendarException extends Equatable {
     this.titleOverride,
   });
 
+  /// Returns a copy of this exception with selectively overridden fields.
+  CalendarException copyWith({
+    int? id,
+    int? automationId,
+    DateTime? exceptionDate,
+    DateTime? Function()? exceptionEndDate,
+    bool? isCancelled,
+    TimeOfDayValue? Function()? rescheduledTime,
+    String? Function()? titleOverride,
+  }) {
+    return CalendarException(
+      id: id ?? this.id,
+      automationId: automationId ?? this.automationId,
+      exceptionDate: exceptionDate ?? this.exceptionDate,
+      exceptionEndDate:
+      exceptionEndDate != null ? exceptionEndDate() : this.exceptionEndDate,
+      isCancelled: isCancelled ?? this.isCancelled,
+      rescheduledTime:
+      rescheduledTime != null ? rescheduledTime() : this.rescheduledTime,
+      titleOverride:
+      titleOverride != null ? titleOverride() : this.titleOverride,
+    );
+  }
+
   @override
-  List<Object?> get props => [id, automationId, exceptionDate, exceptionEndDate, isCancelled, rescheduledTime, titleOverride];
+  List<Object?> get props => [
+    id,
+    automationId,
+    exceptionDate,
+    exceptionEndDate,
+    isCancelled,
+    rescheduledTime,
+    titleOverride,
+  ];
 }

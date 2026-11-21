@@ -2271,5 +2271,72 @@
   "logDetailTechnicalDetails": "Technical Error Details",
   "@logDetailTechnicalDetails": {
     "description": "Stack trace and raw error information associated with the error."
+  },
+  
+  "errorCalDuplicateRuleName": "A calendar rule named ''{ruleName}'' already exists in this group.",
+  "@errorCalDuplicateRuleName": {
+    "description": "Error shown when trying to save two calendar automation rules with the same name in the same VRChat group.",
+    "placeholders": {
+      "ruleName": {
+        "type": "String",
+        "example": "Weekly Meetup"
+      }
+    }
+  },
+
+  "errorCalRateLimited": "VRChat calendar rate limit reached. Automatic publishing paused for {minutes} minutes.",
+  "@errorCalRateLimited": {
+    "description": "Error shown when VRChat returns HTTP 429 while fetching or creating group calendar events.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
+  },
+
+  "calBtnSyncNow": "Sync Now",
+  "@calBtnSyncNow": {
+    "description": "Action button to manually trigger calendar evaluation and synchronization with VRChat."
+  },
+
+  "calSectionSchedulePreview": "Upcoming Schedule Preview",
+  "@calSectionSchedulePreview": {
+    "description": "Section title showing a live dry-run preview of upcoming event dates and their status."
+  },
+
+  "calPreviewEmpty": "No upcoming occurrences match the current schedule.",
+  "@calPreviewEmpty": {
+    "description": "Placeholder shown when the dry-run preview finds no upcoming dates."
+  },
+
+  "calPreviewStatusPending": "Will publish",
+  "@calPreviewStatusPending": {
+    "description": "Badge indicating the calculated occurrence will be published automatically by VRCMA."
+  },
+
+  "calPreviewStatusPublished": "Already on VRChat",
+  "@calPreviewStatusPublished": {
+    "description": "Badge indicating this occurrence already exists on VRChat or was already published."
+  },
+
+  "calPreviewStatusCancelled": "Skipped (Exception)",
+  "@calPreviewStatusCancelled": {
+    "description": "Badge indicating this occurrence will be skipped due to a cancellation exception."
+  },
+
+  "calFieldLabelSendNotification": "Notify Group Members",
+  "@calFieldLabelSendNotification": {
+    "description": "Switch label enabling VRChat push notifications when publishing a new group event."
+  },
+
+  "calFieldLabelSendNotificationDesc": "Send a VRChat notification to group members when each event is published",
+  "@calFieldLabelSendNotificationDesc": {
+    "description": "Helper text explaining what the group notification switch does."
+  },
+
+  "calDescFallbackNotice": "If left empty, the event title will be used as description because VRChat requires a non-empty description.",
+  "@calDescFallbackNotice": {
+    "description": "Helper text explaining that VRChat requires at least 1 character in the event description."
   }
 }

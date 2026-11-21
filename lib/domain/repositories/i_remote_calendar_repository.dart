@@ -1,6 +1,7 @@
 import 'package:vrcma/domain/entities/calendar/enums/calendar_event_platform.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dart';
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
+import 'package:vrcma/domain/entities/calendar/remote_calendar_event.dart';
 
 /// Interactions with VRChat groups calendar web API.
 abstract class IRemoteCalendarRepository {
@@ -27,4 +28,7 @@ abstract class IRemoteCalendarRepository {
   });
 
   Future<void> deleteEvent(String groupId, String eventId);
+
+  /// Fetches active upcoming calendar events currently published on VRChat for [groupId].
+  Future<List<RemoteCalendarEvent>> getUpcomingGroupEvents(String groupId);
 }

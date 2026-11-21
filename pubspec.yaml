@@ -55,7 +55,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # --- VRChat API ---
-  vrchat_dart: ^4.0.1
+  vrchat_dart: ^5.0.0
 
   # --- UTILITIES ---
   dartz: ^0.10.1
