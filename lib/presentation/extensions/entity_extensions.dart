@@ -20,26 +20,11 @@ extension VrcUserUiExtension on VrcUser {
 
     if (instance.isResolvableWorld) {
       return l10n.presenceInstanceDesc(
-        _getLocalizedAccessType(context, instance.accessType),
+        instance.accessType.toLocalizedString(context),
         instance.region.name,
       );
     }
     return location;
-  }
-
-  String _getLocalizedAccessType(BuildContext context, InstanceAccessType type) {
-    final l10n = context.l10n;
-    return switch (type) {
-      InstanceAccessType.public => l10n.accessPublic,
-      InstanceAccessType.inviteOnly => l10n.accessInviteOnly,
-      InstanceAccessType.invitePlus => l10n.accessInvitePlus,
-      InstanceAccessType.friends => l10n.accessFriends,
-      InstanceAccessType.friendsPlus => l10n.accessFriendsPlus,
-      InstanceAccessType.group => l10n.accessGroup,
-      InstanceAccessType.groupPlus => l10n.accessGroupPlus,
-      InstanceAccessType.groupPublic => l10n.accessGroupPublic,
-      _ => l10n.accessUnknown,
-    };
   }
 }
 

@@ -73,6 +73,12 @@ extension ThemeDataContext on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
   TextTheme get textTheme => Theme.of(this).textTheme;
   VrcSemanticColors get vrcColors => Theme.of(this).extension<VrcSemanticColors>()!;
+
+  /// Standard outlined card shape shared across editor and settings panels.
+  RoundedRectangleBorder get outlinedCardShape => RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+    side: BorderSide(color: colorScheme.outlineVariant),
+  );
 }
 
 extension VrcStatusColor on BuildContext {

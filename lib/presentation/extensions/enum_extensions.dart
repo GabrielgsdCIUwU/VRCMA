@@ -10,6 +10,7 @@ import 'package:vrcma/domain/entities/calendar/enums/group_event_access_type.dar
 import 'package:vrcma/domain/entities/calendar/enums/group_event_category.dart';
 import 'package:vrcma/domain/entities/calendar/enums/recurrence_type.dart';
 import 'package:vrcma/domain/entities/log/app_log.dart';
+import 'package:vrcma/domain/entities/social/vrc_instance.dart';
 import 'package:vrcma/domain/entities/theme/app_theme_color.dart';
 
 extension RecurrenceTypeL10n on RecurrenceType {
@@ -278,5 +279,22 @@ extension LogCategoryUI on LogCategory {
       color: getColor(context),
       size: size,
     );
+  }
+}
+
+extension InstanceAccessTypeL10n on InstanceAccessType {
+  String toLocalizedString(BuildContext context ) {
+    final l10n = context.l10n;
+    return switch (this) {
+      InstanceAccessType.public => l10n.accessPublic,
+      InstanceAccessType.inviteOnly => l10n.accessInviteOnly,
+      InstanceAccessType.invitePlus => l10n.accessInvitePlus,
+      InstanceAccessType.friends => l10n.accessFriends,
+      InstanceAccessType.friendsPlus => l10n.accessFriendsPlus,
+      InstanceAccessType.group => l10n.accessGroup,
+      InstanceAccessType.groupPlus => l10n.accessGroupPlus,
+      InstanceAccessType.groupPublic => l10n.accessGroupPublic,
+      InstanceAccessType.unknown => l10n.accessUnknown,
+    };
   }
 }
