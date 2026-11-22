@@ -122,7 +122,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String dialogDeleteProfileContent(String profileName) {
-    return '¿Estás seguro de que deseas eliminar {profileName}? Esta acción no se puede deshacer.';
+    return '¿Estás seguro de que deseas eliminar \'$profileName\'? Esta acción no se puede deshacer.';
   }
 
   @override
@@ -1160,7 +1160,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calExceptionAdd => 'Añadir excepción';
 
   @override
-  String get calExceptionCancel => 'Cancelar el evento en esta fecha';
+  String get calExceptionCancel => 'Cancelar evento en esta fecha';
 
   @override
   String get calExceptionsEmpty => 'No hay excepciones configuradas';
