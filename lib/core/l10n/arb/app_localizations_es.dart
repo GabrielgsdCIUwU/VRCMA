@@ -1413,4 +1413,40 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get calDescFallbackNotice =>
       'Si se deja vacío, se usará el título del evento como descripción porque VRChat no permite descripciones vacías.';
+
+  @override
+  String get statusPreviewFallback => 'Predeterminado';
+
+  @override
+  String statusPreviewRuleLabel(int index) {
+    return 'Regla #$index';
+  }
+
+  @override
+  String statusPreviewSampleCaption(String world, int count, int battery) {
+    return 'Ejemplo: $world, $count jugadores, $battery% batería';
+  }
+
+  @override
+  String statusCharCount(int count, int max) {
+    return '$count/$max car.';
+  }
+
+  @override
+  String get statusPlaceholderWorldShort => 'Mundo';
+
+  @override
+  String get statusPlaceholderCountShort => 'Jugadores';
+
+  @override
+  String get statusPlaceholderBatteryShort => 'Batería';
+
+  @override
+  String get statusPlaceholderInstanceShort => 'Acceso';
+
+  @override
+  String get statusPlaceholderTimeShort => 'Hora';
+
+  @override
+  String get statusPlaceholderFriendsShort => 'Amigos';
 }

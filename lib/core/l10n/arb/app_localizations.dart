@@ -2629,6 +2629,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If left empty, the event title will be used as description because VRChat requires a non-empty description.'**
   String get calDescFallbackNotice;
+
+  /// Label for the preview chip that previews the fallback status configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Fallback'**
+  String get statusPreviewFallback;
+
+  /// Label for a preview chip selecting a specific status rule by 1-based index.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule #{index}'**
+  String statusPreviewRuleLabel(int index);
+
+  /// Caption below the status card preview showing the sample data used to render placeholders.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample context: {world}, {count} players, {battery}% battery'**
+  String statusPreviewSampleCaption(String world, int count, int battery);
+
+  /// Displays the resolved VRChat status description length against the 42-character API limit.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/{max} chars'**
+  String statusCharCount(int count, int max);
+
+  /// Short label on the {{world}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'World'**
+  String get statusPlaceholderWorldShort;
+
+  /// Short label on the {{count}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Players'**
+  String get statusPlaceholderCountShort;
+
+  /// Short label on the {{battery}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get statusPlaceholderBatteryShort;
+
+  /// Short label on the {{instance}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get statusPlaceholderInstanceShort;
+
+  /// Short label on the {{time}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get statusPlaceholderTimeShort;
+
+  /// Short label on the {{friends}} placeholder chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get statusPlaceholderFriendsShort;
 }
 
 class _AppLocalizationsDelegate

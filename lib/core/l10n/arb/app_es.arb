@@ -506,5 +506,15 @@
   "calPreviewStatusCancelled": "Omitido (Excepción)",
   "calFieldLabelSendNotification": "Notificar a los miembros del grupo",
   "calFieldLabelSendNotificationDesc": "Envía una notificación de VRChat a los miembros al publicar cada evento",
-  "calDescFallbackNotice": "Si se deja vacío, se usará el título del evento como descripción porque VRChat no permite descripciones vacías."
+  "calDescFallbackNotice": "Si se deja vacío, se usará el título del evento como descripción porque VRChat no permite descripciones vacías.",
+  "statusPreviewFallback": "Predeterminado",
+  "statusPreviewRuleLabel": "Regla #{index}",
+  "statusPreviewSampleCaption": "Ejemplo: {world}, {count} jugadores, {battery}% batería",
+  "statusCharCount": "{count}/{max} car.",
+  "statusPlaceholderWorldShort": "Mundo",
+  "statusPlaceholderCountShort": "Jugadores",
+  "statusPlaceholderBatteryShort": "Batería",
+  "statusPlaceholderInstanceShort": "Acceso",
+  "statusPlaceholderTimeShort": "Hora",
+  "statusPlaceholderFriendsShort": "Amigos"
 }

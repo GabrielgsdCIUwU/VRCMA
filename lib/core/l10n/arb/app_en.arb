@@ -2342,5 +2342,85 @@
   "calDescFallbackNotice": "If left empty, the event title will be used as description because VRChat requires a non-empty description.",
   "@calDescFallbackNotice": {
     "description": "Helper text explaining that VRChat requires at least 1 character in the event description."
+  },
+
+  "statusPreviewFallback": "Fallback",
+  "@statusPreviewFallback": {
+    "description": "Label for the preview chip that previews the fallback status configuration."
+  },
+
+  "statusPreviewRuleLabel": "Rule #{index}",
+  "@statusPreviewRuleLabel": {
+    "description": "Label for a preview chip selecting a specific status rule by 1-based index.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "statusPreviewSampleCaption": "Sample context: {world}, {count} players, {battery}% battery",
+  "@statusPreviewSampleCaption": {
+    "description": "Caption below the status card preview showing the sample data used to render placeholders.",
+    "placeholders": {
+      "world": {
+        "type": "String",
+        "example": "The Black Cat"
+      },
+      "count": {
+        "type": "int",
+        "example": "14"
+      },
+      "battery": {
+        "type": "int",
+        "example": "84"
+      }
+    }
+  },
+
+  "statusCharCount": "{count}/{max} chars",
+  "@statusCharCount": {
+    "description": "Displays the resolved VRChat status description length against the 42-character API limit.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "28"
+      },
+      "max": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+
+  "statusPlaceholderWorldShort": "World",
+  "@statusPlaceholderWorldShort": {
+    "description": "Short label on the {{world}} placeholder chip."
+  },
+
+  "statusPlaceholderCountShort": "Players",
+  "@statusPlaceholderCountShort": {
+    "description": "Short label on the {{count}} placeholder chip."
+  },
+
+  "statusPlaceholderBatteryShort": "Battery",
+  "@statusPlaceholderBatteryShort": {
+    "description": "Short label on the {{battery}} placeholder chip."
+  },
+
+  "statusPlaceholderInstanceShort": "Access",
+  "@statusPlaceholderInstanceShort": {
+    "description": "Short label on the {{instance}} placeholder chip."
+  },
+
+  "statusPlaceholderTimeShort": "Time",
+  "@statusPlaceholderTimeShort": {
+    "description": "Short label on the {{time}} placeholder chip."
+  },
+
+  "statusPlaceholderFriendsShort": "Friends",
+  "@statusPlaceholderFriendsShort": {
+    "description": "Short label on the {{friends}} placeholder chip."
   }
 }
