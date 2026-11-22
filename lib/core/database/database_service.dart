@@ -1,0 +1,321 @@
+import 'package:flutter/cupertino.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DatabaseService {
+  static const _dbname = 'vrcma_database.db';
+  static const _dbVersion = 1;
+
+  Database? _database;
+
+  Future<Database> get database async {
+    _database ??= await _initDatabase();
+    return _database!;
+  }
+
+  Future<Database> _initDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, _dbname);
+
+    return await openDatabase(
+      path,
+      version: _dbVersion,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+        await db.execute('PRAGMA journal_mode = WAL');
+        await db.execute('PRAGMA busy_timeout = 5000');
+      },
+      onCreate: (db, version) async {
+        try {
+          await _onCreate(db, version);
+          await _setInitialData(db, version);
+          await _createDummyData(db, version);
+        } catch (e) {
+          debugPrint("Error creating database: $e");
+          rethrow;
+        }
+      },
+    );
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+
+    await db.execute('''
+      CREATE TABLE app_configurations (
+        config_key TEXT PRIMARY KEY,
+        config_value TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE roles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+      )
+    ''');
+    
+    await db.execute('''
+      CREATE TABLE vrc_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL UNIQUE,
+        display_name TEXT NOT NULL,
+        avatar_url TEXT,
+        last_updated TEXT NOT NULL
+      )
+    ''' );
+
+    await db.execute('''
+      CREATE TABLE custom_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL,
+        type TEXT NOT NULL, -- 'invite', 'response', 'request', 'requestResponse'
+        slot_index INTEGER, -- 0 to 11, NULL if not active in VRChat
+        last_updated TEXT NOT NULL
+      )
+    ''');
+    
+    await db.execute('''
+      CREATE TABLE profiles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        target_languages TEXT,
+        is_language_filter_enabled INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 0
+      )
+    ''');
+    
+    await db.execute('''
+      CREATE TABLE app_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT NOT NULL,
+        category TEXT NOT NULL,
+        level TEXT NOT NULL,
+        message TEXT NOT NULL,
+        details TEXT,
+        metadata TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE friend_roles (
+        vrc_user_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (vrc_user_id, role_id),
+        FOREIGN KEY (vrc_user_id) REFERENCES vrc_users (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE profile_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        action TEXT NOT NULL, -- 'ACCEPT' o 'REJECT'
+        fallback_group INTEGER,
+        invite_message_id INTEGER,
+        request_message_id INTEGER,
+        FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
+        FOREIGN KEY (invite_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL,
+        FOREIGN KEY (request_message_id) REFERENCES custom_messages (id) ON DELETE SET NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE role_automations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trigger_type TEXT NOT NULL,
+        target_value TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE automation_assigned_roles (
+        automation_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (automation_id, role_id),
+        FOREIGN KEY (automation_id) REFERENCES role_automations (id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE status_profiles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        is_active INTEGER DEFAULT 0,
+        fallback_status TEXT NOT NULL,
+        fallback_template TEXT,
+        last_applied_status TEXT,
+        last_applied_message TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE status_rules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        profile_id INTEGER NOT NULL,
+        priority INTEGER NOT NULL,
+        target_status TEXT NOT NULL,
+        message_template TEXT,
+        condition_type TEXT NOT NULL,
+        operator TEXT NOT NULL,
+        condition_value TEXT,
+        FOREIGN KEY (profile_id) REFERENCES status_profiles (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE calendar_automations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        group_id TEXT NOT NULL,
+        title_template TEXT NOT NULL,
+        description_template TEXT,
+        category TEXT NOT NULL,
+        access_type TEXT NOT NULL,
+        start_time_of_day TEXT NOT NULL,
+        duration_minutes INTEGER NOT NULL DEFAULT 60,
+        timezone TEXT NOT NULL,
+        recurrence_type TEXT NOT NULL,
+        recurrence_data TEXT,
+        is_incremental_enabled INTEGER NOT NULL DEFAULT 0,
+        incremental_start INTEGER NOT NULL DEFAULT 1,
+        incremental_step INTEGER NOT NULL DEFAULT 1,
+        current_increment INTEGER NOT NULL DEFAULT 1,
+        is_active INTEGER NOT NULL DEFAULT 0,
+        send_notification INTEGER NOT NULL DEFAULT 0,
+        creation_strategy TEXT NOT NULL DEFAULT 'LAZY',
+        max_visible_future_events INTEGER DEFAULT 1,
+        world_id TEXT,
+        instance_access_type TEXT,
+        instance_region TEXT,
+        allowed_vrc_role_ids TEXT,
+        platforms TEXT NOT NULL,
+        languages TEXT,
+        tags TEXT,
+        host_early_join_minutes INTEGER,
+        guest_early_join_minutes INTEGER,
+        close_instance_after_end_minutes INTEGER,
+        uses_instance_overflow INTEGER NOT NULL DEFAULT 0,
+        UNIQUE(group_id, name)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE calendar_automation_exceptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        automation_id INTEGER NOT NULL,
+        exception_date TEXT NOT NULL,
+        exception_end_date TEXT,
+        is_cancelled INTEGER NOT NULL DEFAULT 1,
+        rescheduled_time TEXT,
+        title_override TEXT,
+        FOREIGN KEY (automation_id) REFERENCES calendar_automations (id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE calendar_automation_runs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        automation_id INTEGER NOT NULL,
+        calculated_occurrence_utc TEXT NOT NULL,
+        created_vrc_event_id TEXT NOT NULL,
+        published_at TEXT NOT NULL,
+        FOREIGN KEY (automation_id) REFERENCES calendar_automations (id) ON DELETE CASCADE,
+        UNIQUE(automation_id, calculated_occurrence_utc)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE group_permissions_cache (
+        group_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        has_permission INTEGER NOT NULL,
+        validated_at TEXT NOT NULL,
+        PRIMARY KEY (group_id, user_id)
+      )
+    ''');
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_vrc_user_id ON friend_roles (vrc_user_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_friend_roles_role_id ON friend_roles (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_profile_id ON profile_rules (profile_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_profile_rules_role_id ON profile_rules (role_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_automation_assigned_roles_automation_id ON automation_assigned_roles (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_rules_profile_priority ON status_rules (profile_id, priority)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_status_profiles_active ON status_profiles (is_active)');
+     await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_exceptions_auto_id ON calendar_automation_exceptions (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_calendar_runs_auto_id ON calendar_automation_runs (automation_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_app_logs_category_time ON app_logs (category, timestamp DESC)');
+  }
+  
+  Future<void> _createDummyData(Database db, int version) async {
+    final now = DateTime.now().toIso8601String();
+    
+    final vipId = await db.insert('roles', {'name': 'VIP'});
+    final adminId = await db.insert('roles', {'name': 'Admin'});
+    final blockedId = await db.insert('roles', {'name': 'Blocked'});
+    
+    final vipRequestInviteId = await db.insert('custom_messages', {
+      'content': 'Come on in! You are always welcome :D',
+      'type': 'invite',
+      'last_updated': now,
+    });
+    final vipInviteId = await db.insert('custom_messages', {
+      'content': 'Thanks for the invite! Joining right now :D',
+      'type': 'invite',
+      'last_updated': now,
+    });
+
+    final blockedRejectInviteId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'response',
+      'last_updated': now,
+    });
+    final blockedRejectRequestId = await db.insert('custom_messages', {
+      'content': 'I am currently in Do Not Disturb mode!',
+      'type': 'requestResponse',
+      'last_updated': now,
+    });
+
+    final profileId = await db.insert('profiles', {
+      'name': 'Streamer / Safe Mode Example',
+      'is_active': 0,
+      'is_language_filter_enabled': 0
+    });
+
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': blockedId,
+      'priority': 0,
+      'action': 'REJECT',
+      'invite_message_id': blockedRejectInviteId,
+      'request_message_id': blockedRejectRequestId,
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': adminId,
+      'priority': 1,
+      'action': 'ACCEPT',
+    });
+
+    await db.insert('profile_rules', {
+      'profile_id': profileId,
+      'role_id': vipId,
+      'priority': 2,
+      'action': 'ACCEPT',
+      'invite_message_id': vipInviteId, 
+      'request_message_id': vipRequestInviteId,
+    });
+  }
+
+  Future<void> _setInitialData(Database db, int version) async {
+    await db.insert('app_configurations', {'config_key': 'selected_locale_code', 'config_value': 'en'});
+    await db.insert('app_configurations', {'config_key': 'bg_automation_enabled', 'config_value': 'false'});
+    await db.insert('app_configurations', {'config_key': 'app_theme_mode', 'config_value': 'system'});
+  }
+}

@@ -117,3 +117,19 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# Ignore build_runners...
+*.g.dart
+*.mocks.dart
+
+# Cookies not accepted here.
+.cookies
+
+# JUST NO! >:(
+.idea
+
+# Tests
+/test/helpers/test_mocks.mocks.dart
+
+# Graphify
+graphify-out
