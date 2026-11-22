@@ -19,6 +19,8 @@ class VrcUser extends Equatable {
     this.avatarUrl = ''
   });
 
+  bool get isTrulyOffline => location == 'offline' || status.toLowerCase() == 'offline';
+
   @override
   List<Object?> get props => [id, displayName, bio, tags, location, status, avatarUrl];
 }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
+import 'package:vrcma/presentation/extensions/error_extensions.dart';
 import 'package:vrcma/presentation/services/snackbar_service.dart';
 import 'package:vrcma/presentation/state/auth_provider.dart';
 import 'package:vrcma/presentation/widgets/auth_header.dart';
-import 'package:vrcma/presentation/widgets/error_extension.dart';
 import 'package:vrcma/presentation/widgets/login_form.dart';
 import 'package:vrcma/presentation/widgets/otp_form.dart';
 

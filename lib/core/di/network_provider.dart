@@ -8,21 +8,15 @@ part 'network_provider.g.dart';
 
 @riverpod
 Future<CookieJar> cookieJar(Ref ref) async {
-  String basePath;
-  if (Platform.isWindows || Platform.isLinux) {
-    final exePath = Platform.resolvedExecutable;
-    final exeDir = p.dirname(exePath);
-    basePath = p.join(exeDir, 'userdata');
-  } else {
-    final appDocDir = await getApplicationDocumentsDirectory();
-    basePath = appDocDir.path;
-  }
-  final String path = p.join(basePath, '.cookies');
-  
+  // getApplicationSupportDirectory maps to %APPDATA%\vrcma on Windows,
+  // which is the OS-standard location for per-user application data.
+  final appSupportDir = await getApplicationSupportDirectory();
+  final String path = p.join(appSupportDir.path, '.cookies');
+
   await Directory(path).create(recursive: true);
-  
+
   return PersistCookieJar(
     storage: FileStorage(path),
-    ignoreExpires: false
+    ignoreExpires: false,
   );
 }

@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vrcma/core/di/local_storage_provider.dart';
+import 'package:vrcma/core/di/usecase_provider.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
-import 'package:vrcma/domain/usecases/automation/process_friend_automations_use_case.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 import 'package:vrcma/presentation/state/role_management_provider.dart';
 import 'package:vrcma/presentation/state/user_details_provider.dart';
@@ -18,6 +18,7 @@ class RoleAutomationList extends _$RoleAutomationList {
   }
 
   Future<void> save(RoleAutomation automation) async {
+    automation.validate();
     state = const AsyncLoading();
     final repo = await ref.read(localSocialRepositoryProvider.future);
     await repo.saveRoleAutomation(automation);
@@ -25,7 +26,7 @@ class RoleAutomationList extends _$RoleAutomationList {
     final currentFriends = ref.read(friendsListProvider).value;
     
     if (currentFriends != null && currentFriends.isNotEmpty) {
-      final useCase = ProcessFriendAutomationsUseCase(repo);
+      final useCase = await ref.read(processFriendAutomationsUseCaseProvider.future);
       await useCase.execute(currentFriends);
     }
     
@@ -87,6 +88,7 @@ class RoleAutomationEditor extends _$RoleAutomationEditor {
 
   void saveAndClose() {
     if (!isValid) return;
+    state.validate();
     ref.read(roleAutomationListProvider.notifier).save(state);
   }
 }

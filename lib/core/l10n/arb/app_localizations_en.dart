@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get languageNativeName => 'English';
+
+  @override
   String get loginTitle => 'VRCMA';
 
   @override
@@ -906,4 +909,497 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorRoleAutoMissingTag =>
       'A target tag is required for tag-based automation.';
+
+  @override
+  String get calHeader => 'Calendar Automations';
+
+  @override
+  String get calSubheader =>
+      'Configure automated scheduling rules that create and manage VRChat Group events in the background.';
+
+  @override
+  String get calBtnCreate => 'Create Automation';
+
+  @override
+  String get calEditorTitleNew => 'New Calendar Rule';
+
+  @override
+  String get calEditorTitleEdit => 'Edit Calendar Rule';
+
+  @override
+  String get calFieldLabelName => 'Rule Name';
+
+  @override
+  String get calFieldLabelGroupId => 'VRChat Group ID';
+
+  @override
+  String get calFieldLabelTitle => 'Event Title Template';
+
+  @override
+  String get calFieldLabelDesc => 'Event Description Template';
+
+  @override
+  String get calFieldHintTitle => 'Supports the {{incremental}} placeholder.';
+
+  @override
+  String get calSectionSchedule => 'Schedule';
+
+  @override
+  String get calFieldLabelTime => 'Start Time';
+
+  @override
+  String get calFieldLabelDuration => 'Duration (Minutes)';
+
+  @override
+  String get calFieldLabelTimezone => 'Time Zone (IANA)';
+
+  @override
+  String get calSectionRecurrence => 'Recurrence';
+
+  @override
+  String get calSectionIncremental => 'Incremental Counter';
+
+  @override
+  String get calSectionVrcMetadata => 'VRChat Event Settings';
+
+  @override
+  String get calFieldLabelHostEarly => 'Host Early Access (Minutes)';
+
+  @override
+  String get calFieldLabelGuestEarly => 'Member Early Access (Minutes)';
+
+  @override
+  String get calFieldLabelCloseDelay => 'Automatic Cleanup Delay (Minutes)';
+
+  @override
+  String get calFieldLabelOverflow => 'Enable Instance Overflow Protection';
+
+  @override
+  String get calToastSaved => 'Calendar rule saved successfully.';
+
+  @override
+  String get calConfirmDeleteTitle => 'Delete Automation Rule';
+
+  @override
+  String get calConfirmDeleteContent =>
+      'Are you sure you want to delete this automation rule? This action cannot be undone.';
+
+  @override
+  String get calMsgEmptyRules =>
+      'No calendar automation rules have been created yet.';
+
+  @override
+  String get calRecurrenceOnce => 'Once';
+
+  @override
+  String get calRecurrenceDaily => 'Daily';
+
+  @override
+  String get calRecurrenceWeekly => 'Weekly';
+
+  @override
+  String get calRecurrenceMonthly => 'Monthly';
+
+  @override
+  String get calCategoryArts => 'Arts';
+
+  @override
+  String get calCategoryAvatars => 'Avatars';
+
+  @override
+  String get calCategoryDance => 'Dance';
+
+  @override
+  String get calCategoryEducation => 'Education';
+
+  @override
+  String get calCategoryExploration => 'Exploration';
+
+  @override
+  String get calCategoryFilmMedia => 'Film & Media';
+
+  @override
+  String get calCategoryGaming => 'Gaming';
+
+  @override
+  String get calCategoryHangout => 'Hangout';
+
+  @override
+  String get calCategoryMusic => 'Music';
+
+  @override
+  String get calCategoryPerformance => 'Performance';
+
+  @override
+  String get calCategoryRoleplaying => 'Roleplaying';
+
+  @override
+  String get calCategoryWellness => 'Wellness';
+
+  @override
+  String get calCategoryOther => 'Other';
+
+  @override
+  String get calFieldLabelEndTime => 'End Time';
+
+  @override
+  String get calFieldLabelDaysOfWeek => 'Days of Week';
+
+  @override
+  String calDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String calDurationMinutesOnly(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String get calFieldLabelPlatform => 'Event Platforms';
+
+  @override
+  String get calFieldLabelIncrementalStart => 'Start Value';
+
+  @override
+  String get calFieldLabelIncrementalStep => 'Step Value';
+
+  @override
+  String get calFieldLabelIncrementalEnable => 'Enable Incremental Counter';
+
+  @override
+  String get calFieldLabelIncrementalDesc =>
+      'Auto-increment sequence numbers (e.g. Event #1, Event #2)';
+
+  @override
+  String get calSectionTolerances => 'Advanced Access Tolerances';
+
+  @override
+  String get calFieldLabelOverflowDesc =>
+      'Prevent instance overflow when limits are reached';
+
+  @override
+  String get calFieldLabelHostEarlyShort => 'Host Access (min)';
+
+  @override
+  String get calFieldLabelGuestEarlyShort => 'Member Access (min)';
+
+  @override
+  String get calFieldLabelCloseDelayShort => 'Close Delay (min)';
+
+  @override
+  String get calLiveCardPreview => 'Live Card Preview';
+
+  @override
+  String get calNoTitleTemplate => 'Untitled Event';
+
+  @override
+  String get calNoDescriptionTemplate => 'No description provided';
+
+  @override
+  String get calPlatformDesc =>
+      'Choose which VRChat platforms are officially supported for this event.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Anyone on VRChat can view and join this event.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Only approved group members can view and join this event.';
+
+  @override
+  String get calToleranceHostTitle => 'Host Access';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Allows hosts to join the world instance before the event starts so they can get everything ready.';
+
+  @override
+  String get calToleranceMemberTitle => 'Member Access';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Choose how many minutes before the scheduled start group members can join the instance.';
+
+  @override
+  String get calToleranceCloseTitle => 'Instance Close Delay';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Keeps the world instance open for a short time after the scheduled end before it is closed.';
+
+  @override
+  String get calGroupSelectHint => 'Select a VRChat Group...';
+
+  @override
+  String get calGroupNoPerms =>
+      'No groups with calendar management permissions were found.';
+
+  @override
+  String get calGroupValidating => 'Checking permissions...';
+
+  @override
+  String get calGroupPermissionDenied =>
+      'You dont have permission to manage this groups calendar.';
+
+  @override
+  String get calFieldLabelStartDate => 'Start Date';
+
+  @override
+  String get calFieldLabelEndDate => 'End Date';
+
+  @override
+  String get calSectionExceptions => 'Exceptions';
+
+  @override
+  String get calExceptionAdd => 'Add Exception';
+
+  @override
+  String get calExceptionCancel => 'Cancel event on this date';
+
+  @override
+  String get calExceptionsEmpty => 'No exceptions configured';
+
+  @override
+  String get calDaysOfMonth => 'Days of Month';
+
+  @override
+  String get calOptionalDate => 'Optional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' until $date';
+  }
+
+  @override
+  String get calSectionStrategy => 'Generation Strategy';
+
+  @override
+  String get calFieldLabelStrategy => 'Strategy';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Max Upcoming Events';
+
+  @override
+  String get calStrategyLazy => 'Lazy (Maintains 1 Event)';
+
+  @override
+  String get calStrategyBatch => 'Batch (Multiple Events)';
+
+  @override
+  String get statusRuleEditorTitleNew => 'New Status Rule';
+
+  @override
+  String get statusRuleEditorTitleEdit => 'Edit Status Rule';
+
+  @override
+  String get statusVariablesHint => 'Insert variable:';
+
+  @override
+  String get logFallbackUser => 'User';
+
+  @override
+  String get logFilterAll => 'All';
+
+  @override
+  String get logCategoryInvitation => 'Invitations';
+
+  @override
+  String get logCategoryStatus => 'Status Changes';
+
+  @override
+  String get logCategoryCalendar => 'Calendar Automations';
+
+  @override
+  String get logCategorySystem => 'System Diagnostics';
+
+  @override
+  String get logActionIgnored => 'Ignored';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Status updated to $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'Failed to update status to $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Published calendar event: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'Failed to publish calendar event: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Calendar event postponed: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'System event: $message';
+  }
+
+  @override
+  String get logFallbackRule => 'System Rule';
+
+  @override
+  String get logsClearTooltip => 'Clear all logs';
+
+  @override
+  String get logsClearConfirmTitle => 'Clear Diagnostics';
+
+  @override
+  String get logsClearConfirmContent =>
+      'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.';
+
+  @override
+  String get logCategoryAll => 'All Categories';
+
+  @override
+  String get logSeverityAll => 'All Severities';
+
+  @override
+  String get logSeverityInfo => 'Info';
+
+  @override
+  String get logSeverityWarning => 'Warning';
+
+  @override
+  String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Authentication';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles assigned to $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Triggered by new friend detection';
+
+  @override
+  String get logSocialTriggerTagMatch => 'Triggered by matching profile tag';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Authentication: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Login Successful';
+
+  @override
+  String get logAuthEventLoginFailed => 'Login Failed';
+
+  @override
+  String get logAuthEventTwoFactorRequested => '2FA Challenge Required';
+
+  @override
+  String get logAuthEventLoggedOut => 'Logged Out';
+
+  @override
+  String get logAuthEventSessionExpired => 'Session Expired';
+
+  @override
+  String get logDetailRule => 'Automation Rule';
+
+  @override
+  String get logDetailProfile => 'Filter Profile';
+
+  @override
+  String get logDetailStatusProfile => 'Status Profile';
+
+  @override
+  String get logDetailGroup => 'Target Group';
+
+  @override
+  String get logDetailScheduledFor => 'Scheduled Time';
+
+  @override
+  String get logDetailEventTitle => 'Event Title';
+
+  @override
+  String get logDetailEventId => 'VRChat Event ID';
+
+  @override
+  String get logDetailSender => 'Sender';
+
+  @override
+  String get logDetailTargetUser => 'Target User';
+
+  @override
+  String get logDetailMatchedRole => 'Matched Rule / Tag';
+
+  @override
+  String get logDetailTrigger => 'Trigger';
+
+  @override
+  String get logDetailStatus => 'Applied Status';
+
+  @override
+  String get logDetailStatusMessage => 'Status Message';
+
+  @override
+  String get logDetailAction => 'Action';
+
+  @override
+  String get logDetailEventType => 'Event Type';
+
+  @override
+  String get logDetailAuthEvent => 'Authentication Event';
+
+  @override
+  String get logDetailTechnicalDetails => 'Technical Error Details';
+
+  @override
+  String errorCalDuplicateRuleName(String ruleName) {
+    return 'A calendar rule named \'$ruleName\' already exists in this group.';
+  }
+
+  @override
+  String errorCalRateLimited(int minutes) {
+    return 'VRChat calendar rate limit reached. Automatic publishing paused for $minutes minutes.';
+  }
+
+  @override
+  String get calBtnSyncNow => 'Sync Now';
+
+  @override
+  String get calSectionSchedulePreview => 'Upcoming Schedule Preview';
+
+  @override
+  String get calPreviewEmpty =>
+      'No upcoming occurrences match the current schedule.';
+
+  @override
+  String get calPreviewStatusPending => 'Will publish';
+
+  @override
+  String get calPreviewStatusPublished => 'Already on VRChat';
+
+  @override
+  String get calPreviewStatusCancelled => 'Skipped (Exception)';
+
+  @override
+  String get calFieldLabelSendNotification => 'Notify Group Members';
+
+  @override
+  String get calFieldLabelSendNotificationDesc =>
+      'Send a VRChat notification to group members when each event is published';
+
+  @override
+  String get calDescFallbackNotice =>
+      'If left empty, the event title will be used as description because VRChat requires a non-empty description.';
 }

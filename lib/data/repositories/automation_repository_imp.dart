@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrcma/core/errors/failure.dart';
@@ -13,7 +14,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
   final VrchatDart _vrcApi;
   final List<VrcEventTransformer> _transformers;
 
-  final Map<String, (User, DateTime)> _userCache = {};
+  final Map<String, (UserResponse, DateTime)> _userCache = {};
   static const Duration _cacheExpirationLimit = Duration(hours: 1);
 
   DateTime _lastStatusUpdate = DateTime.fromMillisecondsSinceEpoch(0);
@@ -21,13 +22,12 @@ class AutomationRepositoryImp implements IAutomationRepository {
   
   AutomationRepositoryImp(this._vrcApi, this._transformers);
 
-  Future<User?> _getEnrichedUser(String userId) async {
+  Future<UserResponse?> _getEnrichedUser(String userId) async {
     final now = DateTime.now();
-    if (_userCache.containsKey(userId)) {
-      final (cachedUser, cachedTime) = _userCache[userId]!;
-      if (now.difference(cachedTime) < _cacheExpirationLimit) {
-        return cachedUser;
-      }
+    final cachedEntry = _userCache[userId];
+    if (cachedEntry != null &&
+        now.difference(cachedEntry.$2) < _cacheExpirationLimit) {
+      return cachedEntry.$1;
     }
 
     try {
@@ -125,15 +125,20 @@ class AutomationRepositoryImp implements IAutomationRepository {
         userId: userId,
         messageType: vrcType,
         slot: slot,
-        updateInviteMessageRequest: UpdateInviteMessageRequest(
-            message: content),
+        updateInviteMessageRequest: UpdateInviteMessageRequest(message: content),
       );
       return const Right(null);
-    } catch (e) {
-      if (e.toString().contains("429")) {
-       return const Left(RateLimitFailure(60));
+    } on DioException catch (dioError) {
+      if (dioError.response?.statusCode == 429) {
+        final retrySeconds = int.tryParse(dioError.response?.headers.value('Retry-After') ?? '') ?? 60;
+        return Left(RateLimitFailure((retrySeconds / 60).ceil()));
       }
-      debugPrint("VRChat API Error (Update Slot): $e");
+      if (dioError.type == DioExceptionType.connectionTimeout ||
+          dioError.type == DioExceptionType.receiveTimeout) {
+        return const Left(NetworkTimeoutFailure());
+      }
+      return Left(ApiFailure(dioError.message ?? 'Unknown API network error'));
+    } catch (e) {
       return Left(ApiFailure(e.toString()));
     }
   }
@@ -164,7 +169,7 @@ class AutomationRepositoryImp implements IAutomationRepository {
     try {
       final currentUserId = _vrcApi.auth.currentUser?.id;
       if (currentUserId == null) {
-        return const Left(ApiFailure("Local authenticated session not found"));
+        return const Left(ApiFailure('Local authenticated session not found'));
       }
 
       final UserStatus mappedStatus = _mapToUserStatus(status);
@@ -178,13 +183,14 @@ class AutomationRepositoryImp implements IAutomationRepository {
       );
 
       _lastStatusUpdate = DateTime.now();
-
-      return Right(null);
-    } catch (e) {
-      if (e.toString().contains("429")) {
+      return const Right(null);
+    } on DioException catch (dioError) {
+      if (dioError.response?.statusCode == 429) {
         return const Left(RateLimitFailure(5));
       }
-      return Left(ApiFailure("Failed to update status: $e"));
+      return Left(ApiFailure(dioError.message ?? 'Failed to update status'));
+    } catch (e) {
+      return Left(ApiFailure('Failed to update status: $e'));
     }
   }
   

@@ -7,7 +7,7 @@ void main() {
     const roleGuest = Role(id: 2, name: 'Guest');
     
     test('ProfileRule copyWith should update only specified fields', () {
-      const rule = ProfileRule(
+      final rule = ProfileRule(
         id: 1,
         role: roleVIP,
         priority: 0,

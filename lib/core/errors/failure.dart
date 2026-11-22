@@ -42,6 +42,10 @@ class SyncFailure extends Failure {
   const SyncFailure(super.message);
 }
 
+class NetworkTimeoutFailure extends Failure {
+  const NetworkTimeoutFailure([super.message = 'Connection timed out. Check your internet connection.']);
+}
+
 class DomainFailure extends Failure {
   final DomainException exception;
 

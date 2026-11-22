@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  /// The native name of this language shown in the language selector (e.g., English, Español, Français, 日本語).
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageNativeName;
+
   /// The main branding/application title displayed at the top of the login header screen.
   ///
   /// In en, this message translates to:
@@ -1723,6 +1729,906 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A target tag is required for tag-based automation.'**
   String get errorRoleAutoMissingTag;
+
+  /// Title of the page used to manage calendar automation rules.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar Automations'**
+  String get calHeader;
+
+  /// Short description displayed below the page title explaining what calendar automations do.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure automated scheduling rules that create and manage VRChat Group events in the background.'**
+  String get calSubheader;
+
+  /// Button label that opens the dialog for creating a new calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Automation'**
+  String get calBtnCreate;
+
+  /// Dialog title shown when creating a new calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'New Calendar Rule'**
+  String get calEditorTitleNew;
+
+  /// Dialog title shown when editing an existing calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Calendar Rule'**
+  String get calEditorTitleEdit;
+
+  /// Label for the user-defined name of the automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Name'**
+  String get calFieldLabelName;
+
+  /// Label for the VRChat Group ID associated with this automation.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Group ID'**
+  String get calFieldLabelGroupId;
+
+  /// Label for the template used to generate the VRChat event title.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title Template'**
+  String get calFieldLabelTitle;
+
+  /// Label for the template used to generate the VRChat event description.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Description Template'**
+  String get calFieldLabelDesc;
+
+  /// Helper text indicating that the {{incremental}} placeholder can be used inside the title template.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports the \'{{incremental}}\' placeholder.'**
+  String get calFieldHintTitle;
+
+  /// Section heading containing the event time, duration and timezone settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get calSectionSchedule;
+
+  /// Label for the daily start time of the scheduled event. Uses a 24-hour HH:mm format.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get calFieldLabelTime;
+
+  /// Label for the duration of the generated event, expressed in minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (Minutes)'**
+  String get calFieldLabelDuration;
+
+  /// Label for the IANA time zone identifier used when scheduling events.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Zone (IANA)'**
+  String get calFieldLabelTimezone;
+
+  /// Section heading containing the recurrence pattern configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurrence'**
+  String get calSectionRecurrence;
+
+  /// Section heading for configuring the automatic incremental counter used by the {{incremental}} placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Incremental Counter'**
+  String get calSectionIncremental;
+
+  /// Section containing VRChat-specific event configuration options.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Event Settings'**
+  String get calSectionVrcMetadata;
+
+  /// Label for the number of minutes before the event that hosts may join.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Early Access (Minutes)'**
+  String get calFieldLabelHostEarly;
+
+  /// Label for the number of minutes before the event that group members may join.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Early Access (Minutes)'**
+  String get calFieldLabelGuestEarly;
+
+  /// Label for the delay, in minutes, before automatically closing the event instance after it ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic Cleanup Delay (Minutes)'**
+  String get calFieldLabelCloseDelay;
+
+  /// Label for the option that enables VRChat instance overflow protection when creating events.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Instance Overflow Protection'**
+  String get calFieldLabelOverflow;
+
+  /// Toast notification shown after a calendar automation rule has been saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar rule saved successfully.'**
+  String get calToastSaved;
+
+  /// Title of the confirmation dialog displayed before deleting a calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Automation Rule'**
+  String get calConfirmDeleteTitle;
+
+  /// Confirmation message displayed before permanently deleting a calendar automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this automation rule? This action cannot be undone.'**
+  String get calConfirmDeleteContent;
+
+  /// Message shown when there are no calendar automation rules to display.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar automation rules have been created yet.'**
+  String get calMsgEmptyRules;
+
+  /// Calendar recurrence option for an event that occurs only one time.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get calRecurrenceOnce;
+
+  /// Calendar recurrence option for an event that repeats every day.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get calRecurrenceDaily;
+
+  /// Calendar recurrence option for an event that repeats every week.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get calRecurrenceWeekly;
+
+  /// Calendar recurrence option for an event that repeats every month.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get calRecurrenceMonthly;
+
+  /// Event category for arts and creative activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Arts'**
+  String get calCategoryArts;
+
+  /// Event category related to avatar creation, customization, or showcases.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatars'**
+  String get calCategoryAvatars;
+
+  /// Event category for dance activities or performances.
+  ///
+  /// In en, this message translates to:
+  /// **'Dance'**
+  String get calCategoryDance;
+
+  /// Event category for educational activities, classes, or workshops.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get calCategoryEducation;
+
+  /// Event category for world exploration, tours, or discovery activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Exploration'**
+  String get calCategoryExploration;
+
+  /// Event category for movies, filmmaking, streaming, photography, or media-related activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Film & Media'**
+  String get calCategoryFilmMedia;
+
+  /// Event category for gaming sessions, tournaments, or game-related activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Gaming'**
+  String get calCategoryGaming;
+
+  /// Event category for casual social gatherings where people meet and spend time together.
+  ///
+  /// In en, this message translates to:
+  /// **'Hangout'**
+  String get calCategoryHangout;
+
+  /// Event category for music performances, concerts, DJ sets, or listening sessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get calCategoryMusic;
+
+  /// Event category for live performances such as theater, comedy, or stage shows.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance'**
+  String get calCategoryPerformance;
+
+  /// Event category for roleplaying activities and roleplay communities.
+  ///
+  /// In en, this message translates to:
+  /// **'Roleplaying'**
+  String get calCategoryRoleplaying;
+
+  /// Event category for wellness, mindfulness, meditation, fitness, or self-care activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellness'**
+  String get calCategoryWellness;
+
+  /// Fallback event category when no other category applies.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get calCategoryOther;
+
+  /// Label for the field where the user selects the event end time.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get calFieldLabelEndTime;
+
+  /// Label for selecting the weekdays on which a recurring event takes place.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Week'**
+  String get calFieldLabelDaysOfWeek;
+
+  /// Formats a duration using hours and minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String calDurationHoursMinutes(int hours, int minutes);
+
+  /// Formats a duration using only minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m'**
+  String calDurationMinutesOnly(int minutes);
+
+  /// Label for selecting the VRChat platforms where the event is available (e.g. PC, Android, iOS). Displayed in the event creation/edit form.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Platforms'**
+  String get calFieldLabelPlatform;
+
+  /// Label for the initial number used by the incremental event counter. For example, if set to 5, the first generated event title will use #5.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Value'**
+  String get calFieldLabelIncrementalStart;
+
+  /// Label for the increment applied between automatically generated sequence numbers. For example, a step of 2 produces #1, #3, #5.
+  ///
+  /// In en, this message translates to:
+  /// **'Step Value'**
+  String get calFieldLabelIncrementalStep;
+
+  /// Toggle that enables automatic numbering of recurring events using an incremental counter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Incremental Counter'**
+  String get calFieldLabelIncrementalEnable;
+
+  /// Helper text explaining that recurring events can automatically append incrementing numbers to their titles, such as 'Event #1' and 'Event #2'.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-increment sequence numbers (e.g. Event #1, Event #2)'**
+  String get calFieldLabelIncrementalDesc;
+
+  /// Section header for advanced timing settings that control when users can join or access a VRChat event instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Access Tolerances'**
+  String get calSectionTolerances;
+
+  /// Helper text for an option that prevents additional users from joining a VRChat instance once its configured capacity has been reached.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevent instance overflow when limits are reached'**
+  String get calFieldLabelOverflowDesc;
+
+  /// Short label for the number of minutes before the scheduled start time that event hosts are allowed to join the VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Access (min)'**
+  String get calFieldLabelHostEarlyShort;
+
+  /// Short label for the number of minutes before the scheduled start time that members or guests are allowed to join the VRChat instance.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Access (min)'**
+  String get calFieldLabelGuestEarlyShort;
+
+  /// Short label for the number of minutes after the scheduled end time before the VRChat instance is considered closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Delay (min)'**
+  String get calFieldLabelCloseDelayShort;
+
+  /// Title shown above the preview of the VRChat live event card while the user is configuring an event. This is only a preview and not the actual published card.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Card Preview'**
+  String get calLiveCardPreview;
+
+  /// Placeholder displayed in the live card preview when the event title has not been entered yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Event'**
+  String get calNoTitleTemplate;
+
+  /// Placeholder displayed in the live card preview when the event description is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No description provided'**
+  String get calNoDescriptionTemplate;
+
+  /// Help text below the platform selector. Refers to supported VRChat platforms such as Windows or Android.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which VRChat platforms are officially supported for this event.'**
+  String get calPlatformDesc;
+
+  /// Help text explaining the Public visibility option for a group event.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on VRChat can view and join this event.'**
+  String get calAccessPublicDesc;
+
+  /// Help text explaining the Group-only visibility option. The event is restricted to approved members of the VRChat group.
+  ///
+  /// In en, this message translates to:
+  /// **'Only approved group members can view and join this event.'**
+  String get calAccessGroupDesc;
+
+  /// Section title for the setting that controls early access for event hosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Access'**
+  String get calToleranceHostTitle;
+
+  /// Help text explaining that event hosts may enter the VRChat world instance early for setup before attendees can join.
+  ///
+  /// In en, this message translates to:
+  /// **'Allows hosts to join the world instance before the event starts so they can get everything ready.'**
+  String get calToleranceHostDesc;
+
+  /// Section title for the setting that controls early access for regular group members.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Access'**
+  String get calToleranceMemberTitle;
+
+  /// Help text for the early join window available to regular group members before the event begins.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many minutes before the scheduled start group members can join the instance.'**
+  String get calToleranceMemberDesc;
+
+  /// Section title for the setting that controls how long the world instance remains open after the event ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance Close Delay'**
+  String get calToleranceCloseTitle;
+
+  /// Help text explaining the grace period after the event's scheduled end time before the VRChat world instance is closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the world instance open for a short time after the scheduled end before it is closed.'**
+  String get calToleranceCloseDesc;
+
+  /// Placeholder shown in the group selection dropdown before a VRChat group has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a VRChat Group...'**
+  String get calGroupSelectHint;
+
+  /// Message displayed when the current user does not belong to any VRChat group where they have permission to manage the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups with calendar management permissions were found.'**
+  String get calGroupNoPerms;
+
+  /// Status message displayed while verifying whether the current user has permission to manage the selected VRChat group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking permissions...'**
+  String get calGroupValidating;
+
+  /// Error message displayed when the user selects a VRChat group but lacks permission to manage its calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to manage this group\'s calendar.'**
+  String get calGroupPermissionDenied;
+
+  /// Label for the date picker that defines when the VRChat calendar event or recurring schedule starts.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get calFieldLabelStartDate;
+
+  /// Label for the optional date picker that defines when the VRChat calendar event or recurring schedule ends.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get calFieldLabelEndDate;
+
+  /// Section header for managing recurrence exceptions, where specific dates can be modified or skipped without changing the main recurrence rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptions'**
+  String get calSectionExceptions;
+
+  /// Button that adds a new exception to the recurring event schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Exception'**
+  String get calExceptionAdd;
+
+  /// Option that marks a specific occurrence of the recurring event as cancelled while leaving the rest of the schedule unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel event on this date'**
+  String get calExceptionCancel;
+
+  /// Placeholder displayed when the recurring event has no configured exceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No exceptions configured'**
+  String get calExceptionsEmpty;
+
+  /// Label for selecting one or more days of the month on which the recurring event should occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of Month'**
+  String get calDaysOfMonth;
+
+  /// Placeholder shown in an optional date field when no date has been selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get calOptionalDate;
+
+  /// Text appended to an exception entry to indicate the date until which that exception remains active.
+  ///
+  /// In en, this message translates to:
+  /// **' until {date}'**
+  String calExceptionUntil(String date);
+
+  /// Section header for configuring how upcoming VRChat calendar events are automatically generated and maintained.
+  ///
+  /// In en, this message translates to:
+  /// **'Generation Strategy'**
+  String get calSectionStrategy;
+
+  /// Label for the dropdown that selects the event generation strategy for recurring VRChat calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy'**
+  String get calFieldLabelStrategy;
+
+  /// Label for the numeric field that defines the maximum number of future recurring events to keep generated in the group's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Upcoming Events'**
+  String get calFieldLabelMaxEvents;
+
+  /// Event generation strategy that only keeps the next upcoming occurrence generated in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lazy (Maintains 1 Event)'**
+  String get calStrategyLazy;
+
+  /// Event generation strategy that keeps multiple upcoming occurrences generated in advance in the VRChat group calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch (Multiple Events)'**
+  String get calStrategyBatch;
+
+  /// App bar title when creating a new status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'New Status Rule'**
+  String get statusRuleEditorTitleNew;
+
+  /// App bar title when editing an existing status automation rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Status Rule'**
+  String get statusRuleEditorTitleEdit;
+
+  /// Hint text for the inline variable insertion chips.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert variable:'**
+  String get statusVariablesHint;
+
+  /// Fallback display name used when the sender's VRChat display name is unavailable or unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get logFallbackUser;
+
+  /// Filter option that displays every log entry regardless of category.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get logFilterAll;
+
+  /// Log category for VRChat invitation events, including sent, received, accepted, declined, or ignored invitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get logCategoryInvitation;
+
+  /// Log category for VRChat status changes such as Online, Join Me, Ask Me, Busy, or Offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Changes'**
+  String get logCategoryStatus;
+
+  /// Log category for automatic calendar publishing and scheduling related to VRChat events.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar Automations'**
+  String get logCategoryCalendar;
+
+  /// Log category for internal application events, diagnostics, errors, and debugging information.
+  ///
+  /// In en, this message translates to:
+  /// **'System Diagnostics'**
+  String get logCategorySystem;
+
+  /// Label indicating that an event or action was intentionally ignored and no further processing was performed.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored'**
+  String get logActionIgnored;
+
+  /// Log message shown when the user's VRChat status is successfully changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated to {status}'**
+  String logStatusSuccess(String status);
+
+  /// Log message shown when changing the user's VRChat status fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update status to {status}'**
+  String logStatusFailure(String status);
+
+  /// Log message shown when a VRChat event is successfully published to the user's calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Published calendar event: {title}'**
+  String logCalendarSuccess(String title);
+
+  /// Log message shown when publishing a VRChat event to the user's calendar fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to publish calendar event: {title}'**
+  String logCalendarFailure(String title);
+
+  /// Log message shown when publishing a calendar event is postponed and will be retried later.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar event postponed: {title}'**
+  String logCalendarWarning(String title);
+
+  /// Generic log entry for internal system events that do not belong to another category.
+  ///
+  /// In en, this message translates to:
+  /// **'System event: {message}'**
+  String logSystemMessage(String message);
+
+  /// Fallback name used when a system rule involved in the log entry has no available name.
+  ///
+  /// In en, this message translates to:
+  /// **'System Rule'**
+  String get logFallbackRule;
+
+  /// Tooltip for the button that permanently deletes all stored automation and diagnostics log entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all logs'**
+  String get logsClearTooltip;
+
+  /// Title of the confirmation dialog shown before permanently deleting all automation and diagnostics logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Diagnostics'**
+  String get logsClearConfirmTitle;
+
+  /// Confirmation message displayed before permanently deleting every automation and diagnostics log entry. Warns that the action cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to permanently delete all automation and diagnostics logs? This process cannot be undone.'**
+  String get logsClearConfirmContent;
+
+  /// Filter option that displays log entries from every available category.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get logCategoryAll;
+
+  /// Filter option that displays log entries of every severity level.
+  ///
+  /// In en, this message translates to:
+  /// **'All Severities'**
+  String get logSeverityAll;
+
+  /// Severity level for informational log entries that do not indicate a problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get logSeverityInfo;
+
+  /// Severity level for log entries that indicate a potential issue or a non-critical problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get logSeverityWarning;
+
+  /// Severity level for log entries that indicate a failure or an unexpected error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get logSeverityError;
+
+  /// Category label used for log entries related to social interactions and VRChat social events.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get logCategorySocial;
+
+  /// Category label used for log entries related to user authentication, login, logout, and session state.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get logCategoryAuth;
+
+  /// Log message shown when one or more VRChat roles are assigned to a user. The user placeholder is the affected user's display name, and roles contains the assigned role names.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles assigned to {user}: {roles}'**
+  String logSocialRoleAssignmentMessage(String user, String roles);
+
+  /// Describes the trigger that caused a social automation or event to run after detecting that a new VRChat friend was added.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by new friend detection'**
+  String get logSocialTriggerNewFriend;
+
+  /// Describes the trigger that caused a social automation or event to run because a user's VRChat profile tag matched the configured condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by matching profile tag'**
+  String get logSocialTriggerTagMatch;
+
+  /// Log message describing an authentication event for a user. The display name identifies the user and the event placeholder contains the specific authentication event label.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication: {displayName} ({event})'**
+  String logAuthMessage(String displayName, String event);
+
+  /// Authentication event label shown when the user successfully logs in.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Successful'**
+  String get logAuthEventLoginSuccess;
+
+  /// Authentication event label shown when a login attempt fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Failed'**
+  String get logAuthEventLoginFailed;
+
+  /// Authentication event label shown when the user must complete a two-factor authentication challenge before authentication can continue.
+  ///
+  /// In en, this message translates to:
+  /// **'2FA Challenge Required'**
+  String get logAuthEventTwoFactorRequested;
+
+  /// Authentication event label shown when the user successfully logs out.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged Out'**
+  String get logAuthEventLoggedOut;
+
+  /// Authentication event label shown when the user's authentication session has expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Expired'**
+  String get logAuthEventSessionExpired;
+
+  /// Name of the automation rule associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation Rule'**
+  String get logDetailRule;
+
+  /// Name of the filter profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Profile'**
+  String get logDetailProfile;
+
+  /// Name of the status automation profile associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Profile'**
+  String get logDetailStatusProfile;
+
+  /// VRChat Group associated with the log entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Group'**
+  String get logDetailGroup;
+
+  /// Date and time when the scheduled action is set to occur.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Time'**
+  String get logDetailScheduledFor;
+
+  /// Title of the published VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title'**
+  String get logDetailEventTitle;
+
+  /// ID of the created VRChat event.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat Event ID'**
+  String get logDetailEventId;
+
+  /// User who sent the invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get logDetailSender;
+
+  /// User targeted by the action or invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Target User'**
+  String get logDetailTargetUser;
+
+  /// Rule or role that matched the user's data.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched Rule / Tag'**
+  String get logDetailMatchedRole;
+
+  /// Event or condition that triggered the action.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger'**
+  String get logDetailTrigger;
+
+  /// VRChat status applied by the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied Status'**
+  String get logDetailStatus;
+
+  /// Message describing the applied status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Message'**
+  String get logDetailStatusMessage;
+
+  /// Action performed as a result of the automation.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get logDetailAction;
+
+  /// Type of event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Type'**
+  String get logDetailEventType;
+
+  /// Type of authentication event recorded in the log.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Event'**
+  String get logDetailAuthEvent;
+
+  /// Stack trace and raw error information associated with the error.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical Error Details'**
+  String get logDetailTechnicalDetails;
+
+  /// Error shown when trying to save two calendar automation rules with the same name in the same VRChat group.
+  ///
+  /// In en, this message translates to:
+  /// **'A calendar rule named \'\'{ruleName}\'\' already exists in this group.'**
+  String errorCalDuplicateRuleName(String ruleName);
+
+  /// Error shown when VRChat returns HTTP 429 while fetching or creating group calendar events.
+  ///
+  /// In en, this message translates to:
+  /// **'VRChat calendar rate limit reached. Automatic publishing paused for {minutes} minutes.'**
+  String errorCalRateLimited(int minutes);
+
+  /// Action button to manually trigger calendar evaluation and synchronization with VRChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Now'**
+  String get calBtnSyncNow;
+
+  /// Section title showing a live dry-run preview of upcoming event dates and their status.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Schedule Preview'**
+  String get calSectionSchedulePreview;
+
+  /// Placeholder shown when the dry-run preview finds no upcoming dates.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming occurrences match the current schedule.'**
+  String get calPreviewEmpty;
+
+  /// Badge indicating the calculated occurrence will be published automatically by VRCMA.
+  ///
+  /// In en, this message translates to:
+  /// **'Will publish'**
+  String get calPreviewStatusPending;
+
+  /// Badge indicating this occurrence already exists on VRChat or was already published.
+  ///
+  /// In en, this message translates to:
+  /// **'Already on VRChat'**
+  String get calPreviewStatusPublished;
+
+  /// Badge indicating this occurrence will be skipped due to a cancellation exception.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped (Exception)'**
+  String get calPreviewStatusCancelled;
+
+  /// Switch label enabling VRChat push notifications when publishing a new group event.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify Group Members'**
+  String get calFieldLabelSendNotification;
+
+  /// Helper text explaining what the group notification switch does.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a VRChat notification to group members when each event is published'**
+  String get calFieldLabelSendNotificationDesc;
+
+  /// Helper text explaining that VRChat requires at least 1 character in the event description.
+  ///
+  /// In en, this message translates to:
+  /// **'If left empty, the event title will be used as description because VRChat requires a non-empty description.'**
+  String get calDescFallbackNotice;
 }
 
 class _AppLocalizationsDelegate

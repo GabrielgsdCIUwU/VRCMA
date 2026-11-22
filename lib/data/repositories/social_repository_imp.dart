@@ -4,6 +4,7 @@ import 'package:vrcma/core/errors/failure.dart';
 import 'package:vrcma/data/models/vrc_user_model.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/favorite_group.dart';
+import 'package:vrcma/domain/entities/social/vrc_group.dart';
 import 'package:vrcma/domain/repositories/i_social_repository.dart';
 
 class SocialRepositoryImp implements ISocialRepository {
@@ -101,6 +102,21 @@ class SocialRepositoryImp implements ISocialRepository {
       return Right(name);
     } catch (e) {
       return Left(ApiFailure('Failed to fetch world name: $e'));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, List<VrcGroup>>> getUserGroups(String userId) async {
+    try {
+      final response = await _vrcApi.rawApi.getUsersApi().getUserGroups(userId: userId);
+      final groups = response.data?.map((g) => VrcGroup(
+        id: g.groupId ?? '',
+        name: g.name ?? '',
+        shortCode: g.shortCode ?? ''
+      )).toList() ?? [];
+      return Right(groups);
+    } catch (e) {
+      return Left(ApiFailure('Failed to fetch groups: $e'));
     }
   }
 }

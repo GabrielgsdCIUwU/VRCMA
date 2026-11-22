@@ -4,6 +4,7 @@ import 'package:vrcma/data/mappers/role_mapper.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 import 'package:vrcma/domain/repositories/i_local_social_repository.dart';
 
 class LocalSocialRepositoryImp implements ILocalSocialRepository {
@@ -22,7 +23,8 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
     final List<Map<String, dynamic>> maps = await _db.rawQuery('''
       SELECT r.* FROM roles r
       INNER JOIN friend_roles fr ON r.id = fr.role_id
-      WHERE fr.vrc_user_id = ?
+      INNER JOIN vrc_users u ON fr.vrc_user_id = u.id
+      WHERE u.user_id = ?
     ''', [userId]);
     
     return maps.map((m) => RoleMapper().fromDatabaseMap(m)).toList();
@@ -30,23 +32,43 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   
   @override
   Future<void> assignRoleToUser(String userId, int roleId) async {
-    await _db.insert(
-      'friend_roles',
-      {
-        'vrc_user_id': userId,
-        'role_id': roleId
-      },
-      conflictAlgorithm: ConflictAlgorithm.ignore
+    final List<Map<String, dynamic>> userQuery = await _db.query(
+      'vrc_users',
+      columns: ['id'],
+      where: 'user_id = ?',
+      whereArgs: [userId],
     );
+    
+    if (userQuery.isNotEmpty) {
+      final localId = userQuery.first['id'] as int;
+      await _db.insert(
+          'friend_roles',
+          {
+            'vrc_user_id': localId,
+            'role_id': roleId
+          },
+          conflictAlgorithm: ConflictAlgorithm.ignore
+      );
+    }
   }
   
   @override
   Future<void> removeRoleFromUser(String userId, int roleId) async {
-    await _db.delete(
-      'friend_roles',
-      where: 'vrc_user_id = ? AND role_id = ?',
-      whereArgs: [userId, roleId]
+    final List<Map<String, dynamic>> userQuery = await _db.query(
+      'vrc_users',
+      columns: ['id'],
+      where: 'user_id = ?',
+      whereArgs: [userId],
     );
+    
+    if (userQuery.isNotEmpty) {
+      final localId = userQuery.first['id'] as int;
+      await _db.delete(
+          'friend_roles',
+          where: 'vrc_user_id = ? AND role_id = ?',
+          whereArgs: [localId, roleId]
+      );
+    }
   }
   
   @override
@@ -55,7 +77,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       return await _db.insert('roles', {'name': name});
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {
-        throw 'A role with the name "$name" already exists.';
+        throw DuplicateRoleException(name);
       }
       rethrow;
     }
@@ -80,13 +102,12 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
   
   @override
   Future<List<String>> getUserIdsByRole(int roleId) async {
-    final maps = await _db.query(
-      'friend_roles',
-      columns: ['vrc_user_id'],
-      where: 'role_id = ?',
-      whereArgs: [roleId]
-    );
-    return maps.map((e) => e['vrc_user_id'] as String).toList();
+    final maps = await _db.rawQuery('''
+      SELECT u.user_id FROM vrc_users u
+      INNER JOIN friend_roles fr ON u.id = fr.vrc_user_id
+      WHERE fr.role_id = ?
+    ''', [roleId]);
+    return maps.map((e) => e['user_id'] as String).toList();
   }
   
   @override
@@ -100,7 +121,7 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
       );
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {
-        throw 'A role with the name "$newName" already exists.';
+        throw DuplicateRoleException(newName);
       }
       rethrow;
     }
@@ -115,11 +136,22 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
         whereArgs: [roleId]
       );
       
-      for (final userId in newUserIds) {
+      if (newUserIds.isEmpty) return;
+
+      final placeholders = List.filled(newUserIds.length, '?').join(',');
+      final List<Map<String, dynamic>> users = await txn.query(
+        'vrc_users',
+        columns: ['id', 'user_id'],
+        where: 'user_id IN ($placeholders)',
+        whereArgs: newUserIds.toList(),
+      );
+
+      for (final user in users) {
+        final localId = user['id'] as int;
         await txn.insert(
           'friend_roles', {
-            'vrc_user_id': userId,
-            'role_id': roleId
+          'vrc_user_id': localId,
+          'role_id': roleId
         });
       }
     });
@@ -219,20 +251,39 @@ class LocalSocialRepositoryImp implements ILocalSocialRepository {
 
   @override
   Future<void> assignMultipleRoles(Map<String, Set<int>> userRoles) async {
-    final batch = _db.batch();
-    
-    for (final entry in userRoles.entries) {
-      final userId = entry.key;
-      final roleIds = entry.value;
-      
-      for (final roleId in roleIds) {
-        batch.insert('friend_roles', {
-          'vrc_user_id': userId,
-          'role_id': roleId
-        }, conflictAlgorithm: ConflictAlgorithm.ignore);
+    if (userRoles.isEmpty) return;
+
+    await _db.transaction((txn) async {
+      final userIds = userRoles.keys.toList();
+      final placeholders = List.filled(userIds.length, '?').join(',');
+
+      final List<Map<String, dynamic>> users = await txn.query(
+        'vrc_users',
+        columns: ['id', 'user_id'],
+        where: 'user_id IN ($placeholders)',
+        whereArgs: userIds,
+      );
+
+      final Map<String, int> userIdToLocalId = {
+        for (final u in users) u['user_id'] as String : u['id'] as int
+      };
+
+      final batch = txn.batch();
+      for (final entry in userRoles.entries) {
+        final stringUserId = entry.key;
+        final roleIds = entry.value;
+        final localId = userIdToLocalId[stringUserId];
+
+        if (localId != null) {
+          for (final roleId in roleIds) {
+            batch.insert('friend_roles', {
+              'vrc_user_id': localId,
+              'role_id': roleId
+            }, conflictAlgorithm: ConflictAlgorithm.ignore);
+          }
+        }
       }
-    }
-    
-    await batch.commit(noResult: true);
+      await batch.commit(noResult: true);
+    });
   }
 }

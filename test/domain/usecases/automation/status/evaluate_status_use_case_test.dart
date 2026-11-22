@@ -22,7 +22,7 @@ void main() {
     });
 
     test('should select the highest priority rule (lowest priority number) that evaluates to true', () async {
-      const ruleLowPriority = StatusRule(
+      final ruleLowPriority = StatusRule(
         priority: 0,
         targetStatus: StatusType.busy,
         conditionType: ConditionType.population,
@@ -31,7 +31,7 @@ void main() {
         messageTemplate: 'Busy in a crowded room',
       );
 
-      const ruleHighPriority = StatusRule(
+      final ruleHighPriority = StatusRule(
         priority: 1,
         targetStatus: StatusType.joinMe,
         conditionType: ConditionType.population,
@@ -65,7 +65,7 @@ void main() {
     });
 
     test('should fallback to profile base configurations if no conditional rules match', () async {
-      const ruleNoMatch = StatusRule(
+      final ruleNoMatch = StatusRule(
         priority: 0,
         targetStatus: StatusType.busy,
         conditionType: ConditionType.population,

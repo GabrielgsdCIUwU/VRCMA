@@ -4,6 +4,7 @@ import 'package:vrcma/data/repositories/local_social_repository_imp.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/automation/filter_profile.dart';
 import 'package:vrcma/domain/entities/automation/role_automation.dart';
+import 'package:vrcma/domain/error/domain_exception.dart';
 
 void main() {
   late Database db;
@@ -15,7 +16,8 @@ void main() {
   });
   
   setUp(() async {
-    db = await databaseFactory.openDatabase(inMemoryDatabasePath,
+    db = await databaseFactory.openDatabase(
+      inMemoryDatabasePath,
       options: OpenDatabaseOptions(
         version: 1,
         onCreate: (db, version) async {
@@ -56,7 +58,8 @@ void main() {
               )
           ''');
         },
-      ));
+      ),
+    );
     repository = LocalSocialRepositoryImp(db);
   });
   
@@ -80,7 +83,7 @@ void main() {
       
       expect(
         () async => await repository.createRole('Admin'),
-        throwsA(isA<String>().having((e) => e, 'message', contains('already exists'))),
+        throwsA(isA<DuplicateRoleException>().having((e) => e.roleName, 'roleName', 'Admin')),
       );
     });
     
@@ -98,6 +101,8 @@ void main() {
       final roleId2 = await repository.createRole('Close Friend');
       const userId = 'usr_123';
       
+      await repository.saveKnownUsers(const [VrcUser(id: userId, displayName: 'Test', tags: [])]);
+      
       await repository.assignRoleToUser(userId, roleId1);
       await repository.assignRoleToUser(userId, roleId2);
       
@@ -110,6 +115,12 @@ void main() {
     
     test('getMemberCountForRole should return exact number of assigned users', () async {
       final roleId = await repository.createRole('Streamer');
+
+      await repository.saveKnownUsers(const [
+        VrcUser(id: 'usr_1', displayName: 'Test1', tags: []),
+        VrcUser(id: 'usr_2', displayName: 'Test2', tags: [])
+      ]);
+
       await repository.assignRoleToUser('usr_1', roleId);
       await repository.assignRoleToUser('usr_2', roleId);
       
@@ -120,6 +131,15 @@ void main() {
     
     test('syncRoleMembers should replace old users with new set (Transaction Test)', () async {
       final roleId = await repository.createRole('VIP');
+
+      await repository.saveKnownUsers(const [
+        VrcUser(id: 'usr_old_1', displayName: 'Old1', tags: []),
+        VrcUser(id: 'usr_old_2', displayName: 'Old2', tags: []),
+        VrcUser(id: 'usr_new_1', displayName: 'New1', tags: []),
+        VrcUser(id: 'usr_new_2', displayName: 'New2', tags: []),
+        VrcUser(id: 'usr_new_3', displayName: 'New3', tags: []),
+      ]);
+
       await repository.assignRoleToUser('usr_old_1', roleId);
       await repository.assignRoleToUser('usr_old_2', roleId);
       
@@ -166,13 +186,17 @@ void main() {
     test('assignMultipleRoles should map associations efficiently', () async {
       final roleId = await repository.createRole('Moderator');
 
+      await repository.saveKnownUsers(const [
+        VrcUser(id: 'usr_user1', displayName: 'Mod', tags: []),
+      ]);
+
       final assigments = {
         'usr_user1': {roleId},
       };
 
       await repository.assignMultipleRoles(assigments);
 
-      final userRoles = await repository.getRolesForUser('usr_user_1');
+      final userRoles = await repository.getRolesForUser('usr_user1');
       expect(userRoles.map((r) => r.id), contains(roleId));
     });
   });

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:vrcma/domain/entities/auth/vrc_user.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
 import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorization_strategy.dart';
@@ -6,13 +5,13 @@ import 'package:vrcma/domain/usecases/social/categorization/i_friend_categorizat
 class StatusStrategy implements IFriendCategorizationStrategy {
   final String id;
   final String title;
-  final IconData icon;
+  final CategoryIconType iconType;
   final bool Function(VrcUser) condition;
   
   StatusStrategy({
     required this.id,
     required this.title,
-    required this.icon,
+    required this.iconType,
     required this.condition,
   });
   
@@ -28,7 +27,7 @@ class StatusStrategy implements IFriendCategorizationStrategy {
     return FriendGroupCategory(
       id: id,
       title: title,
-      icon: icon,
+      iconType: iconType,
       friends: matched
     );
   }

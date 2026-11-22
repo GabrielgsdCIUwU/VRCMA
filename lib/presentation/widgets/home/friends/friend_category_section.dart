@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vrcma/core/l10n/l10n_extension.dart';
 import 'package:vrcma/core/theme/vrc_theme.dart';
 import 'package:vrcma/domain/entities/social/friend_group_category.dart';
+import 'package:vrcma/presentation/extensions/entity_extensions.dart';
 import 'package:vrcma/presentation/state/friends_provider.dart';
 
 class FriendCategoryHeaderTile extends ConsumerWidget {
@@ -53,7 +54,7 @@ class FriendCategoryHeaderTile extends ConsumerWidget {
               color: context.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
-            Icon(category.icon, size: 16, color: context.colorScheme.primary),
+            Icon(category.iconType.iconData, size: 16, color: context.colorScheme.primary),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

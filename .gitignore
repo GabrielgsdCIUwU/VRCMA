@@ -120,6 +120,7 @@ app.*.symbols
 
 # Ignore build_runners...
 *.g.dart
+*.mocks.dart
 
 # Cookies not accepted here.
 .cookies
@@ -129,3 +130,6 @@ app.*.symbols
 
 # Tests
 /test/helpers/test_mocks.mocks.dart
+
+# Graphify
+graphify-out

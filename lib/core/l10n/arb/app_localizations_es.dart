@@ -9,6 +9,9 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get languageNativeName => 'Español';
+
+  @override
   String get loginTitle => 'VRCMA';
 
   @override
@@ -122,7 +125,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String dialogDeleteProfileContent(String profileName) {
-    return '¿Estás seguro de que deseas eliminar {profileName}? Esta acción no se puede deshacer.';
+    return '¿Estás seguro de que deseas eliminar \'$profileName\'? Esta acción no se puede deshacer.';
   }
 
   @override
@@ -908,4 +911,506 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get errorRoleAutoMissingTag =>
       'Debes indicar una etiqueta de destino para esta automatización basada en etiquetas.';
+
+  @override
+  String get calHeader => 'Automatizaciones del Calendario';
+
+  @override
+  String get calSubheader =>
+      'Configura reglas automáticas que crean y gestionan eventos de grupo de VRChat en segundo plano.';
+
+  @override
+  String get calBtnCreate => 'Crear automatización';
+
+  @override
+  String get calEditorTitleNew => 'Nueva regla de calendario';
+
+  @override
+  String get calEditorTitleEdit => 'Editar regla de calendario';
+
+  @override
+  String get calFieldLabelName => 'Nombre de la regla';
+
+  @override
+  String get calFieldLabelGroupId => 'ID del grupo de VRChat';
+
+  @override
+  String get calFieldLabelTitle => 'Plantilla del título del evento';
+
+  @override
+  String get calFieldLabelDesc => 'Plantilla de la descripción del evento';
+
+  @override
+  String get calFieldHintTitle => 'Admite el marcador {{incremental}}.';
+
+  @override
+  String get calSectionSchedule => 'Programación';
+
+  @override
+  String get calFieldLabelTime => 'Hora de inicio';
+
+  @override
+  String get calFieldLabelDuration => 'Duración (minutos)';
+
+  @override
+  String get calFieldLabelTimezone => 'Zona horaria (IANA)';
+
+  @override
+  String get calSectionRecurrence => 'Recurrencia';
+
+  @override
+  String get calSectionIncremental => 'Contador incremental';
+
+  @override
+  String get calSectionVrcMetadata => 'Configuración del evento de VRChat';
+
+  @override
+  String get calFieldLabelHostEarly =>
+      'Acceso anticipado para el host (minutos)';
+
+  @override
+  String get calFieldLabelGuestEarly =>
+      'Acceso anticipado para miembros (minutos)';
+
+  @override
+  String get calFieldLabelCloseDelay =>
+      'Retraso de limpieza automática (minutos)';
+
+  @override
+  String get calFieldLabelOverflow =>
+      'Activar protección contra desbordamiento de instancias';
+
+  @override
+  String get calToastSaved =>
+      'La regla de calendario se ha guardado correctamente.';
+
+  @override
+  String get calConfirmDeleteTitle => 'Eliminar regla de automatización';
+
+  @override
+  String get calConfirmDeleteContent =>
+      '¿Seguro que quieres eliminar esta regla de automatización? Esta acción no se puede deshacer.';
+
+  @override
+  String get calMsgEmptyRules =>
+      'Todavía no se ha creado ninguna regla de automatización del calendario.';
+
+  @override
+  String get calRecurrenceOnce => 'Una vez';
+
+  @override
+  String get calRecurrenceDaily => 'Diario';
+
+  @override
+  String get calRecurrenceWeekly => 'Semanal';
+
+  @override
+  String get calRecurrenceMonthly => 'Mensual';
+
+  @override
+  String get calCategoryArts => 'Artes';
+
+  @override
+  String get calCategoryAvatars => 'Avatares';
+
+  @override
+  String get calCategoryDance => 'Danza';
+
+  @override
+  String get calCategoryEducation => 'Educación';
+
+  @override
+  String get calCategoryExploration => 'Exploración';
+
+  @override
+  String get calCategoryFilmMedia => 'Cine y Medios';
+
+  @override
+  String get calCategoryGaming => 'Videojuegos';
+
+  @override
+  String get calCategoryHangout => 'Quedadas';
+
+  @override
+  String get calCategoryMusic => 'Música';
+
+  @override
+  String get calCategoryPerformance => 'Espectáculos';
+
+  @override
+  String get calCategoryRoleplaying => 'Rol';
+
+  @override
+  String get calCategoryWellness => 'Bienestar';
+
+  @override
+  String get calCategoryOther => 'Otro';
+
+  @override
+  String get calFieldLabelEndTime => 'Hora de finalización';
+
+  @override
+  String get calFieldLabelDaysOfWeek => 'Días de la semana';
+
+  @override
+  String calDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String calDurationMinutesOnly(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String get calFieldLabelPlatform => 'Plataformas del evento';
+
+  @override
+  String get calFieldLabelIncrementalStart => 'Valor inicial';
+
+  @override
+  String get calFieldLabelIncrementalStep => 'Incremento';
+
+  @override
+  String get calFieldLabelIncrementalEnable => 'Activar contador incremental';
+
+  @override
+  String get calFieldLabelIncrementalDesc =>
+      'Incrementa automáticamente la numeración (p. ej. Evento #1, Evento #2)';
+
+  @override
+  String get calSectionTolerances => 'Tolerancias avanzadas de acceso';
+
+  @override
+  String get calFieldLabelOverflowDesc =>
+      'Evita que la instancia se desborde al alcanzar el límite';
+
+  @override
+  String get calFieldLabelHostEarlyShort => 'Acceso host (min)';
+
+  @override
+  String get calFieldLabelGuestEarlyShort => 'Acceso miembros (min)';
+
+  @override
+  String get calFieldLabelCloseDelayShort => 'Retraso de cierre (min)';
+
+  @override
+  String get calLiveCardPreview => 'Vista previa de la tarjeta en vivo';
+
+  @override
+  String get calNoTitleTemplate => 'Sin título';
+
+  @override
+  String get calNoDescriptionTemplate => 'Sin descripción';
+
+  @override
+  String get calPlatformDesc =>
+      'Determina qué plataformas de VRChat serán compatibles oficialmente con este evento.';
+
+  @override
+  String get calAccessPublicDesc =>
+      'Cualquier usuario de VRChat podrá ver y unirse a este evento.';
+
+  @override
+  String get calAccessGroupDesc =>
+      'Solo los miembros aprobados del grupo podrán ver y acceder a este evento.';
+
+  @override
+  String get calToleranceHostTitle => 'Acceso de anfitriones';
+
+  @override
+  String get calToleranceHostDesc =>
+      'Permite que los anfitriones entren antes a la instancia del mundo para prepararla.';
+
+  @override
+  String get calToleranceMemberTitle => 'Acceso de miembros';
+
+  @override
+  String get calToleranceMemberDesc =>
+      'Define cuántos minutos antes del inicio podrán unirse los miembros del grupo.';
+
+  @override
+  String get calToleranceCloseTitle => 'Retraso de cierre';
+
+  @override
+  String get calToleranceCloseDesc =>
+      'Tiempo de espera tras la hora de finalización antes de cerrar la instancia.';
+
+  @override
+  String get calGroupSelectHint => 'Selecciona un grupo de VRChat...';
+
+  @override
+  String get calGroupNoPerms =>
+      'No se encontraron grupos en los que tengas permisos para gestionar el calendario.';
+
+  @override
+  String get calGroupValidating => 'Comprobando permisos...';
+
+  @override
+  String get calGroupPermissionDenied =>
+      'No tienes permisos para gestionar el calendario de este grupo.';
+
+  @override
+  String get calFieldLabelStartDate => 'Fecha de inicio';
+
+  @override
+  String get calFieldLabelEndDate => 'Fecha de finalización';
+
+  @override
+  String get calSectionExceptions => 'Excepciones';
+
+  @override
+  String get calExceptionAdd => 'Añadir excepción';
+
+  @override
+  String get calExceptionCancel => 'Cancelar evento en esta fecha';
+
+  @override
+  String get calExceptionsEmpty => 'No hay excepciones configuradas';
+
+  @override
+  String get calDaysOfMonth => 'Días del mes';
+
+  @override
+  String get calOptionalDate => 'Opcional';
+
+  @override
+  String calExceptionUntil(String date) {
+    return ' hasta el $date';
+  }
+
+  @override
+  String get calSectionStrategy => 'Estrategia de generación';
+
+  @override
+  String get calFieldLabelStrategy => 'Estrategia';
+
+  @override
+  String get calFieldLabelMaxEvents => 'Máximo de eventos próximos';
+
+  @override
+  String get calStrategyLazy => 'Perezosa (mantiene 1 evento)';
+
+  @override
+  String get calStrategyBatch => 'Por lotes (múltiples eventos)';
+
+  @override
+  String get statusRuleEditorTitleNew => 'Nueva regla de estado';
+
+  @override
+  String get statusRuleEditorTitleEdit => 'Editar regla de estado';
+
+  @override
+  String get statusVariablesHint => 'Insertar variable:';
+
+  @override
+  String get logFallbackUser => 'Usuario';
+
+  @override
+  String get logFilterAll => 'Todos';
+
+  @override
+  String get logCategoryInvitation => 'Invitaciones';
+
+  @override
+  String get logCategoryStatus => 'Cambios de estado';
+
+  @override
+  String get logCategoryCalendar => 'Automatizaciones del calendario';
+
+  @override
+  String get logCategorySystem => 'Diagnóstico del sistema';
+
+  @override
+  String get logActionIgnored => 'Ignorado';
+
+  @override
+  String logStatusSuccess(String status) {
+    return 'Estado actualizado a $status';
+  }
+
+  @override
+  String logStatusFailure(String status) {
+    return 'No se pudo actualizar el estado a $status';
+  }
+
+  @override
+  String logCalendarSuccess(String title) {
+    return 'Evento publicado en el calendario: $title';
+  }
+
+  @override
+  String logCalendarFailure(String title) {
+    return 'No se pudo publicar el evento en el calendario: $title';
+  }
+
+  @override
+  String logCalendarWarning(String title) {
+    return 'Publicación del evento pospuesta: $title';
+  }
+
+  @override
+  String logSystemMessage(String message) {
+    return 'Evento del sistema: $message';
+  }
+
+  @override
+  String get logFallbackRule => 'Regla del sistema';
+
+  @override
+  String get logsClearTooltip => 'Borrar todos los registros';
+
+  @override
+  String get logsClearConfirmTitle => 'Borrar diagnósticos';
+
+  @override
+  String get logsClearConfirmContent =>
+      '¿Seguro que quieres eliminar permanentemente todos los registros de automatizaciones y diagnósticos? Esta acción no se puede deshacer.';
+
+  @override
+  String get logCategoryAll => 'Todas las categorías';
+
+  @override
+  String get logSeverityAll => 'Todas las severidades';
+
+  @override
+  String get logSeverityInfo => 'Información';
+
+  @override
+  String get logSeverityWarning => 'Advertencia';
+
+  @override
+  String get logSeverityError => 'Error';
+
+  @override
+  String get logCategorySocial => 'Social';
+
+  @override
+  String get logCategoryAuth => 'Autenticación';
+
+  @override
+  String logSocialRoleAssignmentMessage(String user, String roles) {
+    return 'Roles asignados a $user: $roles';
+  }
+
+  @override
+  String get logSocialTriggerNewFriend => 'Activado al detectar un nuevo amigo';
+
+  @override
+  String get logSocialTriggerTagMatch =>
+      'Activado al coincidir una etiqueta del perfil';
+
+  @override
+  String logAuthMessage(String displayName, String event) {
+    return 'Autenticación: $displayName ($event)';
+  }
+
+  @override
+  String get logAuthEventLoginSuccess => 'Inicio de sesión correcto';
+
+  @override
+  String get logAuthEventLoginFailed => 'Error al iniciar sesión';
+
+  @override
+  String get logAuthEventTwoFactorRequested =>
+      'Se requiere verificación en dos pasos';
+
+  @override
+  String get logAuthEventLoggedOut => 'Sesión cerrada';
+
+  @override
+  String get logAuthEventSessionExpired => 'Sesión caducada';
+
+  @override
+  String get logDetailRule => 'Regla de automatización';
+
+  @override
+  String get logDetailProfile => 'Perfil de filtros';
+
+  @override
+  String get logDetailStatusProfile => 'Perfil de estado';
+
+  @override
+  String get logDetailGroup => 'Grupo de destino';
+
+  @override
+  String get logDetailScheduledFor => 'Ocurrencia programada';
+
+  @override
+  String get logDetailEventTitle => 'Título del evento';
+
+  @override
+  String get logDetailEventId => 'ID del evento de VRChat';
+
+  @override
+  String get logDetailSender => 'Remitente';
+
+  @override
+  String get logDetailTargetUser => 'Usuario de destino';
+
+  @override
+  String get logDetailMatchedRole => 'Regla / etiqueta coincidente';
+
+  @override
+  String get logDetailTrigger => 'Motivo del desencadenante';
+
+  @override
+  String get logDetailStatus => 'Estado aplicado';
+
+  @override
+  String get logDetailStatusMessage => 'Mensaje de estado';
+
+  @override
+  String get logDetailAction => 'Acción realizada';
+
+  @override
+  String get logDetailEventType => 'Tipo de evento';
+
+  @override
+  String get logDetailAuthEvent => 'Evento de autenticación';
+
+  @override
+  String get logDetailTechnicalDetails => 'Detalles técnicos del error';
+
+  @override
+  String errorCalDuplicateRuleName(String ruleName) {
+    return 'Ya existe una regla de calendario llamada \'$ruleName\' en este grupo.';
+  }
+
+  @override
+  String errorCalRateLimited(int minutes) {
+    return 'Límite de peticiones de calendario de VRChat alcanzado. Publicación pausada durante $minutes minutos.';
+  }
+
+  @override
+  String get calBtnSyncNow => 'Sincronizar ahora';
+
+  @override
+  String get calSectionSchedulePreview =>
+      'Vista previa de próximas ejecuciones';
+
+  @override
+  String get calPreviewEmpty =>
+      'No hay fechas próximas que coincidan con la programación actual.';
+
+  @override
+  String get calPreviewStatusPending => 'Se publicará';
+
+  @override
+  String get calPreviewStatusPublished => 'Ya existe en VRChat';
+
+  @override
+  String get calPreviewStatusCancelled => 'Omitido (Excepción)';
+
+  @override
+  String get calFieldLabelSendNotification =>
+      'Notificar a los miembros del grupo';
+
+  @override
+  String get calFieldLabelSendNotificationDesc =>
+      'Envía una notificación de VRChat a los miembros al publicar cada evento';
+
+  @override
+  String get calDescFallbackNotice =>
+      'Si se deja vacío, se usará el título del evento como descripción porque VRChat no permite descripciones vacías.';
 }
