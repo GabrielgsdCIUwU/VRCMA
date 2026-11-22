@@ -9,6 +9,9 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get languageNativeName => 'Español';
+
+  @override
   String get loginTitle => 'VRCMA';
 
   @override

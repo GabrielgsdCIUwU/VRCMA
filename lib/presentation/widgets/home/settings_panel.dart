@@ -15,15 +15,14 @@ import 'package:vrcma/presentation/state/world_cache_provider.dart';
 
 extension LocaleDisplayName on Locale {
   String get nativeDisplayName {
-    switch (languageCode) {
-      case 'es':
-        return 'Español';
-      
-      case 'en':
-        return 'English';
-      
-      default:
+    try {
+      final resolvedLanguage = lookupAppLocalizations(this).languageNativeName;
+      if (languageCode != 'en' && resolvedLanguage == 'English') {
         return languageCode.toUpperCase();
+      }
+      return resolvedLanguage;
+    } catch (_) {
+      return languageCode.toUpperCase();
     }
   }
 }

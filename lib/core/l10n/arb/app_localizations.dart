@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  /// The native name of this language shown in the language selector (e.g., English, Español, Français, 日本語).
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageNativeName;
+
   /// The main branding/application title displayed at the top of the login header screen.
   ///
   /// In en, this message translates to:

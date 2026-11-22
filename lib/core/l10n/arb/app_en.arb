@@ -1,5 +1,9 @@
 {
   "@@locale": "en",
+  "languageNativeName": "English",
+  "@languageNativeName": {
+    "description": "The native name of this language shown in the language selector (e.g., English, Español, Français, 日本語)."
+  },
   
   "loginTitle": "VRCMA",
   "@loginTitle": {

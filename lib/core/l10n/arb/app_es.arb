@@ -1,5 +1,6 @@
 {
   "@@locale": "es",
+  "languageNativeName": "Español",
   "loginTitle": "VRCMA",
   "usernameLabel": "Usuario o Correo Electrónico",
   "passwordLabel": "Contraseña",
