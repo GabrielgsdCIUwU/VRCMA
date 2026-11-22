@@ -111,7 +111,7 @@ class StatusRule extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, priority, targetStatus, messageTemplate, conditionType, operator, conditionType];
+  List<Object?> get props => [id, priority, targetStatus, messageTemplate, conditionType, operator, conditionValue];
 }
 
 /// A collection of rules that define a behaviour.
